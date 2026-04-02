@@ -40,7 +40,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Alle Posts prüfen und nach Kategorie filtern
         allPostItems.forEach(post => {
-          const postCategories = post.getAttribute('data-categories') || '';
+          const postCategories = (post.getAttribute('data-categories') || '').split(/\s+/);
           if (postCategories.includes(selectedCategory)) {
             post.style.display = 'block';
             visiblePostsCount++;

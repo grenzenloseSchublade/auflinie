@@ -360,10 +360,4 @@ Ergebnis:
 Versteckter Inhalt wird hier angezeigt
 </details>
 
-**Emoji-Support:**
 
-```markdown
-:smile: :rocket: :warning: :bulb:
-```
-
-Ergebnis: :smile: :rocket: :warning: :bulb:

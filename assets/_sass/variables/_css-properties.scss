@@ -7,7 +7,7 @@
   // Layout
   // ============================================
   --masthead-height: 74px; // Mobile default (moderne Standards: 56-64px)
-  --sticky-toc-height: 0px; // Wird via JS auf Mobile gesetzt wenn sichtbar
+  --sticky-toc-height: 0px; // Wird via JS gesetzt wenn Mobile Sticky TOC sichtbar
   --anchor-offset: calc(var(--masthead-height) + var(--sticky-toc-height) + 20px);
   --content-spacing: 0.8rem;
 

@@ -7,11 +7,11 @@
 
 // =============================================================================
 // MOBILE STICKY TOC HEADER
-// Erscheint unter dem Masthead wenn das Original-TOC aus dem Viewport scrollt
-// Nur für Mobile (< $large)
+// Erscheint unter dem Masthead wenn das Original-TOC aus dem Viewport scrollt.
+// Nur für Viewports ohne rechtsseitig floatendes Sidebar-TOC (< $large).
 // =============================================================================
 .toc-sticky-mobile {
-    // Versteckt auf Desktop
+    // Versteckt auf Desktop (Sidebar-TOC floatet rechts)
     display: none;
     
     @media (max-width: $large - 1) {
