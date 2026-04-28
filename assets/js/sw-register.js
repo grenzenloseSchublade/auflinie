@@ -19,71 +19,26 @@
   function showUpdateToast() {
     // Prüfe ob Toast bereits existiert
     if (document.getElementById('sw-update-toast')) return;
-    
-    // Erstelle Toast-Element
+
     const toast = document.createElement('div');
     toast.id = 'sw-update-toast';
+    toast.className = 'sw-update-toast';
+    toast.setAttribute('role', 'status');
+    toast.setAttribute('aria-live', 'polite');
+    toast.setAttribute('aria-relevant', 'additions');
     toast.innerHTML = `
-      <span>🔄 Neue Version verfügbar!</span>
-      <button id="sw-update-reload">Jetzt laden</button>
-      <button id="sw-update-dismiss" aria-label="Schließen">×</button>
+      <div class="sw-update-toast__panel">
+        <div class="sw-update-toast__content">
+          <p class="sw-update-toast__headline">Neue Version verfügbar</p>
+          <p class="sw-update-toast__sub">Seite neu laden, um die Aktualisierung zu nutzen.</p>
+        </div>
+        <div class="sw-update-toast__actions">
+          <button type="button" id="sw-update-dismiss" class="sw-update-toast__ghost">Später</button>
+          <button type="button" id="sw-update-reload" class="sw-update-toast__primary">Jetzt laden</button>
+        </div>
+      </div>
     `;
-    
-    // Inline-Styles für Toast (kein externes CSS nötig)
-    toast.style.cssText = `
-      position: fixed;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-      color: #fff;
-      padding: 12px 20px;
-      border-radius: 8px;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4), 0 0 10px rgba(5, 217, 232, 0.3);
-      border: 1px solid rgba(5, 217, 232, 0.4);
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      z-index: 10000;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      font-size: 14px;
-      animation: slideUp 0.3s ease-out;
-    `;
-    
-    // Styles für Buttons
-    const style = document.createElement('style');
-    style.textContent = `
-      @keyframes slideUp {
-        from { opacity: 0; transform: translateX(-50%) translateY(20px); }
-        to { opacity: 1; transform: translateX(-50%) translateY(0); }
-      }
-      #sw-update-reload {
-        background: linear-gradient(135deg, #05d9e8 0%, #ff00cc 100%);
-        color: #fff;
-        border: none;
-        padding: 8px 16px;
-        border-radius: 4px;
-        cursor: pointer;
-        font-weight: 600;
-        transition: transform 0.2s, box-shadow 0.2s;
-      }
-      #sw-update-reload:hover {
-        transform: scale(1.05);
-        box-shadow: 0 0 15px rgba(5, 217, 232, 0.5);
-      }
-      #sw-update-dismiss {
-        background: transparent;
-        color: #888;
-        border: none;
-        font-size: 20px;
-        cursor: pointer;
-        padding: 0 4px;
-        line-height: 1;
-        transition: color 0.2s;
-      }
-      #sw-update-dismiss:hover { color: #fff; }
-    `;
-    document.head.appendChild(style);
+
     document.body.appendChild(toast);
     
     // Event-Listener
@@ -92,8 +47,8 @@
     });
     
     document.getElementById('sw-update-dismiss').addEventListener('click', () => {
-      toast.style.animation = 'slideUp 0.2s ease-in reverse';
-      setTimeout(() => toast.remove(), 200);
+      toast.classList.add('sw-update-toast--leaving');
+      setTimeout(() => toast.remove(), 320);
     });
   }
   
