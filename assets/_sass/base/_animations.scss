@@ -116,17 +116,26 @@
   }
 }
 
-/// Einmalige „Röhre warm“-Einschwingung (stark): langes dunkles Plateau, langsamer Übergang zu hell (Gesamtdauer in _hero.scss)
+/// Einmalige „Röhre warm“-Einschwingung (stark): dunkles Plateau, gleichmäßige Stufen → hell (Dauer/Timing: `--hero-tube-boot-dur` in _hero.scss)
 @keyframes heroTubeBootStark {
   0%,
-  16% {
+  10% {
     filter: contrast(1.64) saturate(0.22) brightness(0.0035) blur(1.24px);
   }
-  36% {
-    filter: contrast(1.42) saturate(0.45) brightness(0.24) blur(0.9px);
+  22% {
+    filter: contrast(1.52) saturate(0.34) brightness(0.1) blur(1.05px);
   }
-  62% {
-    filter: contrast(1.24) saturate(0.65) brightness(0.52) blur(0.58px);
+  34% {
+    filter: contrast(1.44) saturate(0.42) brightness(0.2) blur(0.92px);
+  }
+  46% {
+    filter: contrast(1.35) saturate(0.52) brightness(0.34) blur(0.78px);
+  }
+  58% {
+    filter: contrast(1.28) saturate(0.6) brightness(0.46) blur(0.66px);
+  }
+  72% {
+    filter: contrast(1.2) saturate(0.72) brightness(0.62) blur(0.52px);
   }
   86% {
     filter: contrast(1.12) saturate(0.82) brightness(0.8) blur(0.38px);
@@ -136,19 +145,28 @@
   }
 }
 
-/// Einmalige „Röhre warm“-Einschwingung (dezent): langes Plateau, langsamer Verlauf zu hell
+/// Einmalige „Röhre warm“-Einschwingung (dezent): Plateau, gleichmäßige Stufen → hell (Start: gleiches brightness wie stark = dunkelster vorhandener Wert)
 @keyframes heroTubeBootDezent {
   0%,
-  16% {
-    filter: contrast(1.44) saturate(0.3) brightness(0.018) blur(1.1px);
+  10% {
+    filter: contrast(1.44) saturate(0.3) brightness(0.0035) blur(1.1px);
   }
-  38% {
-    filter: contrast(1.24) saturate(0.5) brightness(0.3) blur(0.78px);
+  22% {
+    filter: contrast(1.32) saturate(0.42) brightness(0.14) blur(0.95px);
   }
-  64% {
-    filter: contrast(1.1) saturate(0.7) brightness(0.62) blur(0.52px);
+  34% {
+    filter: contrast(1.26) saturate(0.48) brightness(0.24) blur(0.86px);
   }
-  88% {
+  46% {
+    filter: contrast(1.18) saturate(0.58) brightness(0.4) blur(0.72px);
+  }
+  58% {
+    filter: contrast(1.12) saturate(0.64) brightness(0.52) blur(0.62px);
+  }
+  72% {
+    filter: contrast(1.08) saturate(0.74) brightness(0.68) blur(0.52px);
+  }
+  86% {
     filter: contrast(1.05) saturate(0.82) brightness(0.88) blur(0.4px);
   }
   100% {

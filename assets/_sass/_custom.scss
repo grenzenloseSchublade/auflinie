@@ -132,8 +132,8 @@
         display: none !important;
     }
 
-    // Preboot-Veil: kein zusätzliches Abdunkeln / keine Transition (Sequenz entfällt ohnehin per JS)
-    .page__hero-crt-preboot-veil {
+    // Preboot-Abdunkelung (::after am Overlay): aus
+    .page__hero--overlay[data-background-image]::after {
         opacity: 0 !important;
         visibility: hidden !important;
         transition: none !important;

@@ -10,10 +10,10 @@
 
   var HERO_CRT_BOOT_KEY = 'auflinieHeroCrtBoot';
   var HERO_TUBE_BOOT_NAMES = ['heroTubeBootStark', 'heroTubeBootDezent'];
-  /** Pause mit gedimmtem Bild vor `page__hero--crt-boot` (ms) */
+  /** Pause mit Vorhang/Filter vor `page__hero--crt-boot` (ms), 0,9 s — mit `--hero-tube-boot-dur` nicht verwechseln */
   var HERO_CRT_PREBOOT_DELAY_MS = 900;
-  /** Dauer der Tube-Boot-Keyframes (ms), exakt wie Animationsdauer in `_hero.scss` (unabhängig von Preboot) */
-  var HERO_TUBE_BOOT_DURATION_MS = 6000;
+  /** Dauer der Tube-Boot-Keyframes (ms), exakt wie `--hero-tube-boot-dur` in `_hero.scss` (unabhängig von Preboot) */
+  var HERO_TUBE_BOOT_DURATION_MS = 3500;
 
   function readEnableImageCaching() {
     const raw = (document.documentElement.getAttribute('data-enable-image-caching') || '')
@@ -63,18 +63,38 @@
     overlay._crtBootState = null;
   }
 
-  /** Preboot-Timer, Boot-Listener und CRT-Klassen zurücksetzen (Replay / Seitenwechsel) */
-  function abortCrtBootFlow(overlay) {
+  /** Timer, `load`-Warteliste und `animationend`-Cleanup — ohne Preboot-/Boot-Klassen zu entfernen */
+  function abortCrtBootTimersAndListeners(overlay) {
     if (overlay._heroCrtPrebootTimer) {
       window.clearTimeout(overlay._heroCrtPrebootTimer);
       overlay._heroCrtPrebootTimer = null;
     }
+    if (overlay._heroCrtLoadWaitListener) {
+      window.removeEventListener('load', overlay._heroCrtLoadWaitListener);
+      overlay._heroCrtLoadWaitListener = null;
+    }
     cancelCrtBootCleanup(overlay);
+  }
+
+  /** Preboot-Timer, Boot-Listener und CRT-Klassen zurücksetzen (Replay / Seitenwechsel) */
+  function abortCrtBootFlow(overlay) {
+    abortCrtBootTimersAndListeners(overlay);
     overlay.classList.remove('page__hero--crt-preboot', 'page__hero--crt-boot');
   }
 
+  function finishHeroCrtBoot(overlay) {
+    cancelCrtBootCleanup(overlay);
+    overlay.classList.remove('page__hero--crt-boot');
+    try {
+      sessionStorage.setItem(HERO_CRT_BOOT_KEY, '1');
+    } catch (err) {
+      /* private mode */
+    }
+  }
+
   /**
-   * Kurz `page__hero--crt-preboot` (Veil), dann Tube-Boot + Cleanup.
+   * Kurz `page__hero--crt-preboot` (Abdunkelung per Overlay-`::after` + CRT-Filter-Pause), dann Tube-Boot.
+   * Ende: `animationend` (Tube-Name) oder ein Timeout-Fallback (ein gemeinsamer Abschluss).
    * @param {HTMLElement} overlay
    */
   function startCrtBootSequence(overlay) {
@@ -88,9 +108,9 @@
       if (!overlay.classList.contains('page__hero--crt-preboot') || !overlay.classList.contains('loaded')) {
         return;
       }
+      overlay.classList.add('page__hero--crt-boot');
       overlay.classList.remove('page__hero--crt-preboot');
       void crtLayer.offsetWidth;
-      overlay.classList.add('page__hero--crt-boot');
       scheduleCrtBootCleanup(overlay, crtLayer);
     }, HERO_CRT_PREBOOT_DELAY_MS);
   }
@@ -98,30 +118,19 @@
   function scheduleCrtBootCleanup(overlay, crtLayer) {
     cancelCrtBootCleanup(overlay);
     var bootFinished = false;
-    function onAnimationEnd(e) {
+    function endBoot() {
       if (bootFinished) return;
-      if (!e || !e.animationName || HERO_TUBE_BOOT_NAMES.indexOf(e.animationName) === -1) return;
+      if (!overlay.classList.contains('page__hero--crt-boot')) return;
       bootFinished = true;
-      cancelCrtBootCleanup(overlay);
-      overlay.classList.remove('page__hero--crt-boot');
-      try {
-        sessionStorage.setItem(HERO_CRT_BOOT_KEY, '1');
-      } catch (err) {
-        /* private mode */
-      }
+      finishHeroCrtBoot(overlay);
+    }
+    function onAnimationEnd(e) {
+      if (!e || !e.animationName || HERO_TUBE_BOOT_NAMES.indexOf(e.animationName) === -1) return;
+      endBoot();
     }
     crtLayer.addEventListener('animationend', onAnimationEnd);
     crtLayer.addEventListener('webkitAnimationEnd', onAnimationEnd);
-    var timeoutId = window.setTimeout(function() {
-      if (!overlay.classList.contains('page__hero--crt-boot')) return;
-      cancelCrtBootCleanup(overlay);
-      overlay.classList.remove('page__hero--crt-boot');
-      try {
-        sessionStorage.setItem(HERO_CRT_BOOT_KEY, '1');
-      } catch (err2) {
-        /* ignore */
-      }
-    }, HERO_TUBE_BOOT_DURATION_MS + 400);
+    var timeoutId = window.setTimeout(endBoot, HERO_TUBE_BOOT_DURATION_MS + 400);
     overlay._crtBootState = {
       timeoutId: timeoutId,
       crtLayer: crtLayer,
@@ -226,12 +235,30 @@
       skipBoot = false;
     }
 
-    if (!skipBoot) {
+    if (skipBoot) {
+      overlay.classList.remove('page__hero--crt-preboot');
+      return;
+    }
+
+    function kick() {
+      if (!overlay.classList.contains('loaded')) return;
       startCrtBootSequence(overlay);
     }
+
+    if (document.readyState === 'complete') {
+      kick();
+    } else {
+      var listener = function() {
+        window.removeEventListener('load', listener);
+        overlay._heroCrtLoadWaitListener = null;
+        kick();
+      };
+      overlay._heroCrtLoadWaitListener = listener;
+      window.addEventListener('load', listener);
+    }
   }
-  
-  // Konfiguration aus dem HTML-Dokument auslesen
+
+    // Konfiguration aus dem HTML-Dokument auslesen
   const config = {
     enableImageCaching: readEnableImageCaching(),
     backgroundImage: document.documentElement.getAttribute('data-background-image') || null

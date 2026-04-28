@@ -33,6 +33,9 @@
     
     // Optimiertes Laden des Hintergrundbildes
     &[data-background-image] {
+      // Muss mit `HERO_TUBE_BOOT_DURATION_MS` in image-cache.js übereinstimmen
+      --hero-tube-boot-dur: 3.5s;
+
       // Anfangs kein Hintergrundbild, wird durch JS gesetzt
       background-image: none;
       
@@ -55,21 +58,27 @@
           transition: opacity 0.3s ease-in-out;
         }
       }
-    }
 
-    // Kurz abdunkeln vor Tube-Boot (unter CRT, über Hintergrund; Text .wrapper z3 bleibt lesbar)
-    .page__hero-crt-preboot-veil {
-      position: absolute;
-      inset: 0;
-      z-index: 1;
-      pointer-events: none;
-      background: rgba(0, 0, 0, 0.68);
-      opacity: 0;
-      transition: opacity 0.32s ease-out;
-    }
+      // Vorhang über Hintergrund + CRT + Hero-Text (unter Dev-Tools z25, Captions z.B. z100)
+      &::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        z-index: 15;
+        pointer-events: none;
+        background: rgba(0, 0, 0, 0.93);
+        opacity: 0;
+        transition: opacity 0.32s ease-out;
+      }
 
-    &.page__hero--crt-preboot .page__hero-crt-preboot-veil {
-      opacity: 1;
+      &.page__hero--crt-preboot:not(.page__hero--crt-boot)::after {
+        opacity: 1;
+      }
+
+      &.page__hero--crt-boot::after {
+        opacity: 0;
+        transition: opacity var(--hero-tube-boot-dur) linear;
+      }
     }
 
     // Clippt CRT an die Hero-Fläche. Roll-Fahrt: 100cqh = Höhe dieser Box (nicht 100% in translateY — das wäre ~Höhe des 12vh-Balkens!)
@@ -264,7 +273,26 @@
       filter: contrast(1.04) saturate(0.94) brightness(1.04) blur(0.28px);
     }
 
+    // Preboot: exakt Keyframe 0–10 % der Tube-Animation (kein Sprung beim Start von `page__hero--crt-boot`)
+    &[data-background-image].loaded.page__hero--crt-preboot[data-crt-intensity="dezent"] .page__hero-crt-layer {
+      filter: contrast(1.44) saturate(0.3) brightness(0.0035) blur(1.1px);
+    }
+
+    &[data-background-image].loaded.page__hero--crt-preboot[data-crt-intensity="stark"] .page__hero-crt-layer,
+    &[data-background-image].loaded.page__hero--crt-preboot:not([data-crt-intensity]) .page__hero-crt-layer {
+      filter: contrast(1.64) saturate(0.22) brightness(0.0035) blur(1.24px);
+    }
+
     // Nach Laden: Korn, Rollbalken, Canvas-Rauschen sichtbar
+    &[data-background-image].loaded.page__hero--crt-preboot .page__hero-grain,
+    &[data-background-image].loaded.page__hero--crt-preboot .page__hero-crt-roll,
+    &[data-background-image].loaded.page__hero--crt-preboot .page__hero-crt-noise,
+    &[data-background-image].loaded.page__hero--crt-boot .page__hero-grain,
+    &[data-background-image].loaded.page__hero--crt-boot .page__hero-crt-roll,
+    &[data-background-image].loaded.page__hero--crt-boot .page__hero-crt-noise {
+      transition: opacity 0s;
+    }
+
     &[data-background-image].loaded .page__hero-grain {
       opacity: 0.2;
     }
@@ -306,16 +334,24 @@
     &[data-background-image].loaded.page__hero--crt-boot[data-crt-intensity="stark"] .page__hero-crt-layer,
     &[data-background-image].loaded.page__hero--crt-boot:not([data-crt-intensity]) .page__hero-crt-layer {
       opacity: 1;
-      animation: heroTubeBootStark 6s cubic-bezier(0.22, 0.55, 0.28, 1) forwards, heroScanlineJitter 3.8s linear 0.35s infinite;
+      animation: heroTubeBootStark var(--hero-tube-boot-dur) linear forwards, heroScanlineJitter 3.8s linear 0.35s infinite;
     }
 
     &[data-background-image].loaded.page__hero--crt-boot[data-crt-intensity="dezent"] .page__hero-crt-layer {
       opacity: 1;
-      animation: heroTubeBootDezent 6s cubic-bezier(0.22, 0.55, 0.28, 1) forwards, heroScanlineJitterSingle 3.8s linear 0.35s infinite;
+      animation: heroTubeBootDezent var(--hero-tube-boot-dur) linear forwards, heroScanlineJitterSingle 3.8s linear 0.35s infinite;
     }
 
     &[data-background-image].loaded .page__hero-crt-layer {
       opacity: 1;
+      // Kein `animation` hier — sonst würde die Tube-Boot-Kurznotation überschrieben (nur opacity ergänzen).
+    }
+
+    // Preboot/Boot: kein Opacity-Fade auf dem CRT-Layer (sonst gestaffelt mit Korn/Roll/Rauschen und ::after)
+    &[data-background-image].loaded.page__hero--crt-preboot .page__hero-crt-layer,
+    &[data-background-image].loaded.page__hero--crt-boot .page__hero-crt-layer {
+      opacity: 1;
+      transition: opacity 0s;
     }
 
     // Dev: CRT-Effekte über den Hero-Text — unterschiedliche z-index, sonst bei z:5 alle gleich:
@@ -467,7 +503,10 @@
       .page__hero-crt-roll,
       .page__hero-crt-noise,
       .page__hero-crt-svg-defs,
-      .page__hero-crt-preboot-veil,
+      &::after {
+        display: none !important;
+        content: none !important;
+      }
       .page__hero-crt-dev-tools {
         display: none !important;
       }
