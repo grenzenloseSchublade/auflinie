@@ -2,7 +2,7 @@ name: Deploy Jekyll site to Pages
 
 on:
   push:
-    branches: ["main", "master"]
+    branches: ["main", "master", "test/**"]
   pull_request:
     branches: ["main", "master"]
   workflow_dispatch:
@@ -37,6 +37,8 @@ jobs:
         uses: actions/upload-pages-artifact@v3
 
   deploy:
+    # Nur produktive Branches veröffentlichen (Test-Branches: Build ohne Deploy)
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
