@@ -35,17 +35,18 @@ if [ ! -d "$HOME/.rbenv/plugins/ruby-build" ]; then
     git clone https://github.com/rbenv/ruby-build.git ~/.rbenv/plugins/ruby-build
 fi
 
-# Ruby Installation
-echo "Installing Ruby 3.4.1 (3-5 minutes)..."
-rbenv install 3.4.1 --skip-existing
-rbenv global 3.4.1
+# Ruby Installation (Version siehe .ruby-version — mit CI abgestimmt)
+RUBY_VERSION="$(tr -d '\r\n' < "${PWD}/.ruby-version")"
+echo "Installing Ruby ${RUBY_VERSION} (einige Minuten)..."
+rbenv install "${RUBY_VERSION}" --skip-existing
+rbenv global "${RUBY_VERSION}"
 
-# RubyGems & Bundler
-echo "Updating RubyGems to 4.0.5..."
-gem update --system 4.0.5
+# RubyGems & Bundler (an Gemfile.lock »BUNDLED WITH« angeglichen)
+echo "Updating RubyGems..."
+gem update --system 4.0.10
 
-echo "Installing Bundler..."
-gem install bundler
+echo "Installing Bundler (Version aus Gemfile.lock)..."
+gem install bundler -v 4.0.10 --no-document
 
 # Python pip
 echo "Upgrading pip..."
