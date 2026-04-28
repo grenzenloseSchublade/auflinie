@@ -33,8 +33,9 @@
     
     // Optimiertes Laden des Hintergrundbildes
     &[data-background-image] {
-      // Muss mit `HERO_TUBE_BOOT_DURATION_MS` in image-cache.js übereinstimmen
+      // Muss mit `HERO_TUBE_BOOT_DURATION_MS` / `HERO_CRT_MODE_FLASH_MS` in image-cache.js übereinstimmen
       --hero-tube-boot-dur: 3.5s;
+      --hero-crt-mode-flash-dur: 0.1s;
 
       // Anfangs kein Hintergrundbild, wird durch JS gesetzt
       background-image: none;
@@ -59,7 +60,7 @@
         }
       }
 
-      // Vorhang über Hintergrund + CRT + Hero-Text (unter Dev-Tools z25, Captions z.B. z100)
+      // Vorhang über Hintergrund + CRT + Hero-Text (Power-Steuerung z25, Captions z.B. z100)
       &::after {
         content: "";
         position: absolute;
@@ -289,7 +290,10 @@
     &[data-background-image].loaded.page__hero--crt-preboot .page__hero-crt-noise,
     &[data-background-image].loaded.page__hero--crt-boot .page__hero-grain,
     &[data-background-image].loaded.page__hero--crt-boot .page__hero-crt-roll,
-    &[data-background-image].loaded.page__hero--crt-boot .page__hero-crt-noise {
+    &[data-background-image].loaded.page__hero--crt-boot .page__hero-crt-noise,
+    &[data-background-image].loaded.page__hero--crt-read .page__hero-grain,
+    &[data-background-image].loaded.page__hero--crt-read .page__hero-crt-roll,
+    &[data-background-image].loaded.page__hero--crt-read .page__hero-crt-noise {
       transition: opacity 0s;
     }
 
@@ -314,19 +318,19 @@
     }
 
     // Phosphor-Flimmern nur auf Punkt-Raster, nicht auf dem ganzen Layer
-    &[data-background-image].loaded .page__hero-crt-layer::after {
+    &[data-background-image].loaded:not(.page__hero--crt-boot):not(.page__hero--crt-preboot):not(.page__hero--crt-read) .page__hero-crt-layer::after {
       animation: heroCrtPhosphorFlicker 2.6s linear infinite;
       animation-delay: 0.4s;
     }
 
     // Scanline-Jitter (Standard: zwei Hintergrundebenen)
-    &[data-background-image].loaded:not(.page__hero--crt-boot):not(.page__hero--crt-preboot) .page__hero-crt-layer {
+    &[data-background-image].loaded:not(.page__hero--crt-boot):not(.page__hero--crt-preboot):not(.page__hero--crt-read) .page__hero-crt-layer {
       opacity: 1;
       animation: heroScanlineJitter 3.8s linear infinite;
       animation-delay: 0.35s;
     }
 
-    &[data-background-image].loaded:not(.page__hero--crt-boot):not(.page__hero--crt-preboot)[data-crt-intensity="dezent"] .page__hero-crt-layer {
+    &[data-background-image].loaded:not(.page__hero--crt-boot):not(.page__hero--crt-preboot):not(.page__hero--crt-read)[data-crt-intensity="dezent"] .page__hero-crt-layer {
       animation-name: heroScanlineJitterSingle;
     }
 
@@ -349,12 +353,13 @@
 
     // Preboot/Boot: kein Opacity-Fade auf dem CRT-Layer (sonst gestaffelt mit Korn/Roll/Rauschen und ::after)
     &[data-background-image].loaded.page__hero--crt-preboot .page__hero-crt-layer,
-    &[data-background-image].loaded.page__hero--crt-boot .page__hero-crt-layer {
+    &[data-background-image].loaded.page__hero--crt-boot .page__hero-crt-layer,
+    &[data-background-image].loaded.page__hero--crt-read .page__hero-crt-layer {
       opacity: 1;
       transition: opacity 0s;
     }
 
-    // Dev: CRT-Effekte über den Hero-Text — unterschiedliche z-index, sonst bei z:5 alle gleich:
+    // Startseite (Standard): CRT-Effekte über den Hero-Text — unterschiedliche z-index, sonst bei z:5 alle gleich:
     // DOM-Reihenfolge legt Canvas über Roll → Rollbalken kaum sichtbar bis er „durch“blendet.
     &.page__hero--crt-over-text .page__hero-crt-layer {
       z-index: 5;
@@ -376,42 +381,106 @@
       z-index: 1;
     }
 
-    // Startseite: CRT-Test-Buttons (über Effekten, klickbar)
-    .page__hero-crt-dev-tools {
+    // Kurzes Phosphor-Aufflackern (Lesemodus ↔ Retro), unter Power-Button (z25)
+    &[data-background-image].loaded.page__hero--crt-flash .page__hero-crt-media::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: 12;
+      pointer-events: none;
+      background: rgba(85, 240, 145, 0.38);
+      mix-blend-mode: screen;
+      opacity: 0;
+      animation: heroCrtModeFlash var(--hero-crt-mode-flash-dur) ease-out forwards;
+    }
+
+    // Lesemodus: Text vor CRT; Grain / Roll / Noise / laufende Layer-Animationen hart aus (CRT-Layer-Basis bleibt)
+    &.page__hero--crt-read .page__hero-grain,
+    &.page__hero--crt-read .page__hero-crt-roll,
+    &.page__hero--crt-read .page__hero-crt-noise {
+      opacity: 0 !important;
+      transition: none !important;
+    }
+
+    &.page__hero--crt-read .page__hero-crt-roll::before {
+      animation: none !important;
+    }
+
+    &[data-background-image].loaded.page__hero--crt-read:not(.page__hero--crt-boot):not(.page__hero--crt-preboot) .page__hero-crt-layer {
+      animation: none !important;
+    }
+
+    &[data-background-image].loaded.page__hero--crt-read:not(.page__hero--crt-boot):not(.page__hero--crt-preboot) .page__hero-crt-layer::after {
+      animation: none !important;
+    }
+
+    // Startseite: Power (über Effekten/Vorhang, klickbar)
+    .page__hero-crt-power-wrap {
       position: absolute;
       left: 0.75rem;
       bottom: 0.75rem;
       z-index: 25;
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 0.35rem;
       pointer-events: none;
+    }
 
-      .hero-crt-replay-boot,
-      .hero-crt-toggle-over-text {
-        pointer-events: auto;
-        padding: 0.2rem 0.45rem;
-        font-size: 0.65rem;
-        font-weight: 600;
-        letter-spacing: 0.06em;
-        text-transform: uppercase;
-        color: rgba(255, 255, 255, 0.88);
-        background: rgba(0, 0, 0, 0.5);
-        border: 1px solid rgba(255, 255, 255, 0.28);
-        border-radius: 4px;
-        cursor: pointer;
-        line-height: 1.2;
+    // Nur das Power-Symbol (Bogen + Stiel): kein Kreis, kein Rand — transparenter Klickbereich
+    .hero-crt-power {
+      pointer-events: auto;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.35rem;
+      margin: 0;
+      min-width: 2.5rem;
+      min-height: 2.5rem;
+      border: none;
+      border-radius: 4px;
+      background: transparent;
+      box-shadow: none;
+      color: rgba(248, 238, 220, 0.9);
+      cursor: pointer;
+      line-height: 0;
+      transition: color 0.2s ease, filter 0.2s ease, opacity 0.2s ease;
 
-        &:hover {
-          background: rgba(0, 0, 0, 0.68);
-          color: #fff;
-        }
+      &:hover {
+        color: rgba(255, 255, 255, 0.98);
+        filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.22));
+      }
 
-        &:focus-visible {
-          outline: 2px solid rgba(255, 255, 255, 0.85);
-          outline-offset: 2px;
-        }
+      &:focus-visible {
+        outline: 2px solid rgba(255, 248, 220, 0.85);
+        outline-offset: 3px;
+      }
+
+      &[aria-pressed="true"] {
+        color: rgba(200, 255, 210, 0.95);
+        filter: drop-shadow(0 0 7px rgba(90, 200, 120, 0.45));
+      }
+
+      &[aria-pressed="true"]:hover {
+        color: rgba(220, 255, 228, 1);
+        filter: drop-shadow(0 0 10px rgba(110, 230, 150, 0.55));
+      }
+
+      &[aria-pressed="false"] {
+        color: rgba(178, 170, 165, 0.78);
+        filter: none;
+      }
+
+      &[aria-pressed="false"]:hover {
+        color: rgba(210, 204, 198, 0.92);
+        filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.12));
+      }
+
+      &[aria-busy="true"] {
+        cursor: wait;
+        opacity: 0.55;
+        pointer-events: none;
+        filter: none;
+      }
+
+      .hero-crt-power__svg {
+        display: block;
       }
     }
 
@@ -507,7 +576,7 @@
         display: none !important;
         content: none !important;
       }
-      .page__hero-crt-dev-tools {
+      .page__hero-crt-power-wrap {
         display: none !important;
       }
       

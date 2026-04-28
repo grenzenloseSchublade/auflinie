@@ -119,6 +119,7 @@
     }
 
     .page__hero--crt-boot .page__hero-crt-layer,
+    .page__hero--crt-read .page__hero-crt-layer,
     .page__hero--overlay[data-background-image].loaded .page__hero-crt-layer {
         animation: none !important;
     }
@@ -126,10 +127,6 @@
     .page__hero--overlay[data-background-image].loaded .page__hero-crt-layer::after {
         animation: none !important;
         filter: none !important;
-    }
-
-    .page__hero-crt-dev-tools {
-        display: none !important;
     }
 
     // Preboot-Abdunkelung (::after am Overlay): aus

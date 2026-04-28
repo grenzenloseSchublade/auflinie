@@ -23,7 +23,7 @@
   {% assign hero_crt = "stark" %}
 {% endunless %}
 
-<div class="page__hero{% if page.header.overlay_color or page.header.overlay_image %}--overlay{% endif %}"
+<div class="page__hero{% if page.header.overlay_color or page.header.overlay_image %}--overlay{% endif %}{% if page.url == "/" and page.header.overlay_image %} page__hero--crt-over-text{% endif %}"
   {% if page.header.overlay_color %}style="background-color: {{ page.header.overlay_color | default: 'transparent' }};"{% endif %}
   {% if overlay_img_path %}
   data-background-image="{{ overlay_img_path }}"
@@ -50,9 +50,13 @@
   <canvas class="page__hero-crt-noise" width="160" height="160" aria-hidden="true"></canvas>
   </div>
   {% if page.url == "/" %}
-  <div class="page__hero-crt-dev-tools" role="region" aria-label="CRT-Testwerkzeuge (nur Startseite)">
-    <button type="button" id="hero-crt-replay-boot" class="hero-crt-replay-boot" aria-label="Röhren-Einschaltanimation erneut abspielen">Boot</button>
-    <button type="button" id="hero-crt-toggle-over-text" class="hero-crt-toggle-over-text" aria-pressed="false" aria-label="CRT-Effekte über den Text legen (Test)">Layers</button>
+  <div class="page__hero-crt-power-wrap" role="region" aria-label="Lesemodus und Retro-Ansicht (Startseite)">
+    <button type="button" id="hero-crt-power" class="hero-crt-power" aria-pressed="true" aria-label="Lesemodus aktivieren" title="Lesemodus">
+      {%- comment -%} Power-Glyphe: gleicher Pfad wie Heroicons „power“ (Outline, MIT) — klassisches IEC-ähnliches Ein-Symbol {%- endcomment -%}
+      <svg class="hero-crt-power__svg" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false">
+        <path stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round" d="M5.636 5.636a9 9 0 1012.728 0M12 3v9"/>
+      </svg>
+    </button>
   </div>
   {% endif %}
   {% endif %}

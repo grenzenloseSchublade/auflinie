@@ -14,6 +14,8 @@
   var HERO_CRT_PREBOOT_DELAY_MS = 900;
   /** Dauer der Tube-Boot-Keyframes (ms), exakt wie `--hero-tube-boot-dur` in `_hero.scss` (unabhängig von Preboot) */
   var HERO_TUBE_BOOT_DURATION_MS = 3500;
+  /** Phosphor-Aufflackern beim Umschalten Lesemodus ↔ Retro (ms), Spiegel zu `--hero-crt-mode-flash-dur` in `_hero.scss` */
+  var HERO_CRT_MODE_FLASH_MS = 100;
 
   function readEnableImageCaching() {
     const raw = (document.documentElement.getAttribute('data-enable-image-caching') || '')
@@ -76,7 +78,7 @@
     cancelCrtBootCleanup(overlay);
   }
 
-  /** Preboot-Timer, Boot-Listener und CRT-Klassen zurücksetzen (Replay / Seitenwechsel) */
+  /** Preboot-Timer, Boot-Listener und CRT-Boot-Klassen zurücksetzen */
   function abortCrtBootFlow(overlay) {
     abortCrtBootTimersAndListeners(overlay);
     overlay.classList.remove('page__hero--crt-preboot', 'page__hero--crt-boot');
@@ -90,6 +92,16 @@
     } catch (err) {
       /* private mode */
     }
+    syncHeroCrtPowerButton(overlay);
+  }
+
+  function syncHeroCrtPowerButton(overlay) {
+    var btn = document.getElementById('hero-crt-power');
+    if (!btn || !overlay) return;
+    var read = overlay.classList.contains('page__hero--crt-read');
+    btn.setAttribute('aria-pressed', read ? 'false' : 'true');
+    btn.setAttribute('aria-label', read ? 'Retro-Ansicht aktivieren' : 'Lesemodus aktivieren');
+    btn.setAttribute('title', read ? 'Retro-Ansicht' : 'Lesemodus');
   }
 
   /**
@@ -138,50 +150,88 @@
     };
   }
 
-  /**
-   * Tube-Boot erneut (Startseiten-Testbutton)
-   * @param {HTMLElement} overlay
-   */
-  function replayHeroTubeBoot(overlay) {
-    if (prefersReducedMotion() || !overlay.classList.contains('loaded')) return;
-    if (!overlay.querySelector('.page__hero-crt-layer')) return;
-    startCrtBootSequence(overlay);
+  function stopHeroCanvasNoise(overlay) {
+    if (overlay._heroCrtNoiseRafId) {
+      cancelAnimationFrame(overlay._heroCrtNoiseRafId);
+      overlay._heroCrtNoiseRafId = 0;
+    }
   }
 
-  function bindHomeHeroCrtDevControls() {
-    var replayBtn = document.getElementById('hero-crt-replay-boot');
-    var overTextBtn = document.getElementById('hero-crt-toggle-over-text');
-    if (!replayBtn && !overTextBtn) return;
-    if (replayBtn) {
-      replayBtn.addEventListener('click', function() {
-        var overlay = document.querySelector('.page__hero--overlay[data-background-image].loaded');
-        if (overlay) {
-          replayHeroTubeBoot(overlay);
+  function bindHomeHeroCrtPowerToggle() {
+    var btn = document.getElementById('hero-crt-power');
+    if (!btn) return;
+    btn.addEventListener('click', function() {
+      var overlay = document.querySelector('.page__hero--overlay[data-background-image].loaded');
+      if (!overlay || !overlay.querySelector('.page__hero-crt-layer')) return;
+
+      if (overlay.classList.contains('page__hero--crt-preboot') || overlay.classList.contains('page__hero--crt-boot')) {
+        return;
+      }
+
+      if (overlay.classList.contains('page__hero--crt-flash')) {
+        return;
+      }
+
+      var read = overlay.classList.contains('page__hero--crt-read');
+
+      function applyLesemodus() {
+        overlay.classList.remove('page__hero--crt-over-text');
+        overlay.classList.add('page__hero--crt-read');
+        stopHeroCanvasNoise(overlay);
+        syncHeroCrtPowerButton(overlay);
+      }
+
+      function applyRetro() {
+        overlay.classList.remove('page__hero--crt-read');
+        overlay.classList.add('page__hero--crt-over-text');
+        if (!prefersReducedMotion()) {
+          startHeroCanvasNoise(overlay);
         }
-      });
-    }
-    if (overTextBtn) {
-      overTextBtn.addEventListener('click', function() {
-        var overlay = document.querySelector('.page__hero--overlay[data-background-image].loaded');
-        if (!overlay) return;
-        var on = overlay.classList.toggle('page__hero--crt-over-text');
-        overTextBtn.setAttribute('aria-pressed', on ? 'true' : 'false');
-      });
-    }
+        syncHeroCrtPowerButton(overlay);
+      }
+
+      if (prefersReducedMotion()) {
+        if (read) {
+          applyRetro();
+        } else {
+          applyLesemodus();
+        }
+        return;
+      }
+
+      if (read) {
+        overlay.classList.add('page__hero--crt-flash');
+        applyRetro();
+        window.setTimeout(function() {
+          overlay.classList.remove('page__hero--crt-flash');
+        }, HERO_CRT_MODE_FLASH_MS);
+      } else {
+        overlay.classList.add('page__hero--crt-flash');
+        applyLesemodus();
+        window.setTimeout(function() {
+          overlay.classList.remove('page__hero--crt-flash');
+        }, HERO_CRT_MODE_FLASH_MS);
+      }
+    });
   }
 
   function startHeroCanvasNoise(overlay) {
     if (prefersReducedMotion()) return;
+    if (overlay.classList.contains('page__hero--crt-read')) return;
     const canvas = overlay.querySelector('.page__hero-crt-noise');
     if (!canvas || !canvas.getContext) return;
     const ctx = canvas.getContext('2d', { alpha: true });
     if (!ctx) return;
+    stopHeroCanvasNoise(overlay);
     var frame = 0;
-    var rafId = 0;
 
     function tick() {
       if (!overlay.classList.contains('loaded')) {
-        rafId = requestAnimationFrame(tick);
+        overlay._heroCrtNoiseRafId = requestAnimationFrame(tick);
+        return;
+      }
+      if (overlay.classList.contains('page__hero--crt-read')) {
+        overlay._heroCrtNoiseRafId = 0;
         return;
       }
       frame += 1;
@@ -199,10 +249,10 @@
         }
         ctx.putImageData(imageData, 0, 0);
       }
-      rafId = requestAnimationFrame(tick);
+      overlay._heroCrtNoiseRafId = requestAnimationFrame(tick);
     }
 
-    rafId = requestAnimationFrame(tick);
+    overlay._heroCrtNoiseRafId = requestAnimationFrame(tick);
   }
 
   /**
@@ -358,7 +408,7 @@
       cacheBackgroundImages();
     }
 
-    bindHomeHeroCrtDevControls();
+    bindHomeHeroCrtPowerToggle();
   });
   
   // Service Worker-Kommunikation für Bild-Caching
