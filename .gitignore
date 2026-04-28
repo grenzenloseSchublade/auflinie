@@ -6,7 +6,9 @@ _site
 .bundle
 vendor
 
-# Lokale Entwicklungsdateien
+# Lokale Entwicklungsdateien (z. B. Theme-Klone, nicht ins Repo committen)
+tmp/
+
 *.log
 .DS_Store
 Thumbs.db
