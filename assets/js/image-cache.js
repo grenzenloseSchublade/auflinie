@@ -14,8 +14,10 @@
   var HERO_CRT_PREBOOT_DELAY_MS = 900;
   /** Dauer der Tube-Boot-Keyframes (ms), exakt wie `--hero-tube-boot-dur` in `_hero.scss` (unabhängig von Preboot) */
   var HERO_TUBE_BOOT_DURATION_MS = 3500;
-  /** Phosphor-Aufflackern beim Umschalten Lesemodus ↔ Retro (ms), Spiegel zu `--hero-crt-mode-flash-dur` in `_hero.scss` */
+  /** Fallback nur wenn `getComputedStyle` `--hero-crt-mode-flash-dur` nicht liefert (Spiegel zu `_hero.scss`) */
   var HERO_CRT_MODE_FLASH_MS = 100;
+  /** Ziel-FPS für Canvas-Rauschen (Zeitdrossel, weniger CPU/GC als festes RAF-3er-Raster) */
+  var HERO_CRT_NOISE_TARGET_FPS = 10;
 
   function readEnableImageCaching() {
     const raw = (document.documentElement.getAttribute('data-enable-image-caching') || '')
@@ -26,10 +28,6 @@
     if (raw === 'true') return true;
     // Fehlendes Attribut oder ältere Werte (z. B. "True"): Hero-Bild laden
     return true;
-  }
-
-  function prefersReducedMotion() {
-    return window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   }
 
   function setRandomRollDuration(overlay) {
@@ -60,7 +58,6 @@
     }
     if (state.crtLayer && state.onAnimationEnd) {
       state.crtLayer.removeEventListener('animationend', state.onAnimationEnd);
-      state.crtLayer.removeEventListener('webkitAnimationEnd', state.onAnimationEnd);
     }
     overlay._crtBootState = null;
   }
@@ -141,7 +138,6 @@
       endBoot();
     }
     crtLayer.addEventListener('animationend', onAnimationEnd);
-    crtLayer.addEventListener('webkitAnimationEnd', onAnimationEnd);
     var timeoutId = window.setTimeout(endBoot, HERO_TUBE_BOOT_DURATION_MS + 400);
     overlay._crtBootState = {
       timeoutId: timeoutId,
@@ -155,6 +151,34 @@
       cancelAnimationFrame(overlay._heroCrtNoiseRafId);
       overlay._heroCrtNoiseRafId = 0;
     }
+  }
+
+  /** Flash-Timeout aus `bindHomeHeroCrtPowerToggle`; bei Navigation/DOM-Entfernung aufräumen */
+  function clearHeroCrtFlashTimeout(overlay) {
+    if (overlay._heroCrtFlashTimeoutId) {
+      window.clearTimeout(overlay._heroCrtFlashTimeoutId);
+      overlay._heroCrtFlashTimeoutId = null;
+    }
+  }
+
+  /** Eine Quelle der Wahrheit: Dauer aus CSS-Variable `--hero-crt-mode-flash-dur` (z. B. `0.1s`) */
+  function readHeroCrtFlashDurationMs(overlay) {
+    try {
+      var raw = (window.getComputedStyle(overlay).getPropertyValue('--hero-crt-mode-flash-dur') || '')
+        .trim();
+      if (!raw) return HERO_CRT_MODE_FLASH_MS;
+      if (/ms$/i.test(raw)) {
+        var nMs = parseFloat(raw);
+        return isNaN(nMs) ? HERO_CRT_MODE_FLASH_MS : Math.max(0, Math.round(nMs));
+      }
+      if (/s$/i.test(raw)) {
+        var nS = parseFloat(raw);
+        return isNaN(nS) ? HERO_CRT_MODE_FLASH_MS : Math.max(0, Math.round(nS * 1000));
+      }
+    } catch (err) {
+      /* ignore */
+    }
+    return HERO_CRT_MODE_FLASH_MS;
   }
 
   function bindHomeHeroCrtPowerToggle() {
@@ -184,48 +208,60 @@
       function applyRetro() {
         overlay.classList.remove('page__hero--crt-read');
         overlay.classList.add('page__hero--crt-over-text');
-        if (!prefersReducedMotion()) {
-          startHeroCanvasNoise(overlay);
-        }
+        startHeroCanvasNoise(overlay);
         syncHeroCrtPowerButton(overlay);
-      }
-
-      if (prefersReducedMotion()) {
-        if (read) {
-          applyRetro();
-        } else {
-          applyLesemodus();
-        }
-        return;
       }
 
       if (read) {
         overlay.classList.add('page__hero--crt-flash');
         applyRetro();
-        window.setTimeout(function() {
+        clearHeroCrtFlashTimeout(overlay);
+        overlay._heroCrtFlashTimeoutId = window.setTimeout(function() {
+          overlay._heroCrtFlashTimeoutId = null;
           overlay.classList.remove('page__hero--crt-flash');
-        }, HERO_CRT_MODE_FLASH_MS);
+        }, readHeroCrtFlashDurationMs(overlay));
       } else {
         overlay.classList.add('page__hero--crt-flash');
         applyLesemodus();
-        window.setTimeout(function() {
+        clearHeroCrtFlashTimeout(overlay);
+        overlay._heroCrtFlashTimeoutId = window.setTimeout(function() {
+          overlay._heroCrtFlashTimeoutId = null;
           overlay.classList.remove('page__hero--crt-flash');
-        }, HERO_CRT_MODE_FLASH_MS);
+        }, readHeroCrtFlashDurationMs(overlay));
       }
     });
   }
 
   function startHeroCanvasNoise(overlay) {
-    if (prefersReducedMotion()) return;
     if (overlay.classList.contains('page__hero--crt-read')) return;
     const canvas = overlay.querySelector('.page__hero-crt-noise');
     if (!canvas || !canvas.getContext) return;
     const ctx = canvas.getContext('2d', { alpha: true });
     if (!ctx) return;
     stopHeroCanvasNoise(overlay);
-    var frame = 0;
 
-    function tick() {
+    var noiseMinIntervalMs = 1000 / HERO_CRT_NOISE_TARGET_FPS;
+
+    if (!overlay._heroCrtNoiseVisibilityAttached) {
+      overlay._heroCrtNoiseVisibilityAttached = true;
+      document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+          stopHeroCanvasNoise(overlay);
+          return;
+        }
+        if (overlay.classList.contains('page__hero--crt-over-text') &&
+            !overlay.classList.contains('page__hero--crt-read') &&
+            overlay.classList.contains('loaded')) {
+          startHeroCanvasNoise(overlay);
+        }
+      });
+    }
+
+    function tick(now) {
+      if (document.hidden) {
+        overlay._heroCrtNoiseRafId = 0;
+        return;
+      }
       if (!overlay.classList.contains('loaded')) {
         overlay._heroCrtNoiseRafId = requestAnimationFrame(tick);
         return;
@@ -234,21 +270,31 @@
         overlay._heroCrtNoiseRafId = 0;
         return;
       }
-      frame += 1;
-      if (frame % 3 === 0) {
-        const w = canvas.width;
-        const h = canvas.height;
-        const imageData = ctx.createImageData(w, h);
-        const d = imageData.data;
-        for (var i = 0; i < d.length; i += 4) {
-          var v = Math.random() * 255;
-          d[i] = v;
-          d[i + 1] = v;
-          d[i + 2] = v;
-          d[i + 3] = 52;
-        }
-        ctx.putImageData(imageData, 0, 0);
+      var ts = typeof now === 'number' ? now : performance.now();
+      var lastTs = overlay._heroCrtNoiseLastTs;
+      if (lastTs != null && ts - lastTs < noiseMinIntervalMs) {
+        overlay._heroCrtNoiseRafId = requestAnimationFrame(tick);
+        return;
       }
+      overlay._heroCrtNoiseLastTs = ts;
+
+      const w = canvas.width;
+      const h = canvas.height;
+      var buf = overlay._heroCrtNoiseBuffer;
+      if (!buf || buf.width !== w || buf.height !== h) {
+        buf = ctx.createImageData(w, h);
+        overlay._heroCrtNoiseBuffer = buf;
+      }
+      const d = buf.data;
+      for (var i = 0; i < d.length; i += 4) {
+        var v = Math.random() * 255;
+        d[i] = v;
+        d[i + 1] = v;
+        d[i + 2] = v;
+        d[i + 3] = 52;
+      }
+      ctx.putImageData(buf, 0, 0);
+
       overlay._heroCrtNoiseRafId = requestAnimationFrame(tick);
     }
 
@@ -262,18 +308,7 @@
   function enhanceHeroCrtAfterLoad(overlay) {
     setRandomRollDuration(overlay);
     setRandomRollSign(overlay);
-    if (!prefersReducedMotion()) {
-      startHeroCanvasNoise(overlay);
-    }
-
-    if (prefersReducedMotion()) {
-      try {
-        sessionStorage.setItem(HERO_CRT_BOOT_KEY, '1');
-      } catch (e0) {
-        /* ignore */
-      }
-      return;
-    }
+    startHeroCanvasNoise(overlay);
 
     var crtLayer = overlay.querySelector('.page__hero-crt-layer');
     if (!crtLayer) return;
@@ -409,6 +444,16 @@
     }
 
     bindHomeHeroCrtPowerToggle();
+
+    if (!window._auflinieHeroCrtPagehideBound) {
+      window._auflinieHeroCrtPagehideBound = true;
+      window.addEventListener('pagehide', function() {
+        document.querySelectorAll('.page__hero--overlay[data-background-image]').forEach(function(el) {
+          clearHeroCrtFlashTimeout(el);
+          stopHeroCanvasNoise(el);
+        });
+      });
+    }
   });
   
   // Service Worker-Kommunikation für Bild-Caching

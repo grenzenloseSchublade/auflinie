@@ -65,16 +65,17 @@
 // ============================================
 // Accessibility: Reduced Motion
 // ============================================
-// Deaktiviert alle Animationen und Transitions für Benutzer,
-// die reduzierte Bewegung bevorzugen
+// Deaktiviert Animationen und Transitions für Nutzer mit reduzierter Bewegung,
+// mit Ausnahmen: Neon-Orbit-Trigger und CRT-Hero (läuft immer; Lesemodus nur per Power).
 
 @media (prefers-reduced-motion: reduce) {
     // Deaktiviere Animationen global, ABER mit Ausnahme der Neon-Orbit-Animation
     // Die Neon-Orbit-Animation auf der Startseite ist ein wichtiges Designelement
     // und wird nur bei Benutzerinteraktion ausgelöst
-    *:not(.neon-umlaut):not(.neon-glow):not(.neon-name):not(.neon-orbit-trigger),
-    *:not(.neon-umlaut):not(.neon-glow):not(.neon-name):not(.neon-orbit-trigger)::before,
-    *:not(.neon-umlaut):not(.neon-glow):not(.neon-name):not(.neon-orbit-trigger)::after {
+    // CRT-Hero (Roll, Tube-Preboot/Boot, Scanlines …): von der Drossel ausnehmen — Abschaltung nur per Lesemodus (Power), s. _hero.scss
+    *:not(.neon-umlaut):not(.neon-glow):not(.neon-name):not(.neon-orbit-trigger):not(.page__hero-crt-roll):not(.page__hero-crt-layer):not(.page__hero-grain):not(.page__hero-crt-noise):not(.page__hero--overlay),
+    *:not(.neon-umlaut):not(.neon-glow):not(.neon-name):not(.neon-orbit-trigger):not(.page__hero-crt-roll):not(.page__hero-crt-layer)::before,
+    *:not(.neon-umlaut):not(.neon-glow):not(.neon-name):not(.neon-orbit-trigger):not(.page__hero-crt-layer):not(.page__hero--overlay):not(.page__hero-crt-media)::after {
         animation-duration: 0.01ms !important;
         animation-iteration-count: 1 !important;
         transition-duration: 0.01ms !important;
@@ -94,45 +95,6 @@
     .about-section,
     .btn {
         transform: none !important;
-        transition: none !important;
-    }
-
-    // Hero fade-in deaktivieren
-    .page__hero--overlay {
-        animation: none !important;
-    }
-
-    // CRT-Hero: Rollbalken, Filmkorn, Canvas-Rauschen, Scanline-/Phosphor-Animationen abschalten
-    .page__hero-crt-roll,
-    .page__hero-crt-roll::before {
-        animation: none !important;
-    }
-
-    .page__hero-grain,
-    .page__hero-crt-noise,
-    .page__hero-crt-roll {
-        opacity: 0 !important;
-    }
-
-    .page__hero-crt-noise {
-        visibility: hidden !important;
-    }
-
-    .page__hero--crt-boot .page__hero-crt-layer,
-    .page__hero--crt-read .page__hero-crt-layer,
-    .page__hero--overlay[data-background-image].loaded .page__hero-crt-layer {
-        animation: none !important;
-    }
-
-    .page__hero--overlay[data-background-image].loaded .page__hero-crt-layer::after {
-        animation: none !important;
-        filter: none !important;
-    }
-
-    // Preboot-Abdunkelung (::after am Overlay): aus
-    .page__hero--overlay[data-background-image]::after {
-        opacity: 0 !important;
-        visibility: hidden !important;
         transition: none !important;
     }
 

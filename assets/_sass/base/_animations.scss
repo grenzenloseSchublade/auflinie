@@ -33,33 +33,28 @@
 }
 
 /// Feines Flimmern nur auf dem Phosphor-Punkt-Raster (::after), nicht global auf dem Layer
+/// Weniger Keyframes als früher: weniger filter-Neuberechnungen pro Umlauf, Look bleibt subtil
 @keyframes heroCrtPhosphorFlicker {
   0%,
   100% {
     filter: brightness(1);
   }
-  7% {
-    filter: brightness(0.88);
-  }
-  8% {
-    filter: brightness(1.06);
-  }
-  22% {
-    filter: brightness(0.92);
-  }
-  23% {
-    filter: brightness(1);
-  }
-  41% {
-    filter: brightness(0.85);
-  }
-  42% {
-    filter: brightness(1.04);
-  }
-  68% {
+  18% {
     filter: brightness(0.9);
   }
-  69% {
+  19% {
+    filter: brightness(1.05);
+  }
+  48% {
+    filter: brightness(0.87);
+  }
+  49% {
+    filter: brightness(1);
+  }
+  76% {
+    filter: brightness(0.92);
+  }
+  77% {
     filter: brightness(1);
   }
 }
