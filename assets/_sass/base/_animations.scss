@@ -31,3 +31,127 @@
     opacity: 0;
   }
 }
+
+/// Feines Flimmern nur auf dem Phosphor-Punkt-Raster (::after), nicht global auf dem Layer
+@keyframes heroCrtPhosphorFlicker {
+  0%,
+  100% {
+    filter: brightness(1);
+  }
+  7% {
+    filter: brightness(0.88);
+  }
+  8% {
+    filter: brightness(1.06);
+  }
+  22% {
+    filter: brightness(0.92);
+  }
+  23% {
+    filter: brightness(1);
+  }
+  41% {
+    filter: brightness(0.85);
+  }
+  42% {
+    filter: brightness(1.04);
+  }
+  68% {
+    filter: brightness(0.9);
+  }
+  69% {
+    filter: brightness(1);
+  }
+}
+
+/// Leichter Jitter der Scanline-Hintergrundlage (keine globale Helligkeit)
+@keyframes heroScanlineJitter {
+  0%,
+  100% {
+    background-position: 0 0, 0 0;
+  }
+  25% {
+    background-position: 0 1px, 0 -0.5px;
+  }
+  50% {
+    background-position: 0 -1px, 0 0.5px;
+  }
+  75% {
+    background-position: 0 0.5px, 0 -0.25px;
+  }
+}
+
+/// Eine Scanline-Ebene (nur dezent-Modus)
+@keyframes heroScanlineJitterSingle {
+  0%,
+  100% {
+    background-position: 0 0;
+  }
+  33% {
+    background-position: 0 1px;
+  }
+  66% {
+    background-position: 0 -1px;
+  }
+}
+
+/// Roll nach unten (--crt-roll-sign 1): oben beginnen, nach unten durch die Media-Box
+@keyframes heroCrtRollDown {
+  from {
+    transform: translate3d(0, -22vh, 0);
+  }
+  to {
+    transform: translate3d(0, var(--crt-roll-travel, 130vh), 0);
+  }
+}
+
+/// Roll nach oben: ::before mit `bottom: 0` (s. _hero.scss) — Unterkante = Media-Unterrand; kein vh-top-Mix
+/// from: leicht nach unten verschoben (teilweise geclippt) = Start „tiefer“ unter dem Rand; to: weit nach oben
+@keyframes heroCrtRollUp {
+  from {
+    transform: translate3d(0, 10vh, 0);
+  }
+  to {
+    transform: translate3d(0, calc(-1 * (100cqh + 36vh)), 0);
+  }
+}
+
+/// Einmalige „Röhre warm“-Einschwingung (stark): langes dunkles Plateau, langsamer Übergang zu hell (Gesamtdauer in _hero.scss)
+@keyframes heroTubeBootStark {
+  0%,
+  16% {
+    filter: contrast(1.64) saturate(0.22) brightness(0.0035) blur(1.24px);
+  }
+  36% {
+    filter: contrast(1.42) saturate(0.45) brightness(0.24) blur(0.9px);
+  }
+  62% {
+    filter: contrast(1.24) saturate(0.65) brightness(0.52) blur(0.58px);
+  }
+  86% {
+    filter: contrast(1.12) saturate(0.82) brightness(0.8) blur(0.38px);
+  }
+  100% {
+    filter: contrast(1.04) saturate(0.94) brightness(1.04) blur(0.28px);
+  }
+}
+
+/// Einmalige „Röhre warm“-Einschwingung (dezent): langes Plateau, langsamer Verlauf zu hell
+@keyframes heroTubeBootDezent {
+  0%,
+  16% {
+    filter: contrast(1.44) saturate(0.3) brightness(0.018) blur(1.1px);
+  }
+  38% {
+    filter: contrast(1.24) saturate(0.5) brightness(0.3) blur(0.78px);
+  }
+  64% {
+    filter: contrast(1.1) saturate(0.7) brightness(0.62) blur(0.52px);
+  }
+  88% {
+    filter: contrast(1.05) saturate(0.82) brightness(0.88) blur(0.4px);
+  }
+  100% {
+    filter: contrast(1.02) saturate(0.9) brightness(1.06) blur(0.35px);
+  }
+}

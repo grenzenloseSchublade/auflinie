@@ -18,12 +18,45 @@
 
 {% assign image_description = image_description | markdownify | strip_html | strip_newlines | escape_once %}
 
+{% assign hero_crt = page.header.crt_intensity | default: site.hero_crt_intensity | default: "stark" %}
+{% unless hero_crt == "dezent" or hero_crt == "stark" %}
+  {% assign hero_crt = "stark" %}
+{% endunless %}
+
 <div class="page__hero{% if page.header.overlay_color or page.header.overlay_image %}--overlay{% endif %}"
   {% if page.header.overlay_color %}style="background-color: {{ page.header.overlay_color | default: 'transparent' }};"{% endif %}
   {% if overlay_img_path %}
   data-background-image="{{ overlay_img_path }}"
+  data-crt-intensity="{{ hero_crt }}"
   {% if overlay_filter %}data-overlay-filter="{{ overlay_filter }}"{% endif %}
   {% endif %}>
+  {% if overlay_img_path %}
+  <div class="page__hero-crt-preboot-veil" aria-hidden="true"></div>
+  <div class="page__hero-crt-media" aria-hidden="true">
+  <svg class="page__hero-crt-svg-defs" aria-hidden="true" focusable="false" width="0" height="0">
+    <defs>
+      <filter id="heroGrainFilter" x="0%" y="0%" width="100%" height="100%" color-interpolation-filters="sRGB">
+        <feTurbulence type="fractalNoise" baseFrequency="0.78" numOctaves="3" stitchTiles="stitch" result="grainNoise" />
+        <feColorMatrix in="grainNoise" type="matrix"
+          values="0 0 0 0 0
+                  0 0 0 0 0
+                  0 0 0 0 0
+                  0 0 0 0.32 0" />
+      </filter>
+    </defs>
+  </svg>
+  <div class="page__hero-crt-layer" aria-hidden="true"></div>
+  <div class="page__hero-grain" aria-hidden="true"></div>
+  <div class="page__hero-crt-roll" aria-hidden="true"></div>
+  <canvas class="page__hero-crt-noise" width="160" height="160" aria-hidden="true"></canvas>
+  </div>
+  {% if page.url == "/" %}
+  <div class="page__hero-crt-dev-tools" role="region" aria-label="CRT-Testwerkzeuge (nur Startseite)">
+    <button type="button" id="hero-crt-replay-boot" class="hero-crt-replay-boot" aria-label="Röhren-Einschaltanimation erneut abspielen">Boot</button>
+    <button type="button" id="hero-crt-toggle-over-text" class="hero-crt-toggle-over-text" aria-pressed="false" aria-label="CRT-Effekte über den Text legen (Test)">Layers</button>
+  </div>
+  {% endif %}
+  {% endif %}
   {% if page.header.overlay_color or page.header.overlay_image %}
   <div class="wrapper">
     <h1 id="page-title" class="page__title" itemprop="headline">

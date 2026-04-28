@@ -14,22 +14,26 @@ Diese Website kombiniert Jekyll mit dem Minimal Mistakes Theme, um eine ansprech
 ## Installation und Einrichtung
 
 1. Stellen Sie sicher, dass Ruby (Version 2.5.0 oder höher) installiert ist:
+
    ```bash
    ruby --version
    ```
 
 2. Installieren Sie die Bundler gem:
+
    ```bash
    gem install bundler
    ```
 
 3. Klonen Sie dieses Repository:
+
    ```bash
    git clone [REPOSITORY-URL]
    cd [REPOSITORY-NAME]
    ```
 
 4. Installieren Sie die erforderlichen Gems:
+
    ```bash
    bundle install
    ```
@@ -39,23 +43,30 @@ Diese Website kombiniert Jekyll mit dem Minimal Mistakes Theme, um eine ansprech
 Um die Website lokal zu entwickeln:
 
 1. Starten Sie den Jekyll-Server:
+
    ```bash
    bundle exec jekyll serve
    ```
 
-2. Öffnen Sie http://localhost:4000 in Ihrem Browser
+2. Öffnen Sie <http://localhost:4000> in Ihrem Browser
+
+### Service Worker und CSS-Änderungen
+
+Wenn Styles oder Skripte nach Änderungen nicht wirken: **Hard-Reload** (Cache leeren) oder in den DevTools unter **Application → Service Workers** den Worker **Unregister** und die Seite neu laden. Der Service Worker kann ältere `main.css`-Versionen ausliefern.
 
 ## Markdown und Kramdown
 
 Kramdown ist der Standard-Markdown-Prozessor für Jekyll und spielt eine wichtige Rolle bei der Verarbeitung mathematischer Formeln:
 
 ### Was ist Kramdown?
+
 - Ein leistungsfähiger Markdown-Parser für Ruby
 - Standardmäßig in Jekyll integriert
 - Unterstützt erweiterte Funktionen wie Fußnoten, Definitionen und mathematische Formeln
 - Bietet bessere Unterstützung für HTML-Ausgabe als andere Markdown-Parser
 
 ### Kramdown und MathJax
+
 Die Kramdown-Konfiguration ist entscheidend für die korrekte Darstellung mathematischer Formeln:
 
 ```yaml
@@ -67,6 +78,7 @@ kramdown:
 ```
 
 ### Häufige Kramdown-bezogene Probleme
+
 1. **Falsche Formeldarstellung**
    - Überprüfen Sie, ob `math_engine: mathjax` in `_config.yml` gesetzt ist
    - Stellen Sie sicher, dass keine Leerzeilen in Formeln sind
@@ -83,7 +95,9 @@ kramdown:
    - Beachten Sie die unterschiedliche Behandlung von Unterstrichen
 
 ### Kramdown-Tipps
+
 1. **Mathematische Formeln**
+
    ```markdown
    $$ 
    \begin{align*}
@@ -94,12 +108,14 @@ kramdown:
    ```
 
 2. **Attribute**
+
    ```markdown
    {: .notice--info}
    Dieser Text erhält eine spezielle Formatierung
    ```
 
 3. **Fußnoten**
+
    ```markdown
    Ein Text mit einer Fußnote[^1]
    [^1]: Dies ist die Fußnote
@@ -110,6 +126,7 @@ kramdown:
 Diese Website unterstützt mathematische Formeln durch MathJax. Die Konfiguration erfolgt in zwei Dateien:
 
 ### 1. _config.yml
+
 ```yaml
 # Math Settings
 markdown: kramdown
@@ -125,6 +142,7 @@ head_scripts:
 ```
 
 ### 2. _includes/head/custom.html
+
 ```html
 {% if page.mathjax %}
 <script>
@@ -150,7 +168,9 @@ head_scripts:
 ```
 
 ### Verwendung in Markdown-Dateien
+
 1. Aktivieren Sie MathJax im Frontmatter der Seite:
+
    ```yaml
    ---
    title: "Meine Seite"
@@ -169,6 +189,7 @@ head_scripts:
 Wenn mathematische Formeln nicht korrekt angezeigt werden:
 
 1. Cache leeren:
+
    ```bash
    rm -rf .jekyll-cache
    bundle exec jekyll clean
@@ -181,6 +202,7 @@ Wenn mathematische Formeln nicht korrekt angezeigt werden:
    - Der Browser-Cache wurde geleert
 
 3. Server neu starten:
+
    ```bash
    bundle exec jekyll serve
    ```
@@ -188,12 +210,14 @@ Wenn mathematische Formeln nicht korrekt angezeigt werden:
 ### Allgemeine Probleme
 
 1. Bei Gem-Konflikten:
+
    ```bash
    bundle clean --force
    bundle install
    ```
 
 2. Bei Jekyll-Build-Fehlern:
+
    ```bash
    bundle update
    bundle exec jekyll build --trace
@@ -224,6 +248,7 @@ Die Website kann auf verschiedenen Plattformen gehostet werden:
 3. Eigener Webserver
 
 Für GitHub Pages:
+
 1. Erstellen Sie ein Repository auf GitHub
 2. Pushen Sie Ihren Code
 3. Aktivieren Sie GitHub Pages in den Repository-Einstellungen
@@ -255,7 +280,7 @@ Für GitHub Pages:
 
 ## Beispiel: Neue Seite mit benutzerdefinierten Daten
 
-### 1. Datendatei erstellen (`_data/projekte.yml`):
+### 1. Datendatei erstellen (`_data/projekte.yml`)
 
 ```yaml
 - section: "Aktuelle Projekte"
@@ -272,7 +297,7 @@ Für GitHub Pages:
       link: "https://example.com/projektB"
 ```
 
-### 2. Include erstellen (`_includes/projekte.html`):
+### 2. Include erstellen (`_includes/projekte.html`)
 
 ```html
 {% for projekt in include.projekte %}
@@ -289,7 +314,7 @@ Für GitHub Pages:
 {% endfor %}
 ```
 
-### 3. Markdown-Datei erstellen (`_pages/projekte.md`):
+### 3. Markdown-Datei erstellen (`_pages/projekte.md`)
 
 ```yaml
 ---
@@ -374,7 +399,7 @@ toc: true
 ---
 ```
 
-#### Ausklappbares TOC
+#### Ausklappbares TOC (YAML-Beispiel)
 
 ```yaml
 ---
@@ -410,4 +435,4 @@ Das ausklappbare TOC erkennt automatisch, ob die Seite ein dunkles oder helles F
 
 ### Speicherung des Zustands
 
-Der Zustand des ausklappbaren TOC (ausgeklappt oder eingeklappt) wird im `localStorage` des Browsers gespeichert, sodass er beim nächsten Besuch der Seite wiederhergestellt wird. 
+Der Zustand des ausklappbaren TOC (ausgeklappt oder eingeklappt) wird im `localStorage` des Browsers gespeichert, sodass er beim nächsten Besuch der Seite wiederhergestellt wird.

@@ -16,22 +16,28 @@ Die Entwicklungsumgebung ist mit Visual Studio Code und Dev Containers konfiguri
 Die Entwicklungsumgebung enthält:
 
 ### Python-Umgebung
+
 - Python 3.11 mit wissenschaftlichen Bibliotheken (NumPy, Matplotlib, SciPy)
 - Jupyter Notebooks für interaktive Entwicklung
 - Bildverarbeitungsbibliotheken (Pillow)
 - Entwicklungswerkzeuge (pytest, black, flake8, pylint)
 
-### Jekyll-Umgebung
-- Ruby mit Jekyll und Bundler
-- Minimal Mistakes Theme
-- Liquid-Templates
-- SCSS/SASS für Styling
+## Jekyll / Hero
+
+- **CRT-Overlay** (Scanlines, Retro-Look) bei Seiten mit `header.overlay_image`: global in `_config.yml` mit `hero_crt_intensity: "stark"` (Standard) oder `"dezent"`. Pro Seite: `header.crt_intensity: dezent`.
+- **Schichten / Roll:** `.page__hero-crt-preboot-veil` (`z-index: 1`) → **`.page__hero-crt-media`** (`position: absolute; inset: 0; overflow: hidden; z-index: 2`) umschließt nur die CRT-Malerei (`svg-defs`, `crt-layer`, `grain`, `roll`, `noise`). **`--crt-roll-travel: calc(100cqh + 32vh)`** (`container-type: size` auf `.page__hero-crt-media`) — nicht `100%` im gleichen `calc` für `translateY` am schmalen `::before`, sonst würde die Prozentangabe gegen die **Balkenhöhe** statt gegen die **Media-Höhe** aufgelöst und der Roll nur in einem mittleren Streifen sichtbar. **Dev-Buttons** und **`.wrapper`** liegen außerhalb der Media-Box. Overlay nutzt wieder **`isolation: isolate`**.
+- **Eingangsanimation „Tube Boot“:** einmal pro Session (`sessionStorage` `auflinieHeroCrtBoot`). Ablauf nach `loaded`: `page__hero--crt-preboot` (Veil) → Pause (`HERO_CRT_PREBOOT_DELAY_MS`) → `page__hero--crt-boot` mit `heroTubeBootStark` / `heroTubeBootDezent` (**6 s**, gestreckte Helligkeitsrampe in [`_animations.scss`](/workspaces/auflinie/assets/_sass/base/_animations.scss)) bis `animationend` bzw. Fallback (`HERO_TUBE_BOOT_DURATION_MS` + Puffer). **„Boot“**-Button spielt dieselbe Sequenz. Bei `prefers-reduced-motion: reduce` entfallen Preboot, Boot und Canvas-Rauschen.
+- **Regression (manuell):** Startseite mit/ohne **Layers**; Systemeinstellung reduzierte Bewegung; schmales Viewport; Druckvorschau (CRT-Schichten und Veil sind im Print-Stylesheet ausgeblendet). Ohne Hero-Preload (`data-enable-image-caching="false"` am `<html>`) bleibt der CRT-Pfad aus — dann Dev-Buttons prüfen nur sinnvoll, wenn das Bild anderweitig geladen wird.
+- **Referenz / Parameter:** [Grainy Gradients](https://grainy-gradients.vercel.app/) zum Experimentieren mit `feTurbulence`; kostenlose PNG-Kacheln z. B. [Transparent Textures](https://www.transparenttextures.com/) — Lizenz je Muster beachten.
+- **Barrierefreiheit:** Unter `prefers-reduced-motion: reduce` werden Rollbalken, Korn, Canvas und CRT-Layer-Animationen in [`assets/_sass/_custom.scss`](/workspaces/auflinie/assets/_sass/_custom.scss) abgeschaltet; die **CRT-Dev-Buttons** (Startseite) werden ebenfalls ausgeblendet.
+- **CRT Dev-Controls (nur Startseite, `page.url == "/"` + Overlay-Bild):** Unten links im Hero erscheinen zwei Test-Buttons (nur sinnvoll, wenn das Hero-Bild geladen ist, also `loaded` — dazu muss `image-cache.js` laufen, z. B. `data-enable-image-caching` nicht `false`): **„Boot“** spielt **Preboot (Veil) + Verzögerung + Tube-Boot** erneut (ohne `sessionStorage` zurücksetzen zu müssen). **„Layers“** schaltet die Klasse `page__hero--crt-over-text` und legt CRT-Effekte per `z-index` **über** den Hero-Text, um Lesbarkeit vs. Look zu prüfen (nicht als Live-Default gedacht). **Rollbalken:** Dauer `--crt-roll-dur` und Laufrichtung `--crt-roll-sign` (`1` / `-1`, zufällig pro Seitenaufruf) setzt [`assets/js/image-cache.js`](/workspaces/auflinie/assets/js/image-cache.js).
 
 ## Interaktive Komponenten
 
 Das Projekt enthält mehrere interaktive Komponenten zur Visualisierung von Fraktalen:
 
 ### Julia-Menge Interaktiv
+
 - Anpassen der Parameter (Realteil und Imaginärteil von c)
 - Einstellen der maximalen Iterationszahl
 - Auswahl verschiedener Farbschemata
@@ -40,6 +46,7 @@ Das Projekt enthält mehrere interaktive Komponenten zur Visualisierung von Frak
 - Ausführliche Erklärungen zu allen Parametern
 
 ### Mandelbrot-Julia-Explorer
+
 - Erkundung des Zusammenhangs zwischen Mandelbrot- und Julia-Mengen
 - Auswahl von Punkten in der Mandelbrot-Menge zur Anzeige der entsprechenden Julia-Menge
 - Anpassung von Iterationen und Farbschemata

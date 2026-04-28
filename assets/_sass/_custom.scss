@@ -102,6 +102,43 @@
         animation: none !important;
     }
 
+    // CRT-Hero: Rollbalken, Filmkorn, Canvas-Rauschen, Scanline-/Phosphor-Animationen abschalten
+    .page__hero-crt-roll,
+    .page__hero-crt-roll::before {
+        animation: none !important;
+    }
+
+    .page__hero-grain,
+    .page__hero-crt-noise,
+    .page__hero-crt-roll {
+        opacity: 0 !important;
+    }
+
+    .page__hero-crt-noise {
+        visibility: hidden !important;
+    }
+
+    .page__hero--crt-boot .page__hero-crt-layer,
+    .page__hero--overlay[data-background-image].loaded .page__hero-crt-layer {
+        animation: none !important;
+    }
+
+    .page__hero--overlay[data-background-image].loaded .page__hero-crt-layer::after {
+        animation: none !important;
+        filter: none !important;
+    }
+
+    .page__hero-crt-dev-tools {
+        display: none !important;
+    }
+
+    // Preboot-Veil: kein zusätzliches Abdunkeln / keine Transition (Sequenz entfällt ohnehin per JS)
+    .page__hero-crt-preboot-veil {
+        opacity: 0 !important;
+        visibility: hidden !important;
+        transition: none !important;
+    }
+
     // Masthead Transitions deaktivieren (aber nicht die Neon-Animation)
     .masthead,
     .greedy-nav__toggle,

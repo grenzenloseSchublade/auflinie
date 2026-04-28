@@ -150,7 +150,7 @@
 <!-- Konfiguration für Bild-Caching und Service Worker -->
 <script>
   // Konfiguration aus _config.yml an das HTML-Dokument übergeben
-  document.documentElement.setAttribute('data-enable-image-caching', '{{ site.enable_image_caching | default: true }}');
+  document.documentElement.setAttribute('data-enable-image-caching', '{% if site.enable_image_caching != false %}true{% else %}false{% endif %}');
   document.documentElement.setAttribute('data-enable-service-worker', '{{ site.enable_service_worker | default: true }}');
   document.documentElement.setAttribute('data-background-image', '{{ site.background_image | relative_url }}');
 </script>

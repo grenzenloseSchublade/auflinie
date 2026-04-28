@@ -8,6 +8,8 @@ logo: "/assets/images/Logo.svg"  # SVG für perfekte Transparenz (Alternative: L
 
 # Bild- und Performance-Einstellungen
 background_image: "/assets/images/background.jpg"
+# Hero CRT-Overlay bei Hintergrundbild: "dezent" | "stark" (pro Seite: header.crt_intensity im Frontmatter; Standard: stark)
+hero_crt_intensity: "stark"
 enable_image_caching: true
 enable_service_worker: true
 
