@@ -1,6 +1,7 @@
 // =============================================================================
 // Service-Worker-Update-Toast (Markup aus sw-register.js)
 // =============================================================================
+@use "sass:color";
 
 $sw-toast-z: 10020;
 
@@ -52,7 +53,7 @@ $sw-toast-z: 10020;
   padding: 1.1rem 1.15rem 1.15rem;
   margin: 0 auto 0.75rem;
   color: rgba($white, 0.92);
-  background: rgba(darken($background-dark, 4%), 0.94);
+  background: rgba(color.adjust($background-dark, $lightness: -4%), 0.94);
   border: 1px solid rgba($link-color, 0.35);
   border-radius: 1rem 1rem 0 0;
   box-shadow:
@@ -154,7 +155,7 @@ $sw-toast-z: 10020;
 .sw-update-toast__primary {
   flex: 1 1 auto;
   border: 1px solid rgba($link-color, 0.85);
-  color: darken($background-dark, 12%);
+  color: color.adjust($background-dark, $lightness: -12%);
   background: $link-color;
   box-shadow: 0 1px 0 rgba(255, 255, 255, 0.12) inset;
 
@@ -164,8 +165,8 @@ $sw-toast-z: 10020;
   }
 
   &:hover {
-    background: lighten($link-color, 4%);
-    border-color: lighten($link-color, 6%);
+    background: color.adjust($link-color, $lightness: 4%);
+    border-color: color.adjust($link-color, $lightness: 6%);
   }
 
   &:active {

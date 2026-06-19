@@ -1,5 +1,6 @@
 // Styles für das Inhaltsverzeichnis (Table of Contents)
 // =============================================================================
+@use "sass:color";
 // Mobile: TOC erscheint oberhalb des Contents (Minimal Mistakes Default)
 // Desktop (>= $large): TOC ist sticky in der rechten Sidebar
 // NEU: Mobile Sticky TOC Header - erscheint unter Masthead beim Scrollen
@@ -21,7 +22,7 @@
         left: 0;
         right: 0;
         z-index: 998; // Unter dem Masthead (1000)
-        background: darken($background-color, 3%);
+        background: color.adjust($background-color, $lightness: -3%);
         border-bottom: 1px solid $border-color;
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
         
@@ -424,7 +425,7 @@
     
     // Touch-Feedback
     &:active .nav__title {
-        background: darken($primary-color, 5%);
+        background: color.adjust($primary-color, $lightness: -5%);
     }
 }
 

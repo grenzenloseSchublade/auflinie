@@ -1,6 +1,6 @@
 # Dev Container: Python 3.11 & Jekyll
 
-Vollständig konfigurierte Entwicklungsumgebung für Jekyll-Projekte mit Python 3.11, Ruby 3.4.1 und Node.js LTS.
+Vollständig konfigurierte Entwicklungsumgebung für Jekyll-Projekte mit Python 3.11, Ruby 3.4.8 und Node.js LTS.
 
 ## Stack
 
@@ -41,8 +41,8 @@ bundle exec jekyll -v
 ## postCreateCommand
 
 1. System-Dependencies installieren
-2. rbenv + Ruby 3.4.1 kompilieren
-3. gem update --system 4.0.5
+2. rbenv + Ruby 3.4.8 kompilieren
+3. gem update --system 4.0.10
 4. pip upgrade
 5. bundle install (vendor/bundle)
 

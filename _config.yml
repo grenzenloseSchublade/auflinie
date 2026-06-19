@@ -112,7 +112,7 @@ plugins:
   - jekyll-feed
   - jekyll-include-cache
   - jekyll-last-modified-at
-  
+  - jekyll-remote-theme
 
 # Defaults
 defaults:
@@ -176,3 +176,14 @@ sass:
   sass_dir: assets/_sass
   style: compressed
   sourcemap: never
+  # dart-sass-Deprecation-Warnungen sauber halten:
+  # quiet_deps unterdrückt Warnungen aus Abhängigkeiten, d.h. dem Theme
+  # (minimal-mistakes nutzt intern noch mix()/if()/`/`-Division/red()-green()-blue()).
+  # Diese Dateien gehören nicht uns – das Theme räumt sie erst mit einer eigenen Version auf.
+  quiet_deps: true
+  # Unser eigener Code triggert nach der color.adjust-Migration nur noch [import]-Warnungen:
+  # @import ist nötig, um auf dem @import-basierten Theme aufzusetzen (eigene Variablen vor dem
+  # Theme, eigene Styles danach). Bis minimal-mistakes auf das Sass-Modulsystem umstellt, ist
+  # @import hier unvermeidbar – daher gezielt stummgeschaltet (wird vor Dart Sass 3.0 nicht entfernt).
+  silence_deprecations:
+    - import

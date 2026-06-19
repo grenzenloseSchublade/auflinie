@@ -1,4 +1,5 @@
 // Styles für Buttons und interaktive Elemente
+@use "sass:color";
 
 // Kategorie-Buttons
 .category-buttons {
@@ -17,8 +18,8 @@
         box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
         
         &:hover {
-            background-color: darken($link-color, 5%);
-            border-color: darken($link-color, 5%);
+            background-color: color.adjust($link-color, $lightness: -5%);
+            border-color: color.adjust($link-color, $lightness: -5%);
             transform: none; // Keine Verschiebung, da bereits aktiv
         }
     }
@@ -52,7 +53,7 @@
         font-weight: 600;
 
         &:hover {
-            background-color: darken($link-color, 10%); // Dunklere Variante beim Hover
+            background-color: color.adjust($link-color, $lightness: -10%); // Dunklere Variante beim Hover
             color: $hover-color; // Textfarbe beim Hover
             transform: translateY(-3px); // Leichte Bewegung nach oben
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); // Schatten hinzufügen

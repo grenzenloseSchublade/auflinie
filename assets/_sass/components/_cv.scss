@@ -1,7 +1,8 @@
-/* 
+/*
  * CV-Komponenten Styling
  * Responsive Styles für die CV-Seite im Originalstil
  */
+@use "sass:color";
 
 // Grundlegendes Styling für CV-Sektionen
 .cv-section {
@@ -150,7 +151,7 @@
       transition: color 0.2s ease;
       
       &:hover {
-        color: lighten($card-heading-color, 10%);
+        color: color.adjust($card-heading-color, $lightness: 10%);
         text-decoration: underline;
       }
     }

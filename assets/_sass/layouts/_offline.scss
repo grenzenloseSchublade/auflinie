@@ -2,6 +2,7 @@
 // OFFLINE PAGE STYLES
 // =============================================================================
 // Styles für die Offline-Fallback-Seite des Service Workers
+@use "sass:color";
 
 .offline-page {
   text-align: center;
@@ -45,7 +46,7 @@
     transition: background-color 0.3s ease, transform 0.2s ease;
 
     &:hover {
-      background-color: lighten(#05d9e8, 10%);
+      background-color: color.adjust(#05d9e8, $lightness: 10%);
       transform: translateY(-2px);
     }
 

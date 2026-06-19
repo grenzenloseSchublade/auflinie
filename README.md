@@ -13,13 +13,19 @@ Diese Website kombiniert Jekyll mit dem Minimal Mistakes Theme, um eine ansprech
 
 ## Installation und Einrichtung
 
-1. Stellen Sie sicher, dass Ruby (Version 2.5.0 oder höher) installiert ist:
+Die Site nutzt **Jekyll 4** mit dart-sass. Die Ruby-Version ist in `.ruby-version` gepinnt
+(aktuell 3.4.8) und mit der CI abgestimmt. Am einfachsten ist der mitgelieferte Dev Container
+(siehe `.devcontainer/`), der Ruby, Bundler und alle Gems automatisch einrichtet.
+
+Manuelles Setup:
+
+1. Stellen Sie sicher, dass die in `.ruby-version` angegebene Ruby-Version installiert ist:
 
    ```bash
-   ruby --version
+   ruby --version   # sollte zur .ruby-version passen
    ```
 
-2. Installieren Sie die Bundler gem:
+2. Installieren Sie Bundler (Version siehe `Gemfile.lock` → »BUNDLED WITH«):
 
    ```bash
    gem install bundler
@@ -241,17 +247,18 @@ Statische Seiten werden im `_pages` Verzeichnis erstellt.
 
 ## Deployment
 
-Die Website kann auf verschiedenen Plattformen gehostet werden:
+Das Deployment läuft über **GitHub Actions** (Workflow `.github/workflows/jekyll-gh-pages.yml`),
+das die Site mit `bundle exec jekyll build` baut und das Ergebnis auf GitHub Pages veröffentlicht –
+**nicht** über den nativen GitHub-Pages-Build. Das ist nötig, weil die Site Plugins nutzt, die nicht
+auf der Pages-Whitelist stehen (`jekyll-paginate-v2`, `jekyll-last-modified-at`), und erlaubt den
+Einsatz der aktuellen Jekyll-4-Version inkl. dart-sass.
 
-1. GitHub Pages (kostenlos)
-2. Netlify
-3. Eigener Webserver
+Ablauf:
 
-Für GitHub Pages:
-
-1. Erstellen Sie ein Repository auf GitHub
-2. Pushen Sie Ihren Code
-3. Aktivieren Sie GitHub Pages in den Repository-Einstellungen
+1. Push auf `main`/`master` → Workflow baut und deployt automatisch.
+2. Push auf `test/**` → Workflow baut nur (ohne Deploy), zum Verifizieren.
+3. In den Repository-Einstellungen muss unter **Pages → Build and deployment** die Quelle auf
+   **GitHub Actions** stehen.
 
 ## Weitere Ressourcen
 

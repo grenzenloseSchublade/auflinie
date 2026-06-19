@@ -1,6 +1,5 @@
 # Jekyll generierte Dateien
 _site
-.sass-cache
 .jekyll-cache
 .jekyll-metadata
 .bundle
@@ -14,9 +13,12 @@ tmp/
 Thumbs.db
 .env
 .env.*
+!.env.example
 
-# IDE Dateien
+# IDE- & Tooling-Dateien
 .idea/
 .vscode/
+.cursor/
+.ruby-lsp/
 *.swp
-*.swo 
+*.swo

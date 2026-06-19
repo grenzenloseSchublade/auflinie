@@ -1,7 +1,8 @@
-/* 
+/*
  * CV-About-Style
  * Überträgt den Stil der About-Seite auf die CV-Seite, konserviert aber den ursprünglichen Stil
  */
+@use "sass:color";
 
 // Grundlegendes Styling für CV-Sektionen im About-Stil
 .cv-section-about-style {
@@ -196,7 +197,7 @@
               content: "◦";
               position: absolute;
               left: -1rem;
-              color: darken($card-heading-color, 10%);
+              color: color.adjust($card-heading-color, $lightness: -10%);
               font-size: 0.9em;
             }
             
