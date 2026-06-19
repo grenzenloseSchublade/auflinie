@@ -10,8 +10,6 @@ main:
   
 
   # Kategorien und Tags auskommentiert, damit sie nicht mehr in der Navigation erscheinen
-  # - title: "Lebenslauf (Old)"
-  #   url: "/cv-old/"
   # - title: "Kategorien"
   #   url: "/categories/"
   # - title: "Tags"

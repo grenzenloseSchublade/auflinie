@@ -69,15 +69,8 @@ function calculateMandelbrotChunk(width, height, maxIterations,
             let zy = 0;
             let iteration = 0;
 
-            // Speichere den letzten Wert für Smooth Coloring
-            let lastZx = 0;
-            let lastZy = 0;
-
             // Iteriere bis zur Flucht oder maximalen Iteration
             while (zx * zx + zy * zy < 4 && iteration < maxIterations) {
-                lastZx = zx;
-                lastZy = zy;
-
                 // z = z² + c
                 const xtemp = zx * zx - zy * zy + cx;
                 zy = 2 * zx * zy + cy;

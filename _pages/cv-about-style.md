@@ -15,10 +15,6 @@ header:
   caption: "Akademischer und beruflicher Werdegang"
 ---
 
-<!-- <div class="notice">
-  <p>Diese Seite zeigt den Lebenslauf im neuen modernen Stil. Wenn Sie den Lebenslauf im ursprünglichen Stil sehen möchten, klicken Sie bitte <a href="{{ '/cv-old/' | relative_url }}">hier</a>.</p>
-</div> -->
-
 <div class="about-container">
 {% for section in site.data.cv_content %}
 <span id="{{ section.section | slugify }}" class="section-anchor"></span>

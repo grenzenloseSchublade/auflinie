@@ -76,15 +76,8 @@ function calculateJuliaChunk(width, height, realPart, imagPart, maxIterations,
             let zx2 = zx;
             let zy2 = zy;
 
-            // Speichere den letzten Wert für Smooth Coloring
-            let lastZx = 0;
-            let lastZy = 0;
-
             // Iteriere bis zur Flucht oder maximalen Iteration
             while (zx2 * zx2 + zy2 * zy2 < 4 && iteration < maxIterations) {
-                lastZx = zx2;
-                lastZy = zy2;
-
                 // z = z² + c
                 const xtemp = zx2 * zx2 - zy2 * zy2 + realPart;
                 zy2 = 2 * zx2 * zy2 + imagPart;

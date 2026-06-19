@@ -1,9 +1,0 @@
-{% for award in include.awards %}
-<div class="cv-award">
-    <div class="cv-award-header">
-        <h3>{{ award.title }}</h3>
-        <p class="cv-award-meta">{{ award.organization }} | {{ award.date }}</p>
-    </div>
-    <p>{{ award.description }}</p>
-</div>
-{% endfor %}
