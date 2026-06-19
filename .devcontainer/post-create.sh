@@ -1,9 +1,17 @@
 #!/bin/bash
-set -e
+set -euo pipefail
 
 echo "===================================="
 echo "Python 3.11 & Jekyll Setup"
 echo "===================================="
+
+# Claude config volume: Docker legt benannte Volumes als root:root an.
+# Damit der vscode-User die Credentials (~/.claude/.credentials.json) schreiben
+# und der Login Rebuilds überdauert, muss das Mount ihm gehören.
+if [ -d /home/vscode/.claude ]; then
+    echo "Fixing permissions on Claude config volume..."
+    sudo chown -R vscode:vscode /home/vscode/.claude
+fi
 
 # Ruby Build Dependencies
 echo "Installing Ruby build dependencies..."
@@ -58,9 +66,8 @@ bundle config set --local path vendor/bundle
 bundle install
 
 echo "===================================="
-echo "✅ Setup complete!"
+echo "Setup complete!"
 echo "   Ruby: $(ruby -v)"
 echo "   Bundler: $(bundle -v)"
 echo "   Python: $(python --version)"
 echo "===================================="
-

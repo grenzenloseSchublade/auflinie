@@ -6,7 +6,8 @@
             "version": "lts",
             "installYarnUsingApt": false
         },
-        "ghcr.io/devcontainers/features/github-cli:1": {}
+        "ghcr.io/devcontainers/features/github-cli:1": {},
+        "ghcr.io/anthropics/devcontainer-features/claude-code:1": {}
     },
     "onCreateCommand": "sudo rm -f /etc/apt/sources.list.d/yarn.list /etc/apt/sources.list.d/*yarn* /etc/apt/trusted.gpg.d/yarn.gpg 2>/dev/null || true",
     "postCreateCommand": "bash -i .devcontainer/post-create.sh",
@@ -14,6 +15,12 @@
         4000,
         8888
     ],
+    "mounts": [
+        "source=claude-code-config-${devcontainerId},target=/home/vscode/.claude,type=volume"
+    ],
+    "containerEnv": {
+        "CLAUDE_CONFIG_DIR": "/home/vscode/.claude"
+    },
     "remoteEnv": {
         "GH_TOKEN": "${localEnv:GH_TOKEN}"
     },
