@@ -142,6 +142,7 @@ defaults:
 # The following items will not be processed, by default. Create a custom list
 # to override the default setting.
 exclude:
+  - design-reference/ # Design-Referenzen, absichtlich nicht deployt (siehe design-reference/README.md)
   - .sass-cache/
   - .jekyll-cache/
   - gemfiles/
