@@ -140,8 +140,9 @@ async function networkFirst(request) {
       return cachedResponse;
     }
     
-    // Fallback für HTML-Seiten
-    if (request.headers.get('Accept').includes('text/html')) {
+    // Fallback für HTML-Seiten (request.mode robuster als Accept-Sniffing;
+    // Accept kann null sein -> früher TypeError im Offline-Fall)
+    if (request.mode === 'navigate' || (request.headers.get('Accept') || '').includes('text/html')) {
       return caches.match('./offline.html');
     }
     
