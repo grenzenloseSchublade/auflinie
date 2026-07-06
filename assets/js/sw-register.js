@@ -14,9 +14,12 @@
   };
   
   /**
-   * Zeigt ein visuelles Update-Toast statt eines blockierenden confirm()
+   * Zeigt ein visuelles Update-Toast statt eines blockierenden confirm().
+   * "Jetzt laden" aktiviert den wartenden Worker (SKIP_WAITING) und lädt die
+   * Seite erst nach dem controllerchange neu — so gibt es keinen Mischzustand
+   * aus altem DOM und neuem Cache.
    */
-  function showUpdateToast() {
+  function showUpdateToast(registration) {
     // Prüfe ob Toast bereits existiert
     if (document.getElementById('sw-update-toast')) return;
 
@@ -43,7 +46,19 @@
     
     // Event-Listener
     document.getElementById('sw-update-reload').addEventListener('click', () => {
-      window.location.reload();
+      const waiting = registration && registration.waiting;
+      if (waiting) {
+        // Genau ein Reload, sobald der neue Worker übernommen hat
+        let reloaded = false;
+        navigator.serviceWorker.addEventListener('controllerchange', () => {
+          if (reloaded) return;
+          reloaded = true;
+          window.location.reload();
+        });
+        waiting.postMessage({ type: 'SKIP_WAITING' });
+      } else {
+        window.location.reload();
+      }
     });
     
     document.getElementById('sw-update-dismiss').addEventListener('click', () => {
@@ -77,7 +92,7 @@
                 newWorker.addEventListener('statechange', () => {
                   if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
                     // Neuer Service Worker ist installiert - zeige Update-Toast
-                    showUpdateToast();
+                    showUpdateToast(registration);
                   }
                 });
               });
