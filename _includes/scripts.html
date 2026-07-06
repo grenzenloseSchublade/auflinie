@@ -21,13 +21,23 @@
 {% include analytics.html %}
 {% include /comments-providers/scripts.html %}
 
-<!-- Bild-Caching und Service Worker -->
-<script src="{{ '/assets/js/image-cache.js' | relative_url }}"></script>
+<!-- Service Worker (global) -->
 <script src="{{ '/assets/js/sw-register.js' | relative_url }}"></script>
 
-<!-- Ausklappbare Listen für CV -->
+{% if page.header.overlay_image %}
+<!-- Hero-Hintergrund + CRT-Effekt: nur auf Seiten mit Overlay-Hero -->
+<script src="{{ '/assets/js/image-cache.js' | relative_url }}"></script>
+{% endif %}
+
+{% if page.expandable_lists %}
+<!-- Ausklappbare Listen (CV, per Front-Matter-Flag) -->
 <script src="{{ '/assets/js/expandable-list.js' | relative_url }}"></script>
+{% endif %}
+
+{% if page.url == "/" %}
+<!-- Neon-Namenseffekt: nur Startseite -->
 <script src="{{ '/assets/js/neon-orbit-toggle.js' | relative_url }}"></script>
+{% endif %}
 
 {% if page.fractal_panels %}
   {% include fractal/deps.html %}

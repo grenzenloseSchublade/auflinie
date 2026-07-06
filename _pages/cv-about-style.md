@@ -9,6 +9,7 @@ toc_label: "Inhalt"
 toc_icon: "list"
 toc_sticky: true
 toc_collapse: true
+expandable_lists: true
 header:
   overlay_image: /assets/images/background.jpg
   overlay_filter: 0.5

@@ -43,10 +43,10 @@ kramdown:
       background_color: "#2d2d2d"
 
 # JavaScript-Dateien, die nach dem Footer geladen werden
+# (back-to-top.js lädt nur im single-Layout, siehe _layouts/single.html)
 after_footer_scripts:
   - /assets/js/greedy-navigation.js
   - /assets/js/blog-search.js
-  - /assets/js/back-to-top.js
 
 # Collections
 include:
