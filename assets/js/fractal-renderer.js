@@ -102,9 +102,13 @@
 
     resizeToContainer(container) {
       if (!container) return;
+      // clientWidth/clientHeight statt getBoundingClientRect: schliesst Border
+      // und Scrollbars aus. Mit Border wuerde die gemessene Hoehe die gesetzte
+      // Canvas-Hoehe stets um die Borderbreite uebersteigen -> ResizeObserver-
+      // Endlosschleife (Canvas waechst pro Tick).
       const rect = container.getBoundingClientRect();
-      const targetWidth = Math.max(1, Math.floor(rect.width));
-      const targetHeight = Math.max(1, Math.floor(rect.height || rect.width * 9 / 16));
+      const targetWidth = Math.max(1, Math.floor(container.clientWidth || rect.width));
+      const targetHeight = Math.max(1, Math.floor(container.clientHeight || rect.height || targetWidth * 9 / 16));
       if (!targetWidth || !targetHeight) return;
 
       const baseDpr = window.devicePixelRatio || 1;

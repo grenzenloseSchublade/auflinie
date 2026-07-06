@@ -12,15 +12,16 @@
   bewusst keine IDs, damit mehrere Panels pro Seite kollisionsfrei sind.
 {% endcomment %}
 <div class="fractal-panel__canvas-frame" data-role="canvas-frame" data-canvas-key="{{ include.key }}">
-  <canvas class="fractal-panel__canvas" data-role="canvas" width="960" height="540" role="img" aria-label="{{ include.label }}"></canvas>
+  <canvas class="fractal-panel__canvas" data-role="canvas" width="960" height="540" tabindex="0" role="img" aria-label="{{ include.label }} — interaktiv. Tastatur: Pfeiltasten verschieben, Plus/Minus zoomen, 0 setzt die Ansicht zurück."></canvas>
   {% include crt-overlay.html intensity=include.crt %}
   <div class="fractal-panel__zoom-box" data-role="zoom-box" aria-hidden="true"></div>
   <div class="fractal-panel__hud" data-role="hud" aria-hidden="true">
     <div class="fractal-panel__hud-item">c: <span data-role="hud-position">{{ include.hud_c | default: '0 + 0i' }}</span></div>
     <div class="fractal-panel__hud-item">Zoom: <span data-role="hud-zoom">1×</span></div>
   </div>
-  <div class="fractal-panel__loading" data-role="loading">Berechne...</div>
-  <div class="fractal-panel__zoom-warning" data-role="zoom-warning">Extremzoom aktiv – Details können instabil sein.</div>
+  <div class="fractal-panel__loading" data-role="loading" role="status">Berechne&hellip;</div>
+  <div class="fractal-panel__zoom-warning" data-role="zoom-warning" role="status">Extremzoom aktiv – Details können instabil sein.</div>
+  <div class="fractal-panel__gesture-hint" data-role="gesture-hint" aria-hidden="true">Zum Verschieben zwei Finger benutzen</div>
   <div class="fractal-panel__mobile-zoom" data-role="mobile-zoom">
     <button type="button" class="fractal-panel__zoom-button" data-role="zoom-in" aria-label="{{ include.zoom_in_label | default: 'Vergrößern' }}">+</button>
     <div class="fractal-panel__zoom-level" data-role="zoom-level">1.00×</div>

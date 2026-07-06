@@ -1,6 +1,9 @@
 {% comment %}
-  Statisches CRT-Overlay (Bildschirm-Look wie der Hero, ohne Animationen):
-  Scanlines + RGB-Maske + Punkt-Raster + Vignette + Grain, pointer-events: none.
+  CRT-Overlay (Bildschirm-Look wie der Hero): Scanlines + Aperture-Grille +
+  Vignette/Glas-Reflex + Grain, dazu sehr dezentes Flimmern und ein langsamer
+  Rollbalken. pointer-events: none — Canvas-Pixel (Downloads) bleiben unberührt.
+  Flimmer-Amplitude liegt weit unter der WCAG-2.3.1-Schwelle; unter
+  prefers-reduced-motion sind Flicker/Roll deaktiviert (statische Layer bleiben).
   Parameter: intensity = "dezent" (Default) | "stark".
   Der SVG-Grain-Filter wird genau einmal pro Seite ausgegeben — `assign` in
   Jekyll-Includes schreibt in den Scope der aufrufenden Seite und wirkt so als Guard.
@@ -23,4 +26,7 @@
 <div class="crt-overlay crt-overlay--{{ include.intensity | default: 'dezent' }}" aria-hidden="true">
   <div class="crt-overlay__mask"></div>
   <div class="crt-overlay__grain"></div>
+  <div class="crt-overlay__vignette"></div>
+  <div class="crt-overlay__flicker"></div>
+  <div class="crt-overlay__roll"></div>
 </div>

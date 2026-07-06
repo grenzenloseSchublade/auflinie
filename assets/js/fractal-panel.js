@@ -136,11 +136,9 @@
       this.zoomBoxStartCss = null;
       this.didDrag = false;
       this.clickTimer = null;
-      this.touchPanning = false;
-      this.touchLast = null;
-      this.touchMoved = false;
-      this.touchTapStart = null;
-      this.pinch = { active: false, startDist: 0, startZoom: 1 };
+      this.touchStart = null;
+      this.gestureHintTimer = null;
+      this.pinch = { active: false, startDist: 0, startZoom: 1, lastCenter: null };
     }
 
     // --- Koordinaten -------------------------------------------------------
@@ -288,6 +286,25 @@
       this.zoomBox.style.display = 'none';
     }
 
+    // Kurzer Hinweis, wenn jemand mit einem Finger auf dem Canvas zieht
+    // (kooperative Gesten: ein Finger scrollt die Seite, zwei verschieben)
+    flashGestureHint() {
+      const hint = this.frame.querySelector('[data-role="gesture-hint"]');
+      if (!hint) return;
+      hint.classList.add('is-visible');
+      if (this.gestureHintTimer) clearTimeout(this.gestureHintTimer);
+      this.gestureHintTimer = setTimeout(() => {
+        hint.classList.remove('is-visible');
+        this.gestureHintTimer = null;
+      }, 1600);
+    }
+
+    resetView() {
+      Object.assign(this.view, this.config.view);
+      this.renderer.animateTo(this.config.view, 180);
+      this.panel.requestRender(this, { immediate: true, reason: 'key-reset' });
+    }
+
     // --- Events ------------------------------------------------------------
 
     bindEvents(signal) {
@@ -393,67 +410,88 @@
         panel.requestRender(this, { debounce: 180, reason: 'dblclick-out' });
       }, { signal: signal });
 
-      // Touch: Pinch (Start-Distanz/Start-Zoom) + 1-Finger-Pan + Tap
+      // Touch — kooperative Gesten wie bei eingebetteten Karten:
+      // 1 Finger scrollt die Seite (touch-action: pan-y, kein preventDefault),
+      // 2 Finger zoomen (Pinch) und verschieben (Center-Delta).
+      // Ein Tap läuft über das nachgelagerte click-Event (tapSelectsC).
       canvas.addEventListener('touchstart', (event) => {
-        event.preventDefault();
         if (event.touches.length === 2) {
+          event.preventDefault();
           this.pinch.active = true;
           this.pinch.startDist = getTouchDistance(event.touches);
           this.pinch.startZoom = this.view.zoomLevel;
-          this.touchPanning = false;
-          this.touchMoved = true;
+          this.pinch.lastCenter = this.touchCenter(event.touches);
+          this.touchStart = null;
           return;
         }
         if (event.touches.length === 1) {
-          this.touchPanning = true;
-          this.touchMoved = false;
-          this.touchLast = this.touchCanvasCoords(event.touches[0]);
-          this.touchTapStart = { time: performance.now(), pos: this.touchLast };
-          this.showCursorInHud(this.touchLast);
+          this.touchStart = this.touchCanvasCoords(event.touches[0]);
+          this.showCursorInHud(this.touchStart);
         }
       }, { passive: false, signal: signal });
 
       canvas.addEventListener('touchmove', (event) => {
-        event.preventDefault();
         if (this.pinch.active && event.touches.length === 2) {
+          event.preventDefault();
+          const center = this.touchCenter(event.touches);
+          if (center && this.pinch.lastCenter) {
+            const dx = center.x - this.pinch.lastCenter.x;
+            const dy = center.y - this.pinch.lastCenter.y;
+            if (dx || dy) this.panBy(dx, dy, 160, 'pan-touch');
+          }
           const distance = getTouchDistance(event.touches);
           if (!this.pinch.startDist) this.pinch.startDist = distance;
           const zoomFactor = distance / this.pinch.startDist;
-          const targetZoom = FractalUtils.clamp(this.pinch.startZoom * zoomFactor, MIN_ZOOM, panel.getMaxZoom());
-          const center = this.touchCenter(event.touches);
-          if (center) {
+          if (center && Math.abs(zoomFactor - 1) > 0.01) {
+            const targetZoom = FractalUtils.clamp(this.pinch.startZoom * zoomFactor, MIN_ZOOM, panel.getMaxZoom());
             this.animateZoomTo(targetZoom, center);
             panel.requestRender(this, { debounce: 120, reason: 'pinch' });
           }
+          this.pinch.lastCenter = center;
           return;
         }
-        if (!this.touchPanning || event.touches.length !== 1 || !this.touchLast) return;
-        const newPos = this.touchCanvasCoords(event.touches[0]);
-        const dx = newPos.x - this.touchLast.x;
-        const dy = newPos.y - this.touchLast.y;
-        if (Math.abs(dx) > 0.5 || Math.abs(dy) > 0.5) this.touchMoved = true;
-        this.touchLast = newPos;
-        this.panBy(dx, dy, 160, 'pan-touch');
+        if (event.touches.length === 1 && this.touchStart) {
+          const pos = this.touchCanvasCoords(event.touches[0]);
+          if (Math.abs(pos.x - this.touchStart.x) > 8 || Math.abs(pos.y - this.touchStart.y) > 8) {
+            this.flashGestureHint();
+          }
+        }
       }, { passive: false, signal: signal });
 
       canvas.addEventListener('touchend', (event) => {
-        event.preventDefault();
         if (this.pinch.active && event.touches.length < 2) {
           this.pinch.active = false;
           this.pinch.startDist = 0;
           this.pinch.startZoom = this.view.zoomLevel;
+          this.pinch.lastCenter = null;
         }
-        if (event.touches.length === 0 && this.touchPanning) {
-          if (this.config.tapSelectsC && !this.touchMoved && this.touchTapStart) {
-            const tapAge = performance.now() - this.touchTapStart.time;
-            if (tapAge < 300) panel.applyTap(this, this.touchTapStart.pos);
-          }
-          this.touchPanning = false;
-          this.touchLast = null;
-          this.touchTapStart = null;
+        if (event.touches.length === 0) {
+          this.touchStart = null;
           this.showCenterInHud();
         }
-      }, { passive: false, signal: signal });
+      }, { signal: signal });
+
+      // Tastatursteuerung (Canvas hat tabindex="0")
+      canvas.addEventListener('keydown', (event) => {
+        const stepX = this.canvas.width * 0.08;
+        const stepY = this.canvas.height * 0.08;
+        switch (event.key) {
+          case 'ArrowLeft': this.panBy(stepX, 0, 200, 'key-pan'); break;
+          case 'ArrowRight': this.panBy(-stepX, 0, 200, 'key-pan'); break;
+          case 'ArrowUp': this.panBy(0, stepY, 200, 'key-pan'); break;
+          case 'ArrowDown': this.panBy(0, -stepY, 200, 'key-pan'); break;
+          case '+':
+          case '=': this.zoomAtCenter(1.2, 200, 'key-zoom-in'); break;
+          case '-': this.zoomAtCenter(1 / 1.2, 200, 'key-zoom-out'); break;
+          case '0': this.resetView(); break;
+          case 'Enter':
+            if (!this.config.tapSelectsC) return;
+            panel.applyTap(this, { x: this.canvas.width / 2, y: this.canvas.height / 2 });
+            break;
+          default: return;
+        }
+        event.preventDefault();
+      }, { signal: signal });
 
       // Mobile Zoom-Buttons
       const zoomIn = this.frame.querySelector('[data-role="zoom-in"]');
@@ -803,6 +841,7 @@
         intensityButton.addEventListener('click', () => {
           this.state.useIntense = !this.state.useIntense;
           intensityButton.classList.toggle('is-active', this.state.useIntense);
+          intensityButton.setAttribute('aria-pressed', String(this.state.useIntense));
           setButtonLabel(intensityButton, this.state.useIntense ? 'Intensiv' : 'Subtil');
           this.requestRender(null, { preview: true, debounce: 200, reason: 'palette' });
         }, { signal: signal });
@@ -813,6 +852,7 @@
         extremeButton.addEventListener('click', () => {
           this.state.allowExtremeZoom = !this.state.allowExtremeZoom;
           extremeButton.classList.toggle('is-active', this.state.allowExtremeZoom);
+          extremeButton.setAttribute('aria-pressed', String(this.state.allowExtremeZoom));
           setButtonLabel(extremeButton, 'Extremzoom: ' + (this.state.allowExtremeZoom ? 'An' : 'Aus'));
           if (!this.state.allowExtremeZoom) {
             let clamped = false;

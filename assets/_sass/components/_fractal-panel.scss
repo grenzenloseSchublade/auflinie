@@ -13,6 +13,7 @@
 // Erklärbox 300.
 
 $fp-accent: #05d9e8;
+$fp-mono: ui-monospace, "Cascadia Mono", "Segoe UI Mono", "Menlo", "Monaco", "Consolas", "Liberation Mono", monospace;
 $fp-accent-soft: rgb(5 217 232 / 15%);
 $fp-magenta: #ff00ff;
 $fp-slider-handle: #4aa3ff;
@@ -28,10 +29,11 @@ $fp-heading: #eacfb4;
   width: 100%;
   box-sizing: border-box;
   margin: 0 auto 20px;
-  background: #222222;
-  border-radius: 8px;
-  padding: 15px;
-  box-shadow: 0 4px 8px rgb(0 0 0 / 30%);
+  background: #1a1c20;
+  border: 1px solid rgb(255 255 255 / 8%);
+  border-radius: 10px;
+  padding: 16px;
+  box-shadow: 0 2px 6px rgb(0 0 0 / 25%);
 
   @media (max-width: 768px) {
     padding: 10px;
@@ -42,24 +44,30 @@ $fp-heading: #eacfb4;
 }
 
 .fractal-panel__title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0 0 16px;
+  padding: 6px 0;
   color: $fp-heading;
-  margin: 0 0 20px;
-  padding: 10px 0;
-  text-align: center;
-  font-size: 24px;
+  font-family: $fp-mono;
+  font-size: 15px;
   font-weight: 600;
-  border-bottom: 2px solid #444444;
-  position: relative;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+
+  &::before {
+    content: "::";
+    color: $fp-accent;
+    flex-shrink: 0;
+  }
 
   &::after {
     content: "";
-    position: absolute;
-    bottom: -2px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 140px;
-    height: 2px;
-    background-color: $fp-accent;
+    flex: 1;
+    height: 1px;
+    min-width: 24px;
+    background: linear-gradient(90deg, rgb(5 217 232 / 45%), rgb(5 217 232 / 4%));
   }
 }
 
@@ -68,6 +76,7 @@ $fp-heading: #eacfb4;
 // -----------------------------------------------------------------------------
 .fractal-panel__toolbar {
   display: flex;
+  align-items: center;
   gap: 8px;
   flex-wrap: nowrap;
   margin-bottom: 12px;
@@ -110,12 +119,8 @@ $fp-heading: #eacfb4;
 .fractal-panel__toolbar-group {
   display: flex;
   flex: 1;
-  max-width: 140px;
-  gap: 4px;
-  background: rgb(255 255 255 / 3%);
-  border: 1px solid rgb(255 255 255 / 8%);
-  border-radius: 12px;
-  padding: 3px;
+  max-width: 200px;
+  gap: 6px;
 
   .fractal-panel__button {
     flex: 1;
@@ -138,21 +143,27 @@ $fp-heading: #eacfb4;
 // Buttons
 // -----------------------------------------------------------------------------
 .fractal-panel__button {
-  background: rgb(255 255 255 / 4%);
+  background: #202329;
   color: #dddddd;
-  border: 1px solid rgb(255 255 255 / 12%);
-  padding: 8px 12px;
-  border-radius: 999px;
+  border: 1px solid rgb(255 255 255 / 14%);
+  padding: 8px 14px;
+  border-radius: 6px;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.1s ease, background 0.15s ease;
   min-width: 80px;
-  font-size: 13px;
-  font-weight: 500;
-  min-height: 40px;
+  font-family: $fp-mono;
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  min-height: 38px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
+  gap: 7px;
+
+  // Keycap-Tiefe: Unterkante + Lichtkante
+  box-shadow: 0 2px 0 rgb(0 0 0 / 45%), inset 0 1px 0 rgb(255 255 255 / 6%);
 
   .icon {
     display: flex;
@@ -161,28 +172,39 @@ $fp-heading: #eacfb4;
     line-height: 1;
   }
 
+  .icon i {
+    font-size: 12px;
+    line-height: 1;
+  }
+
   &:hover {
-    background: rgb(255 255 255 / 8%);
-    border-color: rgb(5 217 232 / 30%);
-    transform: translateY(-1px);
+    background: #262a31;
+    border-color: rgb(5 217 232 / 55%);
+    box-shadow: 0 2px 0 rgb(0 0 0 / 45%), 0 0 8px rgb(5 217 232 / 30%), inset 0 1px 0 rgb(255 255 255 / 6%);
   }
 
   &:active {
-    transform: scale(0.98) translateY(0);
+    transform: translateY(2px);
+    box-shadow: 0 0 0 rgb(0 0 0 / 45%), inset 0 1px 0 rgb(255 255 255 / 4%);
   }
 
   &:focus-visible {
-    background: rgb(5 217 232 / 10%);
-    border-color: rgb(5 217 232 / 50%);
-    box-shadow: 0 0 0 3px $fp-accent-soft;
-    outline: none;
+    outline: 2px solid $fp-accent;
+    outline-offset: 2px;
   }
 
   &.is-active {
-    background: rgb(5 217 232 / 30%) !important;
+    background: rgb(5 217 232 / 22%) !important;
     color: #ffffff !important;
     border-color: rgb(5 217 232 / 60%) !important;
-    box-shadow: 0 0 8px 2px rgb(5 217 232 / 60%), inset 0 0 4px rgb(5 217 232 / 20%);
+    box-shadow: 0 2px 0 rgb(0 0 0 / 45%), 0 0 8px rgb(5 217 232 / 35%), inset 0 0 4px rgb(5 217 232 / 20%);
+  }
+}
+
+// Touch: Zielhöhe anheben (Desktop bleibt kompakt)
+@media (pointer: coarse) {
+  .fractal-panel__button {
+    min-height: 48px;
   }
 }
 
@@ -224,7 +246,8 @@ $fp-heading: #eacfb4;
   padding: 12px 16px;
   background: rgb(255 255 255 / 2%);
   border: 1px dashed rgb(255 255 255 / 15%);
-  border-radius: 10px;
+  box-shadow: none;
+  border-radius: 6px;
   color: rgb(255 255 255 / 60%);
   font-size: 13px;
   transition: all 0.25s ease;
@@ -385,10 +408,13 @@ $fp-heading: #eacfb4;
 
   label {
     flex-shrink: 0;
-    min-width: 70px;
+    min-width: 88px;
     color: rgb(255 255 255 / 70%);
-    font-size: 13px;
-    font-weight: 500;
+    font-family: $fp-mono;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
     text-align: left;
   }
 
@@ -526,29 +552,30 @@ $fp-heading: #eacfb4;
   margin: 0 8px;
   min-width: 100px;
 
-  .noUi-target {
-    background: rgb(255 255 255 / 16%);
-    border: none;
-    border-radius: 999px;
+  // noUiSlider setzt .noUi-target auf das Wrapper-Element selbst
+  &.noUi-target {
+    background: #111318;
+    border: 1px solid rgb(255 255 255 / 8%);
+    border-radius: 3px;
     box-shadow: none;
     height: 6px;
   }
 
   .noUi-connect {
     background: linear-gradient(90deg, $fp-accent, $fp-slider-handle);
-    border-radius: 999px;
+    border-radius: 2px;
   }
 
   .noUi-handle {
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    background: $fp-slider-handle;
-    border: 2px solid rgb(0 0 0 / 25%);
-    box-shadow: 0 2px 6px rgb(0 0 0 / 40%);
+    width: 22px;
+    height: 22px;
+    border-radius: 4px;
+    background: #1f2228;
+    border: 1px solid rgb(5 217 232 / 70%);
+    box-shadow: 0 2px 0 rgb(0 0 0 / 45%), inset 0 1px 0 rgb(255 255 255 / 8%);
     cursor: pointer;
-    top: -8px;
-    right: -10px;
+    top: -9px;
+    right: -11px;
 
     &::before,
     &::after {
@@ -556,13 +583,13 @@ $fp-heading: #eacfb4;
     }
 
     &:hover {
-      background: #5cb8ff;
-      transform: scale(1.1);
+      border-color: $fp-accent;
+      box-shadow: 0 2px 0 rgb(0 0 0 / 45%), 0 0 8px rgb(5 217 232 / 30%), inset 0 1px 0 rgb(255 255 255 / 8%);
     }
 
     &:focus {
       outline: none;
-      box-shadow: 0 0 0 3px rgb(74 163 255 / 40%), 0 2px 6px rgb(0 0 0 / 40%);
+      box-shadow: 0 0 0 3px rgb(5 217 232 / 40%), 0 2px 0 rgb(0 0 0 / 45%);
     }
   }
 
@@ -571,7 +598,7 @@ $fp-heading: #eacfb4;
     margin: 0;
     order: 1;
 
-    .noUi-target {
+    &.noUi-target {
       height: 8px;
     }
 
@@ -595,10 +622,11 @@ $fp-heading: #eacfb4;
   color: $fp-accent;
   font-size: 13px;
   font-weight: 600;
-  font-family: "SF Mono", Consolas, monospace;
+  font-family: $fp-mono;
+  font-variant-numeric: tabular-nums;
   text-align: center;
-  border-radius: 8px;
-  background: rgb(5 217 232 / 10%);
+  border-radius: 4px;
+  background: rgb(5 217 232 / 8%);
   border: 1px solid rgb(5 217 232 / 20%);
   outline: none;
   appearance: textfield;
@@ -755,24 +783,30 @@ $fp-heading: #eacfb4;
 }
 
 .fractal-panel__column-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 12px;
+  padding: 4px 0;
   color: $fp-heading;
-  margin: 0 0 20px;
-  padding: 10px 0;
-  text-align: center;
-  font-size: 20px;
+  font-family: $fp-mono;
+  font-size: 13px;
   font-weight: 600;
-  border-bottom: 2px solid #444444;
-  position: relative;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+
+  &::before {
+    content: ">";
+    color: $fp-accent;
+    flex-shrink: 0;
+  }
 
   &::after {
     content: "";
-    position: absolute;
-    bottom: -2px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 100px;
-    height: 2px;
-    background-color: $fp-accent;
+    flex: 1;
+    height: 1px;
+    min-width: 16px;
+    background: linear-gradient(90deg, rgb(5 217 232 / 35%), rgb(5 217 232 / 4%));
   }
 }
 
@@ -780,8 +814,18 @@ $fp-heading: #eacfb4;
   position: relative;
   width: 100%;
   margin: 0 auto;
-  border-radius: 4px;
+  border-radius: 10px;
   overflow: hidden;
+
+  // Rahmenlinie als box-shadow statt border: border ginge in die
+  // getBoundingClientRect-Messung von resizeToContainer ein und erzeugte
+  // eine Endlos-Wachstumsschleife (Canvas-Höhe = Frame-Höhe + Rahmen)
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 10%);
+  background: #000000;
+
+  // Blend-Layer des CRT-Overlays (soft-light-Grain) blendet nur gegen den
+  // Canvas, nicht gegen den Seitenhintergrund
+  isolation: isolate;
 }
 
 .fractal-panel__canvas {
@@ -791,7 +835,15 @@ $fp-heading: #eacfb4;
   border-radius: 4px;
   cursor: crosshair;
   aspect-ratio: 16 / 9;
-  touch-action: none;
+
+  // pan-y statt none: Ein-Finger-Wischen scrollt die Seite (kooperative
+  // Gesten wie bei eingebetteten Karten); Pinch/Zwei-Finger übernimmt das JS.
+  touch-action: pan-y;
+
+  &:focus-visible {
+    outline: 2px solid $fp-accent;
+    outline-offset: -2px;
+  }
 }
 
 .fractal-panel--single .fractal-panel__canvas {
@@ -855,22 +907,25 @@ $fp-heading: #eacfb4;
 }
 
 .fractal-panel__hud-item {
-  background: rgb(0 0 0 / 60%);
-  color: rgb(255 255 255 / 70%);
+  background: rgb(8 10 14 / 78%);
+  color: rgb(255 255 255 / 65%);
+  border: 1px solid rgb(5 217 232 / 25%);
   padding: 4px 8px;
-  border-radius: 999px;
+  border-radius: 4px;
   font-size: 11px;
-  font-family: "SF Mono", Consolas, monospace;
+  font-family: $fp-mono;
+  font-variant-numeric: tabular-nums;
   font-weight: 500;
   backdrop-filter: blur(4px);
   white-space: nowrap;
-  width: 130px;
+  width: 138px;
   text-align: center;
   overflow: hidden;
   box-sizing: border-box;
 
   span {
     font-weight: 600;
+    color: $fp-accent;
   }
 
   @media (max-width: 600px) {
@@ -891,6 +946,7 @@ $fp-heading: #eacfb4;
   display: none;
   font-size: 16px;
   z-index: 5;
+  animation: fractal-panel-loading-pulse 1.6s ease-in-out infinite;
 }
 
 .fractal-panel__zoom-warning {
@@ -914,21 +970,21 @@ $fp-heading: #eacfb4;
   display: none;
   flex-direction: row;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   background: rgb(0 0 0 / 45%);
-  border-radius: 14px;
+  border-radius: 26px;
   padding: 6px 8px;
   z-index: 6;
   box-shadow: 0 1px 3px rgb(0 0 0 / 20%);
 }
 
 .fractal-panel__zoom-button {
-  width: 28px;
-  height: 28px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
   background: #444444;
   color: #ffffff;
-  font-size: 16px;
+  font-size: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -961,6 +1017,61 @@ $fp-heading: #eacfb4;
   margin: 0 2px;
 }
 
+
+// Statuszeile mit Gesten-/Tastatur-Hinweisen unter dem Canvas-Bereich
+.fractal-panel__hint {
+  margin-top: 6px;
+  padding: 5px 10px;
+  border-top: 1px solid rgb(255 255 255 / 6%);
+  color: rgb(255 255 255 / 45%);
+  font-family: "SF Mono", Consolas, monospace;
+  font-size: 11px;
+  letter-spacing: 0.3px;
+  text-align: center;
+}
+
+.fractal-panel__hint-touch {
+  display: none;
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .fractal-panel__hint-mouse {
+    display: none;
+  }
+
+  .fractal-panel__hint-touch {
+    display: inline;
+  }
+}
+
+// Transienter Hinweis bei Ein-Finger-Ziehen auf dem Canvas
+.fractal-panel__gesture-hint {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgb(0 0 0 / 78%);
+  color: #ffffff;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  text-align: center;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+  z-index: 4;
+
+  &.is-visible {
+    opacity: 1;
+  }
+}
+
+@keyframes fractal-panel-loading-pulse {
+  50% {
+    opacity: 0.55;
+  }
+}
+
 // -----------------------------------------------------------------------------
 // Info-Panel (nur --dual, sichtbar bei erweiterten Optionen)
 // -----------------------------------------------------------------------------
@@ -987,7 +1098,12 @@ $fp-heading: #eacfb4;
 .fractal-panel__info-value {
   font-weight: bold;
   color: #ffffff;
-  font-size: 16px;
+  font-family: $fp-mono;
+  font-variant-numeric: tabular-nums;
+
+  // Mathematische Notation nicht mit-uppercasen (0.270i, nicht 0.270I)
+  text-transform: none;
+  letter-spacing: normal;
 }
 
 // -----------------------------------------------------------------------------
