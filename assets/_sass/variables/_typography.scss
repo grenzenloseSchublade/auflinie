@@ -15,3 +15,6 @@ $nav-font-size: 1.0em; // Größe der Navigationslinks
 $normal-weight: 400;
 $medium-weight: 550;
 $bold-weight: 700;
+
+// Monospace-Stack ohne Webfont (Labels, Werte, Konsolen-Header)
+$mono-font-stack: ui-monospace, "Cascadia Mono", "Segoe UI Mono", "Menlo", "Monaco", "Consolas", "Liberation Mono", monospace;

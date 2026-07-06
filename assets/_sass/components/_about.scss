@@ -18,7 +18,9 @@
   @include hover-effect;
 
   h2 {
-    border-bottom: 2px solid $card-heading-color;
+    @include console-header(14px, "::");
+
+    margin-bottom: 1.2rem;
   }
 
   // Gemeinsame Stile für direkt auf dem Hintergrund dargestellte Sektionen
@@ -35,7 +37,6 @@
     }
 
     h2 {
-      font-size: 1.4rem;
       margin-bottom: 1.5rem;
     }
   }

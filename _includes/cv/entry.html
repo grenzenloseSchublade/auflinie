@@ -14,9 +14,12 @@
 {% endcomment %}
 <div class="cv-entry">
   <div class="cv-entry__header">
-    <h3>{{ include.title }}</h3>
+    <div class="cv-entry__title-row">
+      <h3>{{ include.title }}</h3>
+      <span class="cv-entry__period">{{ include.period }}</span>
+    </div>
     <p class="cv-entry__meta">
-      <strong>{{ include.org }}</strong> | {{ include.location }} | {{ include.period }}
+      <strong>{{ include.org }}</strong> | {{ include.location }}
     </p>
   </div>
   <div class="cv-entry__content">
