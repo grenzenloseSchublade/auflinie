@@ -1,0 +1,360 @@
+/*
+ * CV-Seite: Sektionen, Einträge (Beruf/Ausbildung), Fähigkeiten, Sprachen.
+ * Unterpunkte klappen über natives <details>/<summary> —
+ * tastatur- und screenreader-zugänglich, kein JavaScript nötig.
+ */
+@use "sass:color";
+
+.cv-section {
+  @extend %section-base;
+
+  .cv-section__content {
+    p {
+      margin-bottom: 1rem;
+      line-height: 1.6;
+    }
+  }
+
+  h2 {
+    border-bottom: 2px solid $card-heading-color;
+    padding-bottom: 0.5rem;
+    margin-bottom: 1.5rem;
+    color: $card-heading-color;
+    font-size: 1.4rem;
+  }
+}
+
+// Karten für Berufsstationen und Ausbildung
+.cv-entry {
+  @extend %card-base;
+
+  flex: 1 1 250px;
+  background-color: rgb(0 0 0 / 20%);
+  border-left: 3px solid $card-heading-color;
+  border-radius: 0 5px 5px 0;
+  margin-bottom: 1rem;
+
+  &:hover {
+    background-color: rgb(0 0 0 / 30%);
+  }
+
+  .cv-entry__header {
+    margin-bottom: 0.5rem;
+
+    h3 {
+      @extend %heading-base;
+
+      font-size: 1.1rem;
+      margin-bottom: 0.3rem;
+      border-bottom: 1px solid rgba($card-heading-color, 0.3);
+      padding-bottom: 0.5rem;
+    }
+
+    .cv-entry__meta {
+      font-size: 0.9rem;
+      color: #aaaaaa;
+      margin: 0;
+      font-weight: 400;
+      letter-spacing: 0.02em;
+    }
+  }
+
+  .cv-entry__items-label {
+    font-size: 0.85rem;
+    margin-bottom: 0.3rem;
+    color: rgb(255 255 255 / 70%);
+    font-weight: 500;
+  }
+
+  .cv-entry__content {
+    p {
+      margin: 0 0 0.8rem;
+      font-size: 0.95rem;
+      line-height: 1.5;
+      color: rgb(255 255 255 / 90%);
+
+      strong,
+      b {
+        color: $card-heading-color;
+        font-weight: 600;
+      }
+    }
+
+    > ul {
+      list-style: none;
+      padding-left: 1.2rem;
+      margin-top: 0.5rem;
+      margin-bottom: 1rem;
+      font-size: 0.85rem;
+
+      > li {
+        position: relative;
+        padding-left: 0;
+        margin-bottom: 0.5rem;
+        line-height: 1.4;
+        color: rgb(255 255 255 / 80%);
+
+        &::before {
+          content: "•";
+          position: absolute;
+          left: -1.2rem;
+          color: $card-heading-color;
+          font-weight: bold;
+        }
+
+        strong,
+        b {
+          color: $card-heading-color;
+          font-weight: 600;
+        }
+      }
+    }
+  }
+}
+
+// Ausklappbare Unterpunkte: natives <details>
+.cv-details {
+  .cv-details__summary {
+    cursor: pointer;
+    position: relative;
+    padding-right: 2rem;
+    list-style: none;
+    border-radius: 4px;
+
+    &::-webkit-details-marker {
+      display: none;
+    }
+
+    &::after {
+      content: "\f078"; // fa-chevron-down (im Icon-Subset enthalten)
+      // stylelint-disable-next-line font-family-no-missing-generic-family-keyword -- Icon-Font, Fallback wäre falsch
+      font-family: "Font Awesome 6 Free";
+      font-weight: 900;
+      position: absolute;
+      right: 0.5rem;
+      top: 0.1rem;
+      color: $card-heading-color;
+      font-size: 0.8rem;
+      width: 1rem;
+      text-align: center;
+      transition: transform 0.3s ease;
+    }
+
+    &:hover {
+      background-color: rgb(255 255 255 / 5%);
+    }
+
+    &:focus-visible {
+      outline: 2px solid $card-heading-color;
+      outline-offset: 2px;
+    }
+  }
+
+  &[open] > .cv-details__summary::after {
+    transform: rotate(180deg);
+  }
+}
+
+// Unterpunkt-Listen (aufgeklappt oder statisch)
+.cv-subitems {
+  list-style: none;
+  margin: 0.7rem 0 0.5rem;
+  padding-left: 1rem;
+  padding-top: 0.3rem;
+  border-top: 1px dotted rgb(255 255 255 / 10%);
+
+  li {
+    font-size: 0.8rem;
+    margin-bottom: 0.3rem;
+    color: rgb(255 255 255 / 70%);
+    padding-left: 0;
+    position: relative;
+    transition: color 0.2s ease;
+
+    &:hover {
+      color: rgb(255 255 255 / 90%);
+    }
+
+    &::before {
+      content: "◦";
+      position: absolute;
+      left: -1rem;
+      color: color.adjust($card-heading-color, $lightness: -10%);
+      font-size: 0.9em;
+    }
+
+    &:last-child {
+      margin-bottom: 0.1rem;
+    }
+  }
+
+  &--static {
+    border-top: none;
+    padding-top: 0;
+    margin-top: 0.5rem;
+  }
+}
+
+// Container für Einträge
+.cv-entries {
+  @include flex-container;
+
+  &--stacked {
+    flex-direction: column;
+
+    .cv-entry {
+      flex: none;
+      width: 100%;
+    }
+  }
+}
+
+// Fähigkeiten: Karten mit Level-Chips
+.cv-skills {
+  @include flex-container;
+}
+
+.cv-skill-category {
+  @extend %card-base;
+
+  flex: 1 1 250px;
+  background-color: rgb(0 0 0 / 20%);
+  border-left: 3px solid $card-heading-color;
+  border-radius: 0 5px 5px 0;
+  margin-bottom: 1rem;
+
+  &:hover {
+    background-color: rgb(0 0 0 / 30%);
+  }
+
+  h3 {
+    @extend %heading-base;
+
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid rgba($card-heading-color, 0.3);
+    padding-bottom: 0.5rem;
+  }
+}
+
+.cv-skill-items {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.cv-skill-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.8rem;
+  margin-bottom: 0.6rem;
+
+  .cv-skill-item__name {
+    min-width: 0;
+  }
+
+  .cv-skill-item__level {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    flex-shrink: 0;
+    font-size: 0.72rem;
+    letter-spacing: 0.04em;
+    color: rgb(255 255 255 / 65%);
+    background: rgb(255 255 255 / 4%);
+    border: 1px solid rgb(255 255 255 / 10%);
+    border-radius: 4px;
+    padding: 0.15rem 0.5rem;
+    white-space: nowrap;
+  }
+
+  .cv-skill-item__dots {
+    display: inline-flex;
+    gap: 3px;
+
+    i {
+      width: 6px;
+      height: 6px;
+      border-radius: 2px;
+      background: rgb(255 255 255 / 15%);
+    }
+  }
+
+  .cv-skill-item__level--1 .cv-skill-item__dots i:nth-child(-n+1),
+  .cv-skill-item__level--2 .cv-skill-item__dots i:nth-child(-n+2),
+  .cv-skill-item__level--3 .cv-skill-item__dots i:nth-child(-n+3) {
+    background: $card-heading-color;
+  }
+
+  // Special färbt nur die aktiven Punkte um (nicht mehr Punkte als das Level)
+  .cv-skill-item__level--1.cv-skill-item__level--special .cv-skill-item__dots i:nth-child(-n+1),
+  .cv-skill-item__level--2.cv-skill-item__level--special .cv-skill-item__dots i:nth-child(-n+2),
+  .cv-skill-item__level--3.cv-skill-item__level--special .cv-skill-item__dots i:nth-child(-n+3) {
+    background: $hover-color;
+  }
+}
+
+// Sprachen
+.cv-languages {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.cv-language {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+  padding: 0.8rem;
+  border-radius: 5px;
+  background-color: rgb(0 0 0 / 20%);
+
+  @include hover-effect(-3px);
+
+  &:hover {
+    background-color: rgb(0 0 0 / 30%);
+  }
+
+  .cv-language__name {
+    font-weight: 500;
+
+    i {
+      margin-right: 0.5rem;
+      color: $card-heading-color;
+    }
+  }
+
+  .cv-language__level {
+    color: #aaaaaa;
+  }
+}
+
+// Responsive Anpassungen
+@media (max-width: 768px) {
+  .cv-entries,
+  .cv-skills {
+    flex-direction: column;
+
+    > * {
+      flex: none;
+      width: 100%;
+    }
+  }
+
+  .cv-skill-item {
+    flex-wrap: wrap;
+    gap: 0.3rem;
+  }
+
+  .cv-language {
+    flex-direction: column;
+    align-items: flex-start;
+
+    .cv-language__level {
+      margin-top: 0.3rem;
+    }
+  }
+}

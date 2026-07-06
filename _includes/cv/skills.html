@@ -1,0 +1,28 @@
+{% comment %}
+  Fähigkeiten als Karten mit Level-Chips (ersetzt die Prozentbalken:
+  zugänglicher — Level steht als Text da — und ehrlicher als "Python 92%").
+  Mapping: level >= 85 Experte, >= 65 Fortgeschritten, sonst Grundlagen.
+{% endcomment %}
+<div class="cv-skills">
+  {% for skill_category in include.skill_categories %}
+  <div class="cv-skill-category">
+    <h3>{{ skill_category.category | markdownify | remove: '<p>' | remove: '</p>' }}</h3>
+    <ul class="cv-skill-items">
+      {% for skill in skill_category.skills %}
+      <li class="cv-skill-item">
+        <span class="cv-skill-item__name">{{ skill.name | markdownify | remove: '<p>' | remove: '</p>' }}</span>
+        {% if skill.level %}
+        {% assign lvl = skill.level | plus: 0 %}
+        {% if lvl >= 85 %}{% assign lvl_label = "Experte" %}{% assign lvl_n = 3 %}
+        {% elsif lvl >= 65 %}{% assign lvl_label = "Fortgeschritten" %}{% assign lvl_n = 2 %}
+        {% else %}{% assign lvl_label = "Grundlagen" %}{% assign lvl_n = 1 %}{% endif %}
+        <span class="cv-skill-item__level cv-skill-item__level--{{ lvl_n }}{% if skill.special %} cv-skill-item__level--special{% endif %}">
+          <span class="cv-skill-item__dots" aria-hidden="true"><i></i><i></i><i></i></span>{{ lvl_label }}
+        </span>
+        {% endif %}
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+  {% endfor %}
+</div>

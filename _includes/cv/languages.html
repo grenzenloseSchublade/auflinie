@@ -1,0 +1,12 @@
+{% comment %} Sprachkenntnisse als kompakte Zeilen. {% endcomment %}
+<div class="cv-languages">
+  {% for language in include.languages %}
+  <div class="cv-language">
+    <span class="cv-language__name">
+      {% if language.icon %}{% include brand-icon.html icon=language.icon %}{% endif %}
+      {{ language.language | markdownify | remove: '<p>' | remove: '</p>' }}
+    </span>
+    <span class="cv-language__level">{{ language.level | markdownify | remove: '<p>' | remove: '</p>' }}</span>
+  </div>
+  {% endfor %}
+</div>

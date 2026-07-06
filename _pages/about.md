@@ -18,7 +18,7 @@ header:
   <details>
     <summary class="about-intro__summary">
       <div class="feature-box__icon">
-        <i class="fas fa-file-alt"></i>
+        <i class="fas fa-file-alt" aria-hidden="true"></i>
       </div>
       <h3 class="about-intro__title">Über diese Seite – Entstehung und Philosophie</h3>
     </summary>
@@ -35,19 +35,13 @@ header:
 
 {% for section in site.data.about %}
   {% if section.section != "Kontakt" and section.section != "Inspirierende Zitate" %}
-    <span id="{{ section.section | slugify }}" class="section-anchor"></span>
-    <div class="about-section {% if section.section == 'Wer bin ich?' %}section-wer-bin-ich{% elsif section.section == 'Meine Interessen' %}section-meine-interessen{% elsif section.section == 'Meine Projekte' %}section-meine-projekte{% endif %}">
-      <h2 id="{{ section.section | slugify }}-heading"><i class="fas fa-{{ section.icon }}"></i> {{ section.section }}</h2>
+    <div class="about-section {{ section.css_class }}">
+      <h2 id="{{ section.section | slugify }}"><i class="fas fa-{{ section.icon }}" aria-hidden="true"></i> {{ section.section }}</h2>
 
+      {% if section.intro %}
+        <p>{{ section.intro }}</p>
+      {% endif %}
 
-      {% if section.section == "Meine Interessen" %}
-        <p>Hier ist ein Überblick über die vielfältigen Interessen und Leidenschaften, die mich antreiben und inspirieren.</p>
-      {% endif %}
-      
-      {% if section.section == "Meine Projekte" %}
-        <p>Einige der spannendsten Projekte, mit denen ich mich beschäftigt habe.</p>
-      {% endif %}
-      
       {% if section.content %}
         <p>{{ section.content }}</p>
       {% endif %}
@@ -67,9 +61,8 @@ header:
 <div class="contact-quotes-container">
   {% for section in site.data.about %}
     {% if section.section == "Kontakt" or section.section == "Inspirierende Zitate" %}
-      <span id="{{ section.section | slugify }}" class="section-anchor"></span>
       <div class="about-section">
-        <h2 id="{{ section.section | slugify }}-heading"><i class="fas fa-{{ section.icon }}"></i> {{ section.section }}</h2>
+        <h2 id="{{ section.section | slugify }}"><i class="fas fa-{{ section.icon }}" aria-hidden="true"></i> {{ section.section }}</h2>
         
         {% if section.content %}
           <p>{{ section.content }}</p>

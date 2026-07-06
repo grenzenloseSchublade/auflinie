@@ -1,5 +1,6 @@
 - section: "Wer bin ich?"
   icon: "user"
+  css_class: "section-wer-bin-ich"
   content: >-
 
     Ich bin Ingenieur, Problemlöser und Autodidakt. Was mich antreibt: die Verbindung zwischen Theorie und Praxis – 
@@ -18,6 +19,8 @@
 
 
 - section: "Meine Interessen"
+  css_class: "section-meine-interessen"
+  intro: "Hier ist ein Überblick über die vielfältigen Interessen und Leidenschaften, die mich antreiben und inspirieren."
   icon: "brain"
   interests:
     - category: "Programmierung"
@@ -51,6 +54,8 @@
 
 - section: "Meine Projekte"
   icon: "project-diagram"
+  css_class: "section-meine-projekte"
+  intro: "Einige der spannendsten Projekte, mit denen ich mich beschäftigt habe."
   skills:
     - category: "Fraktale Visualisierung"
       icon: "chart-line"

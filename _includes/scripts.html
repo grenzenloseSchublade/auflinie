@@ -31,11 +31,6 @@
 <script src="{{ '/assets/js/image-cache.js' | relative_url }}"></script>
 {% endif %}
 
-{% if page.expandable_lists %}
-<!-- Ausklappbare Listen (CV, per Front-Matter-Flag) -->
-<script src="{{ '/assets/js/expandable-list.js' | relative_url }}"></script>
-{% endif %}
-
 {% if page.url == "/posts/" %}
 <!-- Blog-Suche/Filter: nur auf der Beitragsliste -->
 <script src="{{ '/assets/js/blog-search.js' | relative_url }}"></script>
