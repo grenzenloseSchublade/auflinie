@@ -34,10 +34,13 @@ Haben Sie Ideen für neue Funktionen oder Verbesserungen? Erstellen Sie einen Is
 
 ### Codestruktur
 
-- `_includes/`: Enthält die interaktiven Visualisierungen
-  - `julia-interactive.html`: Interaktive Julia-Menge
-  - `mandelbrot-julia-explorer.html`: Mandelbrot-Julia-Explorer
-- `_pages/`: Enthält die Markdown-Seiten mit Erklärungen
+- `_includes/fractal/`: Gemeinsame Komponente der interaktiven Fraktal-Panels
+  - `panel.html`: parametrisiertes Markup (Variante `julia` | `explorer`)
+  - `julia-interactive.html` / `mandelbrot-julia-explorer.html` sind nur noch dünne Wrapper
+- `assets/js/fractal-panel.js`: Panel-Verhalten (Varianten-Konfiguration, Gesten, Tastatur)
+- `assets/js/fractal-renderer.js` + `*-worker.js`: Rendering in Web Workern
+- `assets/_sass/components/_fractal-panel.scss` + `_crt-overlay.scss`: Panel-Optik und Retro-Screen
+- `_pages/`: Markdown-Seiten; Inhalte der Mandelbrot-Seite in `_data/mandelbrot.yml`
 - `assets/`: Bilder, CSS und andere statische Dateien
 
 ### Technische Anforderungen
