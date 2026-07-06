@@ -20,7 +20,7 @@ const CACHE_URLS = [
   './assets/js/offline.js',
   './assets/css/main.css',
   './assets/js/greedy-navigation.js',
-  './assets/js/image-cache.js',
+  './assets/js/hero-crt.js',
   './assets/js/sw-register.js',
   './assets/images/background.jpg',
   './assets/webfonts/fa-solid-900-subset.woff2',

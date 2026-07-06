@@ -11,10 +11,12 @@
 // Sektionen auf der About-Seite
 .about-section {
   @extend %section-base;
+
   padding: 1.5rem;
-  background-color: rgba(0, 0, 0, 0.2);
+  background-color: rgb(0 0 0 / 20%);
   border-radius: 5px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 1px 3px rgb(0 0 0 / 12%);
+
   @include hover-effect;
 
   h2 {
@@ -46,6 +48,7 @@
 // Gemeinsame Stile für Karten-Überschriften
 .card-heading {
   @extend %heading-base;
+
   border-bottom: 1px solid rgba($card-heading-color, 0.3);
   padding-bottom: 0.5rem;
 }
@@ -57,11 +60,12 @@
 
 .interest-card {
   @extend %card-base;
+
   flex: 1 1 250px;
-  background-color: rgba(255, 255, 255, 0.03);
+  background-color: rgb(255 255 255 / 3%);
 
   &:hover {
-    background-color: rgba(255, 255, 255, 0.05);
+    background-color: rgb(255 255 255 / 5%);
   }
 
   h3 {
@@ -79,12 +83,12 @@
 
   .interest-card,
   .skill-card {
-    background-color: rgba(0, 0, 0, 0.2);
+    background-color: rgb(0 0 0 / 20%);
     border-left: 3px solid $card-heading-color;
     border-radius: 0 5px 5px 0;
     
     &:hover {
-      background-color: rgba(0, 0, 0, 0.3);
+      background-color: rgb(0 0 0 / 30%);
     }
     
     h3 {
@@ -104,11 +108,12 @@
 
 .skill-card {
   @extend %card-base;
+
   flex: 1 1 250px;
-  background-color: rgba(255, 255, 255, 0.03);
+  background-color: rgb(255 255 255 / 3%);
 
   &:hover {
-    background-color: rgba(255, 255, 255, 0.05);
+    background-color: rgb(255 255 255 / 5%);
   }
 
   h3 {
@@ -131,16 +136,18 @@
 .contact-card {
   display: flex;
   align-items: center;
-  background-color: rgba(255, 255, 255, 0.03);
+  background-color: rgb(255 255 255 / 3%);
   border-radius: 5px;
   padding: 0.75rem;
   text-decoration: none;
   color: inherit;
+
   @include hover-effect(-3px);
+
   font-size: 0.9rem;
 
   &:hover {
-    background-color: rgba(255, 255, 255, 0.05);
+    background-color: rgb(255 255 255 / 5%);
     text-decoration: none !important;
   }
 }
@@ -192,14 +199,16 @@
 
 .quote-container {
   @extend %quote-base;
+
   border-left: 4px solid $card-heading-color;
-  background-color: rgba(0, 0, 0, 0.2);
+  background-color: rgb(0 0 0 / 20%);
   border-radius: 5px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 1px 3px rgb(0 0 0 / 12%);
+
   @include hover-effect;
 
   &:hover {
-    background-color: rgba(0, 0, 0, 0.3);
+    background-color: rgb(0 0 0 / 30%);
   }
 }
 

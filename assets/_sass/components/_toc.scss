@@ -1,6 +1,7 @@
 // Styles für das Inhaltsverzeichnis (Table of Contents)
 // =============================================================================
 @use "sass:color";
+
 // Mobile: TOC erscheint oberhalb des Contents (Minimal Mistakes Default)
 // Desktop (>= $large): TOC ist sticky in der rechten Sidebar
 // NEU: Mobile Sticky TOC Header - erscheint unter Masthead beim Scrollen
@@ -24,7 +25,7 @@
         z-index: 998; // Unter dem Masthead (1000)
         background: color.adjust($background-color, $lightness: -3%);
         border-bottom: 1px solid $border-color;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        box-shadow: 0 2px 8px rgb(0 0 0 / 30%);
         
         // Slide Animation
         transform: translateY(-100%);
@@ -108,6 +109,7 @@
         transform: translateY(100%);
         opacity: 0;
     }
+
     to {
         transform: translateY(0);
         opacity: 1;
@@ -211,7 +213,7 @@
     }
     
     &::-webkit-scrollbar-track {
-        background: rgba(0, 0, 0, 0.1);
+        background: rgb(0 0 0 / 10%);
     }
     
     &::-webkit-scrollbar-thumb {
@@ -231,11 +233,8 @@
     @media (max-width: $large - 1) {
         display: block;
         position: fixed;
-        top: calc(var(--masthead-height) + 48px);
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: rgba(0, 0, 0, 0.5);
+        inset: calc(var(--masthead-height) + 48px) 0 0;
+        background: rgb(0 0 0 / 50%);
         z-index: 997;
         opacity: 0;
         visibility: hidden;
@@ -257,7 +256,7 @@
 .toc {
     font-family: $sans-serif-narrow;
     color: $text-color;
-    background-color: rgba(0, 0, 0, 0.2);
+    background-color: rgb(0 0 0 / 20%);
     border: 1px solid $border-color;
     border-radius: $border-radius;
     -webkit-box-shadow: $box-shadow;
@@ -265,7 +264,7 @@
     overflow: hidden;
 
     .nav__title {
-        color: #fff;
+        color: #ffffff;
         font-size: $type-size-5; // 1em (~16px) - gut lesbar
         background: $primary-color;
         border-top-left-radius: $border-radius;
@@ -298,14 +297,13 @@
     font-size: $type-size-5; // 1em (~16px) - Standard Textgröße
 
     a {
-        display: block;
         padding: 0.75rem 1rem; // 12px 16px - ausreichend für Touch
         min-height: 44px; // WCAG AAA Touch Target
         color: $text-color;
         font-weight: 600;
         line-height: 1.4;
         text-decoration: none;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        border-bottom: 1px solid rgb(255 255 255 / 10%);
         transition: background-color $standard-transition, color $standard-transition;
         
         // Flexbox für vertikale Zentrierung
@@ -314,7 +312,7 @@
 
         &:hover {
             color: $link-color;
-            background-color: rgba(0, 0, 0, 0.2);
+            background-color: rgb(0 0 0 / 20%);
         }
         
         // Touch-Feedback für Mobile
@@ -351,14 +349,17 @@
         font-size: 0.875em; // 14px für tiefere Ebenen
     }
 
+    // stylelint-disable-next-line selector-max-compound-selectors -- TOC-Ebenen 4-6
     li ul li ul li ul > li a {
         padding-left: 2.25rem;
     }
 
+    // stylelint-disable-next-line selector-max-compound-selectors -- TOC-Ebenen 4-6
     li ul li ul li ul li ul > li a {
         padding-left: 2.75rem;
     }
 
+    // stylelint-disable-next-line selector-max-compound-selectors -- TOC-Ebenen 4-6
     li ul li ul li ul li ul li ul > li a {
         padding-left: 3.25rem;
     }
@@ -370,7 +371,7 @@
     li.active > a {
         color: $link-color;
         font-weight: 700;
-        background: rgba(0, 0, 0, 0.25);
+        background: rgb(0 0 0 / 25%);
         position: relative;
         
         // Linker Indikator-Balken (Cyan für Akzent)
@@ -395,7 +396,7 @@
         
         &:hover {
             color: $link-color;
-            background-color: rgba(0, 0, 0, 0.2);
+            background-color: rgb(0 0 0 / 20%);
         }
     }
     
@@ -404,7 +405,7 @@
     li ul li.active > a {
         color: $link-color;
         font-weight: 700;
-        background: rgba(0, 0, 0, 0.2);
+        background: rgb(0 0 0 / 20%);
     }
 }
 
@@ -558,7 +559,7 @@
     }
     
     &::-webkit-scrollbar-track {
-        background: rgba(0, 0, 0, 0.1);
+        background: rgb(0 0 0 / 10%);
         border-radius: 3px;
     }
     

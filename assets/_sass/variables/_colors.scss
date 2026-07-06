@@ -6,9 +6,9 @@ $white: #ffffff; // Einheitliches Weiß für alle Verwendungen
 
 // Primäre Farbpalette (Cyan, Magenta, Grün)
 $link-color: #05d9e8; // Cyan - Linkfarbe
-$link-color-subtle: rgba(5, 217, 232, 0.4); // Dezentes Cyan - für subtile Akzente (Trennlinien, Hamburger)
+$link-color-subtle: rgb(5 217 232 / 40%); // Dezentes Cyan - für subtile Akzente (Trennlinien, Hamburger)
 $hover-color: #ff00ff; // Magenta - Hover-Effekt Farbe
-$hover-color-subtle: rgba(255, 29, 206, 0.6); // Dezentes Magenta - für subtile Akzente (Trennlinien, Hamburger)
+$hover-color-subtle: rgb(255 29 206 / 60%); // Dezentes Magenta - für subtile Akzente (Trennlinien, Hamburger)
 // Electric Pink rgba(255, 0, 153, 0.6)
 // Hot Magenta rgba(255, 29, 206, 0.6)
 // Neon Fuchsia rgba(255, 0, 128, 0.6)
@@ -28,10 +28,10 @@ $selection-bg: #ff00ff; // Hintergrundfarbe für markierten Text
 $selection-text: #000000; // Textfarbe für markierten Text
 
 // Overlay-Farben (für konsistente Hintergrund-Transparenzen)
-$bg-overlay-dark: rgba(0, 0, 0, 0.2); // Dunkler Overlay
-$bg-overlay-darker: rgba(0, 0, 0, 0.3); // Dunklerer Overlay
-$bg-overlay-light-subtle: rgba(255, 255, 255, 0.03); // Sehr subtiler heller Overlay
-$bg-overlay-light: rgba(255, 255, 255, 0.05); // Subtiler heller Overlay
+$bg-overlay-dark: rgb(0 0 0 / 20%); // Dunkler Overlay
+$bg-overlay-darker: rgb(0 0 0 / 30%); // Dunklerer Overlay
+$bg-overlay-light-subtle: rgb(255 255 255 / 3%); // Sehr subtiler heller Overlay
+$bg-overlay-light: rgb(255 255 255 / 5%); // Subtiler heller Overlay
 
 // Hinweis: .contact-type, .contact-value, .contact-icon Styles 
 // wurden nach components/_about.scss verschoben
@@ -40,4 +40,4 @@ $bg-overlay-light: rgba(255, 255, 255, 0.05); // Subtiler heller Overlay
 $console-heading: #eacfb4; // Warmes Beige für Panel-/Sektionstitel
 $console-panel-bg: #1a1c20; // Panel-Grundton (eine Stufe heller als Seitengrund)
 $console-panel-bg-hover: #20242a;
-$console-panel-border: rgba(255, 255, 255, 0.08);
+$console-panel-border: rgb(255 255 255 / 8%);

@@ -11,7 +11,7 @@
 
   &:hover {
     transform: translateY(-3px);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+    box-shadow: 0 4px 10px rgb(0 0 0 / 25%);
     border-color: rgba($link-color, 0.35);
   }
 }
@@ -44,7 +44,7 @@
 
 // Gemeinsame Basis für Listen
 %list-base {
-  margin: 0.5rem 0 0 0;
+  margin: 0.5rem 0 0;
   padding-left: 1.2rem;
   
   li {
@@ -58,7 +58,7 @@
   
   &:hover {
     transform: translateY($transform-value);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 8px rgb(0 0 0 / 20%);
   }
 }
 

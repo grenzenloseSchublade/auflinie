@@ -12,8 +12,8 @@ $landing-section-min-width: 250px; // Minimale Breite für Landingpage-Sektionen
 // Effekte
 $hover-transform: translateY(-5px); // Transformation beim Hover
 $standard-transition: 0.3s ease; // Standard-Übergangseffekt
-$box-shadow-light: 0 0 10px rgba(0, 0, 0, 0.1); // Leichter Schatten
-$box-shadow-medium: 0 5px 15px rgba(0, 0, 0, 0.2); // Mittlerer Schatten
+$box-shadow-light: 0 0 10px rgb(0 0 0 / 10%); // Leichter Schatten
+$box-shadow-medium: 0 5px 15px rgb(0 0 0 / 20%); // Mittlerer Schatten
 
 // Responsive Breakpoints werden aus dem Theme übernommen
 // $small, $medium, $large, $x-large sind bereits definiert

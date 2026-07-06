@@ -58,12 +58,14 @@
         ]
       }
     ],
-    "media-feature-range-notation": "prefix"
+    "media-feature-range-notation": "prefix",
+    "keyframes-name-pattern": "^[a-z][a-zA-Z0-9-]*$"
   },
   "ignoreFiles": [
     "vendor/**/*",
     "_site/**/*",
     "node_modules/**/*",
-    "tmp/**/*"
+    "tmp/**/*",
+    "assets/css/main.scss"
   ]
 }

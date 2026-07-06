@@ -17,3 +17,7 @@ group :jekyll_plugins do
 end
 
 gem "webrick", "~> 1.7"  # ab Ruby 3 nicht mehr in der stdlib
+
+group :test do
+  gem "html-proofer", "~> 5.0" # CI: interne Link-Prüfung über _site
+end

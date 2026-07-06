@@ -14,8 +14,8 @@
     &.active {
         background-color: $hover-color; // Primärfarbe aus dem Theme verwenden
         border-color: $hover-color;
-        color: #fff;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        color: #ffffff;
+        box-shadow: 0 2px 5px rgb(0 0 0 / 20%);
         
         &:hover {
             background-color: color.adjust($link-color, $lightness: -5%);
@@ -34,7 +34,7 @@
     &:hover {
         color: $hover-color;
         transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        box-shadow: 0 5px 15px rgb(0 0 0 / 30%);
     }
     
     &:active {
@@ -47,7 +47,7 @@
     &.notice--info 
     {
         // Grundfarbe des Buttons
-        //background-color: $link-color; // Deine Variable aus _colors.scss
+        // background-color: $link-color; // Deine Variable aus _colors.scss
         color: #ffffff; // Textfarbe anpassen
         font-size: 0.8rem;
         font-weight: 600;
@@ -56,7 +56,7 @@
             background-color: color.adjust($link-color, $lightness: -10%); // Dunklere Variante beim Hover
             color: $hover-color; // Textfarbe beim Hover
             transform: translateY(-3px); // Leichte Bewegung nach oben
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); // Schatten hinzufügen
+            box-shadow: 0 4px 8px rgb(0 0 0 / 20%); // Schatten hinzufügen
         }
     }
 }

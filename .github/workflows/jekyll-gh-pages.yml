@@ -17,6 +17,21 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - name: Install tooling
+        run: npm ci
+      - name: Stylelint
+        run: npm run lint:css
+
   build:
     runs-on: ubuntu-latest
     steps:
@@ -30,9 +45,11 @@ jobs:
       - name: Setup Pages
         uses: actions/configure-pages@v6
       - name: Build site
-        run: bundle exec jekyll build
+        run: bundle exec jekyll build --strict_front_matter
         env:
           JEKYLL_ENV: production
+      - name: Check internal links
+        run: bundle exec htmlproofer _site --disable-external --no-enforce-https --checks Links --swap-urls "^/auflinie/:/"
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v5
 
