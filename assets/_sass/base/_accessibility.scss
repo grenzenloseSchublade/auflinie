@@ -1,0 +1,122 @@
+// =============================================================================
+// Accessibility & globale Basis-Regeln
+// =============================================================================
+// Textauswahl, Reduced Motion und Focus-Styles — gilt sitewide.
+
+// Textauswahl-Farben
+::selection {
+    background: $selection-bg;
+    color: $selection-text;
+}
+
+::-moz-selection {
+    background: $selection-bg;
+    color: $selection-text;
+}
+
+// ============================================
+// Accessibility: Reduced Motion
+// ============================================
+// Deaktiviert Animationen und Transitions für Nutzer mit reduzierter Bewegung,
+// mit Ausnahmen: Neon-Orbit-Trigger und CRT-Hero (läuft immer; Lesemodus nur per Power).
+
+@media (prefers-reduced-motion: reduce) {
+    // Deaktiviere Animationen global, ABER mit Ausnahme der Neon-Orbit-Animation
+    // Die Neon-Orbit-Animation auf der Startseite ist ein wichtiges Designelement
+    // und wird nur bei Benutzerinteraktion ausgelöst
+    // CRT-Hero (Roll, Tube-Preboot/Boot, Scanlines …): von der Drossel ausnehmen — Abschaltung nur per Lesemodus (Power), s. _hero.scss
+    *:not(.neon-umlaut):not(.neon-glow):not(.neon-name):not(.neon-orbit-trigger):not(.page__hero-crt-roll):not(.page__hero-crt-layer):not(.page__hero-grain):not(.page__hero-crt-noise):not(.page__hero--overlay),
+    *:not(.neon-umlaut):not(.neon-glow):not(.neon-name):not(.neon-orbit-trigger):not(.page__hero-crt-roll):not(.page__hero-crt-layer)::before,
+    *:not(.neon-umlaut):not(.neon-glow):not(.neon-name):not(.neon-orbit-trigger):not(.page__hero-crt-layer):not(.page__hero--overlay):not(.page__hero-crt-media)::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+
+    // WICHTIG: Neon-Orbit-Animation bleibt IMMER aktiv (Startseiten-Feature)
+    // Diese Animation ist essenziell für die Darstellung und wird nicht deaktiviert
+
+    // Hover-Transformationen deaktivieren (außer Neon-Elemente)
+    .archive__item,
+    .landing-section,
+    .interest-card,
+    .skill-card,
+    .contact-card,
+    .quote-container,
+    .about-section,
+    .btn {
+        transform: none !important;
+        transition: none !important;
+    }
+
+    // Masthead Transitions deaktivieren (aber nicht die Neon-Animation)
+    .masthead,
+    .greedy-nav__toggle,
+    .navicon,
+    .navicon::before,
+    .navicon::after {
+        transition: none !important;
+    }
+
+    // TOC Collapse deaktivieren
+    .toc__menu-wrapper {
+        transition: none !important;
+    }
+}
+
+// ============================================
+// Accessibility: Focus Styles
+// ============================================
+// Konsistente und sichtbare Focus-Styles für Keyboard-Navigation
+
+// Globaler Focus-Style für alle interaktiven Elemente
+:focus-visible {
+    outline: 2px solid $link-color;
+    outline-offset: 2px;
+}
+
+// Entferne den Standard-Fokus-Ring für Maus-Klicks
+:focus:not(:focus-visible) {
+    outline: none;
+}
+
+// Spezifische Focus-Styles für Buttons
+button:focus-visible,
+.btn:focus-visible,
+.zoom-button:focus-visible {
+    outline: 2px solid $link-color;
+    outline-offset: 2px;
+    box-shadow: 0 0 0 4px rgba($link-color, 0.3);
+}
+
+// Focus-Styles für Links
+a:focus-visible {
+    outline: 2px solid $link-color;
+    outline-offset: 2px;
+    text-decoration: underline;
+}
+
+// Focus-Styles für Formular-Elemente
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+    outline: 2px solid $link-color;
+    outline-offset: 2px;
+    border-color: $link-color;
+}
+
+// Focus-Styles für Navigation
+.greedy-nav a:focus-visible,
+.masthead__menu-item a:focus-visible {
+    outline: 2px solid $link-color;
+    outline-offset: 2px;
+    background-color: $link-color-subtle !important;
+}
+
+// Focus-Styles für Kontakt-Karten
+.contact-card:focus-visible {
+    outline: 2px solid $link-color;
+    outline-offset: 4px;
+    box-shadow: 0 0 0 4px rgba($link-color, 0.2);
+}
