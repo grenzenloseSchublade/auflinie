@@ -1,0 +1,26 @@
+{% comment %}
+  Statisches CRT-Overlay (Bildschirm-Look wie der Hero, ohne Animationen):
+  Scanlines + RGB-Maske + Punkt-Raster + Vignette + Grain, pointer-events: none.
+  Parameter: intensity = "dezent" (Default) | "stark".
+  Der SVG-Grain-Filter wird genau einmal pro Seite ausgegeben — `assign` in
+  Jekyll-Includes schreibt in den Scope der aufrufenden Seite und wirkt so als Guard.
+{% endcomment %}
+{% unless crt_overlay_defs_rendered %}
+{% assign crt_overlay_defs_rendered = true %}
+<svg class="crt-overlay__svg-defs" aria-hidden="true" focusable="false" width="0" height="0">
+  <defs>
+    <filter id="crtGrainFilter" x="0%" y="0%" width="100%" height="100%" color-interpolation-filters="sRGB">
+      <feTurbulence type="fractalNoise" baseFrequency="0.78" numOctaves="3" stitchTiles="stitch" result="grainNoise" />
+      <feColorMatrix in="grainNoise" type="matrix"
+        values="0 0 0 0 0
+                0 0 0 0 0
+                0 0 0 0 0
+                0 0 0 0.32 0" />
+    </filter>
+  </defs>
+</svg>
+{% endunless %}
+<div class="crt-overlay crt-overlay--{{ include.intensity | default: 'dezent' }}" aria-hidden="true">
+  <div class="crt-overlay__mask"></div>
+  <div class="crt-overlay__grain"></div>
+</div>

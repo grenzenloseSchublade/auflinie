@@ -1,0 +1,149 @@
+// =============================================================================
+// CRT-Overlay — statischer Bildschirm-Look für beliebige Container
+// =============================================================================
+// Wiederverwendbare, rein statische Variante des Hero-CRT-Effekts
+// (Rezepte aus components/_hero.scss): Scanlines + RGB-Maske + Punkt-Raster
+// + Vignette + Grain. Keine Animationen (Rollbalken/Noise/Boot bleiben dem
+// Hero vorbehalten) — dadurch automatisch verträglich mit reduced motion.
+
+// Verwendung: {% include crt-overlay.html intensity="dezent|stark" %}
+// innerhalb eines Containers mit position: relative; overflow: hidden.
+// Markup: .crt-overlay > .crt-overlay__mask + .crt-overlay__grain
+// Liegt via pointer-events: none wirkungslos über der Interaktionsfläche;
+// Canvas-Pixel (z. B. Bild-Downloads) bleiben unberührt.
+
+.crt-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  overflow: hidden;
+  pointer-events: none;
+
+  &__mask,
+  &__grain {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  &__mask::before,
+  &__mask::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  // Vertikale RGB-Bahnen (~Slot/Shadow-Mask, gedämpft)
+  &__mask::before {
+    z-index: 1;
+    background: repeating-linear-gradient(
+      90deg,
+      rgb(195 115 125 / 5.5%) 0,
+      rgb(195 115 125 / 5.5%) 1px,
+      rgb(100 175 130 / 4.8%) 1px,
+      rgb(100 175 130 / 4.8%) 2px,
+      rgb(115 125 195 / 5.2%) 2px,
+      rgb(115 125 195 / 5.2%) 3px,
+      transparent 3px,
+      transparent 5.5px
+    );
+  }
+
+  // Mini-Punkt-Raster (Phosphor-Körnung, weich)
+  &__mask::after {
+    z-index: 2;
+    background-image: repeating-radial-gradient(
+      circle at 50% 50%,
+      rgb(255 255 255 / 4%) 0,
+      rgb(0 0 0 / 2%) 0.4px,
+      transparent 0.55px,
+      transparent 1.55px
+    );
+    background-size: 2.25px 2.25px;
+  }
+
+  // Filmkorn (SVG-Filter #crtGrainFilter aus crt-overlay.html)
+  &__grain {
+    z-index: 3;
+    background: #707070;
+    filter: url("#crtGrainFilter");
+    mix-blend-mode: soft-light;
+  }
+}
+
+// Dezent: feines Raster, weiche Vignette
+.crt-overlay--dezent {
+  box-shadow:
+    inset 0 0 90px rgb(35 38 52 / 28%),
+    inset 0 0 18px rgb(90 85 115 / 10%);
+
+  .crt-overlay__mask {
+    background: repeating-linear-gradient(
+      180deg,
+      rgb(0 0 0 / 7%) 0,
+      rgb(0 0 0 / 7%) 1px,
+      rgb(255 255 255 / 2%) 1px,
+      rgb(255 255 255 / 2%) 4px
+    );
+  }
+
+  .crt-overlay__mask::before {
+    opacity: 0.28;
+  }
+
+  .crt-overlay__mask::after {
+    opacity: 0.22;
+  }
+
+  .crt-overlay__grain {
+    opacity: 0.14;
+  }
+}
+
+// Stark: dichteres Raster, sichtbar „Röhre“
+.crt-overlay--stark {
+  box-shadow:
+    inset 0 0 140px rgb(40 42 56 / 42%),
+    inset 0 0 32px rgb(95 90 125 / 22%),
+    inset 0 1px 0 rgb(255 255 255 / 3%);
+
+  .crt-overlay__mask {
+    background:
+      repeating-linear-gradient(
+        180deg,
+        rgb(25 28 38 / 26%) 0,
+        rgb(25 28 38 / 26%) 1px,
+        rgb(255 255 255 / 4%) 1px,
+        rgb(255 255 255 / 4%) 3px
+      ),
+      repeating-linear-gradient(
+        90deg,
+        rgb(200 120 150 / 1.8%) 0,
+        rgb(120 170 190 / 1.8%) 1px,
+        rgb(0 0 0 / 0%) 1px,
+        rgb(0 0 0 / 0%) 3px
+      );
+  }
+
+  .crt-overlay__mask::before {
+    opacity: 0.5;
+  }
+
+  .crt-overlay__mask::after {
+    opacity: 0.4;
+  }
+
+  .crt-overlay__grain {
+    opacity: 0.2;
+  }
+}
+
+// SVG-Filter-Definitionen (einmal pro Seite, unsichtbar)
+.crt-overlay__svg-defs {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+  pointer-events: none;
+}

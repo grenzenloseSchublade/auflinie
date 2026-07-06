@@ -9,6 +9,7 @@ classes:
   - mandelbrot-page
   #- full-width-page
 mathjax: true
+fractal_panels: true
 toc: true
 toc_label: "Inhalt"
 toc_icon: "list"

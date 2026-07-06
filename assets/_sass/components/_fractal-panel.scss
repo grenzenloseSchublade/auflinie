@@ -1,0 +1,13 @@
+// =============================================================================
+// Fractal Panel — gemeinsame Komponente der interaktiven Fraktal-Panels
+// =============================================================================
+// Ersetzt die Inline-Styles von julia-interactive.html und
+// mandelbrot-julia-explorer.html. BEM: Block .fractal-panel,
+// Modifier --single (Julia) / --dual (Explorer), Zustände .is-focus-mode,
+// .is-fullscreen. Instanziierung über _includes/fractal/panel.html,
+// Verhalten über assets/js/fractal-panel.js.
+
+// Z-Index-Skala im __canvas-frame:
+//   Canvas 1 → CRT-Overlay 2 → Zoom-Box 3 → HUD 4 → Loading/Warnung 5 → Mobile-Zoom 6
+
+// Styles folgen in der Panel-Migration (Etappe 2/3).

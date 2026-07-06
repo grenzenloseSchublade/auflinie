@@ -29,6 +29,10 @@
 <script src="{{ '/assets/js/expandable-list.js' | relative_url }}"></script>
 <script src="{{ '/assets/js/neon-orbit-toggle.js' | relative_url }}"></script>
 
+{% if page.fractal_panels %}
+  {% include fractal/deps.html %}
+{% endif %}
+
 {% if site.after_footer_scripts %}
   {% for script in site.after_footer_scripts %}
     <script src="{{ script | relative_url }}"></script>

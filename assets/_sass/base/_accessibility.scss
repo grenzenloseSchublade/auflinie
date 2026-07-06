@@ -25,9 +25,9 @@
     // Die Neon-Orbit-Animation auf der Startseite ist ein wichtiges Designelement
     // und wird nur bei Benutzerinteraktion ausgelöst
     // CRT-Hero (Roll, Tube-Preboot/Boot, Scanlines …): von der Drossel ausnehmen — Abschaltung nur per Lesemodus (Power), s. _hero.scss
-    *:not(.neon-umlaut):not(.neon-glow):not(.neon-name):not(.neon-orbit-trigger):not(.page__hero-crt-roll):not(.page__hero-crt-layer):not(.page__hero-grain):not(.page__hero-crt-noise):not(.page__hero--overlay),
-    *:not(.neon-umlaut):not(.neon-glow):not(.neon-name):not(.neon-orbit-trigger):not(.page__hero-crt-roll):not(.page__hero-crt-layer)::before,
-    *:not(.neon-umlaut):not(.neon-glow):not(.neon-name):not(.neon-orbit-trigger):not(.page__hero-crt-layer):not(.page__hero--overlay):not(.page__hero-crt-media)::after {
+    *:not(.neon-umlaut, .neon-glow, .neon-name, .neon-orbit-trigger, .page__hero-crt-roll, .page__hero-crt-layer, .page__hero-grain, .page__hero-crt-noise, .page__hero--overlay),
+    *:not(.neon-umlaut, .neon-glow, .neon-name, .neon-orbit-trigger, .page__hero-crt-roll, .page__hero-crt-layer)::before,
+    *:not(.neon-umlaut, .neon-glow, .neon-name, .neon-orbit-trigger, .page__hero-crt-layer, .page__hero--overlay, .page__hero-crt-media)::after {
         animation-duration: 0.01ms !important;
         animation-iteration-count: 1 !important;
         transition-duration: 0.01ms !important;
