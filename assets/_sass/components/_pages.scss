@@ -87,14 +87,20 @@
   color: #ffffff;
 }
 
-.blog-filter-actions {
-  margin-top: 0.75em;
+.blog-filter-row {
   margin-bottom: 1.5em;
 }
 
 .blog-archive-button {
-  box-shadow: 0 6px 16px rgb(0 0 0 / 35%);
+  background: transparent;
+  border: 1px solid rgb(5 217 232 / 45%);
+  color: $link-color;
   letter-spacing: 0.02em;
+
+  &:hover {
+    background: rgb(5 217 232 / 12%);
+    color: $link-color;
+  }
 }
 
 .blog-empty-message {

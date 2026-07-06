@@ -1,0 +1,6 @@
+{% comment %}
+  Deutsches Datumsformat: "4. März 2025".
+  Jekylls strftime kennt nur englische Monatsnamen (C-Locale) — daher Lookup.
+  Liquid erlaubt keine Filter im Array-Index, deshalb der Zwischenschritt.
+  Parameter: date
+{% endcomment %}{% assign date_de_months = "Januar,Februar,März,April,Mai,Juni,Juli,August,September,Oktober,November,Dezember" | split: "," %}{% assign date_de_i = include.date | date: "%-m" | plus: 0 | minus: 1 %}{{ include.date | date: "%-d" }}. {{ date_de_months[date_de_i] }} {{ include.date | date: "%Y" }}

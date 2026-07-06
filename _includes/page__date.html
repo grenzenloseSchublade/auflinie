@@ -1,0 +1,8 @@
+{% comment %}
+  Lokales Override des Theme-Includes: deutsches Datumsformat (date-de.html).
+{% endcomment %}
+{% if page.last_modified_at %}
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> {{ site.data.ui-text[site.locale].date_label | default: "Aktualisiert:" }}</strong> <time class="dt-published" datetime="{{ page.last_modified_at | date: "%Y-%m-%d" }}">{% include date-de.html date=page.last_modified_at %}</time></p>
+{% elsif page.date %}
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> {{ site.data.ui-text[site.locale].date_label | default: "Aktualisiert:" }}</strong> <time class="dt-published" datetime="{{ page.date | date_to_xmlschema }}">{% include date-de.html date=page.date %}</time></p>
+{% endif %}

@@ -379,7 +379,11 @@ document.addEventListener('DOMContentLoaded', function() {
       storedState = null;
     }
 
-    const startExpanded = storedState !== 'collapsed';
+    // Volle Inhaltsbreite (wide-Layout, kein Sidebar-TOC) => initial eingeklappt,
+    // sonst dominiert das TOC die Seite; gespeicherte Nutzerwahl gewinnt immer.
+    const isFullWidthToc = originalToc.getBoundingClientRect().width > 520;
+    const defaultExpanded = !isFullWidthToc;
+    const startExpanded = storedState ? storedState !== 'collapsed' : defaultExpanded;
     setExpanded(startExpanded, false);
 
     if (prefersReducedMotion) {

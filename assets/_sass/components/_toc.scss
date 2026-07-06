@@ -256,26 +256,43 @@
 .toc {
     font-family: $sans-serif-narrow;
     color: $text-color;
-    background-color: rgb(0 0 0 / 20%);
-    border: 1px solid $border-color;
+    background-color: $console-panel-bg;
+    border: 1px solid $console-panel-border;
     border-radius: $border-radius;
-    -webkit-box-shadow: $box-shadow;
-    box-shadow: $box-shadow;
+    box-shadow: 0 2px 6px rgb(0 0 0 / 25%);
     overflow: hidden;
 
+    // Kopf im Akzent-Balken-Stil (leise statt Voll-Teal)
     .nav__title {
-        color: #ffffff;
-        font-size: $type-size-5; // 1em (~16px) - gut lesbar
-        background: $primary-color;
+        color: $console-heading;
+        font-size: 0.95em;
+        background: rgb(255 255 255 / 3%);
+        border-bottom: 1px solid $console-panel-border;
         border-top-left-radius: $border-radius;
         border-top-right-radius: $border-radius;
-        padding: 0.75em 1em; // Größerer Touch-Target
+        padding: 0.6em 1em;
         font-weight: 600;
         letter-spacing: 0.02em;
         text-transform: none;
-        min-height: 44px; // WCAG AAA Touch Target
+        min-height: 44px;
         display: flex;
         align-items: center;
+
+        &::before {
+            content: "";
+            flex-shrink: 0;
+            width: 4px;
+            height: 1.05em;
+            border-radius: 2px;
+            background: linear-gradient(180deg, $link-color, rgb(5 217 232 / 35%));
+            box-shadow: 0 0 8px rgb(5 217 232 / 30%);
+            margin-right: 0.6em;
+        }
+
+        i {
+            color: $link-color;
+            font-size: 0.85em;
+        }
     }
 
     // Scrollspy marks toc items as .active when they are in focus
@@ -294,15 +311,15 @@
     padding: 0;
     width: 100%;
     list-style: none;
-    font-size: $type-size-5; // 1em (~16px) - Standard Textgröße
+    font-size: 0.92em;
 
     a {
-        padding: 0.75rem 1rem; // 12px 16px - ausreichend für Touch
-        min-height: 44px; // WCAG AAA Touch Target
+        padding: 0.55rem 1rem;
+        min-height: 38px;
         color: $text-color;
         font-weight: 600;
         line-height: 1.4;
-        text-decoration: none;
+        text-decoration: none !important; // Theme-Hover-Unterstrich unterbinden
         border-bottom: 1px solid rgb(255 255 255 / 10%);
         transition: background-color $standard-transition, color $standard-transition;
         
@@ -323,6 +340,12 @@
         &:focus-visible {
             outline: 2px solid $link-color;
             outline-offset: -2px; // Innen, damit es im Container bleibt
+        }
+
+        // Touch: größere Ziele nur dort, wo grob gezeigt wird
+        @media (pointer: coarse) {
+            padding: 0.75rem 1rem;
+            min-height: 44px;
         }
     }
 
@@ -426,19 +449,24 @@
     
     // Touch-Feedback
     &:active .nav__title {
-        background: color.adjust($primary-color, $lightness: -5%);
+        background: rgb(5 217 232 / 10%);
     }
 }
 
 .toc-toggle .nav__title {
     margin: 0;
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
     align-items: center;
     width: 100%;
     box-sizing: border-box;
     border-radius: $border-radius $border-radius 0 0;
     gap: 0.5rem;
+}
+
+.toc-toggle .toc-toggle-icon {
+    margin-left: auto;
+    color: rgb(255 255 255 / 55%);
 }
 
 .toc-toggle-icon {
