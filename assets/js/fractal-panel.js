@@ -873,6 +873,15 @@
         }, { signal: signal });
       }
 
+      const crtToggle = this.$('crt-toggle');
+      if (crtToggle) {
+        crtToggle.addEventListener('click', () => {
+          const off = root.classList.toggle('is-crt-off');
+          crtToggle.classList.toggle('is-active', !off);
+          crtToggle.setAttribute('aria-pressed', String(!off));
+        }, { signal: signal });
+      }
+
       const downloadButton = this.$('download');
       if (downloadButton) {
         downloadButton.addEventListener('click', () => this.download(), { signal: signal });
