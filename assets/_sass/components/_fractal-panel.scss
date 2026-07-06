@@ -1157,7 +1157,7 @@ $fp-heading: #eacfb4;
     max-height: 50vh;
   }
 
-  h3 {
+  h4 {
     margin: 0 0 20px;
     color: $fp-magenta;
     font-size: 1.25rem;
@@ -1166,7 +1166,7 @@ $fp-heading: #eacfb4;
     padding-bottom: 12px;
   }
 
-  h4 {
+  h5 {
     margin: 0 0 12px;
     color: $fp-accent;
     font-size: 1rem;
@@ -1175,7 +1175,7 @@ $fp-heading: #eacfb4;
     padding-bottom: 8px;
   }
 
-  h5 {
+  h6 {
     margin: 0 0 6px;
     color: #d1f7ff;
     font-size: 0.875rem;
@@ -1268,7 +1268,7 @@ $fp-heading: #eacfb4;
     }
   }
 
-  .nav-column h5 {
+  .nav-column h6 {
     margin-bottom: 8px;
     color: $fp-magenta;
   }

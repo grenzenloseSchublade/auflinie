@@ -26,9 +26,11 @@ header:
 ---
 
 {% for section in site.data.mandelbrot.sections %}
-<span id="{% if section.anchor %}{{ section.anchor }}{% else %}{{ section.section | slugify }}{% endif %}" class="section-anchor"></span>
+{% assign heading_id = section.anchor | default: nil %}
+{% unless heading_id %}{% assign heading_id = section.section | slugify %}{% endunless %}
 
-## <i class="fas fa-{{ section.icon }}"></i> {{ section.section }}
+## <i class="fas fa-{{ section.icon }}" aria-hidden="true"></i> {{ section.section }}
+{: id="{{ heading_id }}"}
 
 {{ section.content | markdownify }}
 

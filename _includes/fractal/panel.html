@@ -20,7 +20,7 @@
   id="{{ include.id }}"
   data-fractal-panel="{{ fractal_variant }}"
   data-worker-base="{{ '/assets/js' | relative_url }}">
-  <h2 class="fractal-panel__title">{{ include.title }}</h2>
+  <h3 class="fractal-panel__title">{{ include.title }}</h3>
 
   <div class="fractal-panel__toolbar">
     <button type="button" class="fractal-panel__button" data-role="focus-mode" title="Fokusmodus: Bedienelemente ausblenden" aria-label="Fokusmodus" aria-pressed="false">
@@ -134,14 +134,14 @@
   {% else %}
   <div class="fractal-panel__row">
     <div class="fractal-panel__column">
-      <h3 class="fractal-panel__column-title">Mandelbrot-Menge</h3>
+      <h4 class="fractal-panel__column-title">Mandelbrot-Menge</h4>
       {% include fractal/canvas.html key="mandelbrot" label="Mandelbrot-Menge" hud_c="-0.500 + 0.000i" crt=fractal_crt zoom_in_label="Mandelbrot vergrößern" zoom_out_label="Mandelbrot verkleinern" %}
       <div class="fractal-panel__info-panel">
         <p>Klicken Sie auf einen Punkt, um die entsprechende Julia-Menge zu sehen.</p>
       </div>
     </div>
     <div class="fractal-panel__column">
-      <h3 class="fractal-panel__column-title">Julia-Menge für c = <span class="fractal-panel__info-value" data-role="julia-param">-0.700 + 0.270i</span></h3>
+      <h4 class="fractal-panel__column-title">Julia-Menge für c = <span class="fractal-panel__info-value" data-role="julia-param">-0.700 + 0.270i</span></h4>
       {% include fractal/canvas.html key="julia" label="Julia-Menge zum gewählten Parameter c" hud_c="0.000 + 0.000i" crt=fractal_crt zoom_in_label="Julia vergrößern" zoom_out_label="Julia verkleinern" %}
       <div class="fractal-panel__info-panel">
         <p>Die Julia-Menge für den gewählten Parameter c.</p>

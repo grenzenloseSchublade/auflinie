@@ -16,8 +16,8 @@ const CACHE_NAME = `kraftstoff-cache-${CACHE_VERSION}`;
 // Alle Pfade sind relativ zum Scope des Service Workers (Root der Website)
 const CACHE_URLS = [
   './',
-  './index.html',
   './offline.html',
+  './assets/js/offline.js',
   './assets/css/main.css',
   './assets/js/greedy-navigation.js',
   './assets/js/image-cache.js',

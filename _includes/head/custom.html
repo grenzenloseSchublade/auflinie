@@ -36,12 +36,9 @@
       skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
       ignoreHtmlClass: 'tex2jax_ignore',
       processHtmlClass: 'tex2jax_process',
-      renderActions: {
-        assistiveMml: []
-      },
       menuOptions: {
         settings: {
-          assistiveMml: false
+          assistiveMml: true
         }
       }
     },
@@ -110,17 +107,11 @@
     opacity: 1;
   }
 
-  /* Verstecke Kategorien und Tags auf der Website */
+  /* Taxonomie-Metadaten (Kategorien/Tags) sind sitewide deaktiviert */
   .page__taxonomy,
   .page__taxonomy-item,
   .taxonomy__index,
   .archive__item-excerpt .page__meta {
-    display: none !important;
-  }
-
-  /* Verstecke die Kategorien- und Tags-Seiten in der Suche und Sitemap */
-  body.layout--categories,
-  body.layout--tags {
     display: none !important;
   }
 

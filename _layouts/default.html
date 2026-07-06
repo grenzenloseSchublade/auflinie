@@ -10,10 +10,14 @@
       /* Basis-Layout für sofortige Darstellung */
       *,*::before,*::after{box-sizing:border-box}
       html{font-size:16px;-webkit-text-size-adjust:100%}
-      body{margin:0;padding-top:76px;background:#252a34;color:#e8e6e3;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif}
+      /* Masthead-Höhe: identisch zu variables/_css-properties.scss (74px mobil / 88px ab 768px),
+         sonst springt der Inhalt beim Laden von main.css (CLS) */
+      :root{--masthead-height:74px}
+      @media (min-width:768px){:root{--masthead-height:88px}}
+      body{margin:0;padding-top:var(--masthead-height);background:#252a34;color:#e8e6e3;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif}
       
       /* Masthead (Header) - kritisch für Layout */
-      .masthead{position:fixed;top:0;left:0;right:0;height:76px;z-index:1000;background:rgba(37,42,52,0.95);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px)}
+      .masthead{position:fixed;top:0;left:0;right:0;height:var(--masthead-height);z-index:1000;background:rgba(37,42,52,0.95);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px)}
       .masthead__inner-wrap{display:flex;align-items:center;height:100%;padding:0 1em}
       .greedy-nav{display:flex;align-items:center;height:100%}
       .site-title{font-size:1.8em;font-weight:bold;color:#fff;text-decoration:none}
