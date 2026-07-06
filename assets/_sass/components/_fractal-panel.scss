@@ -3,11 +3,1321 @@
 // =============================================================================
 // Ersetzt die Inline-Styles von julia-interactive.html und
 // mandelbrot-julia-explorer.html. BEM: Block .fractal-panel,
-// Modifier --single (Julia) / --dual (Explorer), Zustände .is-focus-mode,
-// .is-fullscreen. Instanziierung über _includes/fractal/panel.html,
-// Verhalten über assets/js/fractal-panel.js.
-
+// Modifier --single (Julia, 1 Canvas) / --dual (Explorer, 2 Canvases),
+// Zustände .is-focus-mode, .is-advanced-open, .is-fullscreen.
+// Markup: _includes/fractal/panel.html — Verhalten: assets/js/fractal-panel.js.
 // Z-Index-Skala im __canvas-frame:
-//   Canvas 1 → CRT-Overlay 2 → Zoom-Box 3 → HUD 4 → Loading/Warnung 5 → Mobile-Zoom 6
+//   Canvas (statisch) → CRT-Overlay 2 → Zoom-Box 3 → HUD 4
+//   → Loading/Warnung 5 → Mobile-Zoom 6
+// Panel-Chrome im Fullscreen: Toolbar/Controls 200, Tom-Select-Dropdown 250,
+// Erklärbox 300.
 
-// Styles folgen in der Panel-Migration (Etappe 2/3).
+$fp-accent: #05d9e8;
+$fp-accent-soft: rgb(5 217 232 / 15%);
+$fp-magenta: #ff00ff;
+$fp-slider-handle: #4aa3ff;
+$fp-heading: #eacfb4;
+
+// -----------------------------------------------------------------------------
+// Block
+// -----------------------------------------------------------------------------
+.fractal-panel {
+  display: flex;
+  flex-direction: column;
+  max-width: 100%;
+  width: 100%;
+  box-sizing: border-box;
+  margin: 0 auto 20px;
+  background: #222222;
+  border-radius: 8px;
+  padding: 15px;
+  box-shadow: 0 4px 8px rgb(0 0 0 / 30%);
+
+  @media (width <= 768px) {
+    padding: 10px;
+    margin-left: 0;
+    margin-right: 0;
+    border-radius: 0;
+  }
+}
+
+.fractal-panel__title {
+  color: $fp-heading;
+  margin: 0 0 20px;
+  padding: 10px 0;
+  text-align: center;
+  font-size: 24px;
+  font-weight: 600;
+  border-bottom: 2px solid #444444;
+  position: relative;
+
+  &::after {
+    content: "";
+    position: absolute;
+    bottom: -2px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 140px;
+    height: 2px;
+    background-color: $fp-accent;
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Toolbar
+// -----------------------------------------------------------------------------
+.fractal-panel__toolbar {
+  display: flex;
+  gap: 8px;
+  flex-wrap: nowrap;
+  margin-bottom: 12px;
+  justify-content: space-between;
+
+  .fractal-panel__button {
+    flex: 1;
+    min-width: 0;
+    max-width: 140px;
+    justify-content: center;
+  }
+
+  .icon {
+    margin-right: 6px;
+  }
+
+  @media (width <= 768px) {
+    gap: 6px;
+
+    .fractal-panel__button {
+      padding: 8px 10px;
+    }
+  }
+
+  @media (width <= 480px) {
+    .btn-text {
+      display: none;
+    }
+
+    .icon {
+      margin-right: 0;
+    }
+
+    .fractal-panel__button {
+      padding: 10px 12px;
+    }
+  }
+}
+
+.fractal-panel__toolbar-group {
+  display: flex;
+  flex: 1;
+  max-width: 140px;
+  gap: 4px;
+  background: rgb(255 255 255 / 3%);
+  border: 1px solid rgb(255 255 255 / 8%);
+  border-radius: 12px;
+  padding: 3px;
+
+  .fractal-panel__button {
+    flex: 1;
+    min-width: 0;
+    max-width: none;
+  }
+
+  @media (width <= 480px) {
+    .btn-text {
+      display: none;
+    }
+
+    .icon {
+      margin-right: 0;
+    }
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Buttons
+// -----------------------------------------------------------------------------
+.fractal-panel__button {
+  background: rgb(255 255 255 / 4%);
+  color: #dddddd;
+  border: 1px solid rgb(255 255 255 / 12%);
+  padding: 8px 12px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-width: 80px;
+  font-size: 13px;
+  font-weight: 500;
+  min-height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+
+  .icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+  }
+
+  &:hover {
+    background: rgb(255 255 255 / 8%);
+    border-color: rgb(5 217 232 / 30%);
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    transform: scale(0.98) translateY(0);
+  }
+
+  &:focus-visible {
+    background: rgb(5 217 232 / 10%);
+    border-color: rgb(5 217 232 / 50%);
+    box-shadow: 0 0 0 3px $fp-accent-soft;
+    outline: none;
+  }
+
+  &.is-active {
+    background: rgb(5 217 232 / 30%) !important;
+    color: #ffffff !important;
+    border-color: rgb(5 217 232 / 60%) !important;
+    box-shadow: 0 0 8px 2px rgb(5 217 232 / 60%), inset 0 0 4px rgb(5 217 232 / 20%);
+  }
+}
+
+.btn-text {
+  white-space: nowrap;
+}
+
+.fractal-panel__button--compact {
+  flex: 1;
+  min-width: 120px;
+  padding: 8px 12px;
+  font-size: 12px;
+}
+
+.fractal-panel__button--icon-only {
+  flex: 0 0 auto;
+  padding: 8px 12px;
+  min-width: auto;
+
+  .icon {
+    margin: 0;
+  }
+}
+
+.fractal-panel__button--intensity {
+  flex: 0 0 auto;
+  padding: 8px 12px;
+  white-space: nowrap;
+  align-self: flex-end;
+  height: fit-content;
+}
+
+.fractal-panel__button--expand {
+  width: 100%;
+  min-width: 0;
+  max-width: none;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 16px;
+  background: rgb(255 255 255 / 2%);
+  border: 1px dashed rgb(255 255 255 / 15%);
+  border-radius: 10px;
+  color: rgb(255 255 255 / 60%);
+  font-size: 13px;
+  transition: all 0.25s ease;
+
+  &:hover {
+    background: rgb(255 255 255 / 5%);
+    border-color: rgb(5 217 232 / 30%);
+    color: rgb(255 255 255 / 90%);
+  }
+
+  .chevron {
+    display: flex;
+    align-items: center;
+    margin-left: auto;
+    transition: transform 0.3s ease;
+  }
+
+  .chevron i {
+    font-size: 12px;
+  }
+}
+
+.fractal-panel.is-advanced-open .fractal-panel__button--expand {
+  background: rgb(5 217 232 / 10%);
+  border-color: rgb(5 217 232 / 30%);
+  border-style: solid;
+  color: $fp-accent;
+  box-shadow: 0 0 8px 2px rgb(5 217 232 / 20%);
+
+  .chevron {
+    transform: rotate(180deg);
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Controls-Panel
+// -----------------------------------------------------------------------------
+.fractal-panel__controls {
+  margin-bottom: 15px;
+  background: linear-gradient(135deg, #2a2a2a 0%, #1e1e1e 100%);
+  padding: 16px;
+  border-radius: 12px;
+  border: 1px solid rgb(255 255 255 / 6%);
+  box-shadow: 0 4px 12px rgb(0 0 0 / 30%);
+
+  @media (width <= 768px) {
+    padding: 14px;
+  }
+
+  @media (width <= 480px) {
+    padding: 12px;
+    border-radius: 10px;
+  }
+}
+
+.fractal-panel__controls-basic,
+.fractal-panel__controls-advanced {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.fractal-panel__controls-advanced {
+  display: none;
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid rgb(5 217 232 / 20%);
+}
+
+.fractal-panel.is-advanced-open .fractal-panel__controls-advanced {
+  display: flex;
+}
+
+.fractal-panel__advanced-row {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid rgb(255 255 255 / 6%);
+}
+
+// Desktop: 2-Spalten-Grid für Basic-Controls, bei --single auch für Advanced
+@media (width >= 900px) {
+  .fractal-panel__controls-basic {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-template-rows: auto auto;
+    gap: 14px;
+    align-items: center;
+
+    > .fractal-panel__control-row {
+      grid-column: 1;
+      grid-row: 1;
+    }
+
+    > .fractal-panel__color-group {
+      grid-column: 2;
+      grid-row: 1;
+    }
+
+    > .fractal-panel__advanced-row {
+      grid-column: 1 / -1;
+      grid-row: 2;
+    }
+  }
+
+  .fractal-panel--single.is-advanced-open .fractal-panel__controls-advanced {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+
+    > .fractal-panel__control-row:nth-child(1) {
+      grid-column: 1;
+      grid-row: 1;
+    }
+
+    > .fractal-panel__control-row:nth-child(2) {
+      grid-column: 2;
+      grid-row: 1;
+    }
+
+    > .fractal-panel__preset-row {
+      grid-column: 1 / -1;
+      grid-row: 2;
+      max-width: 100%;
+    }
+
+    > .fractal-panel__preset-row .ts-wrapper {
+      max-width: 400px;
+    }
+
+    > .fractal-panel__toggle-row {
+      grid-column: 1 / -1;
+      grid-row: 3;
+    }
+  }
+
+  .fractal-panel__color-item {
+    min-width: 150px;
+    max-width: 180px;
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Control-Zeilen
+// -----------------------------------------------------------------------------
+.fractal-panel__control-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: rgb(255 255 255 / 3%);
+  border-radius: 10px;
+  border: 1px solid rgb(255 255 255 / 4%);
+  transition: background 0.2s ease;
+
+  &:hover {
+    background: rgb(255 255 255 / 5%);
+  }
+
+  label {
+    flex-shrink: 0;
+    min-width: 70px;
+    color: rgb(255 255 255 / 70%);
+    font-size: 13px;
+    font-weight: 500;
+    text-align: left;
+  }
+
+  @media (width <= 768px) {
+    flex-wrap: wrap;
+    gap: 8px;
+
+    label {
+      width: 100%;
+      min-width: unset;
+      margin-bottom: 2px;
+    }
+
+    .fractal-panel__value-chip {
+      order: 2;
+      margin-left: auto;
+    }
+  }
+
+  @media (width <= 480px) {
+    padding: 8px 10px;
+
+    label {
+      font-size: 12px;
+    }
+  }
+}
+
+.fractal-panel__color-group {
+  display: flex;
+  gap: 8px;
+  align-items: flex-end;
+  padding: 10px 12px;
+  background: rgb(255 255 255 / 3%);
+  border-radius: 10px;
+  border: 1px solid rgb(255 255 255 / 4%);
+  transition: background 0.2s ease;
+
+  &:hover {
+    background: rgb(255 255 255 / 5%);
+  }
+}
+
+.fractal-panel__color-item {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1 1 auto;
+  min-width: 120px;
+
+  label {
+    color: rgb(255 255 255 / 70%);
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  select {
+    width: 100%;
+  }
+
+  .ts-wrapper {
+    width: 100%;
+    max-width: 100%;
+    height: fit-content;
+  }
+}
+
+@media (width <= 768px) {
+  .fractal-panel__color-group {
+    flex-direction: row;
+    gap: 8px;
+    align-items: flex-end;
+
+    .fractal-panel__color-item {
+      min-width: 100px;
+    }
+
+    .fractal-panel__button--intensity {
+      padding: 10px;
+      min-width: auto;
+      width: auto;
+    }
+
+    .fractal-panel__button--intensity .btn-text {
+      display: none;
+    }
+
+    .fractal-panel__button--intensity .icon {
+      margin-right: 0;
+    }
+  }
+}
+
+.fractal-panel__preset-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: rgb(255 255 255 / 3%);
+  border-radius: 10px;
+  border: 1px solid rgb(255 255 255 / 4%);
+
+  label {
+    color: rgb(255 255 255 / 70%);
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+  }
+
+  select,
+  .ts-wrapper {
+    flex: 1;
+    min-width: 0;
+  }
+}
+
+.fractal-panel__toggle-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding-top: 10px;
+  margin-top: 4px;
+  border-top: 1px solid rgb(255 255 255 / 6%);
+}
+
+// -----------------------------------------------------------------------------
+// noUiSlider
+// -----------------------------------------------------------------------------
+.fractal-panel__slider {
+  flex: 1;
+  margin: 0 8px;
+  min-width: 100px;
+
+  .noUi-target {
+    background: rgb(255 255 255 / 16%);
+    border: none;
+    border-radius: 999px;
+    box-shadow: none;
+    height: 6px;
+  }
+
+  .noUi-connect {
+    background: linear-gradient(90deg, $fp-accent, $fp-slider-handle);
+    border-radius: 999px;
+  }
+
+  .noUi-handle {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: $fp-slider-handle;
+    border: 2px solid rgb(0 0 0 / 25%);
+    box-shadow: 0 2px 6px rgb(0 0 0 / 40%);
+    cursor: pointer;
+    top: -8px;
+    right: -10px;
+
+    &::before,
+    &::after {
+      display: none;
+    }
+
+    &:hover {
+      background: #5cb8ff;
+      transform: scale(1.1);
+    }
+
+    &:focus {
+      outline: none;
+      box-shadow: 0 0 0 3px rgb(74 163 255 / 40%), 0 2px 6px rgb(0 0 0 / 40%);
+    }
+  }
+
+  @media (width <= 768px) {
+    flex: 1 1 100%;
+    margin: 0;
+    order: 1;
+
+    .noUi-target {
+      height: 8px;
+    }
+
+    .noUi-handle {
+      width: 28px;
+      height: 28px;
+      top: -10px;
+      right: -14px;
+    }
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Value-Chip (editierbares Zahlenfeld)
+// -----------------------------------------------------------------------------
+.fractal-panel__value-chip {
+  flex-shrink: 0;
+  min-width: 52px;
+  width: 65px;
+  padding: 5px 8px;
+  color: $fp-accent;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: "SF Mono", Consolas, monospace;
+  text-align: center;
+  border-radius: 8px;
+  background: rgb(5 217 232 / 10%);
+  border: 1px solid rgb(5 217 232 / 20%);
+  outline: none;
+  appearance: textfield;
+  transition: border-color 0.2s, box-shadow 0.2s;
+
+  &::-webkit-outer-spin-button,
+  &::-webkit-inner-spin-button {
+    appearance: none;
+    margin: 0;
+  }
+
+  &:focus {
+    border-color: $fp-accent;
+    box-shadow: 0 0 8px rgb(5 217 232 / 40%);
+  }
+
+  &:hover {
+    border-color: rgb(5 217 232 / 50%);
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Selects (nativer Fallback, wenn Tom Select nicht lädt) + Tom Select Theme
+// -----------------------------------------------------------------------------
+.fractal-panel select {
+  background: rgb(255 255 255 / 6%);
+  color: #ffffff;
+  border: 1px solid rgb(255 255 255 / 10%);
+  padding: 10px 14px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 13px;
+  line-height: 1.2;
+}
+
+.fractal-panel select option {
+  background: #333333;
+  color: #eeeeee;
+  font-size: 1rem;
+}
+
+.fractal-panel__controls {
+  .ts-wrapper {
+    width: 100%;
+    position: relative;
+  }
+
+  .ts-wrapper.single .ts-control {
+    background: rgb(255 255 255 / 6%);
+    border: 1px solid rgb(255 255 255 / 10%);
+    border-radius: 10px;
+    padding: 8px 14px;
+    min-height: 40px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: none;
+  }
+
+  .ts-wrapper.single .ts-control:hover {
+    background: rgb(255 255 255 / 8%);
+    border-color: rgb(5 217 232 / 30%);
+  }
+
+  .ts-wrapper.single.focus .ts-control {
+    background: rgb(255 255 255 / 8%);
+    border-color: rgb(5 217 232 / 50%);
+    box-shadow: 0 0 0 3px $fp-accent-soft;
+  }
+
+  .ts-control,
+  .ts-control input {
+    color: #ffffff;
+    font-size: 13px;
+  }
+
+  .ts-control input::placeholder {
+    color: rgb(255 255 255 / 50%);
+  }
+
+  .ts-wrapper.single .ts-control::after {
+    border-color: rgb(255 255 255 / 50%) transparent transparent;
+    margin-top: -2px;
+  }
+
+  .ts-wrapper.single.dropdown-active .ts-control::after {
+    border-color: transparent transparent $fp-accent;
+  }
+
+  .ts-dropdown {
+    background: #1e1e1e;
+    border: 1px solid rgb(255 255 255 / 15%);
+    border-radius: 10px;
+    box-shadow: 0 8px 24px rgb(0 0 0 / 50%);
+    margin-top: 4px;
+    overflow: hidden;
+    z-index: 250;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    left: 0 !important;
+    right: auto !important;
+    box-sizing: border-box !important;
+  }
+
+  .ts-dropdown .ts-dropdown-content {
+    padding: 6px;
+    max-height: 250px;
+  }
+
+  .ts-dropdown .option {
+    padding: 10px 14px;
+    color: rgb(255 255 255 / 80%);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    font-size: 13px;
+  }
+
+  .ts-dropdown .option:hover,
+  .ts-dropdown .option.active {
+    background: $fp-accent-soft;
+    color: #ffffff;
+  }
+
+  .ts-dropdown .option.selected {
+    background: rgb(5 217 232 / 25%);
+    color: $fp-accent;
+  }
+
+  select.tomselected {
+    display: none !important;
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Canvas-Bereich
+// -----------------------------------------------------------------------------
+.fractal-panel__row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  justify-content: center;
+}
+
+.fractal-panel__column {
+  flex: 1 1 300px;
+  min-width: 260px;
+
+  @media (width <= 768px) {
+    min-width: 100%;
+    flex: 1 1 100%;
+  }
+}
+
+.fractal-panel__column-title {
+  color: $fp-heading;
+  margin: 0 0 20px;
+  padding: 10px 0;
+  text-align: center;
+  font-size: 20px;
+  font-weight: 600;
+  border-bottom: 2px solid #444444;
+  position: relative;
+
+  &::after {
+    content: "";
+    position: absolute;
+    bottom: -2px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100px;
+    height: 2px;
+    background-color: $fp-accent;
+  }
+}
+
+.fractal-panel__canvas-frame {
+  position: relative;
+  width: 100%;
+  margin: 0 auto;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.fractal-panel__canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 4px;
+  cursor: crosshair;
+  aspect-ratio: 16 / 9;
+  touch-action: none;
+}
+
+.fractal-panel--single .fractal-panel__canvas {
+  max-height: 70vh;
+  min-height: 320px;
+
+  @media (width >= 1024px) {
+    max-height: 75vh;
+    min-height: 380px;
+  }
+
+  @media (width <= 768px) {
+    max-height: 65vh;
+    min-height: 200px;
+  }
+}
+
+@media (width <= 768px) {
+  .fractal-panel--single.is-focus-mode .fractal-panel__canvas {
+    max-height: calc(100vh - 140px);
+    min-height: clamp(260px, 60vh, 520px);
+  }
+}
+
+.fractal-panel--dual .fractal-panel__canvas {
+  max-height: 60vh;
+  min-height: 240px;
+
+  @media (width <= 768px) {
+    max-height: 55vh;
+    min-height: 180px;
+  }
+}
+
+// Overlays im Canvas-Frame (Z-Skala siehe Kopfkommentar)
+.fractal-panel__zoom-box {
+  position: absolute;
+  border: 2px dashed $fp-magenta;
+  background: rgb(255 0 255 / 15%);
+  pointer-events: none;
+  display: none;
+  box-sizing: border-box;
+  z-index: 3;
+}
+
+.fractal-panel__hud {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 4;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  pointer-events: none;
+
+  @media (width <= 600px) {
+    top: 6px;
+    right: 6px;
+    gap: 3px;
+  }
+}
+
+.fractal-panel__hud-item {
+  background: rgb(0 0 0 / 60%);
+  color: rgb(255 255 255 / 70%);
+  padding: 4px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-family: "SF Mono", Consolas, monospace;
+  font-weight: 500;
+  backdrop-filter: blur(4px);
+  white-space: nowrap;
+  width: 130px;
+  text-align: center;
+  overflow: hidden;
+  box-sizing: border-box;
+
+  span {
+    font-weight: 600;
+  }
+
+  @media (width <= 600px) {
+    padding: 3px 6px;
+    font-size: 10px;
+  }
+}
+
+.fractal-panel__loading {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgb(0 0 0 / 70%);
+  color: #ffffff;
+  padding: 10px 20px;
+  border-radius: 4px;
+  display: none;
+  font-size: 16px;
+  z-index: 5;
+}
+
+.fractal-panel__zoom-warning {
+  position: absolute;
+  left: 12px;
+  bottom: 12px;
+  background: rgb(0 0 0 / 75%);
+  color: #ffd1d1;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  display: none;
+  z-index: 5;
+}
+
+// Mobiler Zoom-Regler (per JS nur auf kleinen Screens eingeblendet)
+.fractal-panel__mobile-zoom {
+  position: absolute;
+  right: 8px;
+  bottom: 10px;
+  display: none;
+  flex-direction: row;
+  align-items: center;
+  gap: 6px;
+  background: rgb(0 0 0 / 45%);
+  border-radius: 14px;
+  padding: 6px 8px;
+  z-index: 6;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 20%);
+}
+
+.fractal-panel__zoom-button {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #444444;
+  color: #ffffff;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  user-select: none;
+  padding: 0;
+  line-height: 1;
+  box-shadow: 0 1px 2px rgb(0 0 0 / 20%);
+  border: none;
+  transition: background-color 0.2s, transform 0.1s;
+
+  &:hover {
+    background: #555555;
+  }
+
+  &:active {
+    transform: scale(0.92);
+    box-shadow: 0 0 1px rgb(0 0 0 / 20%);
+  }
+}
+
+.fractal-panel__zoom-level {
+  color: #ffffff;
+  font-size: 12px;
+  background: rgb(0 0 0 / 30%);
+  padding: 2px 6px;
+  border-radius: 8px;
+  text-align: center;
+  min-width: 45px;
+  margin: 0 2px;
+}
+
+// -----------------------------------------------------------------------------
+// Info-Panel (nur --dual, sichtbar bei erweiterten Optionen)
+// -----------------------------------------------------------------------------
+.fractal-panel__info-panel {
+  margin-top: 10px;
+  background: #333333;
+  padding: 12px 15px;
+  border-radius: 4px;
+  color: #dddddd;
+  font-size: 16px;
+  line-height: 1.5;
+  text-align: left;
+  display: none;
+
+  p {
+    margin: 5px 0;
+  }
+}
+
+.fractal-panel.is-advanced-open .fractal-panel__info-panel {
+  display: block;
+}
+
+.fractal-panel__info-value {
+  font-weight: bold;
+  color: #ffffff;
+  font-size: 16px;
+}
+
+// -----------------------------------------------------------------------------
+// Erklärbereich
+// -----------------------------------------------------------------------------
+.fractal-panel__explanation {
+  margin-top: 20px;
+  display: block;
+}
+
+.fractal-panel__explanation-toggle {
+  width: 100%;
+  text-align: center;
+  margin-bottom: 0;
+  background: linear-gradient(145deg, rgb(42 42 42 / 95%), rgb(30 30 30 / 98%));
+  color: $fp-accent;
+  padding: 12px 16px;
+  border: 1px solid rgb(5 217 232 / 30%);
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  &:hover {
+    background: linear-gradient(145deg, rgb(50 50 50 / 95%), rgb(35 35 35 / 98%));
+    border-color: rgb(5 217 232 / 50%);
+    box-shadow: 0 0 15px rgb(5 217 232 / 20%);
+  }
+
+  &.is-active {
+    background: linear-gradient(145deg, rgb(5 217 232 / 15%), rgb(5 217 232 / 8%));
+    border-color: rgb(5 217 232 / 50%);
+  }
+
+  .toggle-icon {
+    font-size: 10px;
+    transition: transform 0.3s ease;
+  }
+}
+
+.fractal-panel__explanation-box {
+  background: linear-gradient(145deg, rgb(42 42 42 / 95%), rgb(30 30 30 / 98%));
+  border: 1px solid rgb(5 217 232 / 20%);
+  border-radius: 12px;
+  padding: 20px;
+  margin-top: 12px;
+  color: #e0e0e0;
+  font-size: 14px;
+  line-height: 1.6;
+  display: none;
+  box-shadow: 0 4px 20px rgb(0 0 0 / 30%);
+  max-height: 70vh;
+  overflow-y: auto;
+
+  &.is-visible {
+    display: block;
+  }
+
+  @media (width <= 768px) {
+    max-height: 50vh;
+  }
+
+  h3 {
+    margin: 0 0 20px;
+    color: $fp-magenta;
+    font-size: 1.25rem;
+    font-weight: 600;
+    border-bottom: 2px solid rgb(255 0 255 / 50%);
+    padding-bottom: 12px;
+  }
+
+  h4 {
+    margin: 0 0 12px;
+    color: $fp-accent;
+    font-size: 1rem;
+    font-weight: 600;
+    border-bottom: 1px solid rgb(5 217 232 / 30%);
+    padding-bottom: 8px;
+  }
+
+  h5 {
+    margin: 0 0 6px;
+    color: #d1f7ff;
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+
+  p {
+    margin: 0 0 10px;
+  }
+
+  p.hint {
+    font-style: italic;
+    color: #a0a0a0;
+    font-size: 0.85rem;
+  }
+
+  code {
+    background: rgb(5 217 232 / 10%);
+    color: $fp-accent;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.9em;
+    font-family: "JetBrains Mono", "Fira Code", monospace;
+  }
+
+  ul {
+    margin: 8px 0;
+    padding-left: 0;
+    list-style: none;
+  }
+
+  li {
+    position: relative;
+    padding-left: 16px;
+    margin-bottom: 6px;
+  }
+
+  li::before {
+    content: "›";
+    position: absolute;
+    left: 0;
+    color: $fp-accent;
+    font-weight: bold;
+  }
+
+  strong {
+    color: $fp-accent;
+  }
+
+  .explanation-section {
+    margin-bottom: 20px;
+  }
+
+  .explanation-section:last-child {
+    margin-bottom: 0;
+  }
+
+  .param-group {
+    margin: 12px 0;
+    padding-left: 12px;
+    border-left: 2px solid rgb(5 217 232 / 20%);
+  }
+
+  .color-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 8px;
+  }
+
+  .color-tag {
+    background: rgb(255 255 255 / 8%);
+    border: 1px solid rgb(255 255 255 / 15%);
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    color: #d1f7ff;
+  }
+
+  .nav-columns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-top: 12px;
+  }
+
+  @media (width <= 500px) {
+    .nav-columns {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .nav-column h5 {
+    margin-bottom: 8px;
+    color: $fp-magenta;
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Zustand: Fokusmodus
+// -----------------------------------------------------------------------------
+.fractal-panel.is-focus-mode {
+  padding: 10px;
+
+  .fractal-panel__controls,
+  .fractal-panel__info-panel {
+    display: none;
+  }
+
+  .fractal-panel__explanation {
+    margin-top: 10px;
+  }
+
+  .fractal-panel__row {
+    gap: 10px;
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Zustand: Vollbild
+// -----------------------------------------------------------------------------
+.fractal-panel.is-fullscreen {
+  position: relative;
+  padding: 0 !important;
+  width: 100vw;
+  max-width: 100vw;
+
+  .fractal-panel__toolbar,
+  .fractal-panel__controls {
+    position: absolute;
+    left: 12px;
+    right: 12px;
+    z-index: 200;
+    background: rgb(34 34 34 / 90%);
+    backdrop-filter: blur(6px);
+    border-radius: 8px;
+    box-shadow: 0 6px 18px rgb(0 0 0 / 35%);
+    margin-bottom: 0;
+  }
+
+  .fractal-panel__toolbar {
+    top: 12px;
+    padding: 8px 12px;
+  }
+
+  .fractal-panel__controls {
+    top: 72px;
+    max-height: 55vh;
+    overflow: auto;
+    display: block;
+  }
+
+  .fractal-panel__explanation {
+    position: absolute;
+    bottom: 12px;
+    left: 12px;
+    right: 12px;
+    z-index: 300;
+    margin-top: 0;
+  }
+
+  .fractal-panel__explanation-toggle {
+    position: relative;
+    z-index: 2;
+    background: rgb(34 34 34 / 90%);
+    backdrop-filter: blur(6px);
+  }
+
+  .fractal-panel__explanation-box {
+    position: absolute;
+    bottom: 100%;
+    left: 0;
+    right: 0;
+    margin-bottom: 8px;
+    display: block !important;
+    max-height: 70vh;
+    overflow-y: auto;
+    background: rgb(34 34 34 / 95%);
+    backdrop-filter: blur(8px);
+    box-shadow: 0 -4px 24px rgb(0 0 0 / 50%);
+    transform: translateY(20px);
+    opacity: 0;
+    visibility: hidden;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease, visibility 0.3s ease;
+
+    &.is-visible {
+      transform: translateY(0);
+      opacity: 1;
+      visibility: visible;
+    }
+  }
+
+  @media (width <= 768px) {
+    .fractal-panel__explanation-box {
+      max-height: 60vh;
+    }
+  }
+
+  .fractal-panel__mobile-zoom {
+    bottom: 80px;
+  }
+}
+
+// Fokusmodus im Vollbild: Controls bleiben aus, nur Toolbar
+.fractal-panel.is-fullscreen.is-focus-mode .fractal-panel__controls {
+  display: none;
+}
+
+// Vollbild --single: ein Canvas füllt den Screen
+.fractal-panel--single.is-fullscreen {
+  .fractal-panel__canvas-frame {
+    height: 100vh;
+    position: absolute;
+    inset: 0;
+  }
+
+  .fractal-panel__canvas {
+    width: 100%;
+    height: 100%;
+    max-height: 100vh !important;
+    min-height: auto !important;
+    object-fit: contain;
+  }
+
+  .fractal-panel__hud {
+    top: 140px;
+  }
+
+  &.is-focus-mode .fractal-panel__hud {
+    top: 80px;
+  }
+}
+
+// Vollbild --dual: zwei Spalten nebeneinander
+.fractal-panel--dual.is-fullscreen {
+  .fractal-panel__canvas-frame {
+    height: calc(100vh - 24px);
+  }
+
+  .fractal-panel__canvas {
+    max-height: 100vh;
+    min-height: auto;
+    height: 100%;
+    object-fit: contain;
+  }
+}

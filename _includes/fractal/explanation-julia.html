@@ -1,0 +1,88 @@
+{% comment %} Erklärinhalt des Julia-Panels (Variante "julia"). {% endcomment %}
+<h3>Die Julia-Menge</h3>
+
+<section class="explanation-section">
+  <h4>Was ist die Julia-Menge?</h4>
+  <p>Die Julia-Menge ist ein <strong>Fraktal</strong> – ein Muster, das sich bei jeder Vergrößerung wiederholt, ähnlich wie Schneeflocken oder Küstenlinien in der Natur. Das Besondere: Egal wie tief Sie hineinzoomen, es tauchen immer wieder ähnliche Strukturen auf – das nennt man <em>Selbstähnlichkeit</em>.</p>
+</section>
+
+<section class="explanation-section">
+  <h4>So funktioniert's</h4>
+  <p>Stellen Sie sich vor, Sie nehmen jeden Punkt auf dem Bildschirm und wenden immer wieder dieselbe Rechenregel an: <code>zₙ₊₁ = zₙ² + c</code>. Manche Punkte bleiben dabei „gefangen" (sie werden nie größer als 2) – diese bilden die Julia-Menge und werden schwarz dargestellt.</p>
+  <p>Alle anderen Punkte „entkommen" irgendwann ins Unendliche. Die <strong>Farbe</strong> zeigt, wie schnell ein Punkt entkommt – das ist die sogenannte <em>Fluchtgeschwindigkeit</em>.</p>
+  <p class="hint">Der Parameter <code>c</code> ist eine Konstante aus zwei Zahlen (Real- und Imaginärteil). Jeder Wert von <code>c</code> erzeugt eine völlig andere Julia-Menge!</p>
+</section>
+
+<section class="explanation-section">
+  <h4>Parameter</h4>
+
+  <div class="param-group">
+    <h5>Komplexe Konstante c</h5>
+    <p>Real- und Imaginärteil definieren gemeinsam <code>c = Re + Im·i</code>. Probieren Sie verschiedene Werte aus:</p>
+    <ul>
+      <li><strong>Re ∈ [-2, 0.25], Im ≈ 0</strong> — Zusammenhängende Strukturen</li>
+      <li><strong>Re ≈ -0.75, Im ≈ 0.1</strong> — „Dendriten" mit baumartigen Verzweigungen</li>
+      <li><strong>Re ≈ 0, Im ≈ 1</strong> — Kreisähnliche Muster</li>
+      <li><strong>c außerhalb der Mandelbrot-Menge</strong> — Fragmentierte „Staub"-Strukturen</li>
+    </ul>
+    <p class="hint">Kleine Änderungen können dramatische Effekte haben – experimentieren Sie!</p>
+  </div>
+
+  <div class="param-group">
+    <h5>Maximale Iterationen</h5>
+    <p>Bestimmt, wie oft die Rechenregel angewendet wird, bevor ein Punkt als „gefangen" gilt:</p>
+    <ul>
+      <li><strong>10–50</strong> — Schnell, weniger Details</li>
+      <li><strong>100–200</strong> — Ausgewogen (empfohlen)</li>
+      <li><strong>300+</strong> — Maximale Details, langsamer</li>
+    </ul>
+    <p class="hint">Bei tiefem Zoom benötigen Sie mehr Iterationen für scharfe Grenzen.</p>
+  </div>
+
+  <div class="param-group">
+    <h5>Farbschema</h5>
+    <p>Visualisiert die Fluchtgeschwindigkeit – wie schnell Punkte entkommen:</p>
+    <div class="color-grid">
+      <span class="color-tag">Blau-Rot</span>
+      <span class="color-tag">Cyberpunk</span>
+      <span class="color-tag">Retrowave</span>
+      <span class="color-tag">Feuer</span>
+      <span class="color-tag">Ozean</span>
+      <span class="color-tag">Monochrom</span>
+      <span class="color-tag">Regenbogen</span>
+      <span class="color-tag">Ultraviolett</span>
+      <span class="color-tag">Gold-Grün</span>
+    </div>
+  </div>
+</section>
+
+<section class="explanation-section">
+  <h4>Navigation</h4>
+
+  <div class="nav-columns">
+    <div class="nav-column">
+      <h5>Desktop</h5>
+      <ul>
+        <li><strong>Mausrad</strong> — Zoom an Position</li>
+        <li><strong>Linksklick + Ziehen</strong> — Rechteck-Zoom</li>
+        <li><strong>Rechtsklick + Ziehen</strong> — Verschieben</li>
+        <li><strong>Leertaste + Ziehen</strong> — Verschieben</li>
+        <li><strong>Doppelklick</strong> — Herauszoomen</li>
+      </ul>
+    </div>
+    <div class="nav-column">
+      <h5>Touch</h5>
+      <ul>
+        <li><strong>Pinch</strong> — Zoom hinein/heraus</li>
+        <li><strong>1-Finger-Ziehen</strong> — Verschieben</li>
+        <li><strong>+/− Buttons</strong> — Zoom-Steuerung</li>
+      </ul>
+    </div>
+  </div>
+  <p class="hint">Zoomen Sie tief hinein und entdecken Sie die Selbstähnlichkeit – Strukturen wiederholen sich in immer kleineren Maßstäben!</p>
+</section>
+
+<section class="explanation-section">
+  <h4>Mandelbrot-Verwandtschaft</h4>
+  <p>Julia- und Mandelbrot-Menge sind eng verwandt: Punkte <em>innerhalb</em> der Mandelbrot-Menge erzeugen zusammenhängende Julia-Mengen, Punkte <em>außerhalb</em> erzeugen fragmentierten „Staub".</p>
+</section>
