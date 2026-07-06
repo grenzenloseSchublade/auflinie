@@ -83,33 +83,18 @@ self.addEventListener('fetch', event => {
   if (url.match(/\.(jpg|jpeg|png|gif|webp|ico)$/)) {
     event.respondWith(cacheFirst(event.request));
   }
-  // CSS und JS: Stale-While-Revalidate (schnell + aktuell)
+  // CSS und JS: Network-First — nach einem Deploy kommt sofort die neue
+  // Version (stale-while-revalidate lieferte erst die alte aus dem Cache und
+  // erzeugte einen Mischzustand aus neuem HTML und altem CSS/JS);
+  // der Cache dient nur noch als Offline-Fallback.
   else if (url.match(/\.(css|js)$/)) {
-    event.respondWith(staleWhileRevalidate(event.request));
+    event.respondWith(networkFirst(event.request));
   }
   // Für alle anderen Ressourcen: Network-First-Strategie
   else {
     event.respondWith(networkFirst(event.request));
   }
 });
-
-// Stale-While-Revalidate für CSS/JS (schnell + aktuell)
-async function staleWhileRevalidate(request) {
-  const cache = await caches.open(CACHE_NAME);
-  const cachedResponse = await cache.match(request);
-  
-  // Im Hintergrund neue Version holen und cachen
-  const fetchPromise = fetch(request).then(networkResponse => {
-    if (networkResponse.ok) {
-      cache.put(request, networkResponse.clone());
-    }
-    return networkResponse;
-  }).catch(() => null);
-  
-  // Sofort gecachte Version zurückgeben, falls vorhanden
-  // Sonst auf Netzwerk warten
-  return cachedResponse || fetchPromise;
-}
 
 // Cache-First-Strategie für Bilder
 async function cacheFirst(request) {
