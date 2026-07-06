@@ -31,7 +31,11 @@ self.onmessage = function (e) {
         safePalette, viewX, viewY, zoomLevel,
         startY, endY, includeIterationData);
 
-    // Sende das Ergebnis zurück
+    // Sende das Ergebnis zurück — Buffers als Transferables (kein Kopieren)
+    const transfer = [result.imageData.data.buffer];
+    if (result.iterationChunk) {
+        transfer.push(result.iterationChunk.buffer);
+    }
     self.postMessage({
         requestId: requestId,
         imageData: result.imageData,
@@ -39,7 +43,7 @@ self.onmessage = function (e) {
         endY: endY,
         workerId: workerId,
         iterationChunk: result.iterationChunk
-    });
+    }, transfer);
 };
 
 // Berechnet einen Chunk des Julia-Sets
