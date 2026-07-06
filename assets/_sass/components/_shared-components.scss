@@ -49,14 +49,6 @@
   }
 }
 
-// Gemeinsame Basis für Anker-Links
-%anchor-base {
-  display: block;
-  position: relative;
-  top: -100px;
-  visibility: hidden;
-}
-
 // Gemeinsame Hover-Effekte
 @mixin hover-effect($transform-value: -5px) {
   transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;

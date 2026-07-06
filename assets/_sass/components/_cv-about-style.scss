@@ -317,47 +317,6 @@
   margin-top: 1rem;
 }
 
-// Styling für Auszeichnungen im About-Stil
-.cv-award-about-style {
-  @extend %card-base;
-  flex: 1 1 250px;
-  background-color: rgba(0, 0, 0, 0.2);
-  border-left: 3px solid $card-heading-color;
-  border-radius: 0 5px 5px 0;
-  margin-bottom: 1rem;
-  
-  &:hover {
-    background-color: rgba(0, 0, 0, 0.3);
-  }
-  
-  .cv-award-header {
-    margin-bottom: 0.5rem;
-    
-    h3 {
-      @extend %heading-base;
-      font-size: 1.3rem;
-      margin-bottom: 0.3rem;
-      border-bottom: 1px solid rgba($card-heading-color, 0.3);
-      padding-bottom: 0.5rem;
-    }
-    
-    .cv-award-meta {
-      font-size: 0.9rem;
-      color: #aaa;
-      margin: 0;
-    }
-  }
-  
-  p {
-    margin: 0.5rem 0 0 0;
-  }
-}
-
-// Container für Auszeichnungen im About-Stil
-.cv-awards-container-about-style {
-  @include flex-container;
-}
-
 // Responsive Anpassungen
 @media (max-width: 768px) {
   .cv-entries-container-about-style,

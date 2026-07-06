@@ -42,10 +42,6 @@
 }
 
 // Anker-Links für die Navigation
-.section-anchor {
-  @extend %anchor-base;
-}
-
 // Gemeinsame Stile für Karten-Überschriften
 .card-heading {
   @extend %heading-base;
@@ -195,6 +191,7 @@
 
 .quote-container {
   @extend %quote-base;
+  border-left: 4px solid $card-heading-color;
   background-color: rgba(0, 0, 0, 0.2);
   border-radius: 5px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
@@ -254,4 +251,21 @@
     width: 100%;
     flex: none;
   }
-} 
+}
+
+// Mobile: Karten-Container einspaltig (vorher aus dem entfernten _cv.scss)
+@media (max-width: 768px) {
+  .skills-container,
+  .interests-container {
+    flex-direction: column;
+
+    > * {
+      flex: none;
+      width: 100%;
+    }
+  }
+
+  .quotes-container {
+    grid-template-columns: 1fr;
+  }
+}

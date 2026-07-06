@@ -4,8 +4,10 @@
   - Gumshoe standalone (ScrollSpy für TOC)
 {% endcomment %}
 
-<!-- Gumshoe ScrollSpy (standalone, kein jQuery) -->
+{% if page.toc %}
+<!-- Gumshoe ScrollSpy (standalone, kein jQuery) — nur auf Seiten mit TOC -->
 <script src="https://cdn.jsdelivr.net/npm/gumshoejs@5.1.2/dist/gumshoe.min.js" integrity="sha384-4yPwGLOgXPsV5GLv83AcvOrn722feO6UrUJjJwM9RIIHTSEDtv14h9abAFj6wU10" crossorigin="anonymous" defer></script>
+{% endif %}
 
 {% if site.search == true %}
   {% case site.search_provider %}
@@ -32,6 +34,11 @@
 {% if page.expandable_lists %}
 <!-- Ausklappbare Listen (CV, per Front-Matter-Flag) -->
 <script src="{{ '/assets/js/expandable-list.js' | relative_url }}"></script>
+{% endif %}
+
+{% if page.url == "/posts/" %}
+<!-- Blog-Suche/Filter: nur auf der Beitragsliste -->
+<script src="{{ '/assets/js/blog-search.js' | relative_url }}"></script>
 {% endif %}
 
 {% if page.url == "/" %}

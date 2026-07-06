@@ -1,7 +1,7 @@
 <div class="skills-container">
 {% for skill_category in include.skill_categories %}
 <div class="skill-card">
-    <h3 class="card-heading"><i class="fas fa-{% if skill_category.category contains 'Fraktale' %}chart-line{% elsif skill_category.category contains 'Mathematische' %}calculator{% elsif skill_category.category contains 'Kultur' %}globe{% else %}tools{% endif %}"></i> {{ skill_category.category }}</h3>
+    <h3 class="card-heading"><i class="fas fa-{{ skill_category.icon | default: 'star' }}" aria-hidden="true"></i> {{ skill_category.category }}</h3>
     <ul class="skill-list">
         {% for item in skill_category.items %}
         <li>{{ item }}</li>

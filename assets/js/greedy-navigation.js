@@ -1,22 +1,9 @@
 /*
  * Vanilla GreedyNav based on lukejacksonn/GreedyNav
  * Keeps visible links in the navbar and moves overflow to hidden menu.
- * 
- * WICHTIG: Diese Version überschreibt die jQuery-Version aus main.min.js
  */
 (function() {
   'use strict';
-
-  // Entferne alte jQuery Event-Listener von hidden-links (falls vorhanden)
-  function removeOldListeners() {
-    const hlinks = document.querySelector('.greedy-nav .hidden-links');
-    const btn = document.querySelector('.greedy-nav .greedy-nav__toggle');
-    if (hlinks && window.jQuery) {
-      // jQuery off() entfernt die Event-Listener der jQuery-Version
-      jQuery(hlinks).off('mouseleave mouseenter click');
-      jQuery(btn).off('click');
-    }
-  }
 
   function outerWidth(el) {
     if (!el) return 0;
@@ -37,7 +24,6 @@
     if (!btn || !vlinks || !hlinks || !title) return;
 
     // Entferne alte jQuery Event-Listener (aus main.min.js)
-    removeOldListeners();
 
     let numOfItems = 0;
     let breakWidths = [];

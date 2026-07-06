@@ -47,9 +47,6 @@ header:
       {% include cv-languages-about-style.html languages=section.languages %}
     {% endif %}
 
-    {% if section.awards %}
-      {% include cv-awards-about-style.html awards=section.awards %}
-    {% endif %}
   </div>
 </div>
 {% endfor %}

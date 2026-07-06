@@ -46,7 +46,6 @@ kramdown:
 # (back-to-top.js lädt nur im single-Layout, siehe _layouts/single.html)
 after_footer_scripts:
   - /assets/js/greedy-navigation.js
-  - /assets/js/blog-search.js
 
 # Collections
 include:
@@ -108,7 +107,6 @@ timezone: Europe/Berlin
 plugins:
   - jekyll-paginate-v2
   - jekyll-sitemap
-  - jekyll-gist
   - jekyll-feed
   - jekyll-include-cache
   - jekyll-last-modified-at

@@ -75,8 +75,6 @@
 <link rel="icon" type="image/png" sizes="32x32" href="{{ site.baseurl }}/assets/images/favicon-32x32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="{{ site.baseurl }}/assets/images/favicon-16x16.png">
 <link rel="apple-touch-icon" sizes="180x180" href="{{ site.baseurl }}/assets/images/apple-touch-icon.png">
-<meta name="msapplication-TileImage" content="{{ site.baseurl }}/assets/images/favicon-180x180.png">
-<meta name="msapplication-TileColor" content="#1a1a1a">
 <meta name="theme-color" content="#1a1a1a">
 
 <!-- Anpassungen für Header-Elemente -->
@@ -186,9 +184,8 @@
     "addressCountry": "DE"
   },
   "sameAs": [
-    "https://github.com/grenzenloseSchublade",
-    "https://www.linkedin.com/in/hans-m%C3%BCller-39a133359/"
-  ]
+    {% for link in site.social.links %}"{{ link }}"{% unless forloop.last %},{% endunless %}
+    {% endfor %}]
 }
 </script>
 {% endif %}
