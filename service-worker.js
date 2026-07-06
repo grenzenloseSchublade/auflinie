@@ -22,7 +22,10 @@ const CACHE_URLS = [
   './assets/js/greedy-navigation.js',
   './assets/js/image-cache.js',
   './assets/js/sw-register.js',
-  './assets/images/background.jpg'
+  './assets/images/background.jpg',
+  './assets/webfonts/fa-solid-900-subset.woff2',
+  './assets/webfonts/fa-regular-400-subset.woff2',
+  './assets/webfonts/fa-brands-400-subset.woff2'
 ];
 
 // Installation des Service Workers

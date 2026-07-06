@@ -1,0 +1,120 @@
+// =============================================================================
+// Font-Awesome-Subset (generiert) — ersetzt das 100-KB-Komplett-CSS vom CDN
+// =============================================================================
+// Nur die 47 tatsächlich genutzten Icons; Fonts sind mit pyftsubset auf
+// diese Glyphen reduziert und werden self-hosted (funktioniert auch offline).
+// Neu generieren: Icon-Klassen inventarisieren (grep fa- über _site) und die
+// Listen in der Sitzungs-Doku bzw. diesem Kommentar erweitern.
+// stylelint-disable
+
+@font-face {
+  font-family: "Font Awesome 6 Free";
+  font-style: normal;
+  font-weight: 900;
+  font-display: block;
+  src: url("../webfonts/fa-solid-900-subset.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Font Awesome 6 Free";
+  font-style: normal;
+  font-weight: 400;
+  font-display: block;
+  src: url("../webfonts/fa-regular-400-subset.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Font Awesome 6 Brands";
+  font-style: normal;
+  font-weight: 400;
+  font-display: block;
+  src: url("../webfonts/fa-brands-400-subset.woff2") format("woff2");
+}
+
+.fa,
+.fas,
+.far,
+.fab,
+.fa-solid,
+.fa-regular,
+.fa-brands {
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  line-height: 1;
+  text-rendering: auto;
+}
+
+.fa,
+.fas,
+.fa-solid {
+  font-family: "Font Awesome 6 Free";
+  font-weight: 900;
+}
+
+.far,
+.fa-regular {
+  font-family: "Font Awesome 6 Free";
+  font-weight: 400;
+}
+
+.fab,
+.fa-brands {
+  font-family: "Font Awesome 6 Brands";
+  font-weight: 400;
+}
+
+.fa-fw {
+  text-align: center;
+  width: 1.25em;
+}
+
+.fa-adjust::before { content: "\f042"; }
+.fa-arrow-right::before { content: "\f061"; }
+.fa-atom::before { content: "\f5d2"; }
+.fa-bicycle::before { content: "\f206"; }
+.fa-bolt::before { content: "\f0e7"; }
+.fa-brain::before { content: "\f5dc"; }
+.fa-briefcase::before { content: "\f0b1"; }
+.fa-calculator::before { content: "\f1ec"; }
+.fa-calendar-alt::before { content: "\f073"; }
+.fa-chart-line::before { content: "\f201"; }
+.fa-check-circle::before { content: "\f058"; }
+.fa-chevron-down::before { content: "\f078"; }
+.fa-clock::before { content: "\f017"; }
+.fa-code::before { content: "\f121"; }
+.fa-crosshairs::before { content: "\f05b"; }
+.fa-cube::before { content: "\f1b2"; }
+.fa-download::before { content: "\f019"; }
+.fa-envelope::before { content: "\f0e0"; }
+.fa-exclamation-circle::before { content: "\f06a"; }
+.fa-expand::before { content: "\f065"; }
+.fa-file-alt::before { content: "\f15c"; }
+.fa-fingerprint::before { content: "\f577"; }
+.fa-github::before { content: "\f09b"; }
+.fa-globe::before { content: "\f0ac"; }
+.fa-graduation-cap::before { content: "\f19d"; }
+.fa-info-circle::before { content: "\f05a"; }
+.fa-language::before { content: "\f1ab"; }
+.fa-laptop-code::before { content: "\f5fc"; }
+.fa-linkedin::before { content: "\f08c"; }
+.fa-list::before { content: "\f03a"; }
+.fa-magic::before { content: "\f0d0"; }
+.fa-map-marker-alt::before { content: "\f3c5"; }
+.fa-project-diagram::before { content: "\f542"; }
+.fa-question-circle::before { content: "\f059"; }
+.fa-quote-left::before { content: "\f10d"; }
+.fa-receipt::before { content: "\f543"; }
+.fa-route::before { content: "\f4d7"; }
+.fa-rss-square::before { content: "\f143"; }
+.fa-search-plus::before { content: "\f00e"; }
+.fa-sliders-h::before { content: "\f1de"; }
+.fa-spa::before { content: "\f5bb"; }
+.fa-star::before { content: "\f005"; }
+.fa-sync::before { content: "\f021"; }
+.fa-tv::before { content: "\f26c"; }
+.fa-undo::before { content: "\f0e2"; }
+.fa-user::before { content: "\f007"; }
+.fa-user-circle::before { content: "\f2bd"; }
