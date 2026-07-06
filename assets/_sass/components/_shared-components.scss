@@ -110,36 +110,42 @@
   }
 }
 
-// Konsolen-Header (::  TITEL ───): geteilt von Fraktal-Panels, CV und About
-@mixin console-header($size: 15px, $prefix: "::") {
+// Akzent-Header: Cyan-Balken links, Titel in normaler Schreibweise
+// (geteilt von Fraktal-Panels, CV und About; ersetzt den ::-Konsolen-Header)
+@mixin accent-header($size: 1.35rem, $rule: true) {
   display: flex;
   align-items: center;
-  gap: 12px;
-  font-family: $mono-font-stack;
+  gap: 0.7rem;
   font-size: $size;
   font-weight: 600;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
+  letter-spacing: normal;
+  text-transform: none;
   color: $console-heading;
-  border-bottom: none;
+
+  @if $rule {
+    border-bottom: 1px solid rgb(255 255 255 / 8%);
+    padding-bottom: 0.5rem;
+  } @else {
+    border-bottom: none;
+  }
 
   &::before {
-    content: $prefix;
-    color: $link-color;
+    content: "";
     flex-shrink: 0;
+    width: 4px;
+    height: 1.05em;
+    border-radius: 2px;
+    background: linear-gradient(180deg, $link-color, rgba($link-color, 0.35));
+    box-shadow: 0 0 8px rgb(5 217 232 / 30%);
   }
 
   &::after {
-    content: "";
-    flex: 1;
-    height: 1px;
-    min-width: 24px;
-    background: linear-gradient(90deg, rgba($link-color, 0.45), rgba($link-color, 0.04));
+    content: none;
   }
 
   i {
     color: $link-color;
-    font-size: 0.9em;
+    font-size: 0.85em;
     margin-right: 0;
   }
 }

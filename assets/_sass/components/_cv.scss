@@ -16,9 +16,8 @@
   }
 
   h2 {
-    @include console-header(14px, "::");
+    @include accent-header(1.35rem);
 
-    padding-bottom: 0.5rem;
     margin-bottom: 1.5rem;
   }
 }

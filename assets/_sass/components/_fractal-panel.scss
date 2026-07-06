@@ -45,31 +45,9 @@ $fp-heading: $console-heading;
 }
 
 .fractal-panel__title {
-  display: flex;
-  align-items: center;
-  gap: 12px;
+  @include accent-header(1.2rem);
+
   margin: 0 0 16px;
-  padding: 6px 0;
-  color: $fp-heading;
-  font-family: $fp-mono;
-  font-size: 15px;
-  font-weight: 600;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-
-  &::before {
-    content: "::";
-    color: $fp-accent;
-    flex-shrink: 0;
-  }
-
-  &::after {
-    content: "";
-    flex: 1;
-    height: 1px;
-    min-width: 24px;
-    background: linear-gradient(90deg, rgb(5 217 232 / 45%), rgb(5 217 232 / 4%));
-  }
 }
 
 // -----------------------------------------------------------------------------
@@ -769,31 +747,10 @@ $fp-heading: $console-heading;
 }
 
 .fractal-panel__column-title {
-  display: flex;
-  align-items: center;
-  gap: 10px;
+  @include accent-header(1rem, false);
+
   margin: 0 0 12px;
-  padding: 4px 0;
-  color: $fp-heading;
-  font-family: $fp-mono;
-  font-size: 13px;
-  font-weight: 600;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-
-  &::before {
-    content: ">";
-    color: $fp-accent;
-    flex-shrink: 0;
-  }
-
-  &::after {
-    content: "";
-    flex: 1;
-    height: 1px;
-    min-width: 16px;
-    background: linear-gradient(90deg, rgb(5 217 232 / 35%), rgb(5 217 232 / 4%));
-  }
+  padding: 2px 0;
 }
 
 .fractal-panel__canvas-frame {

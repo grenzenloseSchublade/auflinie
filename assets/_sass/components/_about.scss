@@ -20,7 +20,7 @@
   @include hover-effect;
 
   h2 {
-    @include console-header(14px, "::");
+    @include accent-header(1.35rem);
 
     margin-bottom: 1.2rem;
   }
