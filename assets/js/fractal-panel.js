@@ -585,10 +585,14 @@
     }
 
     setCParameter(realPart, imagPart, options) {
+      // Reihenfolge wichtig: Slider zuerst — deren synchroner 'update'-Handler
+      // schreibt den auf das 0.01-Raster gerundeten Wert in den State. Danach
+      // die EXAKTEN Werte setzen, damit Presets/Taps mit präzisem c rendern
+      // (z.B. Blitz -0.835/-0.2321); die Slider zeigen den gerundeten Wert.
+      this.syncCSliders(realPart, imagPart);
       this.state.realPart = realPart;
       this.state.imagPart = imagPart;
       this.updateJuliaParamText();
-      this.syncCSliders();
       if (options && options.render) {
         const juliaView = this.view('julia');
         if (juliaView) this.requestRender(juliaView, { immediate: true, reason: 'julia-c' });
@@ -600,9 +604,9 @@
       if (span) span.textContent = formatComplex(this.state.realPart, this.state.imagPart);
     }
 
-    syncCSliders() {
-      if (this.realSlider) this.realSlider.noUiSlider.set(this.state.realPart);
-      if (this.imagSlider) this.imagSlider.noUiSlider.set(this.state.imagPart);
+    syncCSliders(realPart, imagPart) {
+      if (this.realSlider) this.realSlider.noUiSlider.set(realPart);
+      if (this.imagSlider) this.imagSlider.noUiSlider.set(imagPart);
     }
 
     resetViews(targets) {

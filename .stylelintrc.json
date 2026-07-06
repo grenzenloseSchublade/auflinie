@@ -22,7 +22,11 @@
     "max-nesting-depth": [
       5,
       {
-        "ignoreAtRules": ["media", "supports", "include"]
+        "ignoreAtRules": [
+          "media",
+          "supports",
+          "include"
+        ]
       }
     ],
     "selector-max-compound-selectors": 6,
@@ -49,9 +53,12 @@
     "annotation-no-unknown": [
       true,
       {
-        "ignoreAnnotations": ["default"]
+        "ignoreAnnotations": [
+          "default"
+        ]
       }
-    ]
+    ],
+    "media-feature-range-notation": "prefix"
   },
   "ignoreFiles": [
     "vendor/**/*",
