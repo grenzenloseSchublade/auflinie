@@ -62,9 +62,9 @@ $fp-heading: $console-heading;
   justify-content: space-between;
 
   .fractal-panel__button {
-    flex: 1;
+    // Inhaltsbreite statt Aufspreizen (Nutzerwunsch: schmalere Keycaps)
+    flex: 0 0 auto;
     min-width: 0;
-    max-width: 140px;
     justify-content: center;
   }
 

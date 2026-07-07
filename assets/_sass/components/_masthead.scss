@@ -118,7 +118,10 @@
             a {
                 font-size: $nav-font-size; // Mobile: Standard-Schriftgröße
                 padding: 0.5em;
-                margin: 0.2em;
+
+                // Nur horizontal: vertikales Margin ließ die Links 4px über
+                // den Masthead ragen (Marker an der Unterkante wurde geclippt)
+                margin: 0 0.2em;
                 font-weight: $medium-weight; // Etwas fetter
                 color: $white; // Weiß für bessere Lesbarkeit
                 transition: color 0.2s ease, text-shadow 0.2s ease;
@@ -206,6 +209,7 @@ body .visible-links li {
   align-items: stretch;
   height: 100%;
   position: relative;
+  flex-shrink: 0; // nie quetschen — der Umbruch ins Burger-Menü übernimmt
 }
 
 // Trennung nach erstem Link (Mandelbrot) - Kombination aus Abstand und dezenter Linie
@@ -566,20 +570,20 @@ body .greedy-nav .visible-links a::after {
     position: absolute;
     left: 0.75em;
     right: 0.75em;
-    bottom: 18px;
+    bottom: 0; // Unterkante des Masthead („Tab"-Muster)
     height: 3px;
-    border-radius: 2px;
+    border-radius: 2px 2px 0 0;
     background: transparent;
     transition: background-color 0.2s ease;
 }
 
 body .greedy-nav .visible-links a.current::after {
-    background: rgba($link-color, 0.65);
+    background: $link-color-subtle;
 }
 
 body .greedy-nav .visible-links a:hover::after,
 body .greedy-nav .visible-links a:focus-visible::after {
-    background: rgba($hover-color, 0.65);
+    background: $hover-color-subtle;
 }
 
 body .greedy-nav__toggle:focus-visible {

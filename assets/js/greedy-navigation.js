@@ -78,14 +78,16 @@
         - (search ? outerWidth(search) : 0)
         - (numOfVisibleItems !== breakWidths.length ? outerWidth(btn) : 0);
 
-      const requiredSpace = breakWidths[numOfVisibleItems - 1] || 0;
+      // Sicherheitspuffer: kollabieren BEVOR es optisch eng wird
+      const SAFETY = 24;
+      const requiredSpace = (breakWidths[numOfVisibleItems - 1] || 0) + SAFETY;
 
       if (requiredSpace > availableSpace && numOfVisibleItems > 0) {
         hlinks.insertBefore(vlinks.lastElementChild, hlinks.firstChild);
         check();
       } else if (
         (availableSpace + (numOfVisibleItems === breakWidths.length - 1 ? outerWidth(btn) : 0))
-        > (breakWidths[numOfVisibleItems] || 0)
+        > ((breakWidths[numOfVisibleItems] || 0) + SAFETY)
       ) {
         if (hlinks.children.length > 0) {
           vlinks.appendChild(hlinks.firstElementChild);
@@ -153,18 +155,33 @@
       }
     }, { passive: true });
 
-    // Debounced resize handler für bessere Performance
-    let resizeTimeout;
-    function debouncedCheck() {
-      clearTimeout(resizeTimeout);
-      resizeTimeout = setTimeout(check, 100);
+    // rAF-Throttle: folgt dem Resize flüssig (max. eine Prüfung pro Frame);
+    // der frühere 100ms-Timeout ließ die Links sichtbar nachziehen
+    let rafPending = false;
+    function throttledCheck() {
+      if (rafPending) return;
+      rafPending = true;
+      window.requestAnimationFrame(() => {
+        rafPending = false;
+        check();
+      });
     }
-    window.addEventListener('resize', debouncedCheck);
+    window.addEventListener('resize', throttledCheck);
+
+    // Nach dem Font-Laden neu messen: die Erstmessung mit Fallback-Font
+    // unterschätzt die Linkbreiten, der Umbruch käme sonst zu spät
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(() => {
+        lastBreakpoint = null;
+        check();
+      });
+    }
 
     if (logoImg && !(logoImg.complete && logoImg.naturalWidth !== 0)) {
       logoImg.addEventListener('load', check, { once: true });
       logoImg.addEventListener('error', check, { once: true });
     } else {
+      // Inline-SVG-Logo (kein <img>): direkt messen
       check();
     }
   }
