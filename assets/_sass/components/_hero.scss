@@ -22,7 +22,7 @@
   &--overlay {
     position: relative;
     margin-bottom: 2em;
-    padding: 3em 0;
+    padding: 0 0 3em;
     clear: both;
     background-size: cover;
     background-repeat: no-repeat;
@@ -30,16 +30,20 @@
     animation: fadeIn 0.5s ease-in-out;
 
     // Einheitliche Hero-Höhe auf allen Seiten (vorher inhaltsabhängig
-    // 342-513px); Inhalt vertikal zentriert statt padding-getrieben
+    // 342-513px); Inhalt OBEN verankert statt zentriert: der H1 sitzt
+    // dadurch auf jeder Seite pixelgleich, unabhängig von Lead-Länge
+    // und Buttons (Jakobs Law / stabile Landmarken)
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start;
     min-height: clamp(360px, 42vh, 520px);
 
-    // Mobil: Hero füllt den Viewport bis zum unteren Rand (Bild „füllt aus")
+    // Mobil: Hero füllt den Viewport bis zum unteren Rand (Bild „füllt aus");
+    // Inhalt ebenfalls oben verankert, mit Luft überm Titel
     @media (max-width: 768px) {
       min-height: calc(100dvh - var(--masthead-height));
       margin-bottom: 1.2em;
+      padding-top: 10vh;
     }
 
     // Eigenen Stacking-Kontext, damit Hintergrund / CRT / Text vorhersehbar liegen

@@ -212,8 +212,9 @@ body .visible-links li {
   flex-shrink: 0; // nie quetschen — der Umbruch ins Burger-Menü übernimmt
 }
 
-// Trennung nach erstem Link (Mandelbrot) - Kombination aus Abstand und dezenter Linie
-body .visible-links li:first-child {
+// Trennung nach dem Feature-Link (Mandelbrot) — an der Klasse verankert,
+// damit der Trenner mitwandert, wenn der Link ins Seitenmenü umbricht
+body .visible-links li.masthead__menu-item--featured {
   margin-right: 1.2em; // Größerer Abstand als normal
   
   // Schmale Cyan-Linie nach dem ersten Element
@@ -235,6 +236,18 @@ body .visible-links li:first-child {
   // Linie verschwindet, wenn Mandelbrot der einzige visible Link ist
   &:only-child::after {
     display: none;
+  }
+
+  // Im Seitenmenü: horizontale Linie UNTER Mandelbrot als einziger Trenner
+  @at-root body .greedy-nav .hidden-links li.masthead__menu-item--featured {
+    margin-right: 0;
+    border-bottom: 1px solid $link-color-subtle !important; // Reset (none !important) überstimmen
+    padding-bottom: 0.4em;
+    margin-bottom: 0.4em;
+
+    &::after {
+      display: none; // der vertikale Masthead-Trenner gilt hier nicht
+    }
   }
   
   // Tablet: etwas kleiner
