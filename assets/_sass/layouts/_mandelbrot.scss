@@ -4,11 +4,6 @@
 // Seiten-spezifische Layout-Korrekturen für die Mandelbrot-Explorer-Seite
 // Ausgelagert aus components/_pages.scss für bessere Organisation
 
-// Mandelbrot-Seite: Layout-Korrekturen für mobil
-.mandelbrot-page .page__hero--overlay {
-  min-height: 250px !important;
-}
-
 @media (max-width: 768px) {
   .mandelbrot-page .page__inner-wrap {
     padding-left: 0;

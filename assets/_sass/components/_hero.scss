@@ -22,12 +22,25 @@
   &--overlay {
     position: relative;
     margin-bottom: 2em;
-    padding: 6em 0;
+    padding: 3em 0;
     clear: both;
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
     animation: fadeIn 0.5s ease-in-out;
+
+    // Einheitliche Hero-Höhe auf allen Seiten (vorher inhaltsabhängig
+    // 342-513px); Inhalt vertikal zentriert statt padding-getrieben
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: clamp(360px, 42vh, 520px);
+
+    // Mobil: Hero füllt den Viewport bis zum unteren Rand (Bild „füllt aus")
+    @media (max-width: 768px) {
+      min-height: calc(100dvh - var(--masthead-height));
+      margin-bottom: 1.2em;
+    }
 
     // Eigenen Stacking-Kontext, damit Hintergrund / CRT / Text vorhersehbar liegen
     isolation: isolate;
@@ -594,5 +607,36 @@
         text-shadow: none;
       }
     }
+  }
+}
+
+// Scroll-Hinweis im Vollbild-Hero (nur Mobil, wo der Hero den Viewport füllt)
+.page__hero-scroll-cue {
+  display: none;
+  position: absolute;
+  left: 50%;
+  bottom: 3.2rem; // über der Caption-Leiste (die sitzt absolut am Unterrand)
+  transform: translateX(-50%);
+  z-index: 101;
+  color: rgb(255 255 255 / 65%);
+  font-size: 1.3rem;
+  line-height: 1;
+  pointer-events: none;
+  text-shadow: 0 1px 4px rgb(0 0 0 / 60%);
+  animation: hero-scroll-cue-bounce 2.2s ease-in-out infinite;
+
+  @media (max-width: 768px) {
+    display: block;
+  }
+}
+
+@keyframes hero-scroll-cue-bounce {
+  0%,
+  100% {
+    transform: translateX(-50%) translateY(0);
+  }
+
+  50% {
+    transform: translateX(-50%) translateY(6px);
   }
 }

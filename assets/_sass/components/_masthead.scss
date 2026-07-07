@@ -97,27 +97,9 @@
 // Benutzerinteraktion (Klick auf "a") ausgelöst wird.
 // @media (prefers-reduced-motion: reduce) - ENTFERNT für Neon-Animation
 
-.page__hero--overlay {
-  // Erhöhtes Padding am unteren Rand des Mastheaders
-  padding-bottom: 4em; // Standardwert erhöhen
-  
-  @include breakpoint($medium) {
-    padding-bottom: 5em; // Mittlere Bildschirme
-  }
-  
-  @include breakpoint($large) {
-    padding-bottom: 6em; // Große Bildschirme
-  }
-  
-  @include breakpoint($x-large) {
-    padding-bottom: 7em; // Extra große Bildschirme
-  }
-  
-  // Optional: Wenn du möchtest, dass der Inhalt zentriert bleibt
-  .wrapper {
-    padding-bottom: 1.5em; // Zusätzlicher Abstand nach dem letzten Element
-  }
-} 
+// (Der frühere padding-bottom-Block für .page__hero--overlay entfiel:
+// Hero-Höhen sind jetzt zentral in components/_hero.scss vereinheitlicht.)
+
 
 // CSS Custom Properties sind jetzt zentral in _variables/_css-properties.scss definiert
 
