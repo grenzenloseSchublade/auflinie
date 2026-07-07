@@ -26,19 +26,19 @@ header:
     {% endif %}
 
     {% if section.experiences %}
-      <div class="cv-entries cv-entries--stacked">
+      <ol class="cv-entries" aria-label="Beruflicher Werdegang, neueste zuerst">
         {% for experience in section.experiences %}
           {% include cv/entry.html title=experience.position org=experience.company location=experience.location period=experience.period description=experience.description items=experience.responsibilities items_label="Verantwortlichkeiten:" expandable=experience.expandable %}
         {% endfor %}
-      </div>
+      </ol>
     {% endif %}
 
     {% if section.education %}
-      <div class="cv-entries">
+      <ol class="cv-entries" aria-label="Akademischer Werdegang, neueste zuerst">
         {% for education in section.education %}
           {% include cv/entry.html title=education.degree org=education.institution location=education.location period=education.period description=education.description items=education.achievements items_label="Besondere Erfolge:" expandable=education.expandable %}
         {% endfor %}
-      </div>
+      </ol>
     {% endif %}
 
     {% if section.skill_categories %}

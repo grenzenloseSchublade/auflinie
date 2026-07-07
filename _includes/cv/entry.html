@@ -1,32 +1,32 @@
 {% comment %}
-  Ein CV-Eintrag (Berufsstation oder Ausbildung) als Karte.
+  Ein CV-Eintrag im Rail-Layout: Zeitraum + Ort als Mono-Spalte links an der
+  Timeline, Inhalt rechts (ohne Karten-Rahmen). Gewählt nach Mockup-Review
+  (Variante B2; Ausbildung nutzt dasselbe Layout mit kompaktem Inhalt).
   Parameter:
     title       – Positions-/Abschlussbezeichnung
     org         – Firma/Institution
-    location    – Ort
+    location    – Ort (nur Ortsname wird angezeigt, Land entfällt in der Rail)
     period      – Zeitraum
     description – Beschreibung (Markdown)
     items       – Liste (Strings oder {text, subitems}) — Unterpunkte klappen
-                  über natives <details>/<summary> (tastatur- und screenreader-
-                  zugänglich; ersetzt das frühere JS-Toggle auf nackten <li>)
+                  über natives <details>/<summary>
     items_label – Überschrift der Liste (z.B. "Verantwortlichkeiten:")
     expandable  – false ⇒ Unterpunkte immer sichtbar
 {% endcomment %}
-<div class="cv-entry">
-  <div class="cv-entry__header">
-    <div class="cv-entry__title-row">
-      <h3>{{ include.title }}</h3>
-      <span class="cv-entry__period">{{ include.period }}</span>
-    </div>
-    <p class="cv-entry__meta">
-      <strong>{{ include.org }}</strong> | {{ include.location }}
-    </p>
+<li class="cv-entry">
+  <div class="cv-entry__period">
+    <span class="cv-entry__dates">{{ include.period }}</span>
+    <span class="cv-entry__location">{{ include.location | split: "," | first }}</span>
   </div>
-  <div class="cv-entry__content">
-    <p>{{ include.description | markdownify | remove: '<p>' | remove: '</p>' }}</p>
+  <div class="cv-entry__body">
+    <h3>{{ include.title }}</h3>
+    <p class="cv-entry__org">{{ include.org }}</p>
+    {% if include.description %}
+    <p class="cv-entry__desc">{{ include.description | markdownify | remove: '<p>' | remove: '</p>' }}</p>
+    {% endif %}
     {% if include.items %}
     <p class="cv-entry__items-label">{{ include.items_label }}</p>
-    <ul>
+    <ul class="cv-entry__items">
       {% for item in include.items %}
       <li>
         {% if item.subitems and include.expandable != false %}
@@ -55,4 +55,4 @@
     </ul>
     {% endif %}
   </div>
-</div>
+</li>

@@ -22,74 +22,131 @@
   }
 }
 
-// Karten für Berufsstationen und Ausbildung
+// Einträge im Rail-Layout (Mockup B2): Zeitraum/Ort links an der Linie,
+// Inhalt rechts ohne Karten-Rahmen — gilt für Beruf UND Ausbildung
+.cv-entries {
+  position: relative;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+
+  // Vertikale Timeline zwischen Perioden-Spalte und Inhalt
+  &::before {
+    content: "";
+    position: absolute;
+    left: 141px;
+    top: 8px;
+    bottom: 8px;
+    width: 2px;
+    border-radius: 1px;
+    background: linear-gradient(180deg, rgba($link-color, 0.5), rgba($link-color, 0.08));
+  }
+}
+
 .cv-entry {
-  @extend %card-base;
+  display: grid;
+  grid-template-columns: 118px 1fr;
+  column-gap: 3rem;
+  position: relative;
+  padding-bottom: 1.7rem;
 
-  flex: 1 1 250px;
-  border-left: 2px solid rgba($link-color, 0.55);
-  margin-bottom: 1rem;
-
-  &:hover {
-    background-color: $console-panel-bg-hover;
+  &:last-child {
+    padding-bottom: 0.5rem;
   }
 
-  .cv-entry__header {
-    margin-bottom: 0.5rem;
+  // Punkt-Marker auf der Linie
+  &::after {
+    content: "";
+    position: absolute;
+    left: 135px;
+    top: 5px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: $console-panel-bg;
+    border: 2px solid $link-color;
+    box-shadow: 0 0 6px rgb(5 217 232 / 45%);
+  }
 
-    .cv-entry__title-row {
-      display: flex;
-      align-items: baseline;
-      justify-content: space-between;
-      gap: 0.8rem;
-      flex-wrap: wrap;
-    }
+  .cv-entry__period {
+    text-align: right;
+    padding-top: 0.15rem;
+  }
 
-    .cv-entry__period {
-      flex-shrink: 0;
-      font-family: $mono-font-stack;
-      font-variant-numeric: tabular-nums;
-      font-size: 0.72rem;
-      letter-spacing: 0.04em;
-      color: rgba($link-color, 0.85);
-      background: rgb(5 217 232 / 8%);
-      border: 1px solid rgb(5 217 232 / 25%);
-      border-radius: 4px;
-      padding: 0.15rem 0.5rem;
-      white-space: nowrap;
-    }
+  .cv-entry__dates {
+    display: block;
+    font-family: $mono-font-stack;
+    font-variant-numeric: tabular-nums;
+    font-size: 0.78rem;
+    letter-spacing: 0.03em;
+    color: rgba($link-color, 0.85);
+    white-space: nowrap;
+  }
+
+  .cv-entry__location {
+    display: block;
+    margin-top: 0.2rem;
+    font-family: $mono-font-stack;
+    font-size: 0.68rem;
+    color: rgb(255 255 255 / 40%);
+  }
+
+  .cv-entry__body {
+    min-width: 0;
 
     h3 {
-      @extend %heading-base;
-
-      font-size: 1.1rem;
-      margin-bottom: 0.3rem;
-      border-bottom: 1px solid rgba($card-heading-color, 0.3);
-      padding-bottom: 0.5rem;
+      margin: 0 0 0.2rem;
+      font-size: 1.05rem;
+      color: $card-heading-color;
     }
+  }
 
-    .cv-entry__meta {
-      font-size: 0.9rem;
-      color: #aaaaaa;
-      margin: 0;
-      font-weight: 400;
-      letter-spacing: 0.02em;
+  .cv-entry__org {
+    font-size: 0.85rem;
+    color: #aaaaaa;
+    margin: 0 0 0.55rem;
+  }
+
+  .cv-entry__desc {
+    font-size: 0.9rem;
+    color: rgb(255 255 255 / 85%);
+    margin: 0 0 0.55rem;
+    line-height: 1.55;
+
+    strong,
+    b {
+      color: $card-heading-color;
+      font-weight: 600;
     }
   }
 
   .cv-entry__items-label {
-    font-size: 0.85rem;
-    margin-bottom: 0.3rem;
-    color: rgb(255 255 255 / 70%);
+    font-size: 0.8rem;
+    margin: 0 0 0.3rem;
+    color: rgb(255 255 255 / 55%);
     font-weight: 500;
   }
 
-  .cv-entry__content {
-    p {
-      margin: 0 0 0.8rem;
-      font-size: 0.95rem;
-      line-height: 1.5;
-      color: rgb(255 255 255 / 90%);
+  .cv-entry__items {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    font-size: 0.85rem;
+
+    > li {
+      position: relative;
+      padding-left: 1rem;
+      margin-bottom: 0.35rem;
+      line-height: 1.45;
+      color: rgb(255 255 255 / 80%);
+
+      &::before {
+        content: "•";
+        position: absolute;
+        left: 0;
+        color: $link-color;
+        font-weight: bold;
+      }
 
       strong,
       b {
@@ -97,35 +154,33 @@
         font-weight: 600;
       }
     }
+  }
+}
 
-    > ul {
-      list-style: none;
-      padding-left: 1.2rem;
-      margin-top: 0.5rem;
-      margin-bottom: 1rem;
-      font-size: 0.85rem;
+// Mobile: Rail einspaltig, Zeitraum über dem Eintrag
+@media (max-width: 640px) {
+  .cv-entries::before {
+    display: none;
+  }
 
-      > li {
-        position: relative;
-        padding-left: 0;
-        margin-bottom: 0.5rem;
-        line-height: 1.4;
-        color: rgb(255 255 255 / 80%);
+  .cv-entry {
+    grid-template-columns: 1fr;
+    padding-bottom: 1.4rem;
 
-        &::before {
-          content: "•";
-          position: absolute;
-          left: -1.2rem;
-          color: $card-heading-color;
-          font-weight: bold;
-        }
+    &::after {
+      display: none;
+    }
 
-        strong,
-        b {
-          color: $card-heading-color;
-          font-weight: 600;
-        }
-      }
+    .cv-entry__period {
+      text-align: left;
+      display: flex;
+      align-items: baseline;
+      gap: 0.6rem;
+      margin-bottom: 0.35rem;
+    }
+
+    .cv-entry__location {
+      margin-top: 0;
     }
   }
 }
@@ -213,129 +268,117 @@
   }
 }
 
-// Container für Einträge
-.cv-entries {
-  @include flex-container;
+// Fähigkeiten als Chip-Cluster pro Kategorie (Mockup T1)
+.cv-skills__group {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  padding: 0.7rem 0;
+  border-bottom: 1px solid rgb(255 255 255 / 6%);
+  flex-wrap: wrap;
 
-  // Berufserfahrung: vertikale Timeline mit Punkt-Markern
-  &--stacked {
-    flex-direction: column;
-    position: relative;
-    padding-left: 1.5rem;
-
-    &::before {
-      content: "";
-      position: absolute;
-      left: 5px;
-      top: 12px;
-      bottom: 12px;
-      width: 2px;
-      border-radius: 1px;
-      background: linear-gradient(180deg, rgba($link-color, 0.55), rgba($link-color, 0.08));
-    }
-
-    .cv-entry {
-      flex: none;
-      width: 100%;
-      position: relative;
-
-      &::before {
-        content: "";
-        position: absolute;
-        left: calc(-1.5rem + 1px);
-        top: 1.15rem;
-        width: 10px;
-        height: 10px;
-        border-radius: 50%;
-        background: $console-panel-bg;
-        border: 2px solid $link-color;
-        box-shadow: 0 0 6px rgb(5 217 232 / 45%);
-      }
-    }
+  &:last-child {
+    border-bottom: none;
   }
 }
 
-// Fähigkeiten: Karten mit Level-Chips
-.cv-skills {
-  @include flex-container;
-}
+.cv-skills__cat {
+  flex: 0 0 210px;
+  font-family: $mono-font-stack;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: rgb(255 255 255 / 55%);
+  padding-top: 0.3rem;
 
-.cv-skill-category {
-  @extend %card-base;
-
-  flex: 1 1 250px;
-  border-left: 2px solid rgba($link-color, 0.55);
-  margin-bottom: 1rem;
-
-  &:hover {
-    background-color: $console-panel-bg-hover;
-  }
-
-  h3 {
-    @extend %heading-base;
-
-    font-size: 1.1rem;
-    margin-bottom: 1rem;
-    border-bottom: 1px solid rgba($card-heading-color, 0.3);
-    padding-bottom: 0.5rem;
+  p {
+    margin: 0;
+    display: inline;
   }
 }
 
-.cv-skill-items {
+.cv-skills__chips {
+  flex: 1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  min-width: 280px;
   list-style: none;
   margin: 0;
   padding: 0;
 }
 
-.cv-skill-item {
+.cv-skill-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.82rem;
+  color: rgb(255 255 255 / 85%);
+  background: $console-panel-bg;
+  border: 1px solid rgb(255 255 255 / 10%);
+  border-radius: 6px;
+  padding: 0.3rem 0.6rem;
+  margin: 0;
+  transition: border-color 0.2s ease;
+
+  &:hover {
+    border-color: rgba($link-color, 0.4);
+  }
+}
+
+.cv-skill-chip__dots {
+  display: inline-flex;
+  gap: 3px;
+
+  i {
+    width: 6px;
+    height: 6px;
+    border-radius: 2px;
+    background: rgb(255 255 255 / 15%);
+  }
+}
+
+.cv-skill-chip__dots--1 i:nth-child(-n+1),
+.cv-skill-chip__dots--2 i:nth-child(-n+2),
+.cv-skill-chip__dots--3 i:nth-child(-n+3) {
+  background: $card-heading-color;
+}
+
+.cv-skill-chip--special .cv-skill-chip__dots--1 i:nth-child(-n+1),
+.cv-skill-chip--special .cv-skill-chip__dots--2 i:nth-child(-n+2),
+.cv-skill-chip--special .cv-skill-chip__dots--3 i:nth-child(-n+3) {
+  background: $hover-color;
+}
+
+.cv-skills__legend {
+  margin: 0.9rem 0 0;
+  font-family: $mono-font-stack;
+  font-size: 0.68rem;
+  letter-spacing: 0.05em;
+  color: rgb(255 255 255 / 45%);
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 0.8rem;
-  margin-bottom: 0.6rem;
+  gap: 0.45rem;
+  flex-wrap: wrap;
 
-  .cv-skill-item__name {
+  .cv-skills__legend-sep {
+    color: rgb(255 255 255 / 25%);
+  }
+}
+
+@media (max-width: 640px) {
+  .cv-skills__group {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .cv-skills__cat {
+    flex: none;
+    padding-top: 0;
+  }
+
+  .cv-skills__chips {
     min-width: 0;
-  }
-
-  .cv-skill-item__level {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.45rem;
-    flex-shrink: 0;
-    font-size: 0.72rem;
-    letter-spacing: 0.04em;
-    color: rgb(255 255 255 / 65%);
-    background: rgb(255 255 255 / 4%);
-    border: 1px solid rgb(255 255 255 / 10%);
-    border-radius: 4px;
-    padding: 0.15rem 0.5rem;
-    white-space: nowrap;
-  }
-
-  .cv-skill-item__dots {
-    display: inline-flex;
-    gap: 3px;
-
-    i {
-      width: 6px;
-      height: 6px;
-      border-radius: 2px;
-      background: rgb(255 255 255 / 15%);
-    }
-  }
-
-  .cv-skill-item__level--1 .cv-skill-item__dots i:nth-child(-n+1),
-  .cv-skill-item__level--2 .cv-skill-item__dots i:nth-child(-n+2),
-  .cv-skill-item__level--3 .cv-skill-item__dots i:nth-child(-n+3) {
-    background: $card-heading-color;
-  }
-
-  // Special färbt nur die aktiven Punkte um (nicht mehr Punkte als das Level)
-  .cv-skill-item__level--1.cv-skill-item__level--special .cv-skill-item__dots i:nth-child(-n+1),
-  .cv-skill-item__level--2.cv-skill-item__level--special .cv-skill-item__dots i:nth-child(-n+2),
-  .cv-skill-item__level--3.cv-skill-item__level--special .cv-skill-item__dots i:nth-child(-n+3) {
-    background: $hover-color;
   }
 }
 
@@ -379,21 +422,6 @@
 
 // Responsive Anpassungen
 @media (max-width: 768px) {
-  .cv-entries,
-  .cv-skills {
-    flex-direction: column;
-
-    > * {
-      flex: none;
-      width: 100%;
-    }
-  }
-
-  .cv-skill-item {
-    flex-wrap: wrap;
-    gap: 0.3rem;
-  }
-
   .cv-language {
     flex-direction: column;
     align-items: flex-start;

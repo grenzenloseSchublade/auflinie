@@ -1,28 +1,38 @@
 {% comment %}
-  Fähigkeiten als Karten mit Level-Chips (ersetzt die Prozentbalken:
-  zugänglicher — Level steht als Text da — und ehrlicher als "Python 92%").
+  Fähigkeiten als Chip-Cluster pro Kategorie (Mockup-Variante T1):
+  Mono-Kategorielabel links, Skills als Chips mit Level-Punkten.
+  Level als Tooltip + Screenreader-Text (Punkte allein wären nicht zugänglich).
   Mapping: level >= 85 Experte, >= 65 Fortgeschritten, sonst Grundlagen.
 {% endcomment %}
 <div class="cv-skills">
   {% for skill_category in include.skill_categories %}
-  <div class="cv-skill-category">
-    <h3>{{ skill_category.category | markdownify | remove: '<p>' | remove: '</p>' }}</h3>
-    <ul class="cv-skill-items">
+  <div class="cv-skills__group">
+    <div class="cv-skills__cat">{{ skill_category.category | markdownify | remove: '<p>' | remove: '</p>' }}</div>
+    <ul class="cv-skills__chips">
       {% for skill in skill_category.skills %}
-      <li class="cv-skill-item">
-        <span class="cv-skill-item__name">{{ skill.name | markdownify | remove: '<p>' | remove: '</p>' }}</span>
-        {% if skill.level %}
-        {% assign lvl = skill.level | plus: 0 %}
-        {% if lvl >= 85 %}{% assign lvl_label = "Experte" %}{% assign lvl_n = 3 %}
-        {% elsif lvl >= 65 %}{% assign lvl_label = "Fortgeschritten" %}{% assign lvl_n = 2 %}
-        {% else %}{% assign lvl_label = "Grundlagen" %}{% assign lvl_n = 1 %}{% endif %}
-        <span class="cv-skill-item__level cv-skill-item__level--{{ lvl_n }}{% if skill.special %} cv-skill-item__level--special{% endif %}">
-          <span class="cv-skill-item__dots" aria-hidden="true"><i></i><i></i><i></i></span>{{ lvl_label }}
-        </span>
-        {% endif %}
+      {% assign skill_name = skill.name | markdownify | remove: '<p>' | remove: '</p>' | strip %}
+      {% if skill.level %}
+      {% assign lvl = skill.level | plus: 0 %}
+      {% if lvl >= 85 %}{% assign lvl_label = "Experte" %}{% assign lvl_n = 3 %}
+      {% elsif lvl >= 65 %}{% assign lvl_label = "Fortgeschritten" %}{% assign lvl_n = 2 %}
+      {% else %}{% assign lvl_label = "Grundlagen" %}{% assign lvl_n = 1 %}{% endif %}
+      <li class="cv-skill-chip{% if skill.special %} cv-skill-chip--special{% endif %}" title="{{ skill_name | strip_html }} — {{ lvl_label }}">
+        {{ skill_name }}
+        <span class="cv-skill-chip__dots cv-skill-chip__dots--{{ lvl_n }}" aria-hidden="true"><i></i><i></i><i></i></span>
+        <span class="sr-only">({{ lvl_label }})</span>
       </li>
+      {% else %}
+      <li class="cv-skill-chip">{{ skill_name }}</li>
+      {% endif %}
       {% endfor %}
     </ul>
   </div>
   {% endfor %}
+  <p class="cv-skills__legend" aria-hidden="true">
+    <span class="cv-skill-chip__dots cv-skill-chip__dots--1"><i></i><i></i><i></i></span> Grundlagen
+    <span class="cv-skills__legend-sep">·</span>
+    <span class="cv-skill-chip__dots cv-skill-chip__dots--2"><i></i><i></i><i></i></span> Fortgeschritten
+    <span class="cv-skills__legend-sep">·</span>
+    <span class="cv-skill-chip__dots cv-skill-chip__dots--3"><i></i><i></i><i></i></span> Experte
+  </p>
 </div>
