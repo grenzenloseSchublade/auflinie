@@ -8,7 +8,7 @@ Diese Website kombiniert Jekyll mit dem Minimal Mistakes Theme, um eine ansprech
 
 ## TODO
 
-- [x] Bilder und Grafiken optimieren (gesamt ~700 KB; Rest-Kür: `fractals/mandelbrot-header.jpg` → WebP, `animations/mandelbrot_zoom.gif` → animiertes WebP)
+- [x] Bilder und Grafiken optimieren (ungenutzte Assets entfernt — ~450 KB; Font-Awesome-Subset statt Komplett-CSS)
 - [ ] Weitere Blog Einträge hinzufügen
 - [ ] og:image: echtes 1200×630-Banner statt Logo (bessere Link-Vorschauen)
 
