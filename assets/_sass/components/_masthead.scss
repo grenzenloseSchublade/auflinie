@@ -402,22 +402,9 @@ body .greedy-nav .hidden-links li {
     border-bottom: none !important;
   }
   
-  // Trennung nach erstem Link (Mandelbrot) im Dropdown
-  &:first-child:not(:only-child) {
-    margin-bottom: 8px;
-    padding-bottom: 8px;
-    
-    &::after {
-      content: "";
-      position: absolute;
-      bottom: 0;
-      left: 15%;
-      right: 15%;
-      height: 1px;
-      background: rgb(5 217 232 / 30%);
-      pointer-events: none;
-    }
-  }
+  // (Der frühere first-child-Trenner entfiel: der Menü-Trenner hängt jetzt
+  // ausschließlich an .masthead__menu-item--featured und erscheint nur,
+  // wenn Mandelbrot selbst im Menü steht.)
   
   // Desktop: Hover-Effekt auf gesamter Box
   @media (min-width: 768px) {
@@ -565,7 +552,9 @@ body article.page {
 body .page__hero,
 body .page__hero--overlay {
   margin-top: 0;
-  padding-top: 0;
+
+  // padding-top gehört dem Hero selbst (tiefer Text-Anker in _hero.scss) —
+  // der frühere 0-Reset hat ihn mit body-Spezifität überschrieben
 }
 
 // Aktive Seite in der Navigation: Cyan-subtle-Unterstreichung (Zustand,

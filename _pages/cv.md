@@ -1,6 +1,6 @@
 ---
 title: "Lebenslauf"
-excerpt: "Vom Elektrotechnik-Studium zu Machine Learning — mein Werdegang im Überblick."
+excerpt: "Vom Studium der Elektrotechnik zum Machine Learning — mein Werdegang im Überblick."
 permalink: /cv/
 layout: single
 author_profile: true

@@ -1,6 +1,6 @@
 ---
 title: "Über mich"
-excerpt: "Ingenieur, Problemlöser, Autodidakt — wer hinter den Projekten steckt."
+excerpt: "Ingenieur, Entwickler, Problemlöser — wer hinter den Projekten steckt."
 permalink: /about/
 layout: single
 classes: wide

@@ -22,7 +22,11 @@
   &--overlay {
     position: relative;
     margin-bottom: 2em;
-    padding: 0 0 3em;
+
+    // 8em oben: Titel-Oberkante ~248px — Text sitzt tief im Hero
+    // (Nutzerwunsch), weiterhin top-verankert und damit seitenübergreifend
+    // pixelgleich
+    padding: 8em 0 2em;
     clear: both;
     background-size: cover;
     background-repeat: no-repeat;
@@ -36,14 +40,14 @@
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
-    min-height: clamp(360px, 42vh, 520px);
+    min-height: clamp(410px, 42vh, 520px); // Untergrenze deckt Home-Block (Titel+Lead+Buttons) beim tiefen Anker
 
     // Mobil: Hero füllt den Viewport bis zum unteren Rand (Bild „füllt aus");
     // Inhalt ebenfalls oben verankert, mit Luft überm Titel
     @media (max-width: 768px) {
       min-height: calc(100dvh - var(--masthead-height));
       margin-bottom: 1.2em;
-      padding-top: 10vh;
+      padding-top: 18vh;
     }
 
     // Eigenen Stacking-Kontext, damit Hintergrund / CRT / Text vorhersehbar liegen
