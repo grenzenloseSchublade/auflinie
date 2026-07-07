@@ -663,3 +663,18 @@
   right: 12px;
   bottom: 10px;
 }
+
+// Lead-Zeile: Theme begrenzt auf 768px — auf großen Schirmen brach der
+// Text unnötig früh um
+.page__hero--overlay .page__lead {
+  max-width: 52rem;
+}
+
+// Caption-Chip: sauber umbrechen, ohne dass die graue Fläche aufbläht
+.page__hero--overlay .caption {
+  max-width: min(75%, 34ch);
+  width: fit-content;
+  line-height: 1.35;
+  padding: 0.28rem 0.6rem;
+  text-align: right;
+}

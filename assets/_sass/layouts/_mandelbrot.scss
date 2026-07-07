@@ -27,15 +27,3 @@
   }
 }
 
-// Lesebreite: wide-Layout ist für die Panels richtig, Fließtext soll
-// aber nicht über ~75 Zeichen laufen
-.mandelbrot-page .page__content {
-  > p,
-  > ul,
-  > ol,
-  > blockquote,
-  > h2,
-  > h3 {
-    max-width: 75ch;
-  }
-}

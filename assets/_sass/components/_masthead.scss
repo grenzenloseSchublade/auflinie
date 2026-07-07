@@ -241,12 +241,22 @@ body .visible-links li.masthead__menu-item--featured {
   // Im Seitenmenü: horizontale Linie UNTER Mandelbrot als einziger Trenner
   @at-root body .greedy-nav .hidden-links li.masthead__menu-item--featured {
     margin-right: 0;
-    border-bottom: 1px solid $link-color-subtle !important; // Reset (none !important) überstimmen
-    padding-bottom: 0.4em;
-    margin-bottom: 0.4em;
+    padding-bottom: 0.45em;
+    margin-bottom: 0.45em;
 
+    // Eingerückte Linie (nicht durchgängig). Vollständige Eigendefinition:
+    // die Basisregel gilt nur unter .visible-links, und ein Drawer-Reset
+    // setzt content:none !important — beides hier explizit überstimmen
     &::after {
-      display: none; // der vertikale Masthead-Trenner gilt hier nicht
+      content: "" !important;
+      display: block !important;
+      position: absolute;
+      inset: auto 14% 0;
+      width: auto;
+      height: 1px;
+      margin: 0;
+      background: $border-accent;
+      pointer-events: none;
     }
   }
   
