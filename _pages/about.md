@@ -3,6 +3,7 @@ title: "Über mich"
 excerpt: "Zwischen Theorie und Praxis – ein Profil über Experimentieren und Neugierde. "
 permalink: /about/
 layout: single
+classes: wide
 author_profile: true
 toc: false
 header:

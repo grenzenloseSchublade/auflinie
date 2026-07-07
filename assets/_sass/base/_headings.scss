@@ -39,3 +39,11 @@
 .feature-box__title {
   color: $link-color;
 }
+
+// Meta-Zeilen (Aktualisiert, Lesezeit): gedimmtes Chrome-Label
+.page__meta {
+  font-family: $mono-font-stack;
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  color: rgb(255 255 255 / 45%);
+}

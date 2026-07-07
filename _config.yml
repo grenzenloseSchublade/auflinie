@@ -77,7 +77,7 @@ author:
   name: "Hans Müller"
   avatar: "/assets/images/Logo.svg"
   bio: "Ingenieur & Entwickler"
-  location: "Deutschland, 45"
+  location: "Bochum, Deutschland"
   links:
     - label: "GitHub"
       icon: "fab fa-fw fa-github"
