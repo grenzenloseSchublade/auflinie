@@ -305,17 +305,3 @@
   animation-timing-function: ease-in-out, ease-in-out;
   animation-iteration-count: infinite, infinite;
 }
-
-// =============================================================================
-// MASTHEAD: Name vollständig statisch — losgelöst vom Hero-Header
-// =============================================================================
-// Masthead und Hero teilen die Neon-Klassen (.neon-glow/.neon-umlaut), sollen
-// sich aber unabhängig verhalten (Nutzerentscheidung): der große Hero-Name
-// behält Atmen/Flackern, der kleine Masthead-Name ruht. animation: none
-// (Shorthand) überstimmt auch die eigenen animation-name-Deklarationen der
-// Punkte (::after setzt z.B. neonUmlautFlickerB separat).
-.masthead .neon-glow,
-.masthead .neon-umlaut::before,
-.masthead .neon-umlaut::after {
-  animation: none;
-}

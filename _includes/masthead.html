@@ -10,16 +10,14 @@
                     {% include logo.svg %}
                 </a>
                 {% endunless %}
+                {%- comment -%}
+                    Bewusst schlichter Text auf ALLEN Seiten — der Neon-Schriftzug
+                    lebt ausschließlich im Hero (page__hero.html). Früher baute eine
+                    page.url-Bedingung nur auf der Startseite Neon-Markup ein: der
+                    Masthead sah dadurch je nach Seite anders aus.
+                {%- endcomment -%}
                 <a class="site-title" href="{{ '/' | relative_url }}">
-                    {% if page.url == "/" %}
-                        {% assign masthead_title = site.masthead_title | default: site.title %}
-                        {% assign masthead_title = masthead_title | replace: "Hans", "<span class='neon-glow'>H</span><span class='neon-orbit-trigger' role='button' tabindex='0' aria-label='Orbit starten'>a</span>ns" %}
-                        {% assign masthead_title = masthead_title | replace: "Müller", "M<span class='neon-umlaut' aria-label='ü'>u</span>ller" %}
-                        {% assign masthead_title = masthead_title | replace: "Kraftstoff", "<span class='neon-glow'>K</span>raftstoff" %}
-                        <span class="neon-name">{{ masthead_title }}</span>
-                    {% else %}
-                        {{ site.masthead_title | default: site.title }}
-                    {% endif %}
+                    {{ site.masthead_title | default: site.title }}
                     {% if site.subtitle %}<span class="site-subtitle">{{ site.subtitle }}</span>{% endif %}
                 </a>
                 <ul class="visible-links">
