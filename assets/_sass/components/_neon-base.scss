@@ -239,7 +239,8 @@
 
   // Orbit-Mittelpunkt: X = horizontale Mitte, Y = dynamisch
   transform-origin: var(--neon-orbit-center-x, 0.18em) var(--neon-orbit-origin-y, 0.45em);
-  animation-name: neonUmlautFlickerA, neonFlickerIrregular, neonJitter, neonLayeredGlow;
+  // Statisch (Nutzerwunsch): Punkte glühen, flackern aber nicht mehr
+  animation-name: none;
   animation-duration: calc(var(--neon-base-flicker-on, 1) * 12s),
     calc(var(--neon-flicker-on, 0) * 3.4s),
     calc(var(--neon-jitter-on, 0) * 1.6s),
@@ -297,11 +298,8 @@
   // Kalibrierter Dauerglow: sanfter schmaler Schein statt Strahlen
   text-shadow: 0 0 4px rgb(255 0 255 / 45%),
     0 0 10px rgb(255 0 255 / 25%);
-  animation-name: neonTextLayeredGlow, neonTextPulse;
-
-  // Langsames „Röhren-Atmen" statt doppeltem Puls
-  animation-duration: calc(var(--neon-text-layered-on, 0) * 7s),
-    calc(var(--neon-text-pulse-on, 0) * 9s);
+  // Statisch (Nutzerwunsch): kein Atmen/Puls mehr — Leben kommt vom Logo
+  animation: none;
   animation-timing-function: ease-in-out, ease-in-out;
   animation-iteration-count: infinite, infinite;
 }
