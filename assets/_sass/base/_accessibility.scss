@@ -1,3 +1,9 @@
+// Mobiles Tap-Highlight zentral steuerbar (Setting: variables/_layout.scss);
+// die Tastatur-Fokusringe (:focus-visible, Magenta) bleiben unberührt
+html {
+  -webkit-tap-highlight-color: $tap-highlight-color;
+}
+
 // =============================================================================
 // Accessibility & globale Basis-Regeln
 // =============================================================================

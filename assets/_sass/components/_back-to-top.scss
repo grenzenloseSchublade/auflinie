@@ -115,4 +115,9 @@
 // Sobald der Footer sichtbar wird, rutscht der Button darüber
 .back-to-top--above-footer {
   bottom: 120px;
+
+  // Mobil ist der Footer höher (132px, Nav bricht um) — gemessen 11px Überlappung
+  @media (max-width: 768px) {
+    bottom: 148px;
+  }
 }

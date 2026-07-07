@@ -45,7 +45,10 @@
     // Mobil: Hero füllt den Viewport bis zum unteren Rand (Bild „füllt aus");
     // Inhalt ebenfalls oben verankert, mit Luft überm Titel
     @media (max-width: 768px) {
-      min-height: calc(100dvh - var(--masthead-height));
+      // svh statt dvh: die dynamische Viewport-Höhe wuchs beim Einklappen
+      // der mobilen Adressleiste — der Hero skalierte live nach und das
+      // Cover-Bild "wanderte" sichtbar beim Scrollen
+      min-height: calc(100svh - var(--masthead-height));
       margin-bottom: 1.2em;
       padding-top: 18vh;
     }
