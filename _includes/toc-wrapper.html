@@ -16,10 +16,10 @@
 <!-- Mobile Sticky TOC Header (nur auf Mobile sichtbar) -->
 <div id="toc-sticky-mobile" class="toc-sticky-mobile" aria-hidden="true">
   <button id="toc-sticky-toggle" class="toc-sticky-mobile__toggle" type="button" aria-expanded="false" aria-controls="toc-sticky-dropdown">
-    <span class="toc-sticky-mobile__icon"><i class="fas fa-{{ page.toc_icon | default: 'list' }}"></i></span>
-    <span class="toc-sticky-mobile__label">{{ toc_label }}:</span>
+    <span class="toc-sticky-mobile__label">{{ toc_label }}</span>
     <span id="toc-sticky-current" class="toc-sticky-mobile__current">–</span>
-    <span class="toc-sticky-mobile__arrow">▼</span>
+    <span class="toc-sticky-mobile__arrow" aria-hidden="true">▼</span>
+    <span class="toc-sticky-mobile__progress" aria-hidden="true"></span>
   </button>
   <div id="toc-sticky-dropdown" class="toc-sticky-mobile__dropdown">
     {% include toc.html sanitize=true html=content h_min=2 h_max=6 class="toc__menu toc-sticky-mobile__menu" skip_no_ids=true %}
@@ -186,11 +186,18 @@ document.addEventListener('DOMContentLoaded', function() {
   // ==========================================================================
   // SCROLL HANDLER (nur für Visibility, Gumshoe macht ScrollSpy)
   // ==========================================================================
+  function updateReadingProgress() {
+    const max = document.documentElement.scrollHeight - window.innerHeight;
+    const progress = max > 0 ? Math.min(1, window.scrollY / max) : 0;
+    stickyToc.style.setProperty('--toc-progress', progress.toFixed(4));
+  }
+
   let scrollTicking = false;
   window.addEventListener('scroll', function() {
     if (!scrollTicking) {
       requestAnimationFrame(function() {
         updateStickyVisibility();
+        updateReadingProgress();
         scrollTicking = false;
       });
       scrollTicking = true;
@@ -254,8 +261,8 @@ document.addEventListener('DOMContentLoaded', function() {
   function updateCurrentHeading(newText) {
     if (!stickyCurrent || !newText) return;
     
-    // Truncate wenn nötig
-    const displayText = newText.length > 40 ? newText.substring(0, 37) + '...' : newText;
+    // Kürzung übernimmt CSS (text-overflow: ellipsis) — passt sich der Breite an
+    const displayText = newText;
     
     // Nur aktualisieren wenn sich der Text geändert hat
     if (lastActiveText !== newText && !isAnimating) {
