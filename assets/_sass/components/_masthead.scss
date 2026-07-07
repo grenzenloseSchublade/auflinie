@@ -4,6 +4,10 @@
 
 // Logo im Header größer und mit Transparenz
 .site-logo img {
+    // Neon-Schein entlang der Logo-Linien (drop-shadow folgt der SVG-Kontur);
+    // Duotone passend zum Cyan/Magenta-Line-Art
+    filter: drop-shadow(0 0 3px rgba($link-color, 0.35)) drop-shadow(0 0 7px rgba($hover-color, 0.22));
+    transition: filter 0.45s ease;
     max-height: 5rem;  // Größer (vorher 3.5rem, Standard 2rem)
     width: auto;
 
@@ -18,7 +22,7 @@
 
     // Zusätzlicher Glow-Effekt per CSS
     filter: drop-shadow(0 0 3px rgb(5 217 232 / 60%))
-            drop-shadow(0 0 6px rgb(255 0 204 / 40%));
+            drop-shadow(0 0 6px rgb(255 0 255 / 40%));
 }
 
 // =============================================================================
@@ -40,11 +44,12 @@
         
         &:hover {
             color: inherit;
-            text-shadow: 0 0 6px rgb(255 0 204 / 100%),
-              0 0 16px rgb(255 0 204 / 95%),
-              0 0 34px rgb(255 0 204 / 75%),
-              0 0 60px rgb(255 0 204 / 50%),
-              0 0 90px rgb(255 0 204 / 35%);
+
+            // Kalibriert: Glow als warmes Glühen, kein 90px-Halo
+            // (Recherche: Glow <=16px, Alpha <=0.55 — Synthwave '84-Praxis)
+            text-shadow: 0 0 4px rgb(255 0 255 / 55%),
+              0 0 10px rgb(255 0 255 / 35%),
+              0 0 16px rgb(255 0 255 / 20%);
             text-decoration: none;
         }
         
@@ -514,6 +519,10 @@ body .greedy-nav .visible-links a:focus-visible {
 }
 
 body .greedy-nav__toggle:focus-visible {
-    outline: 2px solid $link-color;
+    outline: 2px solid $hover-color;
     outline-offset: 2px;
+}
+
+.site-logo:hover img {
+    filter: drop-shadow(0 0 4px rgba($link-color, 0.5)) drop-shadow(0 0 10px rgba($hover-color, 0.35));
 }

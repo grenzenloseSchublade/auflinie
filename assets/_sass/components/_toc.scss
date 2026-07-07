@@ -74,7 +74,7 @@
     }
     
     &:focus-visible {
-        outline: 2px solid $link-color;
+        outline: 2px solid $hover-color;
         outline-offset: -2px;
     }
 }
@@ -155,7 +155,7 @@
     pointer-events: none;
     transform-origin: 0 50%;
     transform: scaleX(var(--toc-progress, 0));
-    background: linear-gradient(90deg, $link-color, rgb(5 217 232 / 55%));
+    background: linear-gradient(90deg, $hover-color, rgb(255 0 255 / 55%));
 }
 
 // Dropdown-Container
@@ -376,7 +376,7 @@
         }
 
         &:focus-visible {
-            outline: 2px solid $link-color;
+            outline: 2px solid $hover-color;
             outline-offset: -2px; // Innen, damit es im Container bleibt
         }
 
@@ -533,7 +533,7 @@
 }
 
 .toc-toggle:focus-visible .nav__title {
-    outline: 2px solid $link-color;
+    outline: 2px solid $hover-color;
     outline-offset: -2px;
 }
 

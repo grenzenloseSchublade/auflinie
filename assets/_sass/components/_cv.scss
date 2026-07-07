@@ -218,7 +218,7 @@
     }
 
     &:focus-visible {
-      outline: 2px solid $card-heading-color;
+      outline: 2px solid $hover-color;
       outline-offset: 2px;
     }
   }
