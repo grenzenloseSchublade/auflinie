@@ -12,23 +12,16 @@ $hover-color-subtle: rgb(255 29 206 / 60%); // Dezentes Magenta - für subtile A
 // Electric Pink rgba(255, 0, 153, 0.6)
 // Hot Magenta rgba(255, 29, 206, 0.6)
 // Neon Fuchsia rgba(255, 0, 128, 0.6)
-$accent-green: #00ffc8; // Grün - Akzentfarbe
 $background-dark: #1a1a1a; // Dunkler Hintergrund
-$code-background: #2d2d2d; // Code-Block Hintergrund
 
 // Überschriften
 $card-heading-color: #05d9e8; // Überschriftenfarbe für Karten
 
 // Textfarben
-$excerpt-color: #00ffc8; // Untertitel Farbe
 $selection-bg: #ff00ff; // Hintergrundfarbe für markierten Text
 $selection-text: #000000; // Textfarbe für markierten Text
 
 // Overlay-Farben (für konsistente Hintergrund-Transparenzen)
-$bg-overlay-dark: rgb(0 0 0 / 20%); // Dunkler Overlay
-$bg-overlay-darker: rgb(0 0 0 / 30%); // Dunklerer Overlay
-$bg-overlay-light-subtle: rgb(255 255 255 / 3%); // Sehr subtiler heller Overlay
-$bg-overlay-light: rgb(255 255 255 / 5%); // Subtiler heller Overlay
 
 // Hinweis: .contact-type, .contact-value, .contact-icon Styles 
 // wurden nach components/_about.scss verschoben

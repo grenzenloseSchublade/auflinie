@@ -495,7 +495,6 @@ body .page__content,
 body .page__meta,
 body .page__related,
 body .archive,
-body .search__content,
 body header.page__title,
 body article.page {
   padding-top: 0;
@@ -503,9 +502,7 @@ body article.page {
 }
 
 body .page__hero,
-body .page__hero--overlay,
-body .page__hero--video,
-body .page__header {
+body .page__hero--overlay {
   margin-top: 0;
   padding-top: 0;
 }

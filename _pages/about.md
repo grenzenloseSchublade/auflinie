@@ -18,7 +18,7 @@ header:
 <div class="about-intro">
   <details>
     <summary class="about-intro__summary">
-      <div class="feature-box__icon">
+      <div class="about-intro__icon">
         <i class="fas fa-file-alt" aria-hidden="true"></i>
       </div>
       <h3 class="about-intro__title">Über diese Seite – Entstehung und Philosophie</h3>

@@ -10,20 +10,6 @@
 }
 
 // Kategorie-Filter Buttons
-.filter-category {
-    &.active {
-        background-color: $hover-color; // Primärfarbe aus dem Theme verwenden
-        border-color: $hover-color;
-        color: #ffffff;
-        box-shadow: 0 2px 5px rgb(0 0 0 / 20%);
-        
-        &:hover {
-            background-color: color.adjust($link-color, $lightness: -5%);
-            border-color: color.adjust($link-color, $lightness: -5%);
-            transform: none; // Keine Verschiebung, da bereits aktiv
-        }
-    }
-}
 
 // Anpassungen für Standard-Buttons
 .btn {

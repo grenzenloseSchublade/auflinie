@@ -25,34 +25,6 @@
 }
 
 // Feature-Boxen (z.B. Posts/Über mich)
-.feature-box {
-  padding: 1.5em;
-  margin: 2em 0;
-  border-radius: 5px;
-  background-color: rgb(0 0 0 / 20%);
-  border-left: 5px solid #05d9e8;
-}
-
-.feature-box--with-icon {
-  display: flex;
-  align-items: center;
-}
-
-.feature-box__icon {
-  flex: 0 0 64px;
-  margin-right: 1em;
-}
-
-.feature-box__icon i {
-  font-size: 3em;
-  color: #05d9e8;
-}
-
-.feature-box__title {
-  margin-top: 0;
-  color: #ffffff;
-}
-
 // About-Intro im Detail-Block
 .about-intro {
   background: $console-panel-bg;
@@ -62,7 +34,7 @@
   padding: 0.85rem 1.1rem;
   margin: 1.2rem 0 1.6rem;
 
-  .feature-box__icon {
+  .about-intro__icon {
     color: $console-heading;
     opacity: 0.85;
     font-size: 1.05rem;
