@@ -298,20 +298,38 @@
 .about-motto-wrap {
   display: flex;
   justify-content: center;
-  margin: 1.6rem 0 0.4rem;
+  margin: 2rem 0 0.6rem;
 }
 
+// Spezifität: .about-section p setzt sonst die Schriftgröße zurück
+.about-section p.about-motto,
 .about-motto {
-  display: inline-block;
+  display: flex;
+  align-items: center;
+  gap: 1.1rem;
   font-style: italic;
 
-  // Größer und in Beige: der warme Einzelakzent der Seite
-  font-size: clamp(1.25rem, 2.6vw, 1.8rem);
+  // Prominent, aber nicht erschlagend: der warme Einzelakzent der Seite
+  font-size: clamp(1.35rem, 3vw, 1.9rem);
+  line-height: 1.4;
   color: $console-heading;
-  background: rgb(255 255 255 / 3%);
-  border: 1px solid $console-panel-border;
-  border-left: 3px solid rgba($link-color, 0.55);
-  border-radius: 0 8px 8px 0;
-  padding: 0.7rem 1.6rem;
+  letter-spacing: 0.02em;
+  background: none;
+  border: none;
+  padding: 0;
   margin: 0;
+
+  // Flankierende Hairlines statt Kasten
+  &::before,
+  &::after {
+    content: "";
+    height: 1px;
+    width: clamp(2rem, 6vw, 4.5rem);
+    background: linear-gradient(90deg, transparent, rgba($console-heading, 0.5));
+    flex-shrink: 0;
+  }
+
+  &::after {
+    background: linear-gradient(90deg, rgba($console-heading, 0.5), transparent);
+  }
 }

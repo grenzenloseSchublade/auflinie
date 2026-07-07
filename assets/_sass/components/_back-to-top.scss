@@ -116,3 +116,8 @@
     }
   }
 }
+
+// Sobald der Footer sichtbar wird, rutscht der Button darüber
+.back-to-top--above-footer {
+  bottom: 120px;
+}

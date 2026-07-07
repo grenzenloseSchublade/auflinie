@@ -88,7 +88,7 @@
 .toc-sticky-mobile__label {
     flex-shrink: 0;
     font-family: $mono-font-stack;
-    font-size: 0.68rem;
+    font-size: $toc-sticky-label-font-size;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.08em;
@@ -297,7 +297,7 @@
     .nav__title {
         color: rgb(255 255 255 / 70%);
         font-family: $mono-font-stack;
-        font-size: 0.72rem;
+        font-size: $toc-title-font-size;
         text-transform: uppercase;
         letter-spacing: 0.08em;
         background: rgb(255 255 255 / 3%);
@@ -544,7 +544,7 @@
 @media (min-width: $large) {
     .toc {
         .nav__title {
-            font-size: 0.875rem; // 14px - kompakter auf Desktop
+            // Größe kommt zentral aus $toc-title-font-size
             padding: 0.5em 0.75em;
             min-height: 36px;
         }
@@ -573,7 +573,7 @@
 // =============================================================================
 .wide .toc {
     .nav__title {
-        font-size: 0.875rem;
+        // Größe kommt zentral aus $toc-title-font-size
         padding: 0.5em 0.75em;
     }
 }
@@ -590,7 +590,7 @@
 @media (max-width: $large - 1) {
     .wide .toc {
         .nav__title {
-            font-size: $type-size-5;
+            // Größe kommt zentral aus $toc-title-font-size
             padding: 0.75em 1em;
             min-height: 44px;
         }
@@ -647,4 +647,13 @@
 // Avatar in der Sidebar - Transparenz beibehalten
 .author__avatar img {
     background: transparent;
+}
+
+// Zentrale Label-Größe für ALLE TOC-Varianten (rem = immun gegen die
+// em-Skalierung der Theme-Sidebar; Größe siehe variables/_typography.scss)
+.sidebar .toc .nav__title,
+.sidebar__right .nav__title,
+.toc-toggle .nav__title,
+.toc .nav__title {
+  font-size: $toc-title-font-size;
 }

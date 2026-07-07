@@ -15,7 +15,7 @@ header:
 <div class="about-container">
 {% assign sections_by_name = site.data.about | group_by: "section" %}
 
-<div class="notice--info feature-box about-intro">
+<div class="about-intro">
   <details>
     <summary class="about-intro__summary">
       <div class="feature-box__icon">

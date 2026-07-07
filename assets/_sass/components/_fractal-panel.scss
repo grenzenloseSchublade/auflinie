@@ -97,8 +97,8 @@ $fp-heading: $console-heading;
 
 .fractal-panel__toolbar-group {
   display: flex;
-  flex: 1;
-  max-width: 200px;
+  flex: 1.6;
+  max-width: 320px; // Platz für Reset / Neu / CRT
   gap: 6px;
 
   .fractal-panel__button {

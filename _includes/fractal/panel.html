@@ -27,27 +27,22 @@
       <span class="icon"><i class="fas fa-crosshairs" aria-hidden="true"></i></span>
       <span class="btn-text">Fokus</span>
     </button>
-    {% if fractal_variant == "julia" %}
     <div class="fractal-panel__toolbar-group">
-      <button type="button" class="fractal-panel__button" data-role="reset" title="Zoom zurücksetzen" aria-label="Zoom zurücksetzen">
+      <button type="button" class="fractal-panel__button" data-role="reset" title="{% if fractal_variant == "julia" %}Zoom zurücksetzen{% else %}Zurücksetzen{% endif %}" aria-label="Zurücksetzen">
         <span class="icon"><i class="fas fa-undo" aria-hidden="true"></i></span>
         <span class="btn-text">Reset</span>
       </button>
+      {% if fractal_variant == "julia" %}
       <button type="button" class="fractal-panel__button" data-role="recalc" title="Neu berechnen" aria-label="Neu berechnen">
         <span class="icon"><i class="fas fa-sync" aria-hidden="true"></i></span>
         <span class="btn-text">Neu</span>
       </button>
+      {% endif %}
+      <button type="button" class="fractal-panel__button is-active" data-role="crt-toggle" title="Retro-Bildschirm-Effekt umschalten" aria-label="Retro-Bildschirm-Effekt" aria-pressed="true">
+        <span class="icon"><i class="fas fa-tv" aria-hidden="true"></i></span>
+        <span class="btn-text">CRT</span>
+      </button>
     </div>
-    {% else %}
-    <button type="button" class="fractal-panel__button" data-role="reset" title="Zurücksetzen" aria-label="Zurücksetzen">
-      <span class="icon"><i class="fas fa-undo" aria-hidden="true"></i></span>
-      <span class="btn-text">Reset</span>
-    </button>
-    {% endif %}
-    <button type="button" class="fractal-panel__button is-active" data-role="crt-toggle" title="Retro-Bildschirm-Effekt umschalten" aria-label="Retro-Bildschirm-Effekt" aria-pressed="true">
-      <span class="icon"><i class="fas fa-tv" aria-hidden="true"></i></span>
-      <span class="btn-text">CRT</span>
-    </button>
     <button type="button" class="fractal-panel__button" data-role="fullscreen" title="Vollbild" aria-label="Vollbild">
       <span class="icon"><i class="fas fa-expand" aria-hidden="true"></i></span>
       <span class="btn-text">Vollbild</span>
