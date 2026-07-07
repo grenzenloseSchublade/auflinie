@@ -19,13 +19,18 @@
     }
   }
 
+  function heroSichtbar() {
+    var hero = document.querySelector('.page__hero--overlay');
+    return !!hero && hero.getBoundingClientRect().bottom > 90; // Header ragt in den Viewport
+  }
+
   function isHeroSwitch(fromUrl, toUrl) {
     return path(fromUrl) === '/' && HERO_TARGETS.indexOf(path(toUrl)) !== -1;
   }
 
   window.addEventListener('pageswap', function (e) {
     if (!e.viewTransition || !e.activation || !e.activation.entry) return;
-    if (isHeroSwitch(location.href, e.activation.entry.url)) {
+    if (isHeroSwitch(location.href, e.activation.entry.url) && heroSichtbar()) {
       e.viewTransition.types.add('crt');
     }
   });

@@ -125,6 +125,9 @@
   }
 </style>
 
+{% if site.background_image %}
+<link rel="preload" as="image" href="{{ site.background_image | relative_url }}">
+{% endif %}
 <!-- Konfiguration für Bild-Caching und Service Worker -->
 <script>
   // Konfiguration aus _config.yml an das HTML-Dokument übergeben.

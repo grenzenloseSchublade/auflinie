@@ -7,10 +7,11 @@
 // Referenz-Look: heroCrtModeFlash (Phosphorgrün) + Röhren-Kollaps.
 /* stylelint-disable selector-pseudo-element-no-unknown, selector-pseudo-class-no-unknown, at-rule-no-unknown */
 
-// Aktiv nur mobil + ohne reduced-motion. (Headless-Testumgebungen ohne
-// GPU-Compositing rendern die Transition nicht — auf echten Geräten vom
-// Nutzer verifiziert.)
-@media (max-width: 768px) and (prefers-reduced-motion: no-preference) {
+// Aktiv auf allen Größen (Nutzerwunsch), ohne reduced-motion; die
+// inhaltliche Bedingung — Hero/Header im Viewport sichtbar — prüft
+// tv-switch.js beim Setzen des Types. (Headless-Umgebungen ohne
+// GPU-Compositing rendern die Transition nicht — real verifiziert.)
+@media (prefers-reduced-motion: no-preference) {
   @view-transition {
     navigation: auto;
   }
@@ -37,16 +38,16 @@
   background: rgb(85 240 145);
 }
 
-// Timing: alt kollabiert in 130ms; die neue Seite startet erst bei 180ms —
-// dazwischen stehen ~50ms REINES Phosphorgrün (der ::view-transition-Grund),
-// Gesamtdauer 350ms. Vorher überlappten out (bis 180ms) und in (ab 120ms),
-// wodurch das Grün nur durch Transparenzlücken blitzte.
+// Timing (Nutzerabnahme "alles länger"): alt kollabiert in 260ms; die neue
+// Seite startet bei 380ms — dazwischen ~120ms REINES Phosphorgrün; Einblenden
+// 300ms, gesamt ~680ms. Der Brightness-Peak beim Einblenden ist gesenkt,
+// damit eine noch bildlose Hero-Fläche nicht grell aufleuchtet.
 html:active-view-transition-type(crt)::view-transition-old(root) {
-  animation: tv-switch-out 130ms steps(3, end) forwards;
+  animation: tv-switch-out 260ms steps(4, end) forwards;
 }
 
 html:active-view-transition-type(crt)::view-transition-new(root) {
-  animation: tv-switch-in 170ms 180ms steps(3, start) both;
+  animation: tv-switch-in 300ms 380ms steps(4, start) both;
 }
 
 @keyframes tv-switch-out {
@@ -73,13 +74,13 @@ html:active-view-transition-type(crt)::view-transition-new(root) {
   0% {
     opacity: 0;
     transform: scaleY(0.004);
-    filter: brightness(6);
+    filter: brightness(2.4);
   }
 
   55% {
     opacity: 1;
     transform: scaleY(1);
-    filter: brightness(1.8) contrast(0.85);
+    filter: brightness(1.35) contrast(0.9);
   }
 
   100% {
