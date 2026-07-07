@@ -127,9 +127,12 @@
 
 <!-- Konfiguration für Bild-Caching und Service Worker -->
 <script>
-  // Konfiguration aus _config.yml an das HTML-Dokument übergeben
+  // Konfiguration aus _config.yml an das HTML-Dokument übergeben.
+  // WICHTIG: data-enable-service-worker wird hier NICHT mehr gesetzt —
+  // das Attribut kommt serverseitig aus _layouts/default.html und ist dort
+  // env-gegated (nur Production). Das frühere Laufzeit-Override erzwang
+  // "true" auch im Dev-Betrieb und hielt die Update-Dauerschleife am Leben.
   document.documentElement.setAttribute('data-enable-image-caching', '{% if site.enable_image_caching != false %}true{% else %}false{% endif %}');
-  document.documentElement.setAttribute('data-enable-service-worker', '{{ site.enable_service_worker | default: true }}');
   document.documentElement.setAttribute('data-background-image', '{{ site.background_image | relative_url }}');
 </script>
 

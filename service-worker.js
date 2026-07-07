@@ -15,7 +15,6 @@ const CACHE_NAME = `kraftstoff-cache-${CACHE_VERSION}`;
 // Ressourcen, die beim Installieren des Service Workers gecached werden sollen
 // Alle Pfade sind relativ zum Scope des Service Workers (Root der Website)
 const CACHE_URLS = [
-  './',
   './offline.html',
   './assets/js/offline.js',
   './assets/css/main.css',
@@ -81,7 +80,16 @@ self.addEventListener('fetch', event => {
   if (!event.request.url.startsWith(self.location.origin)) return;
   
   const url = event.request.url;
-  
+
+  // Navigationen (HTML-Seiten): IMMER frisch vom Server — cache:'reload'
+  // umgeht auch den HTTP-Cache des Browsers. Veraltete Seiten aus dem
+  // Laufzeit-Cache waren die Ursache der Update-Dauerschleife; der Cache
+  // dient nur noch als Offline-Fallback (offline.html).
+  if (event.request.mode === 'navigate') {
+    event.respondWith(handleNavigation(event.request));
+    return;
+  }
+
   // Spezielle Behandlung für Bilder: Cache-First
   if (url.match(/\.(jpg|jpeg|png|gif|webp|ico)$/)) {
     event.respondWith(cacheFirst(event.request));
@@ -98,6 +106,22 @@ self.addEventListener('fetch', event => {
     event.respondWith(networkFirst(event.request));
   }
 });
+
+// Navigationen: frisch oder Offline-Seite.
+// WICHTIG: per URL-String fetchen — wird das originale Navigations-Request-
+// Objekt wiederverwendet, ignoriert Chromium die cache-Option und bedient
+// sich weiter am HTTP-Cache (verifiziert; das war die Update-Dauerschleife).
+async function handleNavigation(request) {
+  try {
+    return await fetch(request.url, { cache: 'reload', credentials: 'same-origin' });
+  } catch (error) {
+    const offline = await caches.match('./offline.html');
+    if (offline) {
+      return offline;
+    }
+    return new Response('Offline', { status: 503, headers: { 'Content-Type': 'text/plain' } });
+  }
+}
 
 // Cache-First-Strategie für Bilder
 async function cacheFirst(request) {
@@ -119,10 +143,13 @@ async function cacheFirst(request) {
   }
 }
 
-// Network-First-Strategie für andere Ressourcen
+// Network-First-Strategie für andere Ressourcen.
+// cache: 'no-cache' zwingt zur Revalidierung beim Server — ohne das bedient
+// sich fetch() am HTTP-Cache des Browsers (heuristische Frische), und
+// "Network-First" liefert in Wahrheit veraltete Kopien aus.
 async function networkFirst(request) {
   try {
-    const networkResponse = await fetch(request);
+    const networkResponse = await fetch(request, { cache: 'no-cache' });
     if (networkResponse.ok) {
       const cache = await caches.open(CACHE_NAME);
       cache.put(request, networkResponse.clone());
