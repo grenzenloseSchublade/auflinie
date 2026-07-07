@@ -6,14 +6,19 @@
     min-width: $landing-section-min-width;
     margin: $element-spacing;
     padding: 1.5em;
-    background-color: rgba(0, 0, 0, 0.2);
-    border-radius: 5px;
-    box-shadow: $box-shadow-light;
-    transition: transform $standard-transition, box-shadow $standard-transition;
+
+    @include card-panel(0);
+
+    transition: transform $standard-transition, border-color $standard-transition;
+
+    // Spaltenlayout: Button sitzt unabhängig von der Textmenge
+    // auf einer gemeinsamen Grundlinie
+    display: flex;
+    flex-direction: column;
 
     &:hover {
         transform: $hover-transform;
-        box-shadow: $box-shadow-medium;
+        border-color: $border-accent-hover;
     }
 
     h2 {
@@ -32,7 +37,8 @@
 
     .btn {
         display: inline-block;
-        margin-top: $small-spacing;
+        margin-top: auto;
+        align-self: flex-start;
     }
 }
 

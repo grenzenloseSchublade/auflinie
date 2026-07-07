@@ -18,3 +18,18 @@
     });
   }
 })();
+
+// Cache-Hinweis nur zeigen, wenn wirklich offline —
+// die Seite ist auch direkt (online) aufrufbar
+(function () {
+  var notice = document.querySelector('.offline-page__cache-notice');
+  if (notice && navigator.onLine) {
+    notice.style.display = 'none';
+  }
+  window.addEventListener('online', function () {
+    if (notice) { notice.style.display = 'none'; }
+  });
+  window.addEventListener('offline', function () {
+    if (notice) { notice.style.display = ''; }
+  });
+})();

@@ -1,7 +1,7 @@
 <div class="interests-container">
 {% for interest in include.interests %}
 <div class="interest-card">
-    <h3 class="card-heading"><i class="fas fa-{% if interest.category == 'Programmierung' %}code{% elsif interest.category == 'Physik' %}atom{% elsif interest.category == 'Hobbys' %}heart{% else %}star{% endif %}"></i> {{ interest.category }}</h3>
+    <h3 class="card-heading"><i class="fas fa-{{ interest.icon | default: 'star' }}" aria-hidden="true"></i> {{ interest.category }}</h3>
     <ul class="interest-list">
         {% for item in interest.items %}
         <li>{{ item }}</li>

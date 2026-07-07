@@ -11,23 +11,6 @@ sections:
       Fraktale wie die Mandelbrot-Menge können genutzt werden, um Zusammenhänge zwischen Mathematik und Natur zu illustrieren,
       denn sie zeigen eindrucksvoll, wie aus simplen Vorgaben hochkomplexes Verhalten entsteht.
 
-  - section: "Julia-Mengen: Interaktive Visualisierung und mathematische Grundlagen"
-    icon: "cube"
-    anchor: "julia-section"
-    content: >-
-      Die Julia-Menge steht in direkter Beziehung zur Mandelbrot-Menge und illustriert anschaulich die Vielfalt komplexer Dynamik für unterschiedliche Parameter $c$.
-      Verschiedene Julia-Mengen verdeutlichen, wie stark die Struktur des Fraktals durch die Auswahl des Parameters beeinflusst wird.
-      Insbesondere wirken die Julia-Mengen oft ästhetisch ansprechend und dienen als Einstieg in die Erforschung fraktaler Geometrie.
-      Darüber hinaus sind Julia-Mengen ein zentrales Beispiel in der mathematischen Theorie komplexer Funktionen und Iterationsdynamik.
-    explanation: >-
-      Julia-Mengen zeichnen sich durch eindrucksvolle symmetrische und filigrane Strukturen aus.
-      Durch Variation des zugrundeliegenden Parameters $c$ entstehen unterschiedliche dynamische Verhaltensweisen,
-      etwa zusammenhängende, verschlungene Muster oder nahezu punktförmige, isolierte Fraktale.
-      Die Untersuchung der Julia-Mengen bildet ein hervorragendes Fenster in die Welt der komplexen Dynamik und legt die Grundlage
-      für weiterführende mathematische Fragestellungen, wie Stabilität, Konvergenz und die geometrischen Eigenschaften fraktaler Mengen.
-      Die Visualisierung unterstützt außerdem das Verständnis der Beziehung zwischen Julia- und Mandelbrot-Menge.
-    include: "julia-interactive.html"
-
   - section: "Fraktale Geometrie und die Mandelbrot-Menge: Historischer Kontext und Kerndefinition"
     icon: "question-circle"
     content: >-
@@ -55,6 +38,16 @@ sections:
           Dieses Stabilitätskriterium ist fundamental für die mathematische Definition wie auch für die numerische Berechnung.
           Die Visualisierung vermittelt dabei auf eindrucksvolle Weise die Eigenschaften der Menge und dient als Brücke zwischen Theorie und Praxis.
 
+  - section: "Julia-Mengen: Interaktive Visualisierung und mathematische Grundlagen"
+    icon: "cube"
+    anchor: "julia-section"
+    content: >-
+      Die Julia-Menge steht in direkter Beziehung zur Mandelbrot-Menge und illustriert anschaulich die Vielfalt komplexer Dynamik für unterschiedliche Parameter $c$.
+      Verschiedene Julia-Mengen verdeutlichen, wie stark die Struktur des Fraktals durch die Auswahl des Parameters beeinflusst wird.
+      Insbesondere wirken die Julia-Mengen oft ästhetisch ansprechend und dienen als Einstieg in die Erforschung fraktaler Geometrie.
+      Darüber hinaus sind Julia-Mengen ein zentrales Beispiel in der mathematischen Theorie komplexer Funktionen und Iterationsdynamik.
+    include: "julia-interactive.html"
+
   - section: "Mandelbrot-Julia-Explorer: Interaktiv den Zusammenhang erforschen"
     icon: "search-plus"
     anchor: "explorer-section"
@@ -66,6 +59,34 @@ sections:
       Die Möglichkeit, unterschiedliche Parameter zu variieren, eröffnet zahlreiche mathematische Fragestellungen, zum Beispiel:
       Wie verändern sich die Julia-Mengen bei kleinen Modifikationen von $c$ und wie manifestiert sich sensitive Abhängigkeit in diesem Kontext?
     include: "mandelbrot-julia-explorer.html"
+
+  - section: "Mathematische Definitionen und iterative Konstruktion der Mandelbrot-Menge"
+    icon: "calculator"
+    content: >-
+      Die Mandelbrot-Menge $\\mathscr{M}$ ist die Menge aller komplexen Zahlen $c$, für die die durch $z_{n+1} = z_n^2 + c$, $z_0=0$ definierte Folge $\\{z_n\\}$ für $n\\to\\infty$ betragsmäßig beschränkt bleibt:
+      
+      <div style="text-align: center;">
+        $$\mathscr{M} = \{c \in \mathbb{C} : \limsup_{n \to \infty} \lvert z_n \rvert \leq 2\}$$
+      </div>
+
+      Die iterative Konstruktion der Mandelbrot-Menge ist mathematisch elegant und zugleich äußerst effizient in computergestützten Anwendungen.
+      Sie führt direkt zu faszinierenden Visualisierungen und mathematischen Fragestellungen über Stabilität, Chaotik und Konvergenz.
+
+    subsections:
+      - title: "Iteration und Stabilitätskriterium: Konzeptuelle Vertiefung"
+        content: |-
+          Die Erzeugung eines Punktes der Mandelbrot-Menge erfolgt durch die iterative Anwendung:
+         
+          <div style="text-align: center;">
+            $$z_{n+1} = z_n^2 + c$$
+          </div>
+         
+          Beginnend mit $z_0 = 0$ wird diese Regel für jeden Punkt $c$ der komplexen Ebene ausgeführt.
+          Bleibt die Folge $\\{z_n\\}$ für beliebig viele Iterationsschritte betragsmäßig unterhalb einer Schranke (meist $2$), zählt $c$ zur Mandelbrot-Menge.
+          Andernfalls wird die Divergenzgeschwindigkeit farbkodiert und $c$ liegt außerhalb.
+          Das Stabilitätskriterium ist ein zentrales Thema in der komplexen Dynamik und spielt auch in der Erforschung anderer Fraktale eine wichtige Rolle.
+          Die iterative Methode ist in numerischen Experimenten und Computergrafik gleichermaßen unverzichtbar.
+          Sie offenbart die enorme Vielfalt und die mathematische Schönheit der fraktalen Geometrie.
 
   - section: "Fraktale Struktur und Selbstähnlichkeit: Die Besonderheit der Mandelbrot-Menge"
     icon: "magic"
@@ -89,59 +110,6 @@ sections:
           Die Randkurve besitzt eine Hausdorff-Dimension von etwa $2$ und verdeutlicht damit ihre hohe Komplexität.
           Die fraktale Dimension quantifiziert die Skalierungsinvarianz solch komplexer Gebilde und ist ein wesentliches Werkzeug zur Charakterisierung von Fraktalen.<br>
           Die Berechnung und theoretische Einordnung fraktaler Dimensionen ist Gegenstand aktueller mathematischer Forschung.<br>
-
-  - section: "Mathematische Definitionen und iterative Konstruktion der Mandelbrot-Menge"
-    icon: "calculator"
-    content: >-
-      Die Mandelbrot-Menge $\\mathscr{M}$ ist die Menge aller komplexen Zahlen $c$, für die die durch $z_{n+1} = z_n^2 + c$, $z_0=0$ definierte Folge ${z_n}$ für $n\\to\\infty$ betragsmäßig beschränkt bleibt:
-      
-      <div style="text-align: center;">
-        $$\mathscr{M} = \{c \in \mathbb{C} : \limsup_{n \to \infty} \lvert z_n \rvert \leq 2\}$$
-      </div>
-
-      Die iterative Konstruktion der Mandelbrot-Menge ist mathematisch elegant und zugleich äußerst effizient in computergestützten Anwendungen.
-      Sie führt direkt zu faszinierenden Visualisierungen und mathematischen Fragestellungen über Stabilität, Chaotik und Konvergenz.
-
-    subsections:
-      - title: "Iteration und Stabilitätskriterium: Konzeptuelle Vertiefung"
-        content: |-
-          Die Erzeugung eines Punktes der Mandelbrot-Menge erfolgt durch die iterative Anwendung:
-         
-          <div style="text-align: center;">
-            $$z_{n+1} = z_n^2 + c$$
-          </div>
-         
-          Beginnend mit $z_0 = 0$ wird diese Regel für jeden Punkt $c$ der komplexen Ebene ausgeführt.
-          Bleibt die Folge ${z_n}$ für beliebig viele Iterationsschritte betragsmäßig unterhalb einer Schranke (meist $2$), zählt $c$ zur Mandelbrot-Menge.
-          Andernfalls wird die Divergenzgeschwindigkeit farbkodiert und $c$ liegt außerhalb.
-          Das Stabilitätskriterium ist ein zentrales Thema in der komplexen Dynamik und spielt auch in der Erforschung anderer Fraktale eine wichtige Rolle.
-          Die iterative Methode ist in numerischen Experimenten und Computergrafik gleichermaßen unverzichtbar.
-          Sie offenbart die enorme Vielfalt und die mathematische Schönheit der fraktalen Geometrie.
-
-  - section: "Wissenschaftliche und gesellschaftliche Bedeutung der Mandelbrot-Menge"
-    icon: "star"
-    content: >-
-      Die Mandelbrot-Menge besitzt fundamentale Bedeutung für verschiedene Disziplinen:
-        - In der Chaostheorie dient sie als ideales Modell für sensitiv abhängige Systeme;
-        - in der komplexen Dynamik illustriert sie die Bandbreite dynamischen Verhaltens;
-        - die fraktale Geometrie nutzt sie als Paradebeispiel nicht-ganzzahliger Dimensionen;
-        - die Informatik entwickelt hieraus besonders effiziente Algorithmen für Rekursion und Visualisierung;
-        - in Kunst und Kultur fungiert sie als Symbol mathematischer Schönheit und reizt Künstler weltweit zu neuen Interpretationen.
-      
-      Darüber hinaus fördert die Mandelbrot-Menge das Verständnis für fundamentale Aspekte der Mathematik, wie Instabilitäten, Phasenübergänge
-      und die Emergenz komplexer Muster aus einfachen Gesetzmäßigkeiten.
-
-    subsections:
-      - title: "Sensitive Abhängigkeit: Chaostheorie und Computerwissenschaften"
-        content: >-
-          Die Mandelbrot-Menge exemplifiziert die sensitive Abhängigkeit von Anfangsbedingungen:
-          Minimale Veränderungen der Parameter $c$ können zu signifikant unterschiedlichen dynamischen Entwicklungen führen.
-          Zwei Punkte, die sich nur geringfügig unterscheiden, können über die Iteration in der Folge ${z_n}$ vollkommen verschiedene Verhaltensweisen entwickeln.
-          Dieses Verhalten ist zentral in der Chaostheorie und verdeutlicht die Nichtlinearität komplexer Systeme;
-          nahegelegene Punkte können divergente Laufbahnen zeigen.
-          Das Studium solcher Phänomene liefert wichtige Erkenntnisse für die Stabilität von Algorithmen,
-          die Simulation dynamischer Systeme und die Modellierung natürlicher Prozesse.
-          Sensitivität gegenüber Anfangsdaten ist auch in anderen Kontexten wie z.B. in der Wettervorhersage und der Kryptographie von Bedeutung.
 
   - section: "Mathematische Eigenschaften und Hauptstrukturen der Mandelbrot-Menge"
     icon: "fingerprint"
@@ -173,6 +141,31 @@ sections:
           Die mathematische Analyse dieser Hauptstrukturen liefert Einblicke in die Verzweigungsstruktur und die universellen Eigenschaften von Fraktalen.
           Die kontinuierliche Entdeckung neuer Muster am Rand der Menge macht die Mandelbrot-Menge zu einem ständig faszinierenden Objekt moderner Mathematik.<br>
 
+  - section: "Wissenschaftliche und gesellschaftliche Bedeutung der Mandelbrot-Menge"
+    icon: "star"
+    content: >-
+      Die Mandelbrot-Menge besitzt fundamentale Bedeutung für verschiedene Disziplinen:
+        - In der Chaostheorie dient sie als ideales Modell für sensitiv abhängige Systeme;
+        - in der komplexen Dynamik illustriert sie die Bandbreite dynamischen Verhaltens;
+        - die fraktale Geometrie nutzt sie als Paradebeispiel nicht-ganzzahliger Dimensionen;
+        - die Informatik entwickelt hieraus besonders effiziente Algorithmen für Rekursion und Visualisierung;
+        - in Kunst und Kultur fungiert sie als Symbol mathematischer Schönheit und reizt Künstler weltweit zu neuen Interpretationen.
+      
+      Darüber hinaus fördert die Mandelbrot-Menge das Verständnis für fundamentale Aspekte der Mathematik, wie Instabilitäten, Phasenübergänge
+      und die Emergenz komplexer Muster aus einfachen Gesetzmäßigkeiten.
+
+    subsections:
+      - title: "Sensitive Abhängigkeit: Chaostheorie und Computerwissenschaften"
+        content: >-
+          Die Mandelbrot-Menge exemplifiziert die sensitive Abhängigkeit von Anfangsbedingungen:
+          Minimale Veränderungen der Parameter $c$ können zu signifikant unterschiedlichen dynamischen Entwicklungen führen.
+          Zwei Punkte, die sich nur geringfügig unterscheiden, können über die Iteration in der Folge $\\{z_n\\}$ vollkommen verschiedene Verhaltensweisen entwickeln.
+          Dieses Verhalten ist zentral in der Chaostheorie und verdeutlicht die Nichtlinearität komplexer Systeme;
+          nahegelegene Punkte können divergente Laufbahnen zeigen.
+          Das Studium solcher Phänomene liefert wichtige Erkenntnisse für die Stabilität von Algorithmen,
+          die Simulation dynamischer Systeme und die Modellierung natürlicher Prozesse.
+          Sensitivität gegenüber Anfangsdaten ist auch in anderen Kontexten wie z.B. in der Wettervorhersage und der Kryptographie von Bedeutung.
+
   - section: "Fazit: Vielschichtigkeit und Forschungsrelevanz der Mandelbrot-Menge"
     icon: "check-circle"
     content: >-
@@ -183,3 +176,4 @@ sections:
       <br> <br>
       Experimentelle und interaktive Ansätze erlauben es, immer tiefere Details und neue Strukturen zu entdecken.
       Die Mandelbrot-Menge bleibt somit ein zentrales Objekt der modernen Mathematik und bietet Anknüpfungspunkte für vielfältige Forschungsfragen.
+

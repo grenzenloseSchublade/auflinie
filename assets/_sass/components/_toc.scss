@@ -1,6 +1,7 @@
 // Styles für das Inhaltsverzeichnis (Table of Contents)
 // =============================================================================
 @use "sass:color";
+
 // Mobile: TOC erscheint oberhalb des Contents (Minimal Mistakes Default)
 // Desktop (>= $large): TOC ist sticky in der rechten Sidebar
 // NEU: Mobile Sticky TOC Header - erscheint unter Masthead beim Scrollen
@@ -22,9 +23,10 @@
         left: 0;
         right: 0;
         z-index: 998; // Unter dem Masthead (1000)
-        background: color.adjust($background-color, $lightness: -3%);
-        border-bottom: 1px solid $border-color;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        background: rgb(26 28 32 / 96%);
+        backdrop-filter: blur(6px);
+        border-bottom: 1px solid $console-panel-border;
+        box-shadow: 0 2px 8px rgb(0 0 0 / 30%);
         
         // Slide Animation
         transform: translateY(-100%);
@@ -42,50 +44,60 @@
 }
 
 .toc-sticky-mobile__toggle {
+    position: relative; // Bezugsrahmen für die Fortschrittslinie
     width: 100%;
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    padding: 0.75rem 1rem;
+    gap: 0.6rem;
+    padding: 0.6rem 1rem;
     min-height: 48px; // Touch Target
     background: transparent;
     border: none;
     cursor: pointer;
     font-family: $sans-serif-narrow;
-    font-size: $type-size-6;
     color: $text-color;
     text-align: left;
+
+    // Akzent-Balken links (gleiche Sprache wie die Sektions-Header)
+    &::before {
+        content: "";
+        flex-shrink: 0;
+        width: 4px;
+        height: 1.15em;
+        border-radius: 2px;
+        background: linear-gradient(180deg, $link-color, rgb(5 217 232 / 35%));
+        box-shadow: 0 0 8px rgb(5 217 232 / 30%);
+    }
     
     &:active {
         background: rgba($link-color, 0.1);
     }
     
     &:focus-visible {
-        outline: 2px solid $link-color;
+        outline: 2px solid $hover-color;
         outline-offset: -2px;
     }
 }
 
-.toc-sticky-mobile__icon {
-    flex-shrink: 0;
-    color: $link-color-subtle; // Dezentes Cyan - harmonisch mit Pfeil
-    font-size: 1.1em;
-}
-
 .toc-sticky-mobile__label {
     flex-shrink: 0;
+    font-family: $mono-font-stack;
+    font-size: $toc-sticky-label-font-size;
     font-weight: 600;
-    color: rgba($white, 0.6); // Gedämpftes Weiß - sekundäre Info
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: rgb(255 255 255 / 45%);
 }
 
 .toc-sticky-mobile__current {
     flex: 1;
-    min-width: 0; // Erlaubt text-overflow
+    min-width: 0; // Erlaubt text-overflow (CSS-Ellipsis statt JS-Truncation)
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    font-size: 0.95rem;
     font-weight: 500;
-    color: $white; // Weiß - Hauptfokus, gut lesbar
+    color: rgb(255 255 255 / 88%);
     
     // Slide Animation Setup
     display: inline-block;
@@ -108,6 +120,7 @@
         transform: translateY(100%);
         opacity: 0;
     }
+
     to {
         transform: translateY(0);
         opacity: 1;
@@ -116,8 +129,8 @@
 
 .toc-sticky-mobile__arrow {
     flex-shrink: 0;
-    font-size: 0.75em;
-    color: $link-color-subtle; // Dezentes Cyan - passend zum Icon
+    font-size: 0.8em;
+    color: $fg-subtle;
     transition: transform 0.25s ease;
     
     .is-open & {
@@ -125,12 +138,26 @@
     }
 }
 
+// Lesefortschritt: 2px-Linie am Unterrand der Leiste (JS setzt --toc-progress);
+// sitzt im Toggle, damit sie bei geöffnetem Dropdown an der Leiste bleibt
+.toc-sticky-mobile__progress {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 2px;
+    pointer-events: none;
+    transform-origin: 0 50%;
+    transform: scaleX(var(--toc-progress, 0));
+    background: linear-gradient(90deg, rgba($link-color, 0.8), rgba($link-color, 0.4));
+}
+
 // Dropdown-Container
 .toc-sticky-mobile__dropdown {
     max-height: 0;
     overflow: hidden;
-    background: rgba($background-color, 0.98);
-    border-top: 1px solid $border-color;
+    background: rgb(26 28 32 / 98%);
+    border-top: 1px solid $console-panel-border;
     transition: max-height 0.3s ease-out;
     
     .is-open & {
@@ -211,7 +238,7 @@
     }
     
     &::-webkit-scrollbar-track {
-        background: rgba(0, 0, 0, 0.1);
+        background: rgb(0 0 0 / 10%);
     }
     
     &::-webkit-scrollbar-thumb {
@@ -231,11 +258,8 @@
     @media (max-width: $large - 1) {
         display: block;
         position: fixed;
-        top: calc(var(--masthead-height) + 48px);
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: rgba(0, 0, 0, 0.5);
+        inset: calc(var(--masthead-height) + 48px) 0 0;
+        background: rgb(0 0 0 / 50%);
         z-index: 997;
         opacity: 0;
         visibility: hidden;
@@ -257,26 +281,44 @@
 .toc {
     font-family: $sans-serif-narrow;
     color: $text-color;
-    background-color: rgba(0, 0, 0, 0.2);
-    border: 1px solid $border-color;
+    background-color: $console-panel-bg;
+    border: 1px solid $console-panel-border;
     border-radius: $border-radius;
-    -webkit-box-shadow: $box-shadow;
-    box-shadow: $box-shadow;
+    box-shadow: 0 2px 6px rgb(0 0 0 / 25%);
     overflow: hidden;
 
+    // Kopf im Akzent-Balken-Stil (leise statt Voll-Teal)
     .nav__title {
-        color: #fff;
-        font-size: $type-size-5; // 1em (~16px) - gut lesbar
-        background: $primary-color;
+        color: rgb(255 255 255 / 70%);
+        font-family: $mono-font-stack;
+        font-size: $toc-title-font-size;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        background: rgb(255 255 255 / 3%);
+        border-bottom: 1px solid $console-panel-border;
         border-top-left-radius: $border-radius;
         border-top-right-radius: $border-radius;
-        padding: 0.75em 1em; // Größerer Touch-Target
+        padding: 0.6em 1em;
         font-weight: 600;
-        letter-spacing: 0.02em;
-        text-transform: none;
-        min-height: 44px; // WCAG AAA Touch Target
+        min-height: 44px;
         display: flex;
         align-items: center;
+
+        &::before {
+            content: "";
+            flex-shrink: 0;
+            width: 4px;
+            height: 1.05em;
+            border-radius: 2px;
+            background: linear-gradient(180deg, $link-color, rgb(5 217 232 / 35%));
+            box-shadow: 0 0 8px rgb(5 217 232 / 30%);
+            margin-right: 0.6em;
+        }
+
+        i {
+            color: $link-color;
+            font-size: 0.85em;
+        }
     }
 
     // Scrollspy marks toc items as .active when they are in focus
@@ -295,17 +337,22 @@
     padding: 0;
     width: 100%;
     list-style: none;
-    font-size: $type-size-5; // 1em (~16px) - Standard Textgröße
+    font-size: 0.92em;
+
+    // Browser-Default "ul ul { list-style: circle }" schlägt die Vererbung —
+    // ohne das ragen abgeschnittene Kreis-Marker in den linken Rand (Dropdown)
+    ul {
+        list-style: none;
+    }
 
     a {
-        display: block;
-        padding: 0.75rem 1rem; // 12px 16px - ausreichend für Touch
-        min-height: 44px; // WCAG AAA Touch Target
+        padding: 0.55rem 1rem;
+        min-height: 38px;
         color: $text-color;
         font-weight: 600;
         line-height: 1.4;
-        text-decoration: none;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        text-decoration: none !important; // Theme-Hover-Unterstrich unterbinden
+        border-bottom: 1px solid rgb(255 255 255 / 10%);
         transition: background-color $standard-transition, color $standard-transition;
         
         // Flexbox für vertikale Zentrierung
@@ -314,7 +361,7 @@
 
         &:hover {
             color: $link-color;
-            background-color: rgba(0, 0, 0, 0.2);
+            background-color: rgb(0 0 0 / 20%);
         }
         
         // Touch-Feedback für Mobile
@@ -323,8 +370,14 @@
         }
 
         &:focus-visible {
-            outline: 2px solid $link-color;
+            outline: 2px solid $hover-color;
             outline-offset: -2px; // Innen, damit es im Container bleibt
+        }
+
+        // Touch: größere Ziele nur dort, wo grob gezeigt wird
+        @media (pointer: coarse) {
+            padding: 0.75rem 1rem;
+            min-height: 44px;
         }
     }
 
@@ -351,14 +404,17 @@
         font-size: 0.875em; // 14px für tiefere Ebenen
     }
 
+    // stylelint-disable-next-line selector-max-compound-selectors -- TOC-Ebenen 4-6
     li ul li ul li ul > li a {
         padding-left: 2.25rem;
     }
 
+    // stylelint-disable-next-line selector-max-compound-selectors -- TOC-Ebenen 4-6
     li ul li ul li ul li ul > li a {
         padding-left: 2.75rem;
     }
 
+    // stylelint-disable-next-line selector-max-compound-selectors -- TOC-Ebenen 4-6
     li ul li ul li ul li ul li ul > li a {
         padding-left: 3.25rem;
     }
@@ -370,7 +426,7 @@
     li.active > a {
         color: $link-color;
         font-weight: 700;
-        background: rgba(0, 0, 0, 0.25);
+        background: rgb(0 0 0 / 25%);
         position: relative;
         
         // Linker Indikator-Balken (Cyan für Akzent)
@@ -395,7 +451,7 @@
         
         &:hover {
             color: $link-color;
-            background-color: rgba(0, 0, 0, 0.2);
+            background-color: rgb(0 0 0 / 20%);
         }
     }
     
@@ -404,7 +460,7 @@
     li ul li.active > a {
         color: $link-color;
         font-weight: 700;
-        background: rgba(0, 0, 0, 0.2);
+        background: rgb(0 0 0 / 20%);
     }
 }
 
@@ -425,19 +481,24 @@
     
     // Touch-Feedback
     &:active .nav__title {
-        background: color.adjust($primary-color, $lightness: -5%);
+        background: rgb(5 217 232 / 10%);
     }
 }
 
 .toc-toggle .nav__title {
     margin: 0;
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
     align-items: center;
     width: 100%;
     box-sizing: border-box;
     border-radius: $border-radius $border-radius 0 0;
     gap: 0.5rem;
+}
+
+.toc-toggle .toc-toggle-icon {
+    margin-left: auto;
+    color: $fg-subtle;
 }
 
 .toc-toggle-icon {
@@ -466,7 +527,7 @@
 }
 
 .toc-toggle:focus-visible .nav__title {
-    outline: 2px solid $link-color;
+    outline: 2px solid $hover-color;
     outline-offset: -2px;
 }
 
@@ -477,7 +538,7 @@
 @media (min-width: $large) {
     .toc {
         .nav__title {
-            font-size: 0.875rem; // 14px - kompakter auf Desktop
+            // Größe kommt zentral aus $toc-title-font-size
             padding: 0.5em 0.75em;
             min-height: 36px;
         }
@@ -506,7 +567,7 @@
 // =============================================================================
 .wide .toc {
     .nav__title {
-        font-size: 0.875rem;
+        // Größe kommt zentral aus $toc-title-font-size
         padding: 0.5em 0.75em;
     }
 }
@@ -523,7 +584,7 @@
 @media (max-width: $large - 1) {
     .wide .toc {
         .nav__title {
-            font-size: $type-size-5;
+            // Größe kommt zentral aus $toc-title-font-size
             padding: 0.75em 1em;
             min-height: 44px;
         }
@@ -558,7 +619,7 @@
     }
     
     &::-webkit-scrollbar-track {
-        background: rgba(0, 0, 0, 0.1);
+        background: rgb(0 0 0 / 10%);
         border-radius: 3px;
     }
     
@@ -580,4 +641,13 @@
 // Avatar in der Sidebar - Transparenz beibehalten
 .author__avatar img {
     background: transparent;
+}
+
+// Zentrale Label-Größe für ALLE TOC-Varianten (rem = immun gegen die
+// em-Skalierung der Theme-Sidebar; Größe siehe variables/_typography.scss)
+.sidebar .toc .nav__title,
+.sidebar__right .nav__title,
+.toc-toggle .nav__title,
+.toc .nav__title {
+  font-size: $toc-title-font-size;
 }

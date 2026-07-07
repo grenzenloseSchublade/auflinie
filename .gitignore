@@ -22,3 +22,6 @@ Thumbs.db
 .ruby-lsp/
 *.swp
 *.swo
+design-reference/
+.well-known/
+node_modules/

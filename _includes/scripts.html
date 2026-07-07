@@ -4,8 +4,10 @@
   - Gumshoe standalone (ScrollSpy für TOC)
 {% endcomment %}
 
-<!-- Gumshoe ScrollSpy (standalone, kein jQuery) -->
+{% if page.toc %}
+<!-- Gumshoe ScrollSpy (standalone, kein jQuery) — nur auf Seiten mit TOC -->
 <script src="https://cdn.jsdelivr.net/npm/gumshoejs@5.1.2/dist/gumshoe.min.js" integrity="sha384-4yPwGLOgXPsV5GLv83AcvOrn722feO6UrUJjJwM9RIIHTSEDtv14h9abAFj6wU10" crossorigin="anonymous" defer></script>
+{% endif %}
 
 {% if site.search == true %}
   {% case site.search_provider %}
@@ -21,13 +23,27 @@
 {% include analytics.html %}
 {% include /comments-providers/scripts.html %}
 
-<!-- Bild-Caching und Service Worker -->
-<script src="{{ '/assets/js/image-cache.js' | relative_url }}"></script>
+<!-- Service Worker (global) -->
 <script src="{{ '/assets/js/sw-register.js' | relative_url }}"></script>
 
-<!-- Ausklappbare Listen für CV -->
-<script src="{{ '/assets/js/expandable-list.js' | relative_url }}"></script>
+{% if page.header.overlay_image %}
+<!-- Hero-Hintergrund + CRT-Effekt: nur auf Seiten mit Overlay-Hero -->
+<script src="{{ '/assets/js/hero-crt.js' | relative_url }}"></script>
+{% endif %}
+
+{% if page.url == "/posts/" %}
+<!-- Blog-Suche/Filter: nur auf der Beitragsliste -->
+<script src="{{ '/assets/js/blog-search.js' | relative_url }}"></script>
+{% endif %}
+
+{% if page.url == "/" %}
+<!-- Neon-Namenseffekt: nur Startseite -->
 <script src="{{ '/assets/js/neon-orbit-toggle.js' | relative_url }}"></script>
+{% endif %}
+
+{% if page.fractal_panels %}
+  {% include fractal/deps.html %}
+{% endif %}
 
 {% if site.after_footer_scripts %}
   {% for script in site.after_footer_scripts %}

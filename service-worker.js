@@ -15,14 +15,16 @@ const CACHE_NAME = `kraftstoff-cache-${CACHE_VERSION}`;
 // Ressourcen, die beim Installieren des Service Workers gecached werden sollen
 // Alle Pfade sind relativ zum Scope des Service Workers (Root der Website)
 const CACHE_URLS = [
-  './',
-  './index.html',
   './offline.html',
+  './assets/js/offline.js',
   './assets/css/main.css',
   './assets/js/greedy-navigation.js',
-  './assets/js/image-cache.js',
+  './assets/js/hero-crt.js',
   './assets/js/sw-register.js',
-  './assets/images/background.jpg'
+  './assets/images/background.jpg',
+  './assets/webfonts/fa-solid-900-subset.woff2',
+  './assets/webfonts/fa-regular-400-subset.woff2',
+  './assets/webfonts/fa-brands-400-subset.woff2'
 ];
 
 // Installation des Service Workers
@@ -40,8 +42,15 @@ self.addEventListener('install', event => {
           )
         );
       })
-      .then(() => self.skipWaiting())
   );
+});
+
+// Update-Steuerung: Der neue Worker wartet, bis der Nutzer im Update-Toast
+// "Jetzt laden" wählt (sw-register.js sendet dann SKIP_WAITING).
+self.addEventListener('message', event => {
+  if (event.data && event.data.type === 'SKIP_WAITING') {
+    self.skipWaiting();
+  }
 });
 
 // Aktivierung des Service Workers
@@ -71,12 +80,25 @@ self.addEventListener('fetch', event => {
   if (!event.request.url.startsWith(self.location.origin)) return;
   
   const url = event.request.url;
-  
+
+  // Navigationen (HTML-Seiten): IMMER frisch vom Server — cache:'reload'
+  // umgeht auch den HTTP-Cache des Browsers. Veraltete Seiten aus dem
+  // Laufzeit-Cache waren die Ursache der Update-Dauerschleife; der Cache
+  // dient nur noch als Offline-Fallback (offline.html).
+  if (event.request.mode === 'navigate') {
+    event.respondWith(handleNavigation(event.request));
+    return;
+  }
+
   // Spezielle Behandlung für Bilder: Cache-First
-  if (url.match(/\.(jpg|jpeg|png|gif|webp|ico)$/)) {
+  if (url.match(/\.(jpg|jpeg|png|gif|webp|ico|woff2?)$/)) {
     event.respondWith(cacheFirst(event.request));
   }
-  // CSS und JS: Stale-While-Revalidate (schnell + aktuell)
+  // CSS und JS: Stale-While-Revalidate — sofortige Antwort aus dem Cache
+  // (Performance nach Seitenwechseln), Aktualisierung im Hintergrund.
+  // Misch-Risiko besteht nur im kurzen Fenster direkt nach einem Deploy
+  // (eine Navigation), da der Cache pro Build versioniert ist und beim
+  // Aktivieren des neuen Workers komplett neu aufgebaut wird.
   else if (url.match(/\.(css|js)$/)) {
     event.respondWith(staleWhileRevalidate(event.request));
   }
@@ -86,22 +108,45 @@ self.addEventListener('fetch', event => {
   }
 });
 
-// Stale-While-Revalidate für CSS/JS (schnell + aktuell)
-async function staleWhileRevalidate(request) {
-  const cache = await caches.open(CACHE_NAME);
-  const cachedResponse = await cache.match(request);
-  
-  // Im Hintergrund neue Version holen und cachen
-  const fetchPromise = fetch(request).then(networkResponse => {
-    if (networkResponse.ok) {
-      cache.put(request, networkResponse.clone());
+// Navigationen: frisch oder Offline-Seite.
+// WICHTIG: per URL-String fetchen — wird das originale Navigations-Request-
+// Objekt wiederverwendet, ignoriert Chromium die cache-Option und bedient
+// sich weiter am HTTP-Cache (verifiziert; das war die Update-Dauerschleife).
+async function handleNavigation(request) {
+  try {
+    // no-cache: beim Server revalidieren (304 genügt) — 'reload' erzwang
+    // den Voll-Download des HTML bei jeder Navigation
+    return await fetch(request.url, { cache: 'no-cache', credentials: 'same-origin' });
+  } catch (error) {
+    const offline = await caches.match('./offline.html');
+    if (offline) {
+      return offline;
     }
-    return networkResponse;
-  }).catch(() => null);
-  
-  // Sofort gecachte Version zurückgeben, falls vorhanden
-  // Sonst auf Netzwerk warten
-  return cachedResponse || fetchPromise;
+    return new Response('Offline', { status: 503, headers: { 'Content-Type': 'text/plain' } });
+  }
+}
+
+// Stale-While-Revalidate für CSS/JS: Cache sofort, Netz im Hintergrund
+async function staleWhileRevalidate(request) {
+  const cached = await caches.match(request);
+  const update = fetch(request, { cache: 'no-cache' })
+    .then(async (response) => {
+      if (response.ok) {
+        const cache = await caches.open(CACHE_NAME);
+        cache.put(request, response.clone());
+      }
+      return response;
+    })
+    .catch(() => null);
+
+  if (cached) {
+    return cached;
+  }
+  const fresh = await update;
+  if (fresh) {
+    return fresh;
+  }
+  return new Response('Nicht verfügbar', { status: 504 });
 }
 
 // Cache-First-Strategie für Bilder
@@ -124,10 +169,13 @@ async function cacheFirst(request) {
   }
 }
 
-// Network-First-Strategie für andere Ressourcen
+// Network-First-Strategie für andere Ressourcen.
+// cache: 'no-cache' zwingt zur Revalidierung beim Server — ohne das bedient
+// sich fetch() am HTTP-Cache des Browsers (heuristische Frische), und
+// "Network-First" liefert in Wahrheit veraltete Kopien aus.
 async function networkFirst(request) {
   try {
-    const networkResponse = await fetch(request);
+    const networkResponse = await fetch(request, { cache: 'no-cache' });
     if (networkResponse.ok) {
       const cache = await caches.open(CACHE_NAME);
       cache.put(request, networkResponse.clone());

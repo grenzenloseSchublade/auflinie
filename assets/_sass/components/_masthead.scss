@@ -1,12 +1,16 @@
 // Styles für den Header und die Navigation
-// 
 // Hinweis: Neon-Keyframes und Basis-Styles wurden nach _neon-base.scss ausgelagert
 // Diese Datei enthält nur noch Header/Navigation-spezifische Styles
 
 // Logo im Header größer und mit Transparenz
 .site-logo img {
+    // Neon-Schein entlang der Logo-Linien (drop-shadow folgt der SVG-Kontur);
+    // Duotone passend zum Cyan/Magenta-Line-Art
+    filter: drop-shadow(0 0 3px $border-accent-hover) drop-shadow(0 0 7px rgba($hover-color, 0.22));
+    transition: filter 0.45s ease;
     max-height: 5rem;  // Größer (vorher 3.5rem, Standard 2rem)
     width: auto;
+
     // Kein Hintergrund - Transparenz beibehalten
     background: transparent;
 }
@@ -15,9 +19,54 @@
 .site-logo svg {
     max-height: 5rem;
     width: auto;
-    // Zusätzlicher Glow-Effekt per CSS
-    filter: drop-shadow(0 0 3px rgba(5, 217, 232, 0.6))
-            drop-shadow(0 0 6px rgba(255, 0, 204, 0.4));
+    filter: drop-shadow(0 0 3px $border-accent-hover) drop-shadow(0 0 7px rgba($hover-color, 0.22));
+    transition: filter 0.45s ease;
+}
+
+.site-logo:hover svg {
+    filter: drop-shadow(0 0 4px rgba($link-color, 0.5)) drop-shadow(0 0 10px rgba($hover-color, 0.35));
+}
+
+// Röhren-Flackern der Magenta-Konturen: zwei teilerfremde Laufzeiten
+// (11.3s / 7.9s) überlagern sich — das Muster wiederholt sich erst nach
+// ~89s und wirkt dadurch unregelmäßig statt getaktet.
+// prefers-reduced-motion: wird von der globalen Drossel erfasst (Selektor
+// steht nicht auf der Ausnahmeliste in base/_accessibility.scss).
+.site-logo svg [stroke="#f0c"] {
+    animation: logo-tube-flicker-a 11.3s linear infinite,
+        logo-tube-flicker-b 7.9s linear infinite;
+}
+
+@keyframes logo-tube-flicker-a {
+    0%, 2.9%, 3.7%, 41%, 41.9%, 78.2%, 79%, 100% {
+        opacity: 1;
+    }
+
+    3.2% {
+        opacity: 0.55;
+    }
+
+    41.4% {
+        opacity: 0.75;
+    }
+
+    78.6% {
+        opacity: 0.62;
+    }
+}
+
+@keyframes logo-tube-flicker-b {
+    0%, 23.4%, 24.1%, 67.8%, 68.7%, 100% {
+        opacity: 1;
+    }
+
+    23.7% {
+        opacity: 0.7;
+    }
+
+    68.2% {
+        opacity: 0.8;
+    }
 }
 
 // =============================================================================
@@ -32,17 +81,19 @@
     // Anpassung des Titels "Kraftstoff" / "Hans Müller"
     .site-title {
         font-size: $site-title-font-size; // Größerer Titel
-        font-weight: bold;
+        color: #ffffff; // identisch mit den Nav-Links (vorher #eaeaea)
+        font-weight: 600;
         transition: color 0.45s ease, text-shadow 0.45s ease; // Sanfter Übergang für Farbe/Glow
         margin-right: 3em; // Größerer Abstand zum Menü (Desktop)
         
         &:hover {
             color: inherit;
-            text-shadow: 0 0 6px rgba(255, 0, 204, 1),
-              0 0 16px rgba(255, 0, 204, 0.95),
-              0 0 34px rgba(255, 0, 204, 0.75),
-              0 0 60px rgba(255, 0, 204, 0.5),
-              0 0 90px rgba(255, 0, 204, 0.35);
+
+            // Kalibriert: Glow als warmes Glühen, kein 90px-Halo
+            // (Recherche: Glow <=16px, Alpha <=0.55 — Synthwave '84-Praxis)
+            text-shadow: 0 0 4px rgb(255 0 255 / 55%),
+              0 0 10px rgb(255 0 255 / 35%),
+              0 0 16px rgb(255 0 255 / 20%);
             text-decoration: none;
         }
         
@@ -64,11 +115,13 @@
 
         // Navigationslinks
         .visible-links {
-
             a {
                 font-size: $nav-font-size; // Mobile: Standard-Schriftgröße
                 padding: 0.5em;
-                margin: 0.2em;
+
+                // Nur horizontal: vertikales Margin ließ die Links 4px über
+                // den Masthead ragen (Marker an der Unterkante wurde geclippt)
+                margin: 0 0.2em;
                 font-weight: $medium-weight; // Etwas fetter
                 color: $white; // Weiß für bessere Lesbarkeit
                 transition: color 0.2s ease, text-shadow 0.2s ease;
@@ -97,27 +150,9 @@
 // Benutzerinteraktion (Klick auf "a") ausgelöst wird.
 // @media (prefers-reduced-motion: reduce) - ENTFERNT für Neon-Animation
 
-.page__hero--overlay {
-  // Erhöhtes Padding am unteren Rand des Mastheaders
-  padding-bottom: 4em; // Standardwert erhöhen
-  
-  @include breakpoint($medium) {
-    padding-bottom: 5em; // Mittlere Bildschirme
-  }
-  
-  @include breakpoint($large) {
-    padding-bottom: 6em; // Große Bildschirme
-  }
-  
-  @include breakpoint($x-large) {
-    padding-bottom: 7em; // Extra große Bildschirme
-  }
-  
-  // Optional: Wenn du möchtest, dass der Inhalt zentriert bleibt
-  .wrapper {
-    padding-bottom: 1.5em; // Zusätzlicher Abstand nach dem letzten Element
-  }
-} 
+// (Der frühere padding-bottom-Block für .page__hero--overlay entfiel:
+// Hero-Höhen sind jetzt zentral in components/_hero.scss vereinheitlicht.)
+
 
 // CSS Custom Properties sind jetzt zentral in _variables/_css-properties.scss definiert
 
@@ -135,7 +170,7 @@ body .masthead {
     opacity 0.3s ease;
   backdrop-filter: blur(5px);
   -webkit-backdrop-filter: blur(5px);
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 2px 10px rgb(0 0 0 / 30%);
   border-bottom: none;
   height: var(--masthead-height);
   min-height: var(--masthead-height);
@@ -174,10 +209,12 @@ body .visible-links li {
   align-items: stretch;
   height: 100%;
   position: relative;
+  flex-shrink: 0; // nie quetschen — der Umbruch ins Burger-Menü übernimmt
 }
 
-// Trennung nach erstem Link (Mandelbrot) - Kombination aus Abstand und dezenter Linie
-body .visible-links li:first-child {
+// Trennung nach dem Feature-Link (Mandelbrot) — an der Klasse verankert,
+// damit der Trenner mitwandert, wenn der Link ins Seitenmenü umbricht
+body .visible-links li.masthead__menu-item--featured {
   margin-right: 1.2em; // Größerer Abstand als normal
   
   // Schmale Cyan-Linie nach dem ersten Element
@@ -185,6 +222,7 @@ body .visible-links li:first-child {
     content: "";
     position: absolute;
     right: -0.75em;
+
     // Symmetrische Zentrierung (nicht top/transform)
     top: 0;
     bottom: 0;
@@ -198,6 +236,28 @@ body .visible-links li:first-child {
   // Linie verschwindet, wenn Mandelbrot der einzige visible Link ist
   &:only-child::after {
     display: none;
+  }
+
+  // Im Seitenmenü: horizontale Linie UNTER Mandelbrot als einziger Trenner
+  @at-root body .greedy-nav .hidden-links li.masthead__menu-item--featured {
+    margin-right: 0;
+    padding-bottom: 0.45em;
+    margin-bottom: 0.45em;
+
+    // Eingerückte Linie (nicht durchgängig). Vollständige Eigendefinition:
+    // die Basisregel gilt nur unter .visible-links, und ein Drawer-Reset
+    // setzt content:none !important — beides hier explizit überstimmen
+    &::after {
+      content: "" !important;
+      display: block !important;
+      position: absolute;
+      inset: auto 14% 0;
+      width: auto;
+      height: 1px;
+      margin: 0;
+      background: $border-accent;
+      pointer-events: none;
+    }
   }
   
   // Tablet: etwas kleiner
@@ -233,12 +293,12 @@ body .greedy-nav .visible-links a {
   &:hover,
   &:focus {
     color: $hover-color-subtle !important; // Magenta mit etwas weniger Kontrast
-    background: rgba(5, 217, 232, 0.1);
+    background: rgb(5 217 232 / 10%);
   }
   
-  // Theme-Override: Entferne den unteren Cyan-Balken
-  &:before,
-  &:after {
+  // Theme-Override: Entferne die Teal-Underline-Animation des Themes.
+  // Nur ::before — ::after ist unser eigener Aktiv-/Hover-Marker.
+  &::before {
     display: none !important;
     content: none !important;
   }
@@ -257,13 +317,9 @@ body {
     // Theme-Overrides mit !important wo nötig
     display: block !important; // Überschreibt Theme's display:none
     position: fixed !important;
-    top: var(--masthead-height) !important; // Beginnt unter dem Header
-    right: 0 !important;
-    bottom: 0 !important;
-    left: auto !important;
+    inset: var(--masthead-height) 0 0 auto !important; // Beginnt unter dem Header
     width: 180px; // Schmaler (vorher 280px)
-    max-width: 75vw;
-    height: 100vh; // Volle Viewport-Höhe
+    max-width: 75vw; // Volle Viewport-Höhe
     height: 100dvh; // Dynamic viewport height für Mobile
     margin: 0 !important;
     padding: 0; // Wird unten für Links gesetzt
@@ -271,16 +327,15 @@ body {
     font-weight: $medium-weight;
     border-left: 1px solid $link-color-subtle !important;
     border-radius: 0 !important;
-    background: rgba(15, 15, 20, 0.98) !important;
+    background: rgb(15 15 20 / 98%) !important;
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
-    box-shadow: -4px 0 20px rgba(0, 0, 0, 0.4) !important;
+    box-shadow: -4px 0 20px rgb(0 0 0 / 40%) !important;
     z-index: 999 !important; // Hinter dem Header (z-index: 1000)
     transform: translateX(100%);
     transition: transform 0.3s ease-in-out;
     will-change: transform; // Performance-Optimierung für Animation
-    overflow-x: hidden;
-    overflow-y: auto;
+    overflow: hidden auto;
     
     // Container für Links mit Padding
     padding-top: 1em; // Menü startet bereits unter Header
@@ -291,13 +346,18 @@ body {
   .greedy-nav .hidden-links:not(.hidden) {
     transform: translateX(0);
     pointer-events: auto;
+    visibility: visible;
+    transition: transform 0.3s ease-in-out, visibility 0s;
   }
   
-  // Versteckt - nur transform, KEIN display:none
+  // Versteckt: nach der Slide-Animation auch visibility:hidden —
+  // sonst ragt der Rand (Border + Shadow) durch scrollbar-gutter:stable
+  // als Streifen in den Viewport (translateX(100%) rechnet ab clientWidth)
   .greedy-nav .hidden-links.hidden {
-    transform: translateX(100%);
+    transform: translateX(calc(100% + 24px)); // Shadow-Breite einrechnen
     pointer-events: none;
-    visibility: visible !important; // Überschreibt mögliche visibility:hidden
+    visibility: hidden;
+    transition: transform 0.3s ease-in-out, visibility 0s 0.3s;
   }
 }
 
@@ -323,11 +383,8 @@ body .greedy-nav .hidden-links::after {
 body.menu-open::before {
   content: "";
   position: fixed;
-  top: var(--masthead-height); // Beginnt unter dem Header
-  left: 0;
-  right: 180px; // Spart Menü-Bereich aus (Menü bleibt klickbar)
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.6);
+  inset: var(--masthead-height) 180px 0 0; // Beginnt unter dem Header // Spart Menü-Bereich aus (Menü bleibt klickbar)
+  background: rgb(0 0 0 / 60%);
   z-index: 1001;
   pointer-events: auto; // Klick zum Schließen
   animation: fadeIn 0.2s ease-out;
@@ -355,27 +412,14 @@ body .greedy-nav .hidden-links li {
     border-bottom: none !important;
   }
   
-  // Trennung nach erstem Link (Mandelbrot) im Dropdown
-  &:first-child:not(:only-child) {
-    margin-bottom: 8px;
-    padding-bottom: 8px;
-    
-    &::after {
-      content: "";
-      position: absolute;
-      bottom: 0;
-      left: 15%;
-      right: 15%;
-      height: 1px;
-      background: rgba(5, 217, 232, 0.3);
-      pointer-events: none;
-    }
-  }
+  // (Der frühere first-child-Trenner entfiel: der Menü-Trenner hängt jetzt
+  // ausschließlich an .masthead__menu-item--featured und erscheint nur,
+  // wenn Mandelbrot selbst im Menü steht.)
   
   // Desktop: Hover-Effekt auf gesamter Box
   @media (min-width: 768px) {
     &:hover {
-      background: rgba(5, 217, 232, 0.1);
+      background: rgb(5 217 232 / 10%);
       border-left-color: $link-color-subtle;
       
       a {
@@ -413,8 +457,8 @@ body .greedy-nav .hidden-links li a {
 }
 
 // Theme-Pseudo-Elemente deaktivieren
-body .greedy-nav .hidden-links li a:before,
-body .greedy-nav .hidden-links li a:after {
+body .greedy-nav .hidden-links li a::before,
+body .greedy-nav .hidden-links li a::after {
   display: none !important;
 }
 
@@ -431,7 +475,7 @@ body .greedy-nav__toggle {
   
   // Theme-Override: Deaktiviere das Theme-eigene Fullscreen-Overlay
   // (Das Theme hat ein ::before auf dem Toggle das den ganzen Screen bedeckt)
-  &:before {
+  &::before {
     display: none !important;
     content: none !important;
   }
@@ -457,8 +501,8 @@ body .navicon {
   transition: 0.3s;
 }
 
-body .navicon:before,
-body .navicon:after {
+body .navicon::before,
+body .navicon::after {
   content: "";
   position: absolute;
   left: 0;
@@ -469,11 +513,11 @@ body .navicon:after {
   transition: 0.3s;
 }
 
-body .navicon:before {
+body .navicon::before {
   top: -0.5em;
 }
 
-body .navicon:after {
+body .navicon::after {
   bottom: -0.5em;
 }
 
@@ -482,14 +526,14 @@ body .greedy-nav__toggle.close .navicon {
   box-shadow: none;
 }
 
-body .greedy-nav__toggle.close .navicon:before {
+body .greedy-nav__toggle.close .navicon::before {
   transform: rotate(45deg);
   top: 0;
   background: $link-color-subtle; // Volles Cyan beim X (für besseren Kontrast)
   box-shadow: none;
 }
 
-body .greedy-nav__toggle.close .navicon:after {
+body .greedy-nav__toggle.close .navicon::after {
   transform: rotate(-45deg);
   bottom: 0;
   background: $link-color-subtle; // Volles Cyan beim X (für besseren Kontrast)
@@ -509,7 +553,6 @@ body .page__content,
 body .page__meta,
 body .page__related,
 body .archive,
-body .search__content,
 body header.page__title,
 body article.page {
   padding-top: 0;
@@ -517,9 +560,49 @@ body article.page {
 }
 
 body .page__hero,
-body .page__hero--overlay,
-body .page__hero--video,
-body .page__header {
+body .page__hero--overlay {
   margin-top: 0;
-  padding-top: 0;
+
+  // padding-top gehört dem Hero selbst (tiefer Text-Anker in _hero.scss) —
+  // der frühere 0-Reset hat ihn mit body-Spezifität überschrieben
+}
+
+// Aktive Seite in der Navigation: Cyan-subtle-Unterstreichung (Zustand,
+// keine Aufforderung — Voll-Cyan bleibt Interaktionen vorbehalten).
+// Hover bekommt eine Unterstreichung als Zweitindikator (gedimmtes Magenta
+// allein läge unter 3:1 — WCAG 1.4.11).
+// Marker als ::after unter dem Text — eine Inset-Shadow an der
+// Link-Unterkante würde vom overflow:hidden der visible-links geclippt
+body .greedy-nav .visible-links a {
+    position: relative;
+}
+
+body .greedy-nav .visible-links a::after {
+    content: "";
+    position: absolute;
+    left: 0.75em;
+    right: 0.75em;
+    bottom: 0; // Unterkante des Masthead („Tab"-Muster)
+    height: 3px;
+    border-radius: 2px 2px 0 0;
+    background: transparent;
+    transition: background-color 0.2s ease;
+}
+
+body .greedy-nav .visible-links a.current::after {
+    background: $link-color-subtle;
+}
+
+body .greedy-nav .visible-links a:hover::after,
+body .greedy-nav .visible-links a:focus-visible::after {
+    background: $hover-color-subtle;
+}
+
+body .greedy-nav__toggle:focus-visible {
+    outline: 2px solid $hover-color;
+    outline-offset: 2px;
+}
+
+.site-logo:hover img {
+    filter: drop-shadow(0 0 4px rgba($link-color, 0.5)) drop-shadow(0 0 10px rgba($hover-color, 0.35));
 }

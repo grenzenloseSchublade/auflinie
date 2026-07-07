@@ -1,0 +1,164 @@
+{% comment %}
+  Gemeinsames Markup der interaktiven Fraktal-Panels.
+  Parameter:
+    variant – "julia" (1 Canvas, c-Slider + Presets) | "explorer" (2 gekoppelte Canvases)
+    id      – Wrapper-ID (Anker der Hero-Actions, z.B. "julia-container")
+    title   – Panel-Überschrift
+    crt     – CRT-Overlay-Intensität ("dezent" | "stark"), Default dezent
+
+  Verhalten: assets/js/fractal-panel.js (Auto-Init über data-fractal-panel).
+  Styles: assets/_sass/components/_fractal-panel.scss.
+  Voraussetzung: Seite setzt `fractal_panels: true` im Front Matter,
+  damit head/custom.html das CSS und scripts.html die JS-Deps laden.
+{% endcomment %}
+{% unless page.fractal_panels %}
+<!-- fractal/panel.html: WARNUNG — page.fractal_panels fehlt im Front Matter; Slider/Select/Renderer-Skripte werden nicht geladen. -->
+{% endunless %}
+{% assign fractal_variant = include.variant | default: "julia" %}
+{% assign fractal_crt = include.crt | default: "dezent" %}
+<div class="fractal-panel {% if fractal_variant == 'explorer' %}fractal-panel--dual{% else %}fractal-panel--single{% endif %}"
+  id="{{ include.id }}"
+  data-fractal-panel="{{ fractal_variant }}"
+  data-worker-base="{{ '/assets/js' | relative_url }}">
+  <h3 class="fractal-panel__title">{{ include.title }}</h3>
+
+  <div class="fractal-panel__toolbar">
+    <button type="button" class="fractal-panel__button" data-role="focus-mode" title="Fokusmodus: Bedienelemente ausblenden" aria-label="Fokusmodus" aria-pressed="false">
+      <span class="icon"><i class="fas fa-crosshairs" aria-hidden="true"></i></span>
+      <span class="btn-text">Fokus</span>
+    </button>
+    <div class="fractal-panel__toolbar-group">
+      <button type="button" class="fractal-panel__button" data-role="reset" title="{% if fractal_variant == "julia" %}Zoom zurücksetzen{% else %}Zurücksetzen{% endif %}" aria-label="Zurücksetzen">
+        <span class="icon"><i class="fas fa-undo" aria-hidden="true"></i></span>
+        <span class="btn-text">Reset</span>
+      </button>
+      {% if fractal_variant == "julia" %}
+      <button type="button" class="fractal-panel__button" data-role="recalc" title="Neu berechnen" aria-label="Neu berechnen">
+        <span class="icon"><i class="fas fa-sync" aria-hidden="true"></i></span>
+        <span class="btn-text">Neu</span>
+      </button>
+      {% endif %}
+      <button type="button" class="fractal-panel__button is-active" data-role="crt-toggle" title="Retro-Bildschirm-Effekt umschalten" aria-label="Retro-Bildschirm-Effekt" aria-pressed="true">
+        <span class="icon"><i class="fas fa-tv" aria-hidden="true"></i></span>
+        <span class="btn-text">CRT</span>
+      </button>
+    </div>
+    <button type="button" class="fractal-panel__button" data-role="fullscreen" title="Vollbild" aria-label="Vollbild">
+      <span class="icon"><i class="fas fa-expand" aria-hidden="true"></i></span>
+      <span class="btn-text">Vollbild</span>
+    </button>
+  </div>
+
+  <div class="fractal-panel__controls">
+    <div class="fractal-panel__controls-basic">
+      <div class="fractal-panel__control-row">
+        <label for="{{ include.id }}-iterations">Iterationen:</label>
+        <div class="fractal-panel__slider" data-role="iterations-slider"></div>
+        {% if fractal_variant == "julia" %}
+        <input type="number" id="{{ include.id }}-iterations" class="fractal-panel__value-chip" data-role="iterations-input" value="250" min="10" max="1000" step="10">
+        {% else %}
+        <input type="number" id="{{ include.id }}-iterations" class="fractal-panel__value-chip" data-role="iterations-input" value="80" min="10" max="500" step="10">
+        {% endif %}
+      </div>
+      <div class="fractal-panel__control-row fractal-panel__control-row--colors">
+        <label for="{{ include.id }}-colors">Farben:</label>
+        <select id="{{ include.id }}-colors" data-role="color-scheme">
+            <option value="blau-rot">Blau-Rot</option>
+            <option value="cyberpunk">Cyberpunk</option>
+            <option value="retrowave" selected>Retrowave</option>
+            <option value="feuer">Feuer</option>
+            <option value="ozean">Ozean</option>
+            <option value="monochrom">Monochrom</option>
+            <option value="regenbogen">Regenbogen</option>
+            <option value="ultraviolett">Ultraviolett</option>
+            <option value="goldgrün">Gold-Grün</option>
+        </select>
+        <button type="button" class="fractal-panel__button fractal-panel__button--intensity" data-role="intensity" title="Farbintensität umschalten" aria-label="Farbintensität" aria-pressed="false">
+          <span class="icon"><i class="fas fa-adjust" aria-hidden="true"></i></span>
+          <span class="btn-text">Subtil</span>
+        </button>
+      </div>
+      <div class="fractal-panel__advanced-row">
+        <button type="button" class="fractal-panel__button fractal-panel__button--expand" data-role="advanced-toggle" title="Erweiterte Optionen anzeigen" aria-label="Erweiterte Optionen" aria-expanded="false">
+          <span class="icon"><i class="fas fa-sliders-h" aria-hidden="true"></i></span>
+          <span class="btn-text">Erweiterte Optionen</span>
+          <span class="chevron"><i class="fas fa-chevron-down" aria-hidden="true"></i></span>
+        </button>
+      </div>
+    </div>
+    <div class="fractal-panel__controls-advanced">
+      {% if fractal_variant == "julia" %}
+      <div class="fractal-panel__control-row">
+        <label for="{{ include.id }}-real">c (Real):</label>
+        <div class="fractal-panel__slider" data-role="real-slider"></div>
+        <input type="number" id="{{ include.id }}-real" class="fractal-panel__value-chip" data-role="real-input" value="-0.7" min="-2" max="2" step="0.01">
+      </div>
+      <div class="fractal-panel__control-row">
+        <label for="{{ include.id }}-imag">c (Imag):</label>
+        <div class="fractal-panel__slider" data-role="imag-slider"></div>
+        <input type="number" id="{{ include.id }}-imag" class="fractal-panel__value-chip" data-role="imag-input" value="0.27" min="-2" max="2" step="0.01">
+      </div>
+      <div class="fractal-panel__preset-row">
+        <label for="{{ include.id }}-preset">Preset:</label>
+        <select id="{{ include.id }}-preset" data-role="preset">
+          <option value="standard" data-real="-0.70" data-imag="0.27" selected>Standard (-0.70, 0.27)</option>
+          <option value="seepferdchen" data-real="-0.78" data-imag="-0.11">Seepferdchen (-0.78, -0.11)</option>
+          <option value="blitz" data-real="-0.835" data-imag="-0.2321">Blitz (-0.84, -0.23)</option>
+          <option value="dendrit" data-real="0.285" data-imag="0.01">Dendrit (0.29, 0.01)</option>
+        </select>
+      </div>
+      {% endif %}
+      <div class="fractal-panel__toggle-row">
+        <button type="button" class="fractal-panel__button fractal-panel__button--compact" data-role="extreme-zoom" title="Extremzoom erlauben" aria-label="Extremzoom" aria-pressed="false">
+          <span class="icon"><i class="fas fa-bolt" aria-hidden="true"></i></span>
+          <span class="btn-text">Extremzoom: Aus</span>
+        </button>
+        <button type="button" class="fractal-panel__button fractal-panel__button--icon-only" data-role="download" title="Bild speichern" aria-label="Bild speichern">
+          <span class="icon"><i class="fas fa-download" aria-hidden="true"></i></span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  {% if fractal_variant == "julia" %}
+  {% include fractal/canvas.html key="julia" label="Interaktive Julia-Menge" hud_c="0 + 0i" crt=fractal_crt zoom_in_label="Julia vergrößern" zoom_out_label="Julia verkleinern" %}
+  <div class="fractal-panel__hint" aria-hidden="true">
+    <span class="fractal-panel__hint-mouse">ziehen: zoom-rechteck &middot; rechtsklick/leertaste: verschieben &middot; mausrad: zoom &middot; doppelklick: heraus &middot; tastatur: &larr;&uarr;&darr;&rarr; + &minus; 0</span>
+    <span class="fractal-panel__hint-touch">pinch: zoom &middot; zwei finger: verschieben &middot; +/&minus;: zoomstufe</span>
+  </div>
+  {% else %}
+  <div class="fractal-panel__row">
+    <div class="fractal-panel__column">
+      <h4 class="fractal-panel__column-title">Mandelbrot-Menge</h4>
+      {% include fractal/canvas.html key="mandelbrot" label="Mandelbrot-Menge" hud_c="-0.500 + 0.000i" crt=fractal_crt zoom_in_label="Mandelbrot vergrößern" zoom_out_label="Mandelbrot verkleinern" %}
+      <div class="fractal-panel__info-panel">
+        <p>Klicken Sie auf einen Punkt, um die entsprechende Julia-Menge zu sehen.</p>
+      </div>
+    </div>
+    <div class="fractal-panel__column">
+      <h4 class="fractal-panel__column-title">Julia-Menge für c = <span class="fractal-panel__info-value" data-role="julia-param">-0.700 + 0.270i</span></h4>
+      {% include fractal/canvas.html key="julia" label="Julia-Menge zum gewählten Parameter c" hud_c="0.000 + 0.000i" crt=fractal_crt zoom_in_label="Julia vergrößern" zoom_out_label="Julia verkleinern" %}
+      <div class="fractal-panel__info-panel">
+        <p>Die Julia-Menge für den gewählten Parameter c.</p>
+      </div>
+    </div>
+  </div>
+  <div class="fractal-panel__hint" aria-hidden="true">
+    <span class="fractal-panel__hint-mouse">klick (mandelbrot): c w&auml;hlen &middot; ziehen: zoom-rechteck &middot; rechtsklick/leertaste: verschieben &middot; mausrad: zoom &middot; tastatur: &larr;&uarr;&darr;&rarr; + &minus; 0</span>
+    <span class="fractal-panel__hint-touch">tippen (mandelbrot): c w&auml;hlen &middot; pinch: zoom &middot; zwei finger: verschieben</span>
+  </div>
+  {% endif %}
+
+  <div class="fractal-panel__explanation">
+    <button type="button" class="fractal-panel__explanation-toggle" data-role="explanation-toggle" aria-label="Erklärung ein-/ausblenden" aria-expanded="false">
+      Erklärung anzeigen <span class="toggle-icon">▼</span>
+    </button>
+    <div class="fractal-panel__explanation-box" data-role="explanation-box">
+      {% if fractal_variant == "julia" %}
+        {% include fractal/explanation-julia.html %}
+      {% else %}
+        {% include fractal/explanation-explorer.html %}
+      {% endif %}
+    </div>
+  </div>
+</div>

@@ -1,0 +1,184 @@
+// =============================================================================
+// CRT-Overlay — Bildschirm-Look für beliebige Container
+// =============================================================================
+// Deutlich sichtbarer Röhren-Eindruck über interaktivem Inhalt, ohne ihn zu
+// zerstören. Werte nach CRT-Shader-/CSS-Best-Practices:
+// - Scanlines: 4px-Periode (2px-Perioden verschwinden auf HiDPI),
+//   Deckkraft ~0.18-0.25 (Sweet Spot, Inhalt bleibt lesbar)
+// - Aperture-Grille (vertikale RGB-Streifen) statt Punktraster — weicher über
+//   buntem Inhalt und kein Moiré mit Fraktaldetails
+// - Vignette + Glas-Reflex verkaufen die „Röhre" am stärksten, rein statisch
+// - Flimmern: eigenes fast transparentes Layer, nur opacity animiert
+//   (compositor-only), Amplitude ±0.03 — weit unter der WCAG-2.3.1-Schwelle
+// - Rollbalken: langsamer transform-Lauf, Gesamt-Opacity ~0.07
+// Kein animiertes filter/feTurbulence (CPU-Killer) — Grain bleibt statisch.
+// Verwendung: {% include crt-overlay.html intensity="dezent|stark" %}
+// innerhalb eines Containers mit position: relative; overflow: hidden;
+// isolation: isolate (wegen mix-blend-mode des Grain-Layers).
+
+.crt-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  overflow: hidden;
+  pointer-events: none;
+
+  // Glas-Reflex oben links (statisch)
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 4;
+    background: linear-gradient(115deg, $surface-tint 0%, transparent 35%);
+  }
+
+  &__mask,
+  &__grain,
+  &__vignette,
+  &__flicker {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  // Scanlines (horizontal, 4px-Periode, Grundalpha 25%) + Aperture-Grille;
+  // Feintuning der Sichtbarkeit über opacity in den Intensitäts-Modifiern
+  &__mask {
+    z-index: 1;
+    background:
+      repeating-linear-gradient(
+        0deg,
+        transparent 0 2px,
+        rgb(0 0 0 / 25%) 2px 4px
+      ),
+      repeating-linear-gradient(
+        90deg,
+        rgb(255 0 0 / 9%) 0 1px,
+        rgb(0 255 0 / 6%) 1px 2px,
+        rgb(0 0 255 / 9%) 2px 3px
+      );
+  }
+
+  // Filmkorn (statischer SVG-Filter #crtGrainFilter aus crt-overlay.html)
+  &__grain {
+    z-index: 2;
+    background: #707070;
+    filter: url("#crtGrainFilter");
+    mix-blend-mode: soft-light;
+  }
+
+  // Vignette — „Röhrenwölbung" ohne Animations-Budget
+  &__vignette {
+    z-index: 3;
+    background: radial-gradient(
+      ellipse at center,
+      transparent 58%,
+      rgb(0 0 0 / 26%) 88%,
+      rgb(0 0 0 / 46%) 100%
+    );
+  }
+
+  // Netzbrummen: fast transparentes Layer, nur opacity randomisiert
+  // (Amplitude ±0.03 ≈ weit unter 10% Luminanzänderung — WCAG 2.3.1 safe)
+  &__flicker {
+    z-index: 5;
+    background: #000000;
+    opacity: 0.04;
+    animation: crt-overlay-flicker 0.24s steps(3) infinite;
+  }
+
+  // Langsamer Refresh-Rollbalken
+  &__roll {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: -14%;
+    height: 12%;
+    z-index: 5;
+    pointer-events: none;
+    opacity: 0.07;
+    background: linear-gradient(
+      180deg,
+      transparent,
+      rgb(255 255 255 / 40%) 50%,
+      transparent
+    );
+    animation: crt-overlay-roll 9s linear infinite;
+  }
+}
+
+// Intensitäten: Scanline-Deckkraft über die Maske gesteuert
+.crt-overlay--dezent .crt-overlay__mask {
+  opacity: 0.72; // effektive Scanline-Alpha ~0.18
+}
+
+.crt-overlay--stark .crt-overlay__mask {
+  opacity: 1; // effektive Scanline-Alpha ~0.25
+}
+
+.crt-overlay--dezent .crt-overlay__grain {
+  opacity: 0.16;
+}
+
+.crt-overlay--stark .crt-overlay__grain {
+  opacity: 0.22;
+}
+
+.crt-overlay--dezent .crt-overlay__vignette {
+  background: radial-gradient(
+    ellipse at center,
+    transparent 60%,
+    rgb(0 0 0 / 22%) 88%,
+    rgb(0 0 0 / 40%) 100%
+  );
+}
+
+@keyframes crt-overlay-flicker {
+  0% {
+    opacity: 0.03;
+  }
+
+  30% {
+    opacity: 0.055;
+  }
+
+  60% {
+    opacity: 0.025;
+  }
+
+  100% {
+    opacity: 0.045;
+  }
+}
+
+@keyframes crt-overlay-roll {
+  0% {
+    transform: translateY(0);
+  }
+
+  100% {
+    transform: translateY(1050%);
+  }
+}
+
+// Bewegung aus — statische Layer (Scanlines/Grille/Vignette/Grain) bleiben
+@media (prefers-reduced-motion: reduce) {
+  .crt-overlay__flicker,
+  .crt-overlay__roll {
+    animation: none;
+  }
+
+  .crt-overlay__flicker {
+    opacity: 0.04;
+  }
+}
+
+// SVG-Filter-Definitionen (einmal pro Seite, unsichtbar)
+.crt-overlay__svg-defs {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+  pointer-events: none;
+}

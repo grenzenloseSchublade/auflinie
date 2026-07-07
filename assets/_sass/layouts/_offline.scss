@@ -20,34 +20,49 @@
   }
 
   &__options {
-    margin: 2em 0;
+    margin: 2em auto;
+    max-width: 34rem;
+    text-align: left;
+
+    @include card-panel(0);
+
+    padding: 1rem 1.4rem;
 
     .options-list {
       list-style: none;
       padding: 0;
-      text-align: left;
-      display: inline-block;
+      margin: 0.4rem 0 0;
 
       li {
-        margin: 1em 0;
+        margin: 0.7em 0;
+        padding-left: 1.1rem;
+        position: relative;
+
+        &::before {
+          content: "›";
+          position: absolute;
+          left: 0;
+          color: $link-color;
+        }
       }
     }
   }
 
   &__reload-btn {
-    background-color: #05d9e8;
-    color: #000;
-    border: none;
+    // Primär-Rolle des Button-Systems (getönt statt Voll-Cyan)
+    background-color: rgba($link-color, 0.16);
+    color: $link-color;
+    border: 1px solid rgba($link-color, 0.5);
     padding: 10px 20px;
     font-size: 1em;
-    border-radius: 4px;
+    border-radius: 6px;
     cursor: pointer;
     margin-top: 1em;
-    transition: background-color 0.3s ease, transform 0.2s ease;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
 
     &:hover {
-      background-color: color.adjust(#05d9e8, $lightness: 10%);
-      transform: translateY(-2px);
+      background-color: rgba($link-color, 0.26);
+      border-color: $link-color;
     }
 
     &:active {
@@ -58,6 +73,6 @@
   &__cache-notice {
     margin-top: 3em;
     font-size: 0.9em;
-    color: #888;
+    color: #888888;
   }
 }

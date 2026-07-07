@@ -3,13 +3,16 @@
 
 // Gemeinsame Basis für Karten
 %card-base {
-  border-radius: 5px;
+  border-radius: 8px;
   padding: 1rem;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  
+  background-color: $console-panel-bg;
+  border: 1px solid $console-panel-border;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease, background-color 0.3s ease;
+
   &:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transform: translateY(-3px);
+    box-shadow: 0 4px 10px rgb(0 0 0 / 25%);
+    border-color: $border-accent-hover;
   }
 }
 
@@ -41,20 +44,12 @@
 
 // Gemeinsame Basis für Listen
 %list-base {
-  margin: 0.5rem 0 0 0;
+  margin: 0.5rem 0 0;
   padding-left: 1.2rem;
   
   li {
     margin-bottom: 0.5rem;
   }
-}
-
-// Gemeinsame Basis für Anker-Links
-%anchor-base {
-  display: block;
-  position: relative;
-  top: -100px;
-  visibility: hidden;
 }
 
 // Gemeinsame Hover-Effekte
@@ -63,7 +58,7 @@
   
   &:hover {
     transform: translateY($transform-value);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 8px rgb(0 0 0 / 20%);
   }
 }
 
@@ -113,4 +108,52 @@
       margin: 0;
     }
   }
-} 
+}
+
+// Panel-Karte: gemeinsame Statik des site-weiten Karten-Musters.
+// Hover bleibt bewusst pro Komponente (Verhalten unterscheidet sich gewollt).
+@mixin card-panel($accent: 2px, $radius: 8px) {
+  background-color: $console-panel-bg;
+  border: 1px solid $console-panel-border;
+  border-radius: $radius;
+
+  @if $accent != 0 {
+    border-left: $accent solid $border-accent;
+  }
+}
+
+// Mono-Chrome-Label (Mono + Uppercase + Letterspacing) — Größen pro Einsatzort
+@mixin mono-label($size: 0.72rem, $tracking: 0.07em) {
+  font-family: $mono-font-stack;
+  font-size: $size;
+  text-transform: uppercase;
+  letter-spacing: $tracking;
+}
+
+// Sektions-Header: ruhige weiße Überschrift mit Hairline
+// (Balken und Beige entfielen auf Nutzerwunsch — Struktur kommt von
+// Größe, Hairline und Abstand, nicht von Farbe)
+@mixin accent-header($size: 1.35rem, $rule: true) {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  font-size: $size;
+  font-weight: 600;
+  color: rgb(255 255 255 / 95%);
+
+  @if $rule {
+    border-bottom: 1px solid rgb(255 255 255 / 8%);
+    padding-bottom: 0.5rem;
+  }
+
+  &::after {
+    content: none;
+  }
+
+  i {
+    color: inherit;
+    opacity: 0.7;
+    font-size: 0.85em;
+    margin-right: 0;
+  }
+}

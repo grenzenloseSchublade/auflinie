@@ -43,10 +43,11 @@ kramdown:
       background_color: "#2d2d2d"
 
 # JavaScript-Dateien, die nach dem Footer geladen werden
+# (back-to-top.js lädt nur im single-Layout, siehe _layouts/single.html)
 after_footer_scripts:
+  - /assets/js/tv-switch.js
+  - /assets/js/author-follow.js
   - /assets/js/greedy-navigation.js
-  - /assets/js/blog-search.js
-  - /assets/js/back-to-top.js
 
 # Collections
 include:
@@ -78,7 +79,7 @@ author:
   name: "Hans Müller"
   avatar: "/assets/images/Logo.svg"
   bio: "Ingenieur & Entwickler"
-  location: "Deutschland, 45"
+  location: "Bochum, Deutschland"
   links:
     - label: "GitHub"
       icon: "fab fa-fw fa-github"
@@ -108,7 +109,6 @@ timezone: Europe/Berlin
 plugins:
   - jekyll-paginate-v2
   - jekyll-sitemap
-  - jekyll-gist
   - jekyll-feed
   - jekyll-include-cache
   - jekyll-last-modified-at
@@ -124,7 +124,6 @@ defaults:
       layout: single
       author_profile: true
       read_time: true
-      comments: true
       share: false
       related: true
       show_date: true

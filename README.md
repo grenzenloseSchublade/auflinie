@@ -8,8 +8,9 @@ Diese Website kombiniert Jekyll mit dem Minimal Mistakes Theme, um eine ansprech
 
 ## TODO
 
-- [ ] Bilder und Grafiken optimieren
+- [x] Bilder und Grafiken optimieren (ungenutzte Assets entfernt — ~450 KB; Font-Awesome-Subset statt Komplett-CSS)
 - [ ] Weitere Blog Einträge hinzufügen
+- [ ] og:image: echtes 1200×630-Banner statt Logo (bessere Link-Vorschauen)
 
 ## Installation und Einrichtung
 
@@ -58,7 +59,7 @@ Um die Website lokal zu entwickeln:
 
 ### Service Worker und CSS-Änderungen
 
-Wenn Styles oder Skripte nach Änderungen nicht wirken: **Hard-Reload** (Cache leeren) oder in den DevTools unter **Application → Service Workers** den Worker **Unregister** und die Seite neu laden. Der Service Worker kann ältere `main.css`-Versionen ausliefern.
+Der Service Worker registriert sich **nur im Production-Build** (`JEKYLL_ENV=production`; Gate in `_layouts/default.html` via `jekyll.environment`). Beim lokalen `jekyll serve`/Dev-Build deregistriert die Seite vorhandene Worker automatisch und löscht die Site-Caches (`assets/js/sw-register.js`) — nach einem Wechsel von Production- zu Dev-Artefakten genügen also **zwei Reloads**, DevTools sind nicht nötig. Navigationen werden grundsätzlich frisch vom Server geholt (`service-worker.js`: `cache: 'reload'` per URL-String — die cache-Option wird von Chromium ignoriert, wenn das originale Navigations-Request-Objekt wiederverwendet wird); der Laufzeit-Cache dient nur als Offline-Fallback. Updates in Production meldet ein Toast („Jetzt laden"), nichts lädt ungefragt neu.
 
 ## Markdown und Kramdown
 

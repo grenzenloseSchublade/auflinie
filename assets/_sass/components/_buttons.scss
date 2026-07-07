@@ -10,20 +10,6 @@
 }
 
 // Kategorie-Filter Buttons
-.filter-category {
-    &.active {
-        background-color: $hover-color; // Primärfarbe aus dem Theme verwenden
-        border-color: $hover-color;
-        color: #fff;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-        
-        &:hover {
-            background-color: color.adjust($link-color, $lightness: -5%);
-            border-color: color.adjust($link-color, $lightness: -5%);
-            transform: none; // Keine Verschiebung, da bereits aktiv
-        }
-    }
-}
 
 // Anpassungen für Standard-Buttons
 .btn {
@@ -34,7 +20,7 @@
     &:hover {
         color: $hover-color;
         transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        box-shadow: 0 5px 15px rgb(0 0 0 / 30%);
     }
     
     &:active {
@@ -47,7 +33,7 @@
     &.notice--info 
     {
         // Grundfarbe des Buttons
-        //background-color: $link-color; // Deine Variable aus _colors.scss
+        // background-color: $link-color; // Deine Variable aus _colors.scss
         color: #ffffff; // Textfarbe anpassen
         font-size: 0.8rem;
         font-weight: 600;
@@ -56,7 +42,54 @@
             background-color: color.adjust($link-color, $lightness: -10%); // Dunklere Variante beim Hover
             color: $hover-color; // Textfarbe beim Hover
             transform: translateY(-3px); // Leichte Bewegung nach oben
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); // Schatten hinzufügen
+            box-shadow: 0 4px 8px rgb(0 0 0 / 20%); // Schatten hinzufügen
         }
+    }
+}
+
+// =============================================================================
+// Button-Rollensystem (site-weit)
+// =============================================================================
+// Primär   = getönt gefüllt in der Cyan-Familie (ersetzt das Theme-Teal)
+// Sekundär = Cyan-subtle-Outline, transparent (Hero-Actions, Archiv-Button)
+// Keycap   = exklusiv Fraktal-Panels (components/_fractal-panel.scss)
+
+.btn.btn--primary {
+    background-color: rgba($link-color, 0.16);
+    border: 1px solid rgba($link-color, 0.5);
+    color: $link-color;
+
+    &:hover,
+    &:focus {
+        background-color: rgba($link-color, 0.26);
+        border-color: $link-color;
+        color: $link-color;
+    }
+}
+
+// Hero-Action-Buttons: vom weißen Theme-Outline auf die Site-Outline-Rolle
+.page__hero--overlay .btn--light-outline {
+    border: 1px solid rgba($link-color, 0.45);
+    background-color: rgb(10 14 18 / 35%);
+    color: #ffffff;
+
+    &:hover {
+        border-color: $link-color;
+        background-color: rgba($link-color, 0.14);
+        color: #ffffff;
+    }
+}
+
+// Sekundär-/Outline-Rolle (site-weit): Cyan-subtle-Border, transparent
+.btn.btn--outline {
+    background-color: transparent;
+    border: 1px solid rgba($link-color, 0.45);
+    color: rgb(255 255 255 / 88%);
+
+    &:hover,
+    &:focus {
+        border-color: $link-color;
+        background-color: rgba($link-color, 0.12);
+        color: #ffffff;
     }
 }

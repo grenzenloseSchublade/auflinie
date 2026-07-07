@@ -2,6 +2,9 @@
     "name": "Python 3.11 & Jekyll",
     "image": "mcr.microsoft.com/devcontainers/python:3.11",
     "features": {
+        "ghcr.io/devcontainers/features/ruby:1": {
+            "version": "3.4.8"
+        },
         "ghcr.io/devcontainers/features/node:1": {
             "version": "lts",
             "installYarnUsingApt": false

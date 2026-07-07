@@ -1,0 +1,42 @@
+// =============================================================================
+// Überschriften-Regelwerk (zentral)
+// =============================================================================
+// Heading-Matrix der Website:
+//   H1 Hero (page__title)              → Weiß (Theme, unangetastet)
+//   Sektions-H2 (Markdown-Inhalte)     → accent-header: Cyan-Balken + Beige
+//   Content-H3 (Markdown-Unterkapitel) → Weiß 92%, ruhig
+//   Item-Titel (Karten, Einträge)      → Cyan (in den Komponenten definiert)
+//   Chrome-Labels (TOC, Sticky-Bar)    → Mono gedimmt (in den Komponenten)
+// Wichtig: Bindung an DIREKTE Kinder von .page__content — Markdown-Headings
+// sind immer direkte Kinder, Komponenten-Headings (Panel, CV-Eintrag, Karten)
+// nie. So kapern diese Regeln keine Komponenten-Farben (der frühere globale
+// .page__content-h3-Farbblock hat genau das getan).
+
+.page__content > h2 {
+  @include accent-header(1.35rem);
+
+  margin: 2.2rem 0 1.2rem;
+}
+
+.page__content > h3 {
+  color: rgb(255 255 255 / 92%);
+  font-weight: 600;
+}
+
+// Archiv-Zwischenüberschriften (Jahre, „Neueste Beiträge"): Chrome-Label-Stil
+.archive__subtitle {
+  @include mono-label(0.78rem, 0.08em);
+
+  font-weight: 600;
+  color: $fg-subtle;
+  border-bottom: 1px solid rgb(255 255 255 / 8%);
+  padding-bottom: 0.4rem;
+}
+
+// Meta-Zeilen (Aktualisiert, Lesezeit): gedimmtes Chrome-Label
+.page__meta {
+  font-family: $mono-font-stack;
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  color: rgb(255 255 255 / 45%);
+}

@@ -44,6 +44,13 @@
       const isScrolled = scrollPosition > SCROLL_THRESHOLD;
       
       btn.classList.toggle('visible', isLongPage && isScrolled);
+
+      // Über dem Footer parken, statt ihn zu überdecken
+      const footer = document.querySelector('.page__footer');
+      if (footer) {
+        const fr = footer.getBoundingClientRect();
+        btn.classList.toggle('back-to-top--above-footer', fr.top < window.innerHeight);
+      }
     }
     
     /**

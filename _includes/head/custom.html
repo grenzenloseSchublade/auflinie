@@ -15,6 +15,13 @@
   form-action 'self';
 ">
 
+{% if page.fractal_panels %}
+<!-- Fraktal-Panels: CSS der CDN-Libs einmal pro Seite (JS in fractal/deps.html) -->
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link href="https://cdn.jsdelivr.net/npm/nouislider@15.7.1/dist/nouislider.min.css" rel="stylesheet" integrity="sha384-PSZaVsyG9jDu8hFaSJev5s/9poIJlX7cuxSGdqCgXRHpo2DzIaZAyCd2rG/DJJmV" crossorigin="anonymous">
+<link href="https://cdn.jsdelivr.net/npm/tom-select@2.4.1/dist/css/tom-select.css" rel="stylesheet" integrity="sha384-ny89R1e2Q335kISzsNGnOmYXcpZzyhDAQHA4nPPBPWSlNj9MWD5KQLMtuGTX4z0X" crossorigin="anonymous">
+{% endif %}
+
 {% if page.mathjax %}
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <script>
@@ -29,12 +36,9 @@
       skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
       ignoreHtmlClass: 'tex2jax_ignore',
       processHtmlClass: 'tex2jax_process',
-      renderActions: {
-        assistiveMml: []
-      },
       menuOptions: {
         settings: {
-          assistiveMml: false
+          assistiveMml: true
         }
       }
     },
@@ -71,29 +75,10 @@
 <link rel="icon" type="image/png" sizes="32x32" href="{{ site.baseurl }}/assets/images/favicon-32x32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="{{ site.baseurl }}/assets/images/favicon-16x16.png">
 <link rel="apple-touch-icon" sizes="180x180" href="{{ site.baseurl }}/assets/images/apple-touch-icon.png">
-<meta name="msapplication-TileImage" content="{{ site.baseurl }}/assets/images/favicon-180x180.png">
-<meta name="msapplication-TileColor" content="#1a1a1a">
 <meta name="theme-color" content="#1a1a1a">
 
-<!-- Anpassungen für Dropdown-Menüs und Header-Elemente -->
+<!-- Anpassungen für Header-Elemente -->
 <style>
-  select.form-control,
-  select#explorerColorScheme {
-    font-size: 0.6rem !important;
-    padding: 0.5rem;
-    border-radius: 4px;
-    background-color: #333;
-    color: #eee;
-    border: 1px solid #555;
-  }
-
-  select.form-control option,
-  select#explorerColorScheme option {
-    font-size: 1rem !important;
-    background-color: #333;
-    color: #eee;
-  }
-
   /* Verbesserte Lesbarkeit für Header-Unterschrift */
   .page__hero--overlay .page__title,
   .page__hero--overlay .page__lead {
@@ -120,17 +105,11 @@
     opacity: 1;
   }
 
-  /* Verstecke Kategorien und Tags auf der Website */
+  /* Taxonomie-Metadaten (Kategorien/Tags) sind sitewide deaktiviert */
   .page__taxonomy,
   .page__taxonomy-item,
   .taxonomy__index,
   .archive__item-excerpt .page__meta {
-    display: none !important;
-  }
-
-  /* Verstecke die Kategorien- und Tags-Seiten in der Suche und Sitemap */
-  body.layout--categories,
-  body.layout--tags {
     display: none !important;
   }
 
@@ -146,11 +125,17 @@
   }
 </style>
 
+{% if site.background_image %}
+<link rel="preload" as="image" href="{{ site.background_image | relative_url }}">
+{% endif %}
 <!-- Konfiguration für Bild-Caching und Service Worker -->
 <script>
-  // Konfiguration aus _config.yml an das HTML-Dokument übergeben
+  // Konfiguration aus _config.yml an das HTML-Dokument übergeben.
+  // WICHTIG: data-enable-service-worker wird hier NICHT mehr gesetzt —
+  // das Attribut kommt serverseitig aus _layouts/default.html und ist dort
+  // env-gegated (nur Production). Das frühere Laufzeit-Override erzwang
+  // "true" auch im Dev-Betrieb und hielt die Update-Dauerschleife am Leben.
   document.documentElement.setAttribute('data-enable-image-caching', '{% if site.enable_image_caching != false %}true{% else %}false{% endif %}');
-  document.documentElement.setAttribute('data-enable-service-worker', '{{ site.enable_service_worker | default: true }}');
   document.documentElement.setAttribute('data-background-image', '{{ site.background_image | relative_url }}');
 </script>
 
@@ -205,9 +190,8 @@
     "addressCountry": "DE"
   },
   "sameAs": [
-    "https://github.com/grenzenloseSchublade",
-    "https://www.linkedin.com/in/hans-m%C3%BCller-39a133359/"
-  ]
+    {% for link in site.social.links %}"{{ link }}"{% unless forloop.last %},{% endunless %}
+    {% endfor %}]
 }
 </script>
 {% endif %}

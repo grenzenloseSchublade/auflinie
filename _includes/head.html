@@ -18,8 +18,8 @@
 
 <!-- For all browsers -->
 <link rel="stylesheet" href="{{ '/assets/css/main.css' | relative_url }}">
-<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css" as="style" integrity="sha384-t1nt8BQoYMLFN5p42tRAtuAAFQaCQODekUVeKKZrEnEyp4H2R0RHFz0KWpmj7i8g" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'">
-<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css" integrity="sha384-t1nt8BQoYMLFN5p42tRAtuAAFQaCQODekUVeKKZrEnEyp4H2R0RHFz0KWpmj7i8g" crossorigin="anonymous"></noscript>
+{% comment %} Font Awesome: self-hosted Subset (assets/_sass/base/_icons.scss + assets/webfonts/) statt 100-KB-CDN-Komplett-CSS {% endcomment %}
+<link rel="preload" href="{{ '/assets/webfonts/fa-solid-900-subset.woff2' | relative_url }}" as="font" type="font/woff2" crossorigin>
 
 {% if site.head_scripts %}
   {% for script in site.head_scripts %}

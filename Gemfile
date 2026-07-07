@@ -11,11 +11,13 @@ group :jekyll_plugins do
   gem "jekyll-include-cache"
   gem "jekyll-paginate-v2"
   gem "jekyll-sitemap"
-  gem "jekyll-gist"
   gem "jekyll-feed"
   gem "jekyll-last-modified-at"
   gem "jekyll-remote-theme" # für remote_theme nötig (kam vorher implizit über github-pages)
 end
 
 gem "webrick", "~> 1.7"  # ab Ruby 3 nicht mehr in der stdlib
-gem "faraday-retry"      # Retries für octokit/jekyll-gist
+
+group :test do
+  gem "html-proofer", "~> 5.0" # CI: interne Link-Prüfung über _site
+end

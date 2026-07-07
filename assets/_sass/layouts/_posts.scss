@@ -3,17 +3,117 @@
 // Hier können spezifische Anpassungen für Blogbeiträge hinzugefügt werden
 // Die meisten Stile werden aus dem Theme übernommen
 
-// Beispiel für eine Anpassung der Überschriften in Blogbeiträgen
-.page__content {
-    h1 {
-        color: $h1-color;
+// Überschrift-Farben kommen zentral aus base/_headings.scss
+// (der frühere globale .page__content-h1/h2/h3-Farbblock hat die
+// Akzent-Header-Farben aller Komponenten überschrieben)
+
+// Beitragsliste (/posts/): Karten im Panel-Stil statt roher Linkliste
+.post-card-list {
+  .post-item {
+    margin-bottom: 1.2rem;
+  }
+
+  .archive__item {
+    @include card-panel(2px);
+
+    padding: 1.1rem 1.3rem;
+    transition: transform 0.3s ease, border-color 0.3s ease, background-color 0.3s ease;
+
+    &:hover {
+      transform: translateY(-3px);
+      border-color: $border-accent-hover;
+      background-color: $console-panel-bg-hover;
+
+      // Dezenter Akzent statt des lauten globalen 4-Lagen-Magenta-Glows
     }
-    
-    h2 {
-        color: $h2-color;
+  }
+
+  .archive__item-title {
+    margin-top: 0;
+    margin-bottom: 0.4rem;
+    font-size: 1.25rem;
+
+    a {
+      color: $link-color;
+      text-decoration: none;
+
+      &:hover {
+        text-decoration: underline;
+        text-underline-offset: 3px;
+      }
     }
-    
-    h3 {
-        color: $h3-color;
+  }
+
+  .page__meta {
+    font-family: $mono-font-stack;
+    font-variant-numeric: tabular-nums;
+    font-size: 0.72rem;
+    letter-spacing: 0.03em;
+    color: $fg-subtle;
+    margin-bottom: 0.6rem;
+  }
+
+  .archive__item-excerpt {
+    margin-bottom: 0;
+    font-size: 0.95rem;
+    color: $fg-muted;
+  }
+}
+
+// Verwandte Beiträge unter Artikeln
+.page__related {
+  margin-top: 2.5rem;
+
+  .page__related-title {
+    @include accent-header(1.35rem);
+
+    text-transform: none;
+    margin-bottom: 1.2rem;
+  }
+
+  .archive__item {
+    @include card-panel(2px);
+
+    padding: 1rem 1.2rem;
+
+    .archive__item-title {
+      font-size: 1.05rem;
+      margin-top: 0;
+
+      a {
+        color: $link-color;
+        text-decoration: none;
+
+        &:hover {
+          text-decoration: underline;
+          text-underline-offset: 3px;
+        }
+      }
     }
+
+    .archive__item-teaser {
+      border-radius: 6px;
+      margin-bottom: 0.7rem;
+    }
+  }
+}
+
+// Vorheriger/Nächster Beitrag: Outline-Paar statt Theme-Grau
+.pagination--pager {
+  background-color: transparent;
+  border: 1px solid rgba($link-color, 0.45);
+  border-radius: 6px;
+  color: rgb(255 255 255 / 88%);
+  font-size: 0.9rem;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+
+  &:hover {
+    border-color: $link-color;
+    background-color: rgba($link-color, 0.12);
+    color: #ffffff;
+  }
+
+  &.disabled {
+    display: none; // Ausblenden statt ausgrauen
+  }
 }

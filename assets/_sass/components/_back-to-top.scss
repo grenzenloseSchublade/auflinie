@@ -2,7 +2,8 @@
 // Runder, schwebender Button zum Zurückkehren an den Seitenanfang
 
 .back-to-top {
-  // Positionierung - mittig auf der Seite
+  // Positionierung: mittig unten (Nutzerentscheidung — überdeckt zwar
+  // punktuell Text, aber alles bleibt scrollbar)
   position: fixed;
   bottom: 24px;
   left: 50%;
@@ -29,8 +30,8 @@
   pointer-events: none;
   transform: translateX(-50%) translateY(20px);
   
-  // Animationen
-  transition: opacity 0.3s ease, transform 0.3s ease, box-shadow 0.2s ease;
+  // Animationen (inkl. bottom: sanftes Ausweichen vor dem Footer)
+  transition: opacity 0.3s ease, transform 0.3s ease, box-shadow 0.2s ease, bottom 0.35s ease;
   will-change: opacity, transform;
   
   // SVG-Icon
@@ -51,12 +52,12 @@
   // Hover-Effekt (Desktop) - Cyan Glow
   @media (hover: hover) {
     &:hover {
-      box-shadow: 0 0 12px rgba(5, 217, 232, 0.5),
-                  0 0 24px rgba(5, 217, 232, 0.3),
-                  0 0 36px rgba(5, 217, 232, 0.15);
+      box-shadow: 0 0 12px rgb(5 217 232 / 50%),
+                  0 0 24px rgb(5 217 232 / 30%),
+                  0 0 36px rgb(5 217 232 / 15%);
       
       svg {
-        filter: drop-shadow(0 0 4px rgba(5, 217, 232, 0.8));
+        filter: drop-shadow(0 0 4px rgb(5 217 232 / 80%));
       }
     }
   }
@@ -73,7 +74,7 @@
   &:focus-visible {
     outline: none;
     border-color: $link-color;
-    box-shadow: 0 0 0 3px rgba(5, 217, 232, 0.3);
+    box-shadow: 0 0 0 3px rgb(5 217 232 / 30%);
   }
   
   // Active-State
@@ -87,6 +88,7 @@
     width: 44px;
     height: 44px;
     bottom: 20px;
+
     // Bleibt mittig (left: 50% + translateX(-50%))
     
     svg {
@@ -108,4 +110,9 @@
       transform: translateX(-50%);
     }
   }
+}
+
+// Sobald der Footer sichtbar wird, rutscht der Button darüber
+.back-to-top--above-footer {
+  bottom: 120px;
 }

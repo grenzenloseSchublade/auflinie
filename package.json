@@ -1,0 +1,14 @@
+{
+  "name": "auflinie",
+  "private": true,
+  "description": "Tooling für die Jekyll-Site (Stylelint) — die Site selbst braucht kein Node.",
+  "devDependencies": {
+    "stylelint": "^16.10.0",
+    "stylelint-config-standard-scss": "^13.1.0",
+    "stylelint-scss": "^6.8.0"
+  },
+  "scripts": {
+    "lint:css": "stylelint \"assets/_sass/**/*.scss\"",
+    "lint:css:fix": "stylelint --fix \"assets/_sass/**/*.scss\""
+  }
+}

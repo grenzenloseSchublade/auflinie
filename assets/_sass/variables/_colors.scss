@@ -6,32 +6,54 @@ $white: #ffffff; // Einheitliches Weiß für alle Verwendungen
 
 // Primäre Farbpalette (Cyan, Magenta, Grün)
 $link-color: #05d9e8; // Cyan - Linkfarbe
-$link-color-subtle: rgba(5, 217, 232, 0.4); // Dezentes Cyan - für subtile Akzente (Trennlinien, Hamburger)
+$link-color-subtle: rgb(5 217 232 / 40%); // Dezentes Cyan - für subtile Akzente (Trennlinien, Hamburger)
 $hover-color: #ff00ff; // Magenta - Hover-Effekt Farbe
-$hover-color-subtle: rgba(255, 29, 206, 0.6); // Dezentes Magenta - für subtile Akzente (Trennlinien, Hamburger)
+$hover-color-subtle: rgb(255 29 206 / 60%); // Dezentes Magenta - für subtile Akzente (Trennlinien, Hamburger)
 // Electric Pink rgba(255, 0, 153, 0.6)
 // Hot Magenta rgba(255, 29, 206, 0.6)
 // Neon Fuchsia rgba(255, 0, 128, 0.6)
-$accent-green: #00ffc8; // Grün - Akzentfarbe
 $background-dark: #1a1a1a; // Dunkler Hintergrund
-$code-background: #2d2d2d; // Code-Block Hintergrund
 
 // Überschriften
-$h1-color: #ff00ff; // H1 Überschriften
-$h2-color: #ffffff; // H2 Überschriften
-$h3-color: #bbfff0; // H3 Überschriften
 $card-heading-color: #05d9e8; // Überschriftenfarbe für Karten
 
 // Textfarben
-$excerpt-color: #00ffc8; // Untertitel Farbe
 $selection-bg: #ff00ff; // Hintergrundfarbe für markierten Text
 $selection-text: #000000; // Textfarbe für markierten Text
 
 // Overlay-Farben (für konsistente Hintergrund-Transparenzen)
-$bg-overlay-dark: rgba(0, 0, 0, 0.2); // Dunkler Overlay
-$bg-overlay-darker: rgba(0, 0, 0, 0.3); // Dunklerer Overlay
-$bg-overlay-light-subtle: rgba(255, 255, 255, 0.03); // Sehr subtiler heller Overlay
-$bg-overlay-light: rgba(255, 255, 255, 0.05); // Subtiler heller Overlay
 
 // Hinweis: .contact-type, .contact-value, .contact-icon Styles 
 // wurden nach components/_about.scss verschoben
+
+// Konsolen-Designsprache (geteilt von Fraktal-Panels, CV und About)
+$console-heading: #eacfb4; // Warmes Beige für Panel-/Sektionstitel
+$console-panel-bg: #1a1c20; // Panel-Grundton (eine Stufe heller als Seitengrund)
+$console-panel-bg-hover: #20242a;
+$console-panel-border: rgb(255 255 255 / 8%);
+
+// Syntax-Highlighting (base16) in der Site-Palette — überschreibt die
+// Material-Theme-Defaults des MM-Themes (dort !default deklariert)
+$base00: #1a1c20; // Hintergrund = Panel-Ton
+$base01: #20242a; // Highlights
+$base02: #2a2f37; // Selektion
+$base03: #7d8590; // Kommentare
+$base04: #9aa4b2; // Zeilennummern
+$base05: #e8e6e3; // Standardtext
+$base06: #f0eee9;
+$base07: #ffffff;
+$base08: #ff6b81; // Fehler/Deleted (weiches Rot)
+$base09: #eacfb4; // Zahlen/Konstanten = Beige
+$base0a: #ffd580; // Klassen/Attribute (warmes Amber)
+$base0b: #00ffc8; // Strings = Akzent-Grün
+$base0c: #7fdff0; // Support/Regex (helles Cyan)
+$base0d: #05d9e8; // Funktionen = Cyan
+$base0e: #ff79c6; // Keywords = aufgehelltes Magenta (6:1 auf Panel-Ton)
+$base0f: #d4a37f; // Sonstiges
+
+// Abgeleitete Flächen-/Rahmen-Tokens (Konsolidierung wiederholter Literale)
+$border-accent: rgba($link-color, 0.55); // Karten-Akzentrand links
+$border-accent-hover: rgba($link-color, 0.35); // Karten-Rahmen im Hover
+$fg-muted: rgb(255 255 255 / 80%); // Fließtext auf Panels
+$fg-subtle: rgb(255 255 255 / 55%); // Meta-/Labeltext
+$surface-tint: rgb(255 255 255 / 6%); // dezente Flächen-Aufhellung / Divider

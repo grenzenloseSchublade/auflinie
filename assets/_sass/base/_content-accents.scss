@@ -1,0 +1,23 @@
+// =============================================================================
+// Inhalts-Akzente: Magenta als „Moment-Farbe" im Fließtext
+// =============================================================================
+// (Recherche: Sekundär-Neon für Auswahl/Hervorhebung/Momente — nicht für
+// Fließtext; Hintergründe zählen nur über den Textkontrast darauf.)
+
+// Editorialer Textmarker
+.page__content mark {
+  background: rgb(255 0 255 / 18%);
+  color: inherit;
+  padding: 0.05em 0.25em;
+  border-radius: 3px;
+}
+
+// Zitate: Cyan-subtle-Anker wie alle Karten-Akzente
+.page__content blockquote {
+  border-left: 3px solid $border-accent;
+  background: rgb(255 255 255 / 3%);
+  padding: 0.7em 1.1em;
+  border-radius: 0 6px 6px 0;
+  font-style: italic;
+  color: rgb(255 255 255 / 82%);
+}

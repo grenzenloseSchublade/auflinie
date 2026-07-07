@@ -7,6 +7,8 @@
 
 // Blogbeiträge auf der Startseite
 .entries-grid {
+  display: flow-root; // schließt die Float-Fläche der .grid__item ab
+
   .archive__item {
     position: relative;
     border-radius: 5px;
@@ -40,10 +42,17 @@
   transition: box-shadow 0.2s ease;
 }
 
+// Karten-Hover folgt dem ruhigen Site-Schema (Cyan-subtle statt
+// Magenta-Glow-Ring — Magenta bleibt Moment-Farbe)
 .archive__item:hover {
-  box-shadow: 
-    0 0 0 2px #f0f,
-    0 0 15px rgba(240, 0, 255, 0.6),
-    0 0 30px rgba(240, 0, 255, 0.4),
-    0 8px 25px rgba(240, 0, 255, 0.5);
+  box-shadow: 0 0 0 1px $border-accent-hover;
+}
+
+// Meta-Zeile der Startseiten-Karten im Chrome-Label-Stil (wie Blogliste)
+.entries-grid .page__meta {
+  font-family: $mono-font-stack;
+  font-variant-numeric: tabular-nums;
+  font-size: 0.7rem;
+  letter-spacing: 0.03em;
+  color: $fg-subtle;
 }

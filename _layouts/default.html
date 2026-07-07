@@ -1,6 +1,6 @@
 <!doctype html>
 {% include copyright.html %}
-<html lang="{{ site.locale | replace: "_", "-" | default: "en" }}" class="no-js" data-enable-service-worker="{{ site.enable_service_worker }}" data-baseurl="{{ site.baseurl }}">
+<html lang="{{ site.locale | replace: "_", "-" | default: "en" }}" class="no-js" data-enable-service-worker="{% if jekyll.environment == 'production' %}{{ site.enable_service_worker }}{% else %}false{% endif %}" data-baseurl="{{ site.baseurl }}">
   <head>
     {% include head.html %}
     {% include head/custom.html %}
@@ -10,10 +10,14 @@
       /* Basis-Layout für sofortige Darstellung */
       *,*::before,*::after{box-sizing:border-box}
       html{font-size:16px;-webkit-text-size-adjust:100%}
-      body{margin:0;padding-top:76px;background:#252a34;color:#e8e6e3;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif}
+      /* Masthead-Höhe: identisch zu variables/_css-properties.scss (74px mobil / 88px ab 768px),
+         sonst springt der Inhalt beim Laden von main.css (CLS) */
+      :root{--masthead-height:74px}
+      @media (min-width:768px){:root{--masthead-height:88px}}
+      body{margin:0;padding-top:var(--masthead-height);background:#252a34;color:#e8e6e3;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif}
       
       /* Masthead (Header) - kritisch für Layout */
-      .masthead{position:fixed;top:0;left:0;right:0;height:76px;z-index:1000;background:rgba(37,42,52,0.95);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px)}
+      .masthead{position:fixed;top:0;left:0;right:0;height:var(--masthead-height);z-index:1000;background:rgba(37,42,52,0.95);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px)}
       .masthead__inner-wrap{display:flex;align-items:center;height:100%;padding:0 1em}
       .greedy-nav{display:flex;align-items:center;height:100%}
       .site-title{font-size:1.8em;font-weight:bold;color:#fff;text-decoration:none}
@@ -21,9 +25,10 @@
       .visible-links a{display:block;padding:0.5em 0.75em;color:#fff;text-decoration:none}
       
       /* Hero Section - above the fold */
-      .page__hero--overlay{position:relative;min-height:300px;background-size:cover;background-position:center}
+      .page__hero--overlay{position:relative;display:flex;flex-direction:column;justify-content:flex-start;padding-top:8em;min-height:clamp(410px,42vh,520px);background-size:cover;background-position:center}
+      @media (max-width:768px){.page__hero--overlay{min-height:calc(100dvh - var(--masthead-height));padding-top:18vh}}
       /* z-index: Wrapper unter Preboot-/Boot-::after (z15 in main.css), damit der Vorhang auch über der Schrift liegt */
-      .page__hero--overlay .wrapper{position:relative;z-index:3;padding:6em 1em 4em}
+      .page__hero--overlay .wrapper{position:relative;z-index:3;padding:2em 1em}
       .page__title{font-size:2em;color:#fff;margin:0}
       
       /* Unsichtbar bis CSS geladen */
@@ -33,7 +38,8 @@
 
   <body class="layout--{{ page.layout | default: layout.layout }}{% if page.classes or layout.classes %}{{ page.classes | default: layout.classes | join: ' ' | prepend: ' ' }}{% endif %}" dir="{% if site.rtl %}rtl{% else %}ltr{% endif %}">
     {% include_cached skip-links.html %}
-    {% include_cached masthead.html %}
+    {% comment %} Bewusst NICHT include_cached: der Aktiv-Marker hängt von page.url ab {% endcomment %}
+    {% include masthead.html %}
 
     <div class="initial-content">
       {{ content }}
@@ -53,7 +59,8 @@
       </footer>
     </div>
 
-    {% include_cached scripts.html %}
+    {% comment %} Bewusst NICHT include_cached: scripts.html lädt seitenabhängig (page.fractal_panels u.a.) {% endcomment %}
+    {% include scripts.html %}
     
     <!-- Offline-Benachrichtigung -->
     <div id="offline-notification" style="display: none; position: fixed; bottom: 20px; right: 20px; background-color: #333; color: white; padding: 10px 20px; border-radius: 4px; z-index: 9999;">

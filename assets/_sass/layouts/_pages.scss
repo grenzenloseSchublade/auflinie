@@ -27,10 +27,18 @@
             padding-right: 0;
         }
 
-        .explorer-container {
+        .fractal-panel {
             border-radius: 0;
             margin-left: 0;
             margin-right: 0;
         }
     }
+}
+
+// 404-Seite
+.error-404__code {
+  font-family: $mono-font-stack;
+  font-size: 1.4em;
+  color: $link-color;
+  margin-bottom: 1em;
 }

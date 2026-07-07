@@ -14,9 +14,12 @@
   };
   
   /**
-   * Zeigt ein visuelles Update-Toast statt eines blockierenden confirm()
+   * Zeigt ein visuelles Update-Toast statt eines blockierenden confirm().
+   * "Jetzt laden" aktiviert den wartenden Worker (SKIP_WAITING) und lädt die
+   * Seite erst nach dem controllerchange neu — so gibt es keinen Mischzustand
+   * aus altem DOM und neuem Cache.
    */
-  function showUpdateToast() {
+  function showUpdateToast(registration) {
     // Prüfe ob Toast bereits existiert
     if (document.getElementById('sw-update-toast')) return;
 
@@ -28,13 +31,10 @@
     toast.setAttribute('aria-relevant', 'additions');
     toast.innerHTML = `
       <div class="sw-update-toast__panel">
-        <div class="sw-update-toast__content">
-          <p class="sw-update-toast__headline">Neue Version verfügbar</p>
-          <p class="sw-update-toast__sub">Seite neu laden, um die Aktualisierung zu nutzen.</p>
-        </div>
+        <p class="sw-update-toast__headline">Neue Version verfügbar</p>
         <div class="sw-update-toast__actions">
           <button type="button" id="sw-update-dismiss" class="sw-update-toast__ghost">Später</button>
-          <button type="button" id="sw-update-reload" class="sw-update-toast__primary">Jetzt laden</button>
+          <button type="button" id="sw-update-reload" class="sw-update-toast__primary">Neu laden</button>
         </div>
       </div>
     `;
@@ -43,7 +43,19 @@
     
     // Event-Listener
     document.getElementById('sw-update-reload').addEventListener('click', () => {
-      window.location.reload();
+      const waiting = registration && registration.waiting;
+      if (waiting) {
+        // Genau ein Reload, sobald der neue Worker übernommen hat
+        let reloaded = false;
+        navigator.serviceWorker.addEventListener('controllerchange', () => {
+          if (reloaded) return;
+          reloaded = true;
+          window.location.reload();
+        });
+        waiting.postMessage({ type: 'SKIP_WAITING' });
+      } else {
+        window.location.reload();
+      }
     });
     
     document.getElementById('sw-update-dismiss').addEventListener('click', () => {
@@ -55,11 +67,38 @@
   /**
    * Service Worker registrieren
    */
+  /**
+   * Dev-Betrieb (jekyll serve): vorhandene Service Worker deregistrieren und
+   * Site-Caches löschen. Ohne das bleibt ein früher registrierter Worker aktiv
+   * und meldet nach jeder Regeneration ein "Update" (CACHE_VERSION = Build-
+   * Zeitstempel) — die gemeldete Dauerschleife beim lokalen Entwickeln.
+   */
+  function cleanupServiceWorker() {
+    navigator.serviceWorker.getRegistrations()
+      .then((regs) => regs.forEach((reg) => reg.unregister()))
+      .catch(() => {});
+
+    if (window.caches && caches.keys) {
+      caches.keys()
+        .then((keys) => keys.forEach((key) => {
+          if (key.indexOf('kraftstoff-cache-') === 0) {
+            caches.delete(key);
+          }
+        }))
+        .catch(() => {});
+    }
+  }
+
   function registerServiceWorker() {
     if ('serviceWorker' in navigator) {
       // Warten, bis die Seite geladen ist
       window.addEventListener('load', () => {
-        // Nur registrieren, wenn Service Worker aktiviert ist
+        // Nur in Production registrieren — im Dev-Betrieb aufräumen
+        if (!config.enableServiceWorker) {
+          cleanupServiceWorker();
+          return;
+        }
+
         if (config.enableServiceWorker !== false) {
           // Bestimme den Pfad zum Root der Website
           const rootPath = getRootPath();
@@ -77,7 +116,7 @@
                 newWorker.addEventListener('statechange', () => {
                   if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
                     // Neuer Service Worker ist installiert - zeige Update-Toast
-                    showUpdateToast();
+                    showUpdateToast(registration);
                   }
                 });
               });

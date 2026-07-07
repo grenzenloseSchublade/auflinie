@@ -1,5 +1,6 @@
 - section: "Wer bin ich?"
   icon: "user"
+  css_class: "section-wer-bin-ich"
   content: >-
 
     Ich bin Ingenieur, Problemlöser und Autodidakt. Was mich antreibt: die Verbindung zwischen Theorie und Praxis – 
@@ -10,28 +11,31 @@
     vielleicht entsteht daraus Inspiration.
     <br> <br>
 
-    <div style="text-align: center; display: flex; justify-content: center; align-items: center;">
-      <p style="text-align: center; border: 2px solid; #ccc; padding: 10px; border-radius: 5px; display: inline-block; font-style: italic; margin: 4px auto; font-size: clamp(1rem, 2vw, 1.5rem);">
-        anima sana in corpore sano
-      </p>
+    <div class="about-motto-wrap">
+      <p class="about-motto">anima sana in corpore sano</p>
     </div>
 
 
 - section: "Meine Interessen"
+  css_class: "section-meine-interessen"
+  intro: "Hier ist ein Überblick über die vielfältigen Interessen und Leidenschaften, die mich antreiben und inspirieren."
   icon: "brain"
   interests:
     - category: "Programmierung"
+      icon: "code"
       items:
         - "Machine Learning"
         - "Computer Vision Algorithmen"
         # - "Data Analytics"
         - "Wissenschaftlich schreiben" # - Latex (Lyx)"
     - category: "Physik & Technik"
+      icon: "atom"
       items:
         - "Astronomie"
         - "Quantenphysik & -computer"
         - "Technisches Basteln (Fahrrad & Motorrad)"
     - category: "Bewegung"
+      icon: "bicycle"
       items:
         - "Fahrrad fahren"
         - "Calisthenics"
@@ -39,6 +43,7 @@
         - "Schwimmen"
         - "Laufen"
     - category: "Gesundheit"
+      icon: "spa"
       items:
         - "Yoga"
         - "Kochen"
@@ -47,33 +52,38 @@
 
 - section: "Meine Projekte"
   icon: "project-diagram"
+  css_class: "section-meine-projekte"
+  intro: "Einige der spannendsten Projekte, mit denen ich mich beschäftigt habe."
   skills:
     - category: "Fraktale Visualisierung"
+      icon: "chart-line"
       items:
         - "Interaktive Darstellung der Mandelbrot-Menge"
         - "Julia-Mengen Explorer"
         #- "Fraktale Kunst-Generator"
-        - "Dokumentation (TODO)"
 
     - category: "Mobile App"
+      icon: "receipt"
       items:
         - "Erkennung & Digitalisierung von Kassenzetteln"
         - "Automatisierte Erstellung von Rechnungen"
         - "Einbindung in bestehendes Haushaltssystem"
 
     - category: "Internetpräsenz"
+      icon: "globe"
       items:
         - "Recherche und Entscheidung zu nutzenden Frameworks"
         - "Implementierung und Deployment"
         - "Umsetzung von Designfragen"
-        - "Dokumentation (TODO)"
 
     - category: "Bildung"
+      icon: "graduation-cap"
       items:
         - "Blog-Beiträge über interessante Themen"
         - "Erstellung von lehrreichen Inhalten"
 
     - category: "Kultur & Reisen"
+      icon: "route"
       items:
         - "Reisen mit dem Rad"
         - "Surfen"

@@ -1,0 +1,40 @@
+// Footer: Chrome-Labels in der Konsolen-Designsprache
+.page__footer {
+  border-top: 1px solid $console-panel-border;
+  background-color: rgb(10 14 18 / 45%);
+
+  footer {
+    margin-top: 1.2em;
+    margin-bottom: 1.2em;
+  }
+}
+
+.site-footer__nav {
+  font-family: $mono-font-stack;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+
+  a {
+    color: rgb(255 255 255 / 70%);
+    text-decoration: none;
+
+    &:hover {
+      color: $link-color;
+    }
+  }
+
+  .site-footer__sep {
+    color: rgb(255 255 255 / 25%);
+  }
+}
+
+.page__footer-copyright {
+  font-family: $mono-font-stack;
+  font-size: 0.68rem;
+  color: rgb(255 255 255 / 40%);
+  margin-top: 0.6rem;
+}

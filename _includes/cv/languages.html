@@ -1,0 +1,13 @@
+{% comment %}
+  Sprachkenntnisse als Chips — gleiche Formensprache wie die
+  Fähigkeiten-Cluster (T1): Sprache + gedimmtes Level im Chip.
+{% endcomment %}
+<ul class="cv-skills__chips cv-languages">
+  {% for language in include.languages %}
+  <li class="cv-skill-chip">
+    {% if language.icon %}{% include brand-icon.html icon=language.icon %}{% endif %}
+    {{ language.language | markdownify | remove: '<p>' | remove: '</p>' }}
+    <span class="cv-language__level">{{ language.level | markdownify | remove: '<p>' | remove: '</p>' }}</span>
+  </li>
+  {% endfor %}
+</ul>

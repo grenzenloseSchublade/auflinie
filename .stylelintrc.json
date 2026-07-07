@@ -22,7 +22,11 @@
     "max-nesting-depth": [
       5,
       {
-        "ignoreAtRules": ["media", "supports", "include"]
+        "ignoreAtRules": [
+          "media",
+          "supports",
+          "include"
+        ]
       }
     ],
     "selector-max-compound-selectors": 6,
@@ -49,14 +53,19 @@
     "annotation-no-unknown": [
       true,
       {
-        "ignoreAnnotations": ["default"]
+        "ignoreAnnotations": [
+          "default"
+        ]
       }
-    ]
+    ],
+    "media-feature-range-notation": "prefix",
+    "keyframes-name-pattern": "^[a-z][a-zA-Z0-9-]*$"
   },
   "ignoreFiles": [
     "vendor/**/*",
     "_site/**/*",
     "node_modules/**/*",
-    "tmp/**/*"
+    "tmp/**/*",
+    "assets/css/main.scss"
   ]
 }

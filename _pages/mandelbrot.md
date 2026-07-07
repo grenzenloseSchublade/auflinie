@@ -1,6 +1,6 @@
 ---
-title: "Die faszinierende Welt der Fraktale"
-excerpt: "Entdecken Sie die Schönheit der Mathematik. Durch interaktive Visualisierungen können Sie verschiedene Mengen erkunden und deren einzigartige Eigenschaften kennenlernen."
+title: "Die Welt der Fraktale"
+excerpt: "Unendliche Muster aus einer einzigen Formel — interaktiv erkundbar, direkt im Browser."
 permalink: /mandelbrot/
 layout: single
 author_profile: true
@@ -9,6 +9,7 @@ classes:
   - mandelbrot-page
   #- full-width-page
 mathjax: true
+fractal_panels: true
 toc: true
 toc_label: "Inhalt"
 toc_icon: "list"
@@ -25,9 +26,11 @@ header:
 ---
 
 {% for section in site.data.mandelbrot.sections %}
-<span id="{% if section.anchor %}{{ section.anchor }}{% else %}{{ section.section | slugify }}{% endif %}" class="section-anchor"></span>
+{% assign heading_id = section.anchor | default: nil %}
+{% unless heading_id %}{% assign heading_id = section.section | slugify %}{% endunless %}
 
-## <i class="fas fa-{{ section.icon }}"></i> {{ section.section }}
+## <i class="fas fa-{{ section.icon }}" aria-hidden="true"></i> {{ section.section }}
+{: id="{{ heading_id }}"}
 
 {{ section.content | markdownify }}
 
