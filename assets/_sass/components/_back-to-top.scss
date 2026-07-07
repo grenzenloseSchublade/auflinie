@@ -2,11 +2,17 @@
 // Runder, schwebender Button zum Zurückkehren an den Seitenanfang
 
 .back-to-top {
-  // Positionierung - mittig auf der Seite
+  // Positionierung: rechts unten — mittig lag der Button über dem
+  // Fließtext der zentrierten Content-Spalte
   position: fixed;
   bottom: 24px;
-  left: 50%;
+  right: 24px;
   z-index: 999;
+
+  @media (max-width: 768px) {
+    right: 16px;
+    bottom: 16px;
+  }
   
   // Größe und Form
   width: 48px;
@@ -27,7 +33,7 @@
   // Initial versteckt (kombiniert mit horizontaler Zentrierung)
   opacity: 0;
   pointer-events: none;
-  transform: translateX(-50%) translateY(20px);
+  transform: translateY(20px);
   
   // Animationen
   transition: opacity 0.3s ease, transform 0.3s ease, box-shadow 0.2s ease;
@@ -45,7 +51,7 @@
   &.visible {
     opacity: 1;
     pointer-events: auto;
-    transform: translateX(-50%) translateY(0);
+    transform: translateY(0);
   }
   
   // Hover-Effekt (Desktop) - Cyan Glow

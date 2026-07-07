@@ -7,6 +7,8 @@
 
 // Blogbeiträge auf der Startseite
 .entries-grid {
+  display: flow-root; // schließt die Float-Fläche der .grid__item ab
+
   .archive__item {
     position: relative;
     border-radius: 5px;

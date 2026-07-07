@@ -275,13 +275,18 @@ body {
   .greedy-nav .hidden-links:not(.hidden) {
     transform: translateX(0);
     pointer-events: auto;
+    visibility: visible;
+    transition: transform 0.3s ease-in-out, visibility 0s;
   }
   
-  // Versteckt - nur transform, KEIN display:none
+  // Versteckt: nach der Slide-Animation auch visibility:hidden —
+  // sonst ragt der Rand (Border + Shadow) durch scrollbar-gutter:stable
+  // als Streifen in den Viewport (translateX(100%) rechnet ab clientWidth)
   .greedy-nav .hidden-links.hidden {
-    transform: translateX(100%);
+    transform: translateX(calc(100% + 24px)); // Shadow-Breite einrechnen
     pointer-events: none;
-    visibility: visible !important; // Überschreibt mögliche visibility:hidden
+    visibility: hidden;
+    transition: transform 0.3s ease-in-out, visibility 0s 0.3s;
   }
 }
 
