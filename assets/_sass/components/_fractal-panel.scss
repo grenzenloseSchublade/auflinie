@@ -72,25 +72,29 @@ $fp-heading: $console-heading;
     margin-right: 6px;
   }
 
+  // Mobil: alle fünf Buttons gleichberechtigt als Icon-über-Label-Stack
+  // (App-Tab-Bar-Muster) — vorher waren Fokus/Vollbild icon-only 38px,
+  // die Gruppe 74px mit Text ("außen doppelt so klein")
   @media (max-width: 768px) {
     gap: 6px;
 
     .fractal-panel__button {
-      padding: 8px 10px;
-    }
-  }
-
-  @media (max-width: 480px) {
-    .btn-text {
-      display: none;
+      flex: 1 1 0;
+      flex-direction: column;
+      gap: 3px;
+      min-height: 48px;
+      padding: 6px 4px;
     }
 
     .icon {
       margin-right: 0;
+      font-size: 1rem;
     }
 
-    .fractal-panel__button {
-      padding: 10px 12px;
+    .btn-text {
+      display: block;
+      font-size: 0.6rem;
+      letter-spacing: 0.04em;
     }
   }
 }
@@ -107,14 +111,10 @@ $fp-heading: $console-heading;
     max-width: none;
   }
 
-  @media (max-width: 480px) {
-    .btn-text {
-      display: none;
-    }
-
-    .icon {
-      margin-right: 0;
-    }
+  // Mobil: Gruppe auflösen (display: contents) — alle fünf Buttons werden
+  // direkte, exakt gleich breite Flex-Spalten der Toolbar
+  @media (max-width: 768px) {
+    display: contents;
   }
 }
 

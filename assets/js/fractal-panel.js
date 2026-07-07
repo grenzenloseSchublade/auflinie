@@ -213,6 +213,41 @@
       this.view.zoomLevel = targetZoom;
     }
 
+    // Live-Preview während Gesten: Zustand DIREKT setzen und den letzten
+    // gerenderten Frame transformiert zeichnen (drawPreview). Kein
+    // animateTo: dessen 140ms-Easing wurde pro touchmove neu gestartet und
+    // kam nie vom Fleck — der Zoom wurde erst nach der Geste sichtbar.
+    previewZoomTo(targetZoom, center) {
+      const xRangeNew = 3 / targetZoom;
+      const yRangeNew = 3 / targetZoom;
+      const complexAtCursor = this.screenToComplex(center);
+      this.view.viewX = complexAtCursor.cx - (center.x / this.canvas.width) * xRangeNew + xRangeNew / 2;
+      this.view.viewY = complexAtCursor.cy - (center.y / this.canvas.height) * yRangeNew + yRangeNew / 2;
+      this.view.zoomLevel = targetZoom;
+      this.schedulePreviewDraw();
+    }
+
+    previewPanBy(dx, dy) {
+      const xRange = 3 / this.view.zoomLevel;
+      const yRange = 3 / this.view.zoomLevel;
+      this.view.viewX -= (dx / this.canvas.width) * xRange;
+      this.view.viewY -= (dy / this.canvas.height) * yRange;
+      this.schedulePreviewDraw();
+    }
+
+    schedulePreviewDraw() {
+      if (this._previewRaf) return;
+      this._previewRaf = requestAnimationFrame(() => {
+        this._previewRaf = null;
+        this.renderer.setState({
+          viewX: this.view.viewX,
+          viewY: this.view.viewY,
+          zoomLevel: this.view.zoomLevel
+        });
+        this.renderer.drawPreview();
+      });
+    }
+
     zoomAtCenter(factor, debounce, reason) {
       const targetZoom = FractalUtils.clamp(this.view.zoomLevel * factor, MIN_ZOOM, this.panel.getMaxZoom());
       this.animateZoomTo(targetZoom, { x: this.canvas.width / 2, y: this.canvas.height / 2 });
@@ -437,15 +472,14 @@
           if (center && this.pinch.lastCenter) {
             const dx = center.x - this.pinch.lastCenter.x;
             const dy = center.y - this.pinch.lastCenter.y;
-            if (dx || dy) this.panBy(dx, dy, 160, 'pan-touch');
+            if (dx || dy) this.previewPanBy(dx, dy);
           }
           const distance = getTouchDistance(event.touches);
           if (!this.pinch.startDist) this.pinch.startDist = distance;
           const zoomFactor = distance / this.pinch.startDist;
-          if (center && Math.abs(zoomFactor - 1) > 0.01) {
+          if (center && Math.abs(zoomFactor - 1) > 0.005) {
             const targetZoom = FractalUtils.clamp(this.pinch.startZoom * zoomFactor, MIN_ZOOM, panel.getMaxZoom());
-            this.animateZoomTo(targetZoom, center);
-            panel.requestRender(this, { debounce: 120, reason: 'pinch' });
+            this.previewZoomTo(targetZoom, center);
           }
           this.pinch.lastCenter = center;
           return;
@@ -464,6 +498,7 @@
           this.pinch.startDist = 0;
           this.pinch.startZoom = this.view.zoomLevel;
           this.pinch.lastCenter = null;
+          panel.requestRender(this, { debounce: 40, reason: 'pinch-commit' });
         }
         if (event.touches.length === 0) {
           this.touchStart = null;
