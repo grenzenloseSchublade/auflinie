@@ -652,9 +652,9 @@
 // Hero-Caption: Tagline als Chrome-Label statt Foto-Credit-Kasten
 .page__hero--overlay .caption {
   font-family: $mono-font-stack;
-  font-size: 0.62rem;
+  font-size: 0.8rem; // war 0.62rem — dem Nutzer zu klein
   text-transform: uppercase;
-  letter-spacing: 0.09em;
+  letter-spacing: 0.06em;
   color: rgb(255 255 255 / 60%);
   background: rgb(10 14 18 / 55%);
   border: 1px solid rgb(255 255 255 / 10%);
@@ -670,11 +670,20 @@
   max-width: 52rem;
 }
 
-// Caption-Chip: sauber umbrechen, ohne dass die graue Fläche aufbläht
+// Caption-Chip: komplette Definition (der frühere Inline-Style im Include
+// ist entfernt) — kompakt, bricht ohne aufgeblähte Grau-Fläche um
 .page__hero--overlay .caption {
-  max-width: min(75%, 34ch);
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  z-index: 100;
   width: fit-content;
-  line-height: 1.35;
+  max-width: min(75%, 34ch);
+  margin: 0;
   padding: 0.28rem 0.6rem;
+  background: rgb(0 0 0 / 55%);
+  color: #ffffff;
+  border-radius: 4px 0 0;
+  line-height: 1.35;
   text-align: right;
 }

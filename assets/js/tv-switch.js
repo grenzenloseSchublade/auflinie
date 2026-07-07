@@ -19,9 +19,11 @@
     }
   }
 
-  function heroSichtbar() {
+  // Vollbild-Hero-Zustand: der Header reicht bis an den unteren
+  // Bildschirmrand (768px-Breakpoint; gescrollt => nicht mehr erfüllt)
+  function heroFuellt() {
     var hero = document.querySelector('.page__hero--overlay');
-    return !!hero && hero.getBoundingClientRect().bottom > 90; // Header ragt in den Viewport
+    return !!hero && hero.getBoundingClientRect().bottom >= window.innerHeight - 4;
   }
 
   function isHeroSwitch(fromUrl, toUrl) {

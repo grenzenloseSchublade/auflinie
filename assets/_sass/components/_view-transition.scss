@@ -7,11 +7,12 @@
 // Referenz-Look: heroCrtModeFlash (Phosphorgrün) + Röhren-Kollaps.
 /* stylelint-disable selector-pseudo-element-no-unknown, selector-pseudo-class-no-unknown, at-rule-no-unknown */
 
-// Aktiv auf allen Größen (Nutzerwunsch), ohne reduced-motion; die
-// inhaltliche Bedingung — Hero/Header im Viewport sichtbar — prüft
-// tv-switch.js beim Setzen des Types. (Headless-Umgebungen ohne
-// GPU-Compositing rendern die Transition nicht — real verifiziert.)
-@media (prefers-reduced-motion: no-preference) {
+// Aktiv nur im Vollbild-Hero-Zustand: derselbe 768px-Breakpoint, bei dem
+// der Header bis an den unteren Bildschirmrand reicht (_hero.scss,
+// min-height: calc(100dvh - masthead)) — gilt damit auch im schmal
+// gezogenen Desktop-Fenster. tv-switch.js sichert zusätzlich ab, dass der
+// Hero den Viewport wirklich füllt (gescrollt => skip).
+@media (max-width: 768px) and (prefers-reduced-motion: no-preference) {
   @view-transition {
     navigation: auto;
   }
@@ -27,27 +28,42 @@
   animation: none;
 }
 
-// Ohne Type: harter Cut statt Default-Crossfade (Prototyp-Scope!)
-::view-transition-old(root),
-::view-transition-new(root) {
-  animation: none;
-}
-
-// Phosphorgrüner Zwischengrund blitzt auf, während alt kollabiert / neu aufbaut
+// Zwischengrund dunkel (Seitengrund); der Phosphor-Blink läuft als eigene
+// kurze Blende auf dem ::view-transition-Pseudo — Charakter exakt wie das
+// Power-Button-Flackern (heroCrtModeFlash: 0.1s, rgb(85 240 145 / 38%),
+// opacity 0 -> 1@35% -> 0, ease-out), nur minimal länger, damit er den
+// Schnitt überdeckt.
 ::view-transition {
-  background: rgb(85 240 145);
+  background-color: #10141a;
+  animation: tv-phosphor-blink 140ms ease-out 90ms both;
 }
 
-// Timing (Nutzerabnahme "alles länger"): alt kollabiert in 260ms; die neue
-// Seite startet bei 380ms — dazwischen ~120ms REINES Phosphorgrün; Einblenden
-// 300ms, gesamt ~680ms. Der Brightness-Peak beim Einblenden ist gesenkt,
-// damit eine noch bildlose Hero-Fläche nicht grell aufleuchtet.
-html:active-view-transition-type(crt)::view-transition-old(root) {
-  animation: tv-switch-out 260ms steps(4, end) forwards;
+@keyframes tv-phosphor-blink {
+  0% {
+    background-color: #10141a;
+  }
+
+  35% {
+    background-color: rgb(85 240 145 / 42%);
+  }
+
+  100% {
+    background-color: #10141a;
+  }
 }
 
-html:active-view-transition-type(crt)::view-transition-new(root) {
-  animation: tv-switch-in 300ms 380ms steps(4, start) both;
+// Die CRT-Keyframes sind der DEFAULT für alle View-Transitions — die
+// Eingrenzung auf die Hero-Buttons erledigt tv-switch.js per
+// skipTransition() im pageswap (läuft auf der ALTEN Seite, wo das Skript
+// sicher geladen ist). Timing (Nutzerkorrektur "deutlich zu lang", Blink
+// wie Power-Button): Aus 150ms, Blink-Peak ~140ms, An 160ms ab 200ms —
+// gesamt ~360ms.
+::view-transition-old(root) {
+  animation: tv-switch-out 150ms steps(4, end) forwards;
+}
+
+::view-transition-new(root) {
+  animation: tv-switch-in 160ms 200ms steps(4, start) both;
 }
 
 @keyframes tv-switch-out {
