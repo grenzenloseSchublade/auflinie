@@ -382,52 +382,18 @@
   }
 }
 
-// Sprachen
+// Sprachen: Chips in der Formensprache der Fähigkeiten
 .cv-languages {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  margin-top: 1rem;
+  margin-top: 0.3rem;
 }
 
-.cv-language {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 0.5rem;
-  padding: 0.8rem;
-  border-radius: 8px;
-  background-color: $console-panel-bg;
-  border: 1px solid $console-panel-border;
-
-  @include hover-effect(-3px);
-
-  &:hover {
-    background-color: $console-panel-bg-hover;
-  }
-
-  .cv-language__name {
-    font-weight: 500;
-
-    i {
-      margin-right: 0.5rem;
-      color: $card-heading-color;
-    }
-  }
-
-  .cv-language__level {
-    color: #aaaaaa;
-  }
+.cv-language__level {
+  font-family: $mono-font-stack;
+  font-size: 0.68rem;
+  letter-spacing: 0.04em;
+  color: rgb(255 255 255 / 45%);
+  border-left: 1px solid rgb(255 255 255 / 15%);
+  padding-left: 0.45rem;
 }
 
-// Responsive Anpassungen
-@media (max-width: 768px) {
-  .cv-language {
-    flex-direction: column;
-    align-items: flex-start;
 
-    .cv-language__level {
-      margin-top: 0.3rem;
-    }
-  }
-}

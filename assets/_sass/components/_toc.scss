@@ -295,16 +295,17 @@
 
     // Kopf im Akzent-Balken-Stil (leise statt Voll-Teal)
     .nav__title {
-        color: $console-heading;
-        font-size: 0.95em;
+        color: rgb(255 255 255 / 70%);
+        font-family: $mono-font-stack;
+        font-size: 0.72rem;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
         background: rgb(255 255 255 / 3%);
         border-bottom: 1px solid $console-panel-border;
         border-top-left-radius: $border-radius;
         border-top-right-radius: $border-radius;
         padding: 0.6em 1em;
         font-weight: 600;
-        letter-spacing: 0.02em;
-        text-transform: none;
         min-height: 44px;
         display: flex;
         align-items: center;
