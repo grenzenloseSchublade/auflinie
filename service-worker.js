@@ -91,15 +91,16 @@ self.addEventListener('fetch', event => {
   }
 
   // Spezielle Behandlung für Bilder: Cache-First
-  if (url.match(/\.(jpg|jpeg|png|gif|webp|ico)$/)) {
+  if (url.match(/\.(jpg|jpeg|png|gif|webp|ico|woff2?)$/)) {
     event.respondWith(cacheFirst(event.request));
   }
-  // CSS und JS: Network-First — nach einem Deploy kommt sofort die neue
-  // Version (stale-while-revalidate lieferte erst die alte aus dem Cache und
-  // erzeugte einen Mischzustand aus neuem HTML und altem CSS/JS);
-  // der Cache dient nur noch als Offline-Fallback.
+  // CSS und JS: Stale-While-Revalidate — sofortige Antwort aus dem Cache
+  // (Performance nach Seitenwechseln), Aktualisierung im Hintergrund.
+  // Misch-Risiko besteht nur im kurzen Fenster direkt nach einem Deploy
+  // (eine Navigation), da der Cache pro Build versioniert ist und beim
+  // Aktivieren des neuen Workers komplett neu aufgebaut wird.
   else if (url.match(/\.(css|js)$/)) {
-    event.respondWith(networkFirst(event.request));
+    event.respondWith(staleWhileRevalidate(event.request));
   }
   // Für alle anderen Ressourcen: Network-First-Strategie
   else {
@@ -113,7 +114,9 @@ self.addEventListener('fetch', event => {
 // sich weiter am HTTP-Cache (verifiziert; das war die Update-Dauerschleife).
 async function handleNavigation(request) {
   try {
-    return await fetch(request.url, { cache: 'reload', credentials: 'same-origin' });
+    // no-cache: beim Server revalidieren (304 genügt) — 'reload' erzwang
+    // den Voll-Download des HTML bei jeder Navigation
+    return await fetch(request.url, { cache: 'no-cache', credentials: 'same-origin' });
   } catch (error) {
     const offline = await caches.match('./offline.html');
     if (offline) {
@@ -121,6 +124,29 @@ async function handleNavigation(request) {
     }
     return new Response('Offline', { status: 503, headers: { 'Content-Type': 'text/plain' } });
   }
+}
+
+// Stale-While-Revalidate für CSS/JS: Cache sofort, Netz im Hintergrund
+async function staleWhileRevalidate(request) {
+  const cached = await caches.match(request);
+  const update = fetch(request, { cache: 'no-cache' })
+    .then(async (response) => {
+      if (response.ok) {
+        const cache = await caches.open(CACHE_NAME);
+        cache.put(request, response.clone());
+      }
+      return response;
+    })
+    .catch(() => null);
+
+  if (cached) {
+    return cached;
+  }
+  const fresh = await update;
+  if (fresh) {
+    return fresh;
+  }
+  return new Response('Nicht verfügbar', { status: 504 });
 }
 
 // Cache-First-Strategie für Bilder
