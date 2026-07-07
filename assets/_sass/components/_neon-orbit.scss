@@ -87,7 +87,7 @@
     background: #ffffff;
     box-shadow: 0 0 40px rgb(255 255 255 / 100%),
       0 0 100px rgb(255 255 255 / 95%),
-      0 0 200px rgb(255 255 255 / 80%);
+      0 0 200px $fg-muted;
   }
 
   85% {
@@ -151,7 +151,7 @@
     background: #ffffff;
     box-shadow: 0 0 40px rgb(255 255 255 / 100%),
       0 0 100px rgb(255 255 255 / 95%),
-      0 0 200px rgb(255 255 255 / 80%);
+      0 0 200px $fg-muted;
   }
 
   85% {
@@ -191,7 +191,7 @@
     opacity: 1;
     box-shadow: 0 0 12px rgb(255 255 255 / 100%),
       0 0 36px rgb(255 255 255 / 95%),
-      0 0 90px rgb(255 255 255 / 80%);
+      0 0 90px $fg-muted;
   }
 
   100% {
@@ -205,7 +205,7 @@
     opacity: 1;
     box-shadow: 0 0 12px rgb(255 255 255 / 100%),
       0 0 36px rgb(255 255 255 / 95%),
-      0 0 90px rgb(255 255 255 / 80%);
+      0 0 90px $fg-muted;
   }
 
   100% {

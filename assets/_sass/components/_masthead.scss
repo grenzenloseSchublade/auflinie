@@ -6,7 +6,7 @@
 .site-logo img {
     // Neon-Schein entlang der Logo-Linien (drop-shadow folgt der SVG-Kontur);
     // Duotone passend zum Cyan/Magenta-Line-Art
-    filter: drop-shadow(0 0 3px rgba($link-color, 0.35)) drop-shadow(0 0 7px rgba($hover-color, 0.22));
+    filter: drop-shadow(0 0 3px $border-accent-hover) drop-shadow(0 0 7px rgba($hover-color, 0.22));
     transition: filter 0.45s ease;
     max-height: 5rem;  // Größer (vorher 3.5rem, Standard 2rem)
     width: auto;
@@ -19,7 +19,7 @@
 .site-logo svg {
     max-height: 5rem;
     width: auto;
-    filter: drop-shadow(0 0 3px rgba($link-color, 0.35)) drop-shadow(0 0 7px rgba($hover-color, 0.22));
+    filter: drop-shadow(0 0 3px $border-accent-hover) drop-shadow(0 0 7px rgba($hover-color, 0.22));
     transition: filter 0.45s ease;
 }
 

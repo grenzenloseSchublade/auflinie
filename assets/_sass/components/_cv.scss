@@ -123,7 +123,7 @@
   .cv-entry__items-label {
     font-size: 0.8rem;
     margin: 0 0 0.3rem;
-    color: rgb(255 255 255 / 55%);
+    color: $fg-subtle;
     font-weight: 500;
   }
 
@@ -138,7 +138,7 @@
       padding-left: 1rem;
       margin-bottom: 0.35rem;
       line-height: 1.45;
-      color: rgb(255 255 255 / 80%);
+      color: $fg-muted;
 
       &::before {
         content: "•";
@@ -274,7 +274,7 @@
   align-items: baseline;
   gap: 1rem;
   padding: 0.7rem 0;
-  border-bottom: 1px solid rgb(255 255 255 / 6%);
+  border-bottom: 1px solid $surface-tint;
   flex-wrap: wrap;
 
   &:last-child {
@@ -283,12 +283,10 @@
 }
 
 .cv-skills__cat {
+  @include mono-label(0.72rem, 0.07em);
+
   flex: 0 0 210px;
-  font-family: $mono-font-stack;
-  font-size: 0.72rem;
-  text-transform: uppercase;
-  letter-spacing: 0.07em;
-  color: rgb(255 255 255 / 55%);
+  color: $fg-subtle;
   padding-top: 0.3rem;
 
   p {

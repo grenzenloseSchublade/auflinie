@@ -54,7 +54,7 @@ $sw-toast-z: 10020;
   margin: 0 auto 0.75rem;
   color: rgba($white, 0.92);
   background: rgba(color.adjust($background-dark, $lightness: -4%), 0.94);
-  border: 1px solid rgba($link-color, 0.35);
+  border: 1px solid $border-accent-hover;
   border-radius: 1rem 1rem 0 0;
   box-shadow:
     0 -8px 40px rgb(0 0 0 / 35%),

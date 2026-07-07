@@ -6,9 +6,9 @@
     min-width: $landing-section-min-width;
     margin: $element-spacing;
     padding: 1.5em;
-    background-color: $console-panel-bg;
-    border: 1px solid $console-panel-border;
-    border-radius: 8px;
+
+    @include card-panel(0);
+
     transition: transform $standard-transition, border-color $standard-transition;
 
     // Spaltenlayout: Button sitzt unabhängig von der Textmenge
@@ -18,7 +18,7 @@
 
     &:hover {
         transform: $hover-transform;
-        border-color: rgba($link-color, 0.35);
+        border-color: $border-accent-hover;
     }
 
     h2 {

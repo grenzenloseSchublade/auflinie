@@ -50,3 +50,10 @@ $base0c: #7fdff0; // Support/Regex (helles Cyan)
 $base0d: #05d9e8; // Funktionen = Cyan
 $base0e: #ff79c6; // Keywords = aufgehelltes Magenta (6:1 auf Panel-Ton)
 $base0f: #d4a37f; // Sonstiges
+
+// Abgeleitete Flächen-/Rahmen-Tokens (Konsolidierung wiederholter Literale)
+$border-accent: rgba($link-color, 0.55); // Karten-Akzentrand links
+$border-accent-hover: rgba($link-color, 0.35); // Karten-Rahmen im Hover
+$fg-muted: rgb(255 255 255 / 80%); // Fließtext auf Panels
+$fg-subtle: rgb(255 255 255 / 55%); // Meta-/Labeltext
+$surface-tint: rgb(255 255 255 / 6%); // dezente Flächen-Aufhellung / Divider

@@ -27,10 +27,8 @@
 // Feature-Boxen (z.B. Posts/Über mich)
 // About-Intro im Detail-Block
 .about-intro {
-  background: $console-panel-bg;
-  border: 1px solid $console-panel-border;
-  border-left: 2px solid rgba($link-color, 0.55);
-  border-radius: 8px;
+  @include card-panel(2px);
+
   padding: 0.85rem 1.1rem;
   margin: 1.2rem 0 1.6rem;
 
@@ -134,14 +132,12 @@
 
 // „Neu hier?"-Banner auf der Blogseite: schlanke Panel-Zeile statt Notice-Box
 .guide-banner {
+  @include card-panel(2px);
+
   display: grid;
   grid-template-columns: auto 1fr;
   gap: 0.55rem 0.9rem;
   align-items: start;
-  background: $console-panel-bg;
-  border: 1px solid $console-panel-border;
-  border-left: 2px solid rgba($link-color, 0.55);
-  border-radius: 8px;
   padding: 0.85rem 1.1rem;
   margin: 1.2rem 0 1rem;
 }

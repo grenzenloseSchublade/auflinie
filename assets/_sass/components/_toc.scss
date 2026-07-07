@@ -130,7 +130,7 @@
 .toc-sticky-mobile__arrow {
     flex-shrink: 0;
     font-size: 0.8em;
-    color: rgb(255 255 255 / 55%);
+    color: $fg-subtle;
     transition: transform 0.25s ease;
     
     .is-open & {
@@ -498,7 +498,7 @@
 
 .toc-toggle .toc-toggle-icon {
     margin-left: auto;
-    color: rgb(255 255 255 / 55%);
+    color: $fg-subtle;
 }
 
 .toc-toggle-icon {

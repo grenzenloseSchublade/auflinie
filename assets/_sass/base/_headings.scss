@@ -25,12 +25,10 @@
 
 // Archiv-Zwischenüberschriften (Jahre, „Neueste Beiträge"): Chrome-Label-Stil
 .archive__subtitle {
-  font-family: $mono-font-stack;
-  font-size: 0.78rem;
+  @include mono-label(0.78rem, 0.08em);
+
   font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: rgb(255 255 255 / 55%);
+  color: $fg-subtle;
   border-bottom: 1px solid rgb(255 255 255 / 8%);
   padding-bottom: 0.4rem;
 }

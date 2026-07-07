@@ -142,7 +142,7 @@ $fp-heading: $console-heading;
   gap: 7px;
 
   // Keycap-Tiefe: Unterkante + Lichtkante
-  box-shadow: 0 2px 0 rgb(0 0 0 / 45%), inset 0 1px 0 rgb(255 255 255 / 6%);
+  box-shadow: 0 2px 0 rgb(0 0 0 / 45%), inset 0 1px 0 $surface-tint;
 
   .icon {
     display: flex;
@@ -159,7 +159,7 @@ $fp-heading: $console-heading;
   &:hover {
     background: #262a31;
     border-color: rgb(5 217 232 / 55%);
-    box-shadow: 0 2px 0 rgb(0 0 0 / 45%), 0 0 8px rgb(5 217 232 / 30%), inset 0 1px 0 rgb(255 255 255 / 6%);
+    box-shadow: 0 2px 0 rgb(0 0 0 / 45%), 0 0 8px rgb(5 217 232 / 30%), inset 0 1px 0 $surface-tint;
   }
 
   &:active {
@@ -269,7 +269,7 @@ $fp-heading: $console-heading;
   background: linear-gradient(135deg, #2a2a2a 0%, #1e1e1e 100%);
   padding: 16px;
   border-radius: 12px;
-  border: 1px solid rgb(255 255 255 / 6%);
+  border: 1px solid $surface-tint;
   box-shadow: 0 4px 12px rgb(0 0 0 / 30%);
 
   @media (max-width: 768px) {
@@ -303,7 +303,7 @@ $fp-heading: $console-heading;
 .fractal-panel__advanced-row {
   margin-top: 14px;
   padding-top: 14px;
-  border-top: 1px solid rgb(255 255 255 / 6%);
+  border-top: 1px solid $surface-tint;
 }
 
 // Desktop: 2-Spalten-Grid für Basic-Controls, bei --single auch für Advanced
@@ -482,7 +482,7 @@ $fp-heading: $console-heading;
   flex-wrap: wrap;
   padding-top: 10px;
   margin-top: 4px;
-  border-top: 1px solid rgb(255 255 255 / 6%);
+  border-top: 1px solid $surface-tint;
 }
 
 // -----------------------------------------------------------------------------
@@ -599,7 +599,7 @@ $fp-heading: $console-heading;
 // Selects (nativer Fallback, wenn Tom Select nicht lädt) + Tom Select Theme
 // -----------------------------------------------------------------------------
 .fractal-panel select {
-  background: rgb(255 255 255 / 6%);
+  background: $surface-tint;
   color: #ffffff;
   border: 1px solid rgb(255 255 255 / 10%);
   padding: 10px 14px;
@@ -630,7 +630,7 @@ $fp-heading: $console-heading;
   }
 
   .ts-wrapper.single .ts-control {
-    background: rgb(255 255 255 / 6%);
+    background: $surface-tint;
     border: 1px solid rgb(255 255 255 / 10%);
     border-radius: 6px;
     padding: 6px 12px;
@@ -701,7 +701,7 @@ $fp-heading: $console-heading;
 
   .ts-dropdown .option {
     padding: 10px 12px;
-    color: rgb(255 255 255 / 80%);
+    color: $fg-muted;
     border-radius: 4px;
     cursor: pointer;
     transition: all 0.15s ease;
@@ -965,7 +965,7 @@ $fp-heading: $console-heading;
 .fractal-panel__hint {
   margin-top: 6px;
   padding: 5px 10px;
-  border-top: 1px solid rgb(255 255 255 / 6%);
+  border-top: 1px solid $surface-tint;
   color: rgb(255 255 255 / 45%);
   font-family: "SF Mono", Consolas, monospace;
   font-size: 11px;

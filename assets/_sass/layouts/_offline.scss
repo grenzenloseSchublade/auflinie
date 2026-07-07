@@ -23,9 +23,9 @@
     margin: 2em auto;
     max-width: 34rem;
     text-align: left;
-    background: $console-panel-bg;
-    border: 1px solid $console-panel-border;
-    border-radius: 8px;
+
+    @include card-panel(0);
+
     padding: 1rem 1.4rem;
 
     .options-list {

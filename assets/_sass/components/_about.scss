@@ -201,11 +201,8 @@
   @extend %quote-base;
 
   // Karten im Panel-Ton mit dem site-weiten Cyan-subtle-Anker
-  // (Magenta wirkte zu bunt — bleibt Interaktions-Momenten vorbehalten)
-  border: 1px solid $console-panel-border;
-  border-left: 3px solid rgba($link-color, 0.55);
-  background-color: $console-panel-bg;
-  border-radius: 0 8px 8px 0;
+  @include card-panel(3px, 0 8px 8px 0);
+
   transition: border-color 0.2s ease, background-color 0.2s ease;
 
   &:hover {
