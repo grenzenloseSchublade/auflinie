@@ -93,3 +93,17 @@
         color: #ffffff;
     }
 }
+
+// Sekundär-/Outline-Rolle (site-weit): Cyan-subtle-Border, transparent
+.btn.btn--outline {
+    background-color: transparent;
+    border: 1px solid rgba($link-color, 0.45);
+    color: rgb(255 255 255 / 88%);
+
+    &:hover,
+    &:focus {
+        border-color: $link-color;
+        background-color: rgba($link-color, 0.12);
+        color: #ffffff;
+    }
+}

@@ -36,6 +36,7 @@
 @import "components/cv";
 @import "components/pages";
 @import "components/back-to-top";
+@import "components/footer";
 @import "components/sw-update-toast";
 @import "components/crt-overlay";
 @import "components/fractal-panel";
@@ -53,3 +54,4 @@
 // 6. Theme-Overrides (Minimal Mistakes Theme-Anpassungen)
 // =============================================================================
 @import "theme-overrides/archive";
+@import "theme-overrides/syntax";

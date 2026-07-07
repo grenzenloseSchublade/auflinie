@@ -38,3 +38,22 @@ $console-heading: #eacfb4; // Warmes Beige für Panel-/Sektionstitel
 $console-panel-bg: #1a1c20; // Panel-Grundton (eine Stufe heller als Seitengrund)
 $console-panel-bg-hover: #20242a;
 $console-panel-border: rgb(255 255 255 / 8%);
+
+// Syntax-Highlighting (base16) in der Site-Palette — überschreibt die
+// Material-Theme-Defaults des MM-Themes (dort !default deklariert)
+$base00: #1a1c20; // Hintergrund = Panel-Ton
+$base01: #20242a; // Highlights
+$base02: #2a2f37; // Selektion
+$base03: #7d8590; // Kommentare
+$base04: #9aa4b2; // Zeilennummern
+$base05: #e8e6e3; // Standardtext
+$base06: #f0eee9;
+$base07: #ffffff;
+$base08: #ff6b81; // Fehler/Deleted (weiches Rot)
+$base09: #eacfb4; // Zahlen/Konstanten = Beige
+$base0a: #ffd580; // Klassen/Attribute (warmes Amber)
+$base0b: #00ffc8; // Strings = Akzent-Grün
+$base0c: #7fdff0; // Support/Regex (helles Cyan)
+$base0d: #05d9e8; // Funktionen = Cyan
+$base0e: #ff79c6; // Keywords = aufgehelltes Magenta (6:1 auf Panel-Ton)
+$base0f: #d4a37f; // Sonstiges

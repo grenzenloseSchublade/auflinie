@@ -640,3 +640,18 @@
     transform: translateX(-50%) translateY(6px);
   }
 }
+
+// Hero-Caption: Tagline als Chrome-Label statt Foto-Credit-Kasten
+.page__hero--overlay .caption {
+  font-family: $mono-font-stack;
+  font-size: 0.62rem;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  color: rgb(255 255 255 / 60%);
+  background: rgb(10 14 18 / 55%);
+  border: 1px solid rgb(255 255 255 / 10%);
+  border-radius: 4px;
+  padding: 0.25rem 0.6rem;
+  right: 12px;
+  bottom: 10px;
+}

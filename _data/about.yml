@@ -11,10 +11,8 @@
     vielleicht entsteht daraus Inspiration.
     <br> <br>
 
-    <div style="text-align: center; display: flex; justify-content: center; align-items: center;">
-      <p style="text-align: center; border: 2px solid #ccc; padding: 10px; border-radius: 5px; display: inline-block; font-style: italic; margin: 4px auto; font-size: clamp(1rem, 2vw, 1.5rem);">
-        anima sana in corpore sano
-      </p>
+    <div class="about-motto-wrap">
+      <p class="about-motto">anima sana in corpore sano</p>
     </div>
 
 

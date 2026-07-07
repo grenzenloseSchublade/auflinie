@@ -8,7 +8,7 @@
 // Akzent-Header-Farben aller Komponenten überschrieben)
 
 // Beitragsliste (/posts/): Karten im Panel-Stil statt roher Linkliste
-#blog-entries {
+.post-card-list {
   .post-item {
     margin-bottom: 1.2rem;
   }
@@ -27,7 +27,6 @@
       background-color: $console-panel-bg-hover;
 
       // Dezenter Akzent statt des lauten globalen 4-Lagen-Magenta-Glows
-      box-shadow: 0 0 0 1px rgb(255 0 255 / 35%), 0 0 12px rgb(240 0 255 / 20%);
     }
   }
 
@@ -60,5 +59,65 @@
     margin-bottom: 0;
     font-size: 0.95rem;
     color: rgb(255 255 255 / 80%);
+  }
+}
+
+// Verwandte Beiträge unter Artikeln
+.page__related {
+  margin-top: 2.5rem;
+
+  .page__related-title {
+    @include accent-header(1.35rem);
+
+    text-transform: none;
+    margin-bottom: 1.2rem;
+  }
+
+  .archive__item {
+    background-color: $console-panel-bg;
+    border: 1px solid $console-panel-border;
+    border-left: 2px solid rgba($link-color, 0.55);
+    border-radius: 8px;
+    padding: 1rem 1.2rem;
+
+    .archive__item-title {
+      font-size: 1.05rem;
+      margin-top: 0;
+
+      a {
+        color: $link-color;
+        text-decoration: none;
+
+        &:hover {
+          text-decoration: underline;
+          text-underline-offset: 3px;
+        }
+      }
+    }
+
+    .archive__item-teaser {
+      border-radius: 6px;
+      margin-bottom: 0.7rem;
+    }
+  }
+}
+
+// Vorheriger/Nächster Beitrag: Outline-Paar statt Theme-Grau
+.pagination--pager {
+  background-color: transparent;
+  border: 1px solid rgba($link-color, 0.45);
+  border-radius: 6px;
+  color: rgb(255 255 255 / 88%);
+  font-size: 0.9rem;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+
+  &:hover {
+    border-color: $link-color;
+    background-color: rgba($link-color, 0.12);
+    color: #ffffff;
+  }
+
+  &.disabled {
+    display: none; // Ausblenden statt ausgrauen
   }
 }

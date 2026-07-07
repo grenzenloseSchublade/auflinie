@@ -1,0 +1,13 @@
+// Syntax-Highlighting-Feinschliff (Palette kommt aus variables/_colors.scss)
+div.highlighter-rouge,
+figure.highlight {
+  border: 1px solid $console-panel-border;
+  border-radius: 8px;
+}
+
+// Fehl-gelexte Tokens (z.B. //-Kommentare in json-Fences) nicht als
+// rote Fehler brandmarken — neutral darstellen
+.highlight .err {
+  color: inherit;
+  background: transparent;
+}

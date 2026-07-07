@@ -18,26 +18,21 @@ header:
 
 {{ "Hier finden Sie Beiträge zu Technik, Projekten und dem, was mich gerade beschäftigt. Ohne festen Rhythmus – dafür mit dem Anspruch, dass jeder Beitrag einen Mehrwert bietet." | markdownify }}
 
-<div class="notice--info feature-box feature-box--with-icon">
-  <div class="feature-box__icon">
-    <i class="fas fa-file-alt"></i>
-  </div>
-  <div>
-    <h3 class="feature-box__title">Neu hier? Lernen Sie, wie Blogbeiträge erstellt werden</h3>
-    <p>Erfahren Sie alles über die Technik und den Stil hinter den Blogbeiträgen. Dieser Leitfaden erklärt den gesamten Prozess und zeigt, wie Beiträge eigenständig erstellt werden können.</p>
-    <a href="{{ "/posts/blogbeitrag-erstellen/" | relative_url }}" class="btn notice--info" >Zum Leitfaden <i class="fas fa-arrow-right"></i></a>
-  </div>
+<div class="guide-banner">
+  <i class="fas fa-file-alt guide-banner__icon" aria-hidden="true"></i>
+  <p class="guide-banner__text"><strong>Neu hier?</strong> Der Leitfaden erklärt Technik, Stil und Prozess hinter den Blogbeiträgen.</p>
+  <a href="{{ "/posts/blogbeitrag-erstellen/" | relative_url }}" class="btn btn--outline guide-banner__btn">Zum Leitfaden <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
 </div>
 
 <div class="category-filter-container">
   <div class="blog-filter-row">
     <input id="blog-search-input" class="blog-search-input" type="search" placeholder="Beiträge auf dieser Seite durchsuchen..." aria-label="Blogsuche">
-    <button id="blog-search-clear" class="btn btn--primary" type="button">Zurücksetzen</button>
+    <button id="blog-search-clear" class="btn btn--outline" type="button">Zurücksetzen</button>
     <a href="{{ '/archiv/' | relative_url }}" class="btn blog-archive-button">Archiv</a>
   </div>
 </div>
 
-<div class="entries-{{ site.entries_layout | default: 'list' }}" id="blog-entries">
+<div class="entries-{{ site.entries_layout | default: 'list' }} post-card-list" id="blog-entries">
   {% for post in paginator.posts %}
     <div class="post-item" data-search="{{ post.title | strip | downcase }} {{ post.excerpt | strip | downcase }}">
       {% include archive-single.html %}

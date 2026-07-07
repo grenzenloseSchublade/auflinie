@@ -144,7 +144,8 @@
   }
 
   i {
-    color: $link-color;
+    color: inherit;
+    opacity: 0.8;
     font-size: 0.85em;
     margin-right: 0;
   }

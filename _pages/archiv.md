@@ -21,7 +21,7 @@ Im Archiv finden Sie alle Beiträge nach Jahren gruppiert. Für die neuesten Bei
     {% endfor %}
   </div>
   <div class="archive-nav-actions">
-    <a href="{{ '/posts/' | relative_url }}" class="btn btn--info">Zur Blog‑Übersicht</a>
+    <a href="{{ '/posts/' | relative_url }}" class="btn btn--outline">Zur Blog‑Übersicht</a>
   </div>
 </div>
 
@@ -29,7 +29,7 @@ Im Archiv finden Sie alle Beiträge nach Jahren gruppiert. Für die neuesten Bei
 {% for year in postsByYear %}
   <section id="year-{{ year.name }}" class="taxonomy__section">
     <h2 class="archive__subtitle">{{ year.name }}</h2>
-    <div class="entries-{{ site.entries_layout | default: 'list' }}">
+    <div class="entries-{{ site.entries_layout | default: 'list' }} post-card-list">
       {% for post in year.items %}
         {% include archive-single.html %}
       {% endfor %}
