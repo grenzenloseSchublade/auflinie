@@ -33,6 +33,18 @@ Die Entwicklungsumgebung enthält:
 - **Barrierefreiheit:** `prefers-reduced-motion: reduce` drosselt weiterhin Animationen/Transitions auf der **Seite allgemein** (Ausnahmen u. a. Neon-Orbit-Trigger, CRT-Hero-Knoten). **Lesemodus** (`page__hero--crt-read`) schaltet CRT-Effekte **nur** über den **Power-Button** aus (Retro ↔ Lesemodus inkl. Flash).
 - **CRT auf der Startseite (produktiv, nur `/` + `header.overlay_image`):** Im Markup liegt **`page__hero--crt-over-text`** an — Retro: CRT-Effekte **über** Titel/Untertitel. **Lesemodus:** `page__hero--crt-read` — `crt-over-text` aus, Text vorne; Grain, Roll, Noise und laufende Layer-Animationen **hart** aus. Umschalten mit **phosphorgrünem Aufflackern** (`page__hero--crt-flash`, Dauer **`--hero-crt-mode-flash-dur`** in SCSS, JS liest dieselbe Variable). Steuerung in [`assets/js/hero-crt.js`](assets/js/hero-crt.js) (`bindHomeHeroCrtPowerToggle`, `syncHeroCrtPowerButton`, `stopHeroCanvasNoise` im Lesemodus). **Rollbalken:** Dauer `--crt-roll-dur` und Laufrichtung `--crt-roll-sign` (`1` / `-1`, zufällig pro Seitenaufruf).
 
+## Design-System (Kurzreferenz)
+
+Regeln aus dem Redesign (Juli 2026), Quelle der Tokens: `assets/_sass/variables/_colors.scss` + Mixins in `components/_shared-components.scss`:
+
+- **Farbrollen:** Cyan `$link-color` = Interaktion/Item-Titel · Weiß = Überschriften/Fließtext · Magenta `$hover-color` = ausschließlich Interaktions-Momente (Nav-Hover, Fokus-Ringe, Textauswahl, Zoom-Box, Logo-Flackern) · Beige `$console-heading` = singulärer Warm-Akzent (Motto, Panel-Details) · Mono-gedimmt = Chrome-Labels.
+- **Überschriften:** Sektions-H2 site-weit weiß ohne Balken mit Hairline (`accent-header()`-Mixin); zentrale Kaskade in `base/_headings.scss` (an DIREKTE Kinder von `.page__content` gebunden).
+- **Karten:** `card-panel($accent, $radius)`-Mixin (Panel-Ton + Hairline-Border + optional Cyan-Akzentrand); Hover pro Komponente.
+- **Buttons:** Primär = getönt Cyan (`.btn--primary`-Override) · Sekundär = `.btn--outline` · Keycaps exklusiv Fraktal-Panels.
+- **Tokens:** `$border-accent(-hover)`, `$fg-muted`/`$fg-subtle`, `$surface-tint`, `$toc-title-font-size`; Label-Muster über `mono-label($size, $tracking)`.
+- **Hero:** Inhalt oben verankert (`padding-top: 8em`), H1 auf allen Seiten pixelgleich; Höhe `clamp(410px, 42vh, 520px)`, mobil viewportfüllend; Critical CSS in `_layouts/default.html` synchron halten.
+- **Ton der Texte:** neutral/anredefrei, Du nur wo nötig, nie Sie; locker, wissenschaftlich korrekt, präzise.
+
 ## Interaktive Komponenten
 
 Das Projekt enthält mehrere interaktive Komponenten zur Visualisierung von Fraktalen:
