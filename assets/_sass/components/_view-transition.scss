@@ -7,12 +7,14 @@
 // Referenz-Look: heroCrtModeFlash (Phosphorgrün) + Röhren-Kollaps.
 /* stylelint-disable selector-pseudo-element-no-unknown, selector-pseudo-class-no-unknown, at-rule-no-unknown */
 
-// Die aktivierende @view-transition-Regel liegt NICHT hier: Sie wird nur bei
-// gesetztem Opt-in-Flag (localStorage "tv-proto" = "1") früh im <head>
-// injiziert (_includes/head/custom.html) — Besucher bekommen den Prototyp
-// nie ungewollt. Grund: In der Headless-Verifikation blieb der Compositor
-// nach der Transition hängen (Screenshots/Klicks blockierten); ob echte
-// Geräte betroffen sind, muss der manuelle Test zeigen.
+// Aktiv nur mobil + ohne reduced-motion. (Headless-Testumgebungen ohne
+// GPU-Compositing rendern die Transition nicht — auf echten Geräten vom
+// Nutzer verifiziert.)
+@media (max-width: 768px) and (prefers-reduced-motion: no-preference) {
+  @view-transition {
+    navigation: auto;
+  }
+}
 
 // Masthead als stehende Landmarke: eigener Snapshot, keine Animation
 .masthead {
@@ -35,12 +37,16 @@
   background: rgb(85 240 145);
 }
 
+// Timing: alt kollabiert in 130ms; die neue Seite startet erst bei 180ms —
+// dazwischen stehen ~50ms REINES Phosphorgrün (der ::view-transition-Grund),
+// Gesamtdauer 350ms. Vorher überlappten out (bis 180ms) und in (ab 120ms),
+// wodurch das Grün nur durch Transparenzlücken blitzte.
 html:active-view-transition-type(crt)::view-transition-old(root) {
-  animation: tv-switch-out 180ms steps(3, end) forwards;
+  animation: tv-switch-out 130ms steps(3, end) forwards;
 }
 
 html:active-view-transition-type(crt)::view-transition-new(root) {
-  animation: tv-switch-in 200ms 120ms steps(3, start) both;
+  animation: tv-switch-in 170ms 180ms steps(3, start) both;
 }
 
 @keyframes tv-switch-out {
