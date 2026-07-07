@@ -3,7 +3,7 @@ _site
 .jekyll-cache
 .jekyll-metadata
 .bundle
-vendor
+/vendor/
 
 # Lokale Entwicklungsdateien (z. B. Theme-Klone, nicht ins Repo committen)
 tmp/
