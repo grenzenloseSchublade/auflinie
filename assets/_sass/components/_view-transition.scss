@@ -1,0 +1,84 @@
+// =============================================================================
+// TV-Umschalt-Übergang (Cross-Document View Transitions) — PROTOTYP
+// =============================================================================
+// Aktiv nur mobil + ohne reduced-motion; ausgelöst ausschließlich für die
+// Home-Hero-Buttons (Type "crt" via assets/js/tv-switch.js). Browser ohne
+// Support (u.a. Firefox) navigieren einfach normal — Progressive Enhancement.
+// Referenz-Look: heroCrtModeFlash (Phosphorgrün) + Röhren-Kollaps.
+/* stylelint-disable selector-pseudo-element-no-unknown, selector-pseudo-class-no-unknown, at-rule-no-unknown */
+
+// Die aktivierende @view-transition-Regel liegt NICHT hier: Sie wird nur bei
+// gesetztem Opt-in-Flag (localStorage "tv-proto" = "1") früh im <head>
+// injiziert (_includes/head/custom.html) — Besucher bekommen den Prototyp
+// nie ungewollt. Grund: In der Headless-Verifikation blieb der Compositor
+// nach der Transition hängen (Screenshots/Klicks blockierten); ob echte
+// Geräte betroffen sind, muss der manuelle Test zeigen.
+
+// Masthead als stehende Landmarke: eigener Snapshot, keine Animation
+.masthead {
+  view-transition-name: masthead;
+}
+
+::view-transition-old(masthead),
+::view-transition-new(masthead) {
+  animation: none;
+}
+
+// Ohne Type: harter Cut statt Default-Crossfade (Prototyp-Scope!)
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+}
+
+// Phosphorgrüner Zwischengrund blitzt auf, während alt kollabiert / neu aufbaut
+::view-transition {
+  background: rgb(85 240 145);
+}
+
+html:active-view-transition-type(crt)::view-transition-old(root) {
+  animation: tv-switch-out 180ms steps(3, end) forwards;
+}
+
+html:active-view-transition-type(crt)::view-transition-new(root) {
+  animation: tv-switch-in 200ms 120ms steps(3, start) both;
+}
+
+@keyframes tv-switch-out {
+  0% {
+    opacity: 1;
+    transform: scaleY(1);
+    filter: brightness(1);
+  }
+
+  60% {
+    opacity: 1;
+    transform: scaleY(1);
+    filter: brightness(2.2) contrast(0.8);
+  }
+
+  100% {
+    opacity: 0;
+    transform: scaleY(0.004);
+    filter: brightness(6);
+  }
+}
+
+@keyframes tv-switch-in {
+  0% {
+    opacity: 0;
+    transform: scaleY(0.004);
+    filter: brightness(6);
+  }
+
+  55% {
+    opacity: 1;
+    transform: scaleY(1);
+    filter: brightness(1.8) contrast(0.85);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scaleY(1);
+    filter: brightness(1);
+  }
+}

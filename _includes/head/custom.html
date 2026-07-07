@@ -125,6 +125,18 @@
   }
 </style>
 
+<!-- TV-Umschalt-Prototyp: nur mit Opt-in-Flag aktiv (localStorage tv-proto=1) -->
+<script>
+  (function () {
+    try {
+      if (localStorage.getItem('tv-proto') === '1') {
+        document.head.insertAdjacentHTML('beforeend',
+          '<style>@media (max-width: 768px) and (prefers-reduced-motion: no-preference) { @view-transition { navigation: auto; } }</style>');
+      }
+    } catch (e) { /* Storage gesperrt: Prototyp bleibt aus */ }
+  })();
+</script>
+
 <!-- Konfiguration für Bild-Caching und Service Worker -->
 <script>
   // Konfiguration aus _config.yml an das HTML-Dokument übergeben.
