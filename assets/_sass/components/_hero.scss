@@ -531,9 +531,10 @@
       }
     }
     
-    // Lead-Text
+    // Lead-Text (52rem statt Theme-768px: bricht auf großen Schirmen
+    // nicht mehr zu früh um)
     .page__lead {
-      max-width: 768px;
+      max-width: 52rem;
       margin: 0;
       text-align: left;
     }
@@ -649,29 +650,9 @@
   }
 }
 
-// Hero-Caption: Tagline als Chrome-Label statt Foto-Credit-Kasten
-.page__hero--overlay .caption {
-  font-family: $mono-font-stack;
-  font-size: 0.8rem; // war 0.62rem — dem Nutzer zu klein
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: rgb(255 255 255 / 60%);
-  background: rgb(10 14 18 / 55%);
-  border: 1px solid rgb(255 255 255 / 10%);
-  border-radius: 4px;
-  padding: 0.25rem 0.6rem;
-  right: 12px;
-  bottom: 10px;
-}
-
-// Lead-Zeile: Theme begrenzt auf 768px — auf großen Schirmen brach der
-// Text unnötig früh um
-.page__hero--overlay .page__lead {
-  max-width: 52rem;
-}
-
-// Caption-Chip: komplette Definition (der frühere Inline-Style im Include
-// ist entfernt) — kompakt, bricht ohne aufgeblähte Grau-Fläche um
+// Caption-Chip: Tagline als Mono-Chrome-Label, komplette Definition
+// (der frühere Inline-Style im Include ist entfernt) — kompakt, bricht
+// ohne aufgeblähte Grau-Fläche um
 .page__hero--overlay .caption {
   position: absolute;
   right: 0;
@@ -681,8 +662,13 @@
   max-width: min(75%, 34ch);
   margin: 0;
   padding: 0.28rem 0.6rem;
-  background: rgb(0 0 0 / 55%);
-  color: #ffffff;
+  font-family: $mono-font-stack;
+  font-size: 0.8rem; // 0.62rem war dem Nutzer zu klein
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  background: rgb(10 14 18 / 55%);
+  color: rgb(255 255 255 / 78%);
+  border: 1px solid rgb(255 255 255 / 10%);
   border-radius: 4px 0 0;
   line-height: 1.35;
   text-align: right;

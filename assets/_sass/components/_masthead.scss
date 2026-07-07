@@ -285,7 +285,7 @@ body .greedy-nav .visible-links a {
   align-items: center;
   height: 100%;
   padding: 0 0.75em;
-  position: relative;
+  position: relative; // auch Anker für den ::after-Marker (Tab-Linie)
   z-index: 2;
   transition: color 0.2s ease-in-out, background-color 0.2s ease-in-out;
   
@@ -573,10 +573,7 @@ body .page__hero--overlay {
 // allein läge unter 3:1 — WCAG 1.4.11).
 // Marker als ::after unter dem Text — eine Inset-Shadow an der
 // Link-Unterkante würde vom overflow:hidden der visible-links geclippt
-body .greedy-nav .visible-links a {
-    position: relative;
-}
-
+// (position:relative liegt im Haupt-Block der Links weiter oben)
 body .greedy-nav .visible-links a::after {
     content: "";
     position: absolute;

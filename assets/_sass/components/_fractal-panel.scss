@@ -616,6 +616,7 @@ $fp-heading: $console-heading;
   font-size: 1rem;
 }
 
+// stylelint-disable-next-line no-duplicate-selectors -- thematisch getrennter Abschnitt (Tom-Select-Integration), bewusst nicht mit dem Basis-Block gemerged
 .fractal-panel__controls {
   .ts-wrapper {
     width: 100%;

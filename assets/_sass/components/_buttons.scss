@@ -26,10 +26,8 @@
     &:active {
         transform: translateY(1px);
     }
-}
 
-// Spezifische Anpassungen für Buttons in Info-Boxen
-.btn {
+    // Spezifische Anpassungen für Buttons in Info-Boxen
     &.notice--info 
     {
         // Grundfarbe des Buttons

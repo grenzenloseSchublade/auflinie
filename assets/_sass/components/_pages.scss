@@ -99,6 +99,7 @@
   gap: 0.6em;
   flex-wrap: wrap;
   align-items: center;
+  margin-bottom: 1.5em;
 }
 
 .blog-search-input {
@@ -109,10 +110,6 @@
   border: 1px solid rgb(255 255 255 / 20%);
   background: rgb(0 0 0 / 20%);
   color: #ffffff;
-}
-
-.blog-filter-row {
-  margin-bottom: 1.5em;
 }
 
 .blog-empty-message {

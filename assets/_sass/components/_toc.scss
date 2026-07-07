@@ -226,12 +226,14 @@
         font-size: 0.875em;
     }
     
+    // stylelint-disable-next-line selector-max-compound-selectors -- tiefe TOC-Verschachtelung (Ebene 3), bewusst
     li ul li ul .active > a {
         padding-left: calc(2.75rem - 3px);
     }
 }
 
 // Custom Scrollbar für Dropdown
+// stylelint-disable-next-line no-duplicate-selectors -- thematisch getrennter Scrollbar-Abschnitt
 .toc-sticky-mobile__dropdown {
     &::-webkit-scrollbar {
         width: 6px;
@@ -399,6 +401,7 @@
         font-weight: normal;
     }
 
+    // stylelint-disable-next-line selector-max-compound-selectors -- tiefe TOC-Verschachtelung (Ebene 3), bewusst
     li ul li ul > li a {
         padding-left: 1.75rem;
         font-size: 0.875em; // 14px für tiefere Ebenen
@@ -556,7 +559,8 @@
             font-size: 0.8125em; // 13px
         }
         
-        li ul li ul > li a {
+        // stylelint-disable-next-line selector-max-compound-selectors -- tiefe TOC-Verschachtelung (Ebene 3), bewusst
+    li ul li ul > li a {
             font-size: 0.8125em;
         }
     }
