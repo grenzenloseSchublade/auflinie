@@ -200,16 +200,17 @@
 .quote-container {
   @extend %quote-base;
 
-  // Zitate = Magenta-Anker (Moment-Farbe), Karten im Panel-Ton
+  // Karten im Panel-Ton mit dem site-weiten Cyan-subtle-Anker
+  // (Magenta wirkte zu bunt — bleibt Interaktions-Momenten vorbehalten)
   border: 1px solid $console-panel-border;
-  border-left: 3px solid rgba($hover-color, 0.55);
+  border-left: 3px solid rgba($link-color, 0.55);
   background-color: $console-panel-bg;
   border-radius: 0 8px 8px 0;
   transition: border-color 0.2s ease, background-color 0.2s ease;
 
   &:hover {
     background-color: $console-panel-bg-hover;
-    border-left-color: rgba($hover-color, 0.8);
+    border-left-color: rgba($link-color, 0.8);
   }
 
   .quote-author {
@@ -303,12 +304,14 @@
 .about-motto {
   display: inline-block;
   font-style: italic;
-  font-size: clamp(1rem, 2vw, 1.4rem);
-  color: rgb(255 255 255 / 85%);
+
+  // Größer und in Beige: der warme Einzelakzent der Seite
+  font-size: clamp(1.25rem, 2.6vw, 1.8rem);
+  color: $console-heading;
   background: rgb(255 255 255 / 3%);
   border: 1px solid $console-panel-border;
-  border-left: 3px solid rgba($hover-color, 0.55);
+  border-left: 3px solid rgba($link-color, 0.55);
   border-radius: 0 8px 8px 0;
-  padding: 0.6rem 1.4rem;
+  padding: 0.7rem 1.6rem;
   margin: 0;
 }

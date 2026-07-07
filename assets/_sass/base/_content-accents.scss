@@ -12,9 +12,9 @@
   border-radius: 3px;
 }
 
-// Zitate: gedimmter Magenta-Anker (rein dekorativ)
+// Zitate: Cyan-subtle-Anker wie alle Karten-Akzente
 .page__content blockquote {
-  border-left: 3px solid rgba($hover-color, 0.55);
+  border-left: 3px solid rgba($link-color, 0.55);
   background: rgb(255 255 255 / 3%);
   padding: 0.7em 1.1em;
   border-radius: 0 6px 6px 0;
