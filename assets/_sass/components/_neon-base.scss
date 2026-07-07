@@ -239,8 +239,7 @@
 
   // Orbit-Mittelpunkt: X = horizontale Mitte, Y = dynamisch
   transform-origin: var(--neon-orbit-center-x, 0.18em) var(--neon-orbit-origin-y, 0.45em);
-  // Statisch (Nutzerwunsch): Punkte glühen, flackern aber nicht mehr
-  animation-name: none;
+  animation-name: neonUmlautFlickerA, neonFlickerIrregular, neonJitter, neonLayeredGlow;
   animation-duration: calc(var(--neon-base-flicker-on, 1) * 12s),
     calc(var(--neon-flicker-on, 0) * 3.4s),
     calc(var(--neon-jitter-on, 0) * 1.6s),
@@ -298,8 +297,25 @@
   // Kalibrierter Dauerglow: sanfter schmaler Schein statt Strahlen
   text-shadow: 0 0 4px rgb(255 0 255 / 45%),
     0 0 10px rgb(255 0 255 / 25%);
-  // Statisch (Nutzerwunsch): kein Atmen/Puls mehr — Leben kommt vom Logo
-  animation: none;
+  animation-name: neonTextLayeredGlow, neonTextPulse;
+
+  // Langsames „Röhren-Atmen" statt doppeltem Puls
+  animation-duration: calc(var(--neon-text-layered-on, 0) * 7s),
+    calc(var(--neon-text-pulse-on, 0) * 9s);
   animation-timing-function: ease-in-out, ease-in-out;
   animation-iteration-count: infinite, infinite;
+}
+
+// =============================================================================
+// MASTHEAD: Name vollständig statisch — losgelöst vom Hero-Header
+// =============================================================================
+// Masthead und Hero teilen die Neon-Klassen (.neon-glow/.neon-umlaut), sollen
+// sich aber unabhängig verhalten (Nutzerentscheidung): der große Hero-Name
+// behält Atmen/Flackern, der kleine Masthead-Name ruht. animation: none
+// (Shorthand) überstimmt auch die eigenen animation-name-Deklarationen der
+// Punkte (::after setzt z.B. neonUmlautFlickerB separat).
+.masthead .neon-glow,
+.masthead .neon-umlaut::before,
+.masthead .neon-umlaut::after {
+  animation: none;
 }
