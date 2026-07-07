@@ -13,6 +13,8 @@ header:
   overlay_image: /assets/images/background.jpg
   overlay_filter: 0.5
   caption: "Akademischer und beruflicher Werdegang"
+show_date: false
+read_time: false
 ---
 
 <div class="about-container">

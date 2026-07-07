@@ -14,6 +14,8 @@ header:
   overlay_image: /assets/images/background.jpg
   overlay_filter: 0.5
   caption: "Einblicke und Experimente"
+show_date: false
+read_time: false
 ---
 
 {{ "Hier finden Sie Beiträge zu Technik, Projekten und dem, was mich gerade beschäftigt. Ohne festen Rhythmus – dafür mit dem Anspruch, dass jeder Beitrag einen Mehrwert bietet." | markdownify }}

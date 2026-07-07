@@ -47,3 +47,12 @@
 .archive__item:hover {
   box-shadow: 0 0 0 1px rgba($link-color, 0.35);
 }
+
+// Meta-Zeile der Startseiten-Karten im Chrome-Label-Stil (wie Blogliste)
+.entries-grid .page__meta {
+  font-family: $mono-font-stack;
+  font-variant-numeric: tabular-nums;
+  font-size: 0.7rem;
+  letter-spacing: 0.03em;
+  color: rgb(255 255 255 / 55%);
+}

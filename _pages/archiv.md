@@ -8,6 +8,8 @@ header:
   overlay_image: /assets/images/background.jpg
   overlay_filter: 0.5
   caption: "Alle Beiträge im Überblick"
+show_date: false
+read_time: false
 ---
 
 Im Archiv finden Sie alle Beiträge nach Jahren gruppiert. Für die neuesten Beiträge mit Pagination wechseln Sie zur Blog‑Übersicht.

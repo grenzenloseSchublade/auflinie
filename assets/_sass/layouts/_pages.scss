@@ -34,3 +34,11 @@
         }
     }
 }
+
+// 404-Seite
+.error-404__code {
+  font-family: $mono-font-stack;
+  font-size: 1.4em;
+  color: $link-color;
+  margin-bottom: 1em;
+}
