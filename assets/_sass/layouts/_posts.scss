@@ -3,20 +3,9 @@
 // Hier können spezifische Anpassungen für Blogbeiträge hinzugefügt werden
 // Die meisten Stile werden aus dem Theme übernommen
 
-// Beispiel für eine Anpassung der Überschriften in Blogbeiträgen
-.page__content {
-    h1 {
-        color: $h1-color;
-    }
-    
-    h2 {
-        color: $h2-color;
-    }
-    
-    h3 {
-        color: $h3-color;
-    }
-}
+// Überschrift-Farben kommen zentral aus base/_headings.scss
+// (der frühere globale .page__content-h1/h2/h3-Farbblock hat die
+// Akzent-Header-Farben aller Komponenten überschrieben)
 
 // Beitragsliste (/posts/): Karten im Panel-Stil statt roher Linkliste
 #blog-entries {

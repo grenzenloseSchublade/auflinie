@@ -1117,10 +1117,10 @@ $fp-heading: $console-heading;
 
   h4 {
     margin: 0 0 20px;
-    color: $fp-magenta;
+    color: $fp-heading;
     font-size: 1.25rem;
     font-weight: 600;
-    border-bottom: 2px solid rgb(255 0 255 / 50%);
+    border-bottom: 1px solid rgb(255 255 255 / 12%);
     padding-bottom: 12px;
   }
 
@@ -1228,7 +1228,7 @@ $fp-heading: $console-heading;
 
   .nav-column h6 {
     margin-bottom: 8px;
-    color: $fp-magenta;
+    color: $fp-heading;
   }
 }
 

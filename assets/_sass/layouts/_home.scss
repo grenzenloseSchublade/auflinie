@@ -17,3 +17,10 @@
     text-align: center;
     margin: $section-spacing 0;
 }
+
+// Sektions-Header der Startseite im site-weiten Akzent-Stil
+.landing-section h2 {
+  @include accent-header(1.25rem);
+
+  margin-bottom: 1rem;
+}
