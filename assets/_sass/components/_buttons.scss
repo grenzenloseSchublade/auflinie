@@ -60,3 +60,36 @@
         }
     }
 }
+
+// =============================================================================
+// Button-Rollensystem (site-weit)
+// =============================================================================
+// Primär   = getönt gefüllt in der Cyan-Familie (ersetzt das Theme-Teal)
+// Sekundär = Cyan-subtle-Outline, transparent (Hero-Actions, Archiv-Button)
+// Keycap   = exklusiv Fraktal-Panels (components/_fractal-panel.scss)
+
+.btn.btn--primary {
+    background-color: rgba($link-color, 0.16);
+    border: 1px solid rgba($link-color, 0.5);
+    color: $link-color;
+
+    &:hover,
+    &:focus {
+        background-color: rgba($link-color, 0.26);
+        border-color: $link-color;
+        color: $link-color;
+    }
+}
+
+// Hero-Action-Buttons: vom weißen Theme-Outline auf die Site-Outline-Rolle
+.page__hero--overlay .btn--light-outline {
+    border: 1px solid rgba($link-color, 0.45);
+    background-color: rgb(10 14 18 / 35%);
+    color: #ffffff;
+
+    &:hover {
+        border-color: $link-color;
+        background-color: rgba($link-color, 0.14);
+        color: #ffffff;
+    }
+}

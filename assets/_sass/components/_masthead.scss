@@ -33,7 +33,8 @@
     // Anpassung des Titels "Kraftstoff" / "Hans Müller"
     .site-title {
         font-size: $site-title-font-size; // Größerer Titel
-        font-weight: bold;
+        color: #ffffff; // identisch mit den Nav-Links (vorher #eaeaea)
+        font-weight: 600;
         transition: color 0.45s ease, text-shadow 0.45s ease; // Sanfter Übergang für Farbe/Glow
         margin-right: 3em; // Größerer Abstand zum Menü (Desktop)
         
@@ -497,4 +498,22 @@ body .page__hero--video,
 body .page__header {
   margin-top: 0;
   padding-top: 0;
+}
+
+// Aktive Seite in der Navigation: Cyan-subtle-Unterstreichung (Zustand,
+// keine Aufforderung — Voll-Cyan bleibt Interaktionen vorbehalten).
+// Hover bekommt eine Unterstreichung als Zweitindikator (gedimmtes Magenta
+// allein läge unter 3:1 — WCAG 1.4.11).
+body .greedy-nav .visible-links a.current {
+    box-shadow: inset 0 -3px 0 $link-color-subtle;
+}
+
+body .greedy-nav .visible-links a:hover,
+body .greedy-nav .visible-links a:focus-visible {
+    box-shadow: inset 0 -3px 0 $hover-color-subtle;
+}
+
+body .greedy-nav__toggle:focus-visible {
+    outline: 2px solid $link-color;
+    outline-offset: 2px;
 }
