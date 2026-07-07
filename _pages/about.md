@@ -1,6 +1,6 @@
 ---
 title: "Über mich"
-excerpt: "Zwischen Theorie und Praxis – ein Profil über Experimentieren und Neugierde. "
+excerpt: "Ingenieur, Problemlöser, Autodidakt — wer hinter den Projekten steckt."
 permalink: /about/
 layout: single
 classes: wide

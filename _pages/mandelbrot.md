@@ -1,6 +1,6 @@
 ---
-title: "Die faszinierende Welt der Fraktale"
-excerpt: "Entdecken Sie die Schönheit der Mathematik. Durch interaktive Visualisierungen können Sie verschiedene Mengen erkunden und deren einzigartige Eigenschaften kennenlernen."
+title: "Die Welt der Fraktale"
+excerpt: "Unendliche Muster aus einer einzigen Formel — interaktiv erkundbar, direkt im Browser."
 permalink: /mandelbrot/
 layout: single
 author_profile: true
