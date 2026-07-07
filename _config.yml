@@ -46,6 +46,7 @@ kramdown:
 # (back-to-top.js lädt nur im single-Layout, siehe _layouts/single.html)
 after_footer_scripts:
   - /assets/js/tv-switch.js
+  - /assets/js/author-follow.js
   - /assets/js/greedy-navigation.js
 
 # Collections

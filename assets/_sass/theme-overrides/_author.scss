@@ -1,5 +1,6 @@
 // Autor-Profil (Sidebar/Floating): „Folgen"-Button + Dropdown
-// in der Site-Designsprache statt Theme-Weiß
+// in der Site-Designsprache statt Theme-Weiß.
+// Toggle-Logik: assets/js/author-follow.js (Vanilla-Ersatz fürs Theme-jQuery).
 .author__urls-wrapper button {
   background-color: transparent;
   border: 1px solid rgba($link-color, 0.45);
@@ -16,21 +17,29 @@
   }
 }
 
+// Dropdown-Panel NUR im Button-Modus (<1024px) — auf dem Desktop ist
+// .author__urls eine Inline-Liste; die Panel-Box saß dort als verschobener
+// grauer Kasten neben den Einträgen
+@media (max-width: 1023px) {
+  .author__urls {
+    background-color: $console-panel-bg;
+    border: 1px solid $console-panel-border;
+    border-radius: 8px;
+    box-shadow: 0 8px 24px rgb(0 0 0 / 40%);
+
+    // Sprechblasen-Pfeil an den Panel-Ton anpassen
+    &::before {
+      border-color: $console-panel-border transparent;
+    }
+
+    &::after {
+      border-color: $console-panel-bg transparent;
+    }
+  }
+}
+
 .author__urls {
-  background-color: $console-panel-bg;
-  border: 1px solid $console-panel-border;
-  border-radius: 8px;
-  box-shadow: 0 8px 24px rgb(0 0 0 / 40%);
   color: rgb(255 255 255 / 88%);
-
-  // Sprechblasen-Pfeil an den Panel-Ton anpassen
-  &::before {
-    border-color: $console-panel-border transparent;
-  }
-
-  &::after {
-    border-color: $console-panel-bg transparent;
-  }
 
   a {
     color: rgb(255 255 255 / 88%);
