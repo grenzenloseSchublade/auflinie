@@ -35,8 +35,8 @@
   pointer-events: none;
   transform: translateY(20px);
   
-  // Animationen
-  transition: opacity 0.3s ease, transform 0.3s ease, box-shadow 0.2s ease;
+  // Animationen (inkl. bottom: sanftes Ausweichen vor dem Footer)
+  transition: opacity 0.3s ease, transform 0.3s ease, box-shadow 0.2s ease, bottom 0.35s ease;
   will-change: opacity, transform;
   
   // SVG-Icon

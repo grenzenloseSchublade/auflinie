@@ -134,28 +134,29 @@
 
 // „Neu hier?"-Banner auf der Blogseite: schlanke Panel-Zeile statt Notice-Box
 .guide-banner {
-  display: flex;
-  align-items: center;
-  gap: 0.9rem;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.55rem 0.9rem;
+  align-items: start;
   background: $console-panel-bg;
   border: 1px solid $console-panel-border;
   border-left: 2px solid rgba($link-color, 0.55);
   border-radius: 8px;
-  padding: 0.75rem 1.1rem;
+  padding: 0.85rem 1.1rem;
   margin: 1.2rem 0 1rem;
-  flex-wrap: wrap;
 }
 
 .guide-banner__icon {
+  grid-row: 1;
   color: $console-heading;
   opacity: 0.85;
   font-size: 1.1rem;
-  flex-shrink: 0;
+  margin-top: 0.15rem;
 }
 
 .guide-banner__text {
-  flex: 1;
-  min-width: 240px;
+  grid-column: 2;
+  min-width: 0;
   margin: 0;
   font-size: 0.92rem;
   color: rgb(255 255 255 / 82%);
@@ -166,7 +167,9 @@
 }
 
 .guide-banner__btn {
-  flex-shrink: 0;
+  // Eigene Zeile: linksbündig unter dem Text
+  grid-column: 2;
+  justify-self: start;
   margin: 0;
   font-size: 0.8rem;
 }

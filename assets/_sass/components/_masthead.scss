@@ -225,9 +225,9 @@ body .greedy-nav .visible-links a {
     background: rgb(5 217 232 / 10%);
   }
   
-  // Theme-Override: Entferne den unteren Cyan-Balken
-  &::before,
-  &::after {
+  // Theme-Override: Entferne die Teal-Underline-Animation des Themes.
+  // Nur ::before — ::after ist unser eigener Aktiv-/Hover-Marker.
+  &::before {
     display: none !important;
     content: none !important;
   }
@@ -511,13 +511,31 @@ body .page__hero--overlay {
 // keine Aufforderung — Voll-Cyan bleibt Interaktionen vorbehalten).
 // Hover bekommt eine Unterstreichung als Zweitindikator (gedimmtes Magenta
 // allein läge unter 3:1 — WCAG 1.4.11).
-body .greedy-nav .visible-links a.current {
-    box-shadow: inset 0 -3px 0 $link-color-subtle;
+// Marker als ::after unter dem Text — eine Inset-Shadow an der
+// Link-Unterkante würde vom overflow:hidden der visible-links geclippt
+body .greedy-nav .visible-links a {
+    position: relative;
 }
 
-body .greedy-nav .visible-links a:hover,
-body .greedy-nav .visible-links a:focus-visible {
-    box-shadow: inset 0 -3px 0 $hover-color-subtle;
+body .greedy-nav .visible-links a::after {
+    content: "";
+    position: absolute;
+    left: 0.75em;
+    right: 0.75em;
+    bottom: 18px;
+    height: 3px;
+    border-radius: 2px;
+    background: transparent;
+    transition: background-color 0.2s ease;
+}
+
+body .greedy-nav .visible-links a.current::after {
+    background: rgba($link-color, 0.65);
+}
+
+body .greedy-nav .visible-links a:hover::after,
+body .greedy-nav .visible-links a:focus-visible::after {
+    background: rgba($hover-color, 0.65);
 }
 
 body .greedy-nav__toggle:focus-visible {
