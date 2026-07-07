@@ -109,6 +109,13 @@
           // Registriere den Service Worker mit dem Scope des Root-Verzeichnisses
           navigator.serviceWorker.register(swPath, { scope: rootPath })
             .then(registration => {
+              // Toast-Lücke: wählte der Nutzer früher "Später", wartet der neue
+              // Worker weiter, aber updatefound feuert nicht erneut — daher
+              // beim Laden direkt prüfen
+              if (registration.waiting && navigator.serviceWorker.controller) {
+                showUpdateToast(registration);
+              }
+
               // Auf Updates prüfen
               registration.addEventListener('updatefound', () => {
                 const newWorker = registration.installing;

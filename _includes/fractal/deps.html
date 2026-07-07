@@ -4,7 +4,7 @@
   Front Matter setzt (die zugehörigen CSS-Links liegen in head/custom.html).
   Alle Scripts defer: Reihenfolge bleibt erhalten, Ausführung vor DOMContentLoaded.
 {% endcomment %}
-<script src="https://cdn.jsdelivr.net/npm/nouislider@15.7.1/dist/nouislider.min.js" integrity="sha384-/gBUOLHADjY2rp6bHB0IyW9AC28q4OsnirJScje4l1crgYW7Qarx3dH8zcqcUgmy" crossorigin="anonymous" defer></script>
-<script src="https://cdn.jsdelivr.net/npm/tom-select@2.4.1/dist/js/tom-select.complete.min.js" integrity="sha384-U3YO9KA9gHoGO+Y5cTqEtWp5gy6hbXb3vfj0lvl+Zvt7OJLKVPf+5enfdivNC0td" crossorigin="anonymous" defer></script>
+<script src="{{ '/assets/vendor/nouislider.min.js' | relative_url }}" defer></script>
+<script src="{{ '/assets/vendor/tom-select.complete.min.js' | relative_url }}" defer></script>
 <script src="{{ '/assets/js/fractal-renderer.js' | relative_url }}" defer></script>
 <script src="{{ '/assets/js/fractal-panel.js' | relative_url }}" defer></script>

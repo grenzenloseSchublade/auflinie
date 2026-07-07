@@ -12,15 +12,40 @@
 const CACHE_VERSION = '{{ site.time | date: "%Y%m%d%H%M" }}';
 const CACHE_NAME = `kraftstoff-cache-${CACHE_VERSION}`;
 
-// Ressourcen, die beim Installieren des Service Workers gecached werden sollen
-// Alle Pfade sind relativ zum Scope des Service Workers (Root der Website)
+// Ressourcen, die beim Installieren des Service Workers gecached werden.
+// App-Shell-Voll-Precache: ALLE Seiten + Assets — Seitenwechsel sind danach
+// netzunabhängig; Frische kommt über den SW-Update-Pfad (Browser prüft
+// service-worker.js bei Navigationen, GH-Pages max-age=600 ⇒ ≤10 min Verzug,
+// dann Update-Toast). Die Seitenliste wird aus Jekyll generiert und wächst mit.
 const CACHE_URLS = [
+  // Seiten
+{% assign nav_pages = site.html_pages | where_exp: "p", "p.sitemap != false" %}{% for p in nav_pages %}{% unless p.url contains "404" %}  '.{{ p.url }}',
+{% endunless %}{% endfor %}{% for post in site.posts %}  '.{{ post.url }}',
+{% endfor %}  './404.html',
   './offline.html',
-  './assets/js/offline.js',
+  // Styles/Skripte
   './assets/css/main.css',
+  './assets/js/offline.js',
   './assets/js/greedy-navigation.js',
   './assets/js/hero-crt.js',
   './assets/js/sw-register.js',
+  './assets/js/tv-switch.js',
+  './assets/js/author-follow.js',
+  './assets/js/back-to-top.js',
+  './assets/js/neon-orbit-toggle.js',
+  './assets/js/blog-search.js',
+  './assets/js/fractal-panel.js',
+  './assets/js/fractal-renderer.js',
+  './assets/js/fractal-color-utils.js',
+  './assets/js/julia-worker.js',
+  './assets/js/mandelbrot-worker.js',
+  // Vendor (vormals CDN)
+  './assets/vendor/nouislider.min.js',
+  './assets/vendor/nouislider.min.css',
+  './assets/vendor/tom-select.complete.min.js',
+  './assets/vendor/tom-select.css',
+  './assets/vendor/gumshoe.min.js',
+  // Sonstiges
   './assets/images/background.jpg',
   './assets/webfonts/fa-solid-900-subset.woff2',
   './assets/webfonts/fa-regular-400-subset.woff2',
@@ -35,9 +60,11 @@ self.addEventListener('install', event => {
     caches.open(CACHE_NAME)
       .then(cache => {
         return Promise.allSettled(
-          CACHE_URLS.map(url => 
-            cache.add(url).catch(() => {
-              // Einzelne Fehler still ignorieren - Ressource wird später bei Bedarf gecached
+          CACHE_URLS.map(url =>
+            // cache: 'reload' — direkt vom Server, nie aus dem HTTP-Cache:
+            // der neue versionierte Cache darf keine alten Kopien enthalten
+            cache.add(new Request(url, { cache: 'reload' })).catch(() => {
+              // Einzelne Fehler still ignorieren - Netz-Fallback greift zur Laufzeit
             })
           )
         );
@@ -94,13 +121,11 @@ self.addEventListener('fetch', event => {
   if (url.match(/\.(jpg|jpeg|png|gif|webp|ico|woff2?)$/)) {
     event.respondWith(cacheFirst(event.request));
   }
-  // CSS und JS: Stale-While-Revalidate — sofortige Antwort aus dem Cache
-  // (Performance nach Seitenwechseln), Aktualisierung im Hintergrund.
-  // Misch-Risiko besteht nur im kurzen Fenster direkt nach einem Deploy
-  // (eine Navigation), da der Cache pro Build versioniert ist und beim
-  // Aktivieren des neuen Workers komplett neu aufgebaut wird.
+  // CSS und JS: Cache-First — alles ist precached und friert pro Build ein
+  // (Versionskonsistenz mit dem cache-first-HTML); Updates kommen als
+  // Ganzes über den neuen Worker
   else if (url.match(/\.(css|js)$/)) {
-    event.respondWith(staleWhileRevalidate(event.request));
+    event.respondWith(cacheFirst(event.request));
   }
   // Für alle anderen Ressourcen: Network-First-Strategie
   else {
@@ -108,15 +133,30 @@ self.addEventListener('fetch', event => {
   }
 });
 
-// Navigationen: frisch oder Offline-Seite.
-// WICHTIG: per URL-String fetchen — wird das originale Navigations-Request-
-// Objekt wiederverwendet, ignoriert Chromium die cache-Option und bedient
-// sich weiter am HTTP-Cache (verifiziert; das war die Update-Dauerschleife).
+// Navigationen: CACHE-FIRST aus dem Voll-Precache — der frühere
+// no-cache-Roundtrip kostete mobil Sekunden (SW-Kaltstart + RTT seriell).
+// Bewusst OHNE Hintergrund-Revalidierung: neues HTML im alten Cache würde
+// Versionen mischen; Frische liefert der SW-Update-Pfad (Toast).
+// Cache-Miss (z.B. Paginierung): Netz + Nachcache; offline: offline.html.
+// fetch per URL-String — Chromium ignoriert die cache-Option beim
+// wiederverwendeten Navigations-Request-Objekt (verifiziert).
 async function handleNavigation(request) {
+  let cached = await caches.match(request, { ignoreSearch: true });
+  if (!cached && request.url.split('?')[0].endsWith('/')) {
+    // Paginierte Seiten liegen unter .../index.html im Cache (jekyll-paginate-v2
+    // schreibt page.url um) — Trailing-Slash-Anfragen darauf zurückfallen lassen
+    cached = await caches.match(request.url.split('?')[0] + 'index.html');
+  }
+  if (cached) {
+    return cached;
+  }
   try {
-    // no-cache: beim Server revalidieren (304 genügt) — 'reload' erzwang
-    // den Voll-Download des HTML bei jeder Navigation
-    return await fetch(request.url, { cache: 'no-cache', credentials: 'same-origin' });
+    const response = await fetch(request.url, { cache: 'no-cache', credentials: 'same-origin' });
+    if (response.ok && !response.redirected) {
+      const cache = await caches.open(CACHE_NAME);
+      cache.put(request.url.split('?')[0], response.clone());
+    }
+    return response;
   } catch (error) {
     const offline = await caches.match('./offline.html');
     if (offline) {
@@ -124,29 +164,6 @@ async function handleNavigation(request) {
     }
     return new Response('Offline', { status: 503, headers: { 'Content-Type': 'text/plain' } });
   }
-}
-
-// Stale-While-Revalidate für CSS/JS: Cache sofort, Netz im Hintergrund
-async function staleWhileRevalidate(request) {
-  const cached = await caches.match(request);
-  const update = fetch(request, { cache: 'no-cache' })
-    .then(async (response) => {
-      if (response.ok) {
-        const cache = await caches.open(CACHE_NAME);
-        cache.put(request, response.clone());
-      }
-      return response;
-    })
-    .catch(() => null);
-
-  if (cached) {
-    return cached;
-  }
-  const fresh = await update;
-  if (fresh) {
-    return fresh;
-  }
-  return new Response('Nicht verfügbar', { status: 504 });
 }
 
 // Cache-First-Strategie für Bilder

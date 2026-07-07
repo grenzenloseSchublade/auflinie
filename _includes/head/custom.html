@@ -17,9 +17,8 @@
 
 {% if page.fractal_panels %}
 <!-- Fraktal-Panels: CSS der CDN-Libs einmal pro Seite (JS in fractal/deps.html) -->
-<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
-<link href="https://cdn.jsdelivr.net/npm/nouislider@15.7.1/dist/nouislider.min.css" rel="stylesheet" integrity="sha384-PSZaVsyG9jDu8hFaSJev5s/9poIJlX7cuxSGdqCgXRHpo2DzIaZAyCd2rG/DJJmV" crossorigin="anonymous">
-<link href="https://cdn.jsdelivr.net/npm/tom-select@2.4.1/dist/css/tom-select.css" rel="stylesheet" integrity="sha384-ny89R1e2Q335kISzsNGnOmYXcpZzyhDAQHA4nPPBPWSlNj9MWD5KQLMtuGTX4z0X" crossorigin="anonymous">
+<link href="{{ '/assets/vendor/nouislider.min.css' | relative_url }}" rel="stylesheet">
+<link href="{{ '/assets/vendor/tom-select.css' | relative_url }}" rel="stylesheet">
 {% endif %}
 
 {% if page.mathjax %}
@@ -128,6 +127,21 @@
 {% if site.background_image %}
 <link rel="preload" as="image" href="{{ site.background_image | relative_url }}">
 {% endif %}
+<!-- Speculation Rules: Prerender interner Links (Chromium) — macht zusätzlich
+     zum SW-Cache auch das RENDERN der Zielseite instant; /mandelbrot/ wegen
+     Worker-/MathJax-Last ausgenommen; andere Browser ignorieren das folgenlos -->
+<script type="speculationrules">
+{
+  "prerender": [{
+    "where": { "and": [
+      { "href_matches": "{{ site.baseurl }}/*" },
+      { "not": { "href_matches": "{{ site.baseurl }}/mandelbrot/*" } }
+    ]},
+    "eagerness": "moderate"
+  }]
+}
+</script>
+
 <!-- Konfiguration für Bild-Caching und Service Worker -->
 <script>
   // Konfiguration aus _config.yml an das HTML-Dokument übergeben.

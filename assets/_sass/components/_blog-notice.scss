@@ -1,0 +1,59 @@
+// Einmal-Hinweis-Dialog auf der Blog-Seite (z.B. Sommerpause) —
+// Markup/Verhalten: _includes/blog-notice.html
+.blog-notice {
+  position: fixed;
+  inset: 0;
+  z-index: 10010;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background: rgb(10 14 18 / 55%);
+  backdrop-filter: blur(2px);
+}
+
+.blog-notice__panel {
+  @include card-panel(2px);
+
+  width: min(24rem, 100%);
+  padding: 1.1rem 1.3rem;
+  box-shadow: 0 14px 40px rgb(0 0 0 / 45%);
+  animation: blog-notice-enter 0.25s ease-out;
+}
+
+@keyframes blog-notice-enter {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .blog-notice__panel {
+    animation: none;
+  }
+}
+
+.blog-notice__title {
+  @include mono-label(0.72rem, 0.08em);
+
+  color: $console-heading;
+  margin: 0 0 0.5rem;
+}
+
+.blog-notice__text {
+  margin: 0 0 0.9rem;
+  font-size: 0.92rem;
+  line-height: 1.5;
+  color: $fg-muted;
+}
+
+.blog-notice__close {
+  margin: 0;
+  font-size: 0.8rem;
+}

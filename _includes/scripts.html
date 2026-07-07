@@ -6,7 +6,7 @@
 
 {% if page.toc %}
 <!-- Gumshoe ScrollSpy (standalone, kein jQuery) — nur auf Seiten mit TOC -->
-<script src="https://cdn.jsdelivr.net/npm/gumshoejs@5.1.2/dist/gumshoe.min.js" integrity="sha384-4yPwGLOgXPsV5GLv83AcvOrn722feO6UrUJjJwM9RIIHTSEDtv14h9abAFj6wU10" crossorigin="anonymous" defer></script>
+<script src="{{ '/assets/vendor/gumshoe.min.js' | relative_url }}" defer></script>
 {% endif %}
 
 {% if site.search == true %}
@@ -24,21 +24,22 @@
 {% include /comments-providers/scripts.html %}
 
 <!-- Service Worker (global) -->
-<script src="{{ '/assets/js/sw-register.js' | relative_url }}"></script>
+<script src="{{ '/assets/js/sw-register.js' | relative_url }}" defer></script>
 
 {% if page.header.overlay_image %}
 <!-- Hero-Hintergrund + CRT-Effekt: nur auf Seiten mit Overlay-Hero -->
-<script src="{{ '/assets/js/hero-crt.js' | relative_url }}"></script>
+<script src="{{ '/assets/js/hero-crt.js' | relative_url }}" defer></script>
 {% endif %}
 
-{% if page.url == "/posts/" %}
-<!-- Blog-Suche/Filter: nur auf der Beitragsliste -->
-<script src="{{ '/assets/js/blog-search.js' | relative_url }}"></script>
+{% if page.blog_search %}
+<!-- Blog-Suche/Filter: Flag im Front Matter — der frühere URL-Vergleich
+     (page.url == "/posts/") griff mit Paginierung nicht, die Suche fehlte live -->
+<script src="{{ '/assets/js/blog-search.js' | relative_url }}" defer></script>
 {% endif %}
 
 {% if page.url == "/" %}
 <!-- Neon-Namenseffekt: nur Startseite -->
-<script src="{{ '/assets/js/neon-orbit-toggle.js' | relative_url }}"></script>
+<script src="{{ '/assets/js/neon-orbit-toggle.js' | relative_url }}" defer></script>
 {% endif %}
 
 {% if page.fractal_panels %}
@@ -47,6 +48,6 @@
 
 {% if site.after_footer_scripts %}
   {% for script in site.after_footer_scripts %}
-    <script src="{{ script | relative_url }}"></script>
+    <script src="{{ script | relative_url }}" defer></script>
   {% endfor %}
 {% endif %} 

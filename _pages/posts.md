@@ -2,6 +2,12 @@
 title: "Blog"
 excerpt: "Notizen aus Technik und Alltag — was ich baue, lerne und ausprobiere."
 permalink: /posts/
+blog_search: true
+blog_notice:
+  enabled: true
+  id: "sommerpause-2026"
+  title: "Sommerpause"
+  text: "Aktuell entstehen keine neuen Beiträge — die bestehenden Inhalte bleiben natürlich verfügbar."
 layout: single
 author_profile: false
 pagination:
@@ -19,6 +25,8 @@ read_time: false
 ---
 
 {{ "Hier finden Sie Beiträge zu Technik, Projekten und dem, was mich gerade beschäftigt. Ohne festen Rhythmus – dafür mit dem Anspruch, dass jeder Beitrag einen Mehrwert bietet." | markdownify }}
+
+{% include blog-notice.html %}
 
 <div class="guide-banner">
   <i class="fas fa-file-alt guide-banner__icon" aria-hidden="true"></i>

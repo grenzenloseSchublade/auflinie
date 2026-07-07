@@ -1,0 +1,34 @@
+{% comment %}
+  Schaltbarer Einmal-Hinweis (z.B. "Sommerpause") auf der Blog-Seite.
+  Konfiguration im Front Matter der Seite (blog_notice: enabled/id/title/text);
+  enabled: false blendet aus, eine neue id zeigt den Dialog erneut.
+  Einmaligkeit pro Besucher über localStorage.
+{% endcomment %}
+{% if page.blog_notice.enabled %}
+<div id="blog-notice" class="blog-notice" role="dialog" aria-labelledby="blog-notice-title" data-notice-id="{{ page.blog_notice.id }}" hidden>
+  <div class="blog-notice__panel">
+    <p id="blog-notice-title" class="blog-notice__title">{{ page.blog_notice.title }}</p>
+    <p class="blog-notice__text">{{ page.blog_notice.text }}</p>
+    <button type="button" id="blog-notice-close" class="btn btn--outline blog-notice__close">Verstanden</button>
+  </div>
+</div>
+<script>
+  (function () {
+    var box = document.getElementById('blog-notice');
+    if (!box) { return; }
+    var key = 'blogNoticeDismissed:' + box.getAttribute('data-notice-id');
+    try { if (localStorage.getItem(key) === '1') { return; } } catch (e) { /* Storage gesperrt: einfach zeigen */ }
+
+    function dismiss() {
+      box.hidden = true;
+      try { localStorage.setItem(key, '1'); } catch (e) { /* ok */ }
+    }
+
+    box.hidden = false;
+    document.getElementById('blog-notice-close').addEventListener('click', dismiss);
+    box.addEventListener('click', function (e) { if (e.target === box) { dismiss(); } });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !box.hidden) { dismiss(); } });
+    document.getElementById('blog-notice-close').focus({ preventScroll: true });
+  })();
+</script>
+{% endif %}
