@@ -19,7 +19,7 @@ read_time: false
 #   enabled = Klick-Hervorhebung, stage2 = experimentelles Graph-Panel
 skill_graph:
   enabled: true
-  stage2: false
+  stage2: true
 ---
 
 <div class="about-container">

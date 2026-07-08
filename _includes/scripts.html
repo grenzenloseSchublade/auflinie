@@ -47,6 +47,12 @@
 <script src="{{ '/assets/js/skill-chips.js' | relative_url }}" defer></script>
 {% endif %}
 
+{% if page.skill_graph.stage2 %}
+<!-- Skill-Graph-Panel (experimentell): Engine vor UI, defer erhält die Reihenfolge -->
+<script src="{{ '/assets/js/skill-graph-sim.js' | relative_url }}" defer></script>
+<script src="{{ '/assets/js/skill-graph.js' | relative_url }}" defer></script>
+{% endif %}
+
 {% if page.fractal_panels %}
   {% include fractal/deps.html %}
 {% endif %}

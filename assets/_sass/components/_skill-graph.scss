@@ -1,0 +1,70 @@
+// Experimentelles Skill-Graph-Panel (Stufe 2) —
+// Markup: _includes/cv/skill-graph.html, Logik: assets/js/skill-graph.js
+// (+ DOM-freie Engine skill-graph-sim.js). Die Chip-Liste bleibt kanonisch.
+
+.skill-graph {
+  margin-top: 1.4rem;
+}
+
+.skill-graph__bar {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+}
+
+// Generisches Beta-/WIP-Badge: Pill mit Cyan-subtle-Rand, bewusst dezent
+// (kein Magenta — das bleibt der Interaktion vorbehalten)
+.wip-badge {
+  @include mono-label(0.62rem, 0.07em);
+
+  border: 1px solid $link-color-subtle;
+  border-radius: 999px;
+  padding: 0.15rem 0.55rem;
+  color: $fg-subtle;
+}
+
+.skill-graph__panel {
+  @include card-panel(0, 10px);
+
+  margin-top: 0.8rem;
+  padding: 1rem;
+
+  @media (max-width: 640px) {
+    padding: 0.6rem;
+  }
+}
+
+.skill-graph__note {
+  font-size: 0.8rem;
+  line-height: 1.5;
+  color: $fg-subtle;
+  margin: 0 0 0.7rem;
+}
+
+.skill-graph__canvas-wrap {
+  height: clamp(300px, 45vh, 460px);
+
+  canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+
+    // Seite bleibt über dem Canvas scrollbar (Touch)
+    touch-action: pan-y;
+  }
+}
+
+.skill-graph__context {
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: $fg-subtle;
+  min-height: 2.55em;
+  margin: 0.7rem 0 0;
+}
+
+// Druckansicht: die Chip-Liste ist vollständig, der Graph entfällt
+@media print {
+  .skill-graph {
+    display: none;
+  }
+}
