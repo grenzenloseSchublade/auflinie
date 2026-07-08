@@ -48,9 +48,10 @@
   color: rgb(255 255 255 / 45%);
 }
 
-// Blogpost-Kopf: Meta-Zeile (Datum + Lesezeit) deutlich vom Titel absetzen,
-// aber näher am Titel als am Fließtext-Beginn. Sitzt im <header> VOR
-// .page__content — die Theme-Absatz-Regel greift hier nicht
+// Seiten OHNE Hero-Overlay (der Header-Block im inner-wrap wird nur dann
+// gerendert): Meta-Zeile vom Titel absetzen und mit Luft zum Fließtext
+// (0.75 oben vs. 1.5 unten — die Meta gruppiert sich zum Titel).
+// Blog-POSTS haben Hero-Overlays — deren Meta-Abstand regelt _hero.scss!
 .page__inner-wrap > header .page__meta {
-  margin: 0.75rem 0 0;
+  margin: 0.75rem 0 1.5rem;
 }

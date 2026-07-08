@@ -530,6 +530,14 @@
       color: #ffffff;
       text-shadow: 1px 1px 4px rgb(0 0 0 / 50%);
     }
+
+    // Meta-Zeile (Datum + Lesezeit) klar vom Lead-Text absetzen: die
+    // Reset-Gruppe "body .page__meta { margin-top: 0 }" (_masthead.scss)
+    // drückte sie sonst direkt an den Text — Spezifität hier (0,2,0)
+    // schlägt die Reset-Regel (0,1,1) unabhängig von der Ladereihenfolge
+    .page__meta {
+      margin-top: 1.1rem;
+    }
     
     // Titel-Größe
     // fs-Ausnahme: Hero-em-System (2.5/3/3.5em, eigene 768px-MQ) — bewusst
