@@ -91,8 +91,7 @@
       indexById.set(id, i);
       return {
         id: id,
-        label: btn.textContent.trim(),
-        featured: !!btn.closest('.cv-skill-chip--featured')
+        label: btn.textContent.trim()
       };
     });
 
@@ -279,8 +278,7 @@
       if (state === 'selected') {
         ctx.strokeStyle = 'rgba(' + MAGENTA + ', 0.85)';
       } else {
-        var strokeAlpha = state === 'related' ? 0.6 : (node.featured ? 0.55 : 0.3);
-        ctx.strokeStyle = 'rgba(' + CYAN + ', ' + strokeAlpha + ')';
+        ctx.strokeStyle = 'rgba(' + CYAN + ', ' + (state === 'related' ? 0.6 : 0.3) + ')';
       }
       ctx.lineWidth = state === 'selected' ? 2 : 1.25;
       ctx.stroke();

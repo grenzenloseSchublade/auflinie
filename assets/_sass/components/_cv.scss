@@ -22,6 +22,20 @@
   }
 }
 
+// Kapitelgrenzen: deutlich mehr Luft + volle Hairline ZWISCHEN Sektionen
+// (nicht vor der ersten/Intro; die kurze Linie unter der H2 bleibt).
+// Der Kontrast „viel Luft davor, kompakt darin" trägt die Gliederung.
+.cv-section + .cv-section {
+  margin-top: 3.2rem;
+  padding-top: 2.4rem;
+  border-top: 1px solid rgb(255 255 255 / 8%);
+
+  @media (max-width: 640px) {
+    margin-top: 2.4rem;
+    padding-top: 1.8rem;
+  }
+}
+
 // Einträge im Rail-Layout (Mockup B2): Zeitraum/Ort links an der Linie,
 // Inhalt rechts ohne Karten-Rahmen — gilt für Beruf UND Ausbildung
 .cv-entries {
@@ -325,12 +339,6 @@
   }
 }
 
-// Schwerpunkt-Chips: dezenter Cyan-Rand als Betonung, keine Benotung
-// (Magenta bleibt der Interaktion vorbehalten)
-.cv-skill-chip--featured {
-  border-color: $link-color-subtle;
-}
-
 // Klickbare Chips (interaktives Skill-Feature, Stufe 1):
 // Der Button erbt die Chip-Optik vom li und deckt per Negativ-Margin die
 // volle Chip-Fläche ab (Hit-Fläche = ganzer Chip)
@@ -368,14 +376,23 @@
   border-color: rgba($link-color, 0.5);
 }
 
-// Kontext-/Hinweiszeile über den Gruppen (aria-live); min-height reserviert
-// zwei Zeilen gegen Layout-Sprünge beim Textwechsel
+// Kontext-/Hinweiszeile über den Gruppen (aria-live): eigene Identität als
+// Status-Element (Epigraph-Muster: linke Hairline), damit sie sich von den
+// Gruppen-Kontextzeilen abhebt; min-height gegen Layout-Sprünge.
+// Bei aktiver Auswahl wechselt die Hairline auf Magenta (Interaktionszustand).
 .cv-skills__selection-info {
   font-size: 0.85rem;
   line-height: 1.5;
-  color: $fg-subtle;
+  color: $fg-muted;
   min-height: 2.55em;
-  margin: 0 0 0.6rem;
+  margin: 0 0 1rem;
+  padding: 0.4rem 0 0.4rem 0.8rem;
+  border-left: 2px solid $link-color-subtle;
+  transition: border-color 0.2s ease;
+}
+
+.cv-skills.has-selection .cv-skills__selection-info {
+  border-left-color: rgba($hover-color, 0.6);
 }
 
 // Sprachen: Chips in der Formensprache der Fähigkeiten

@@ -1,8 +1,8 @@
 {% comment %}
   Technische Fähigkeiten als Themen-Gruppen (Mockup-Review Juli 2026):
   pro Gruppe ein Mono-Label + Kontextzeile (wofür), darunter gleichwertige
-  Chips ohne Bewertung. skill.featured hebt Schwerpunkt-Chips dezent hervor
-  (Cyan-Border, keine Legende nötig).
+  Chips ohne Bewertung — Hervorhebung entsteht nur noch interaktiv über
+  die Klick-Auswahl.
 
   Interaktivität (Flag page.skill_graph im Front Matter, Muster blog_notice):
     enabled: Chips werden Buttons — Klick zeigt verwandte Skills und
@@ -28,7 +28,7 @@
     <ul class="cv-skills__chips">
       {% for skill in skill_group.skills %}
       {% assign skill_name = skill.name | default: skill %}
-      <li class="cv-skill-chip{% if skill.featured %} cv-skill-chip--featured{% endif %}">
+      <li class="cv-skill-chip">
         {%- if page.skill_graph.enabled -%}
         <button type="button" class="cv-skill-chip__button" data-skill="{{ skill_name | slugify }}" aria-pressed="false">{{ skill_name }}</button>
         {%- else -%}

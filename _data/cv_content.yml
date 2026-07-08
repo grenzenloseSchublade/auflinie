@@ -179,14 +179,13 @@
   icon: "laptop-code"
   # Themen-Gruppen mit Kontextzeile (Mockup-Review Juli 2026): eine Form für
   # alle Skills, keine Rangordnung — das Können steckt in der Kontextzeile.
-  # featured: true hebt Schwerpunkt-Chips dezent hervor (Cyan-Border,
-  # max. 1–2 pro Gruppe; Magenta bleibt der Interaktion vorbehalten).
+  # Die Chips sind interaktiv (Klick zeigt Verbindungen, siehe
+  # _data/skill_graph.yml und docs/README-skill-feature.md).
   skill_groups:
     - group: "Machine Learning & Data"
       context: "Entwicklung, Training und Deployment eigener Modelle — von Computer Vision bis GenAI"
       skills:
-        - name: "Python"
-          featured: true
+        - "Python"
         - "TensorFlow"
         - "NumPy / Scikit-learn"
         - "OpenCV"
@@ -194,8 +193,7 @@
     - group: "Web & APIs"
       context: "End-to-End: Frontends, Schnittstellen und Integration in Produktivumgebungen"
       skills:
-        - name: "Vue"
-          featured: true
+        - "Vue"
         - "JavaScript"
         - "FastAPI"
         - "SpringBoot"
@@ -204,14 +202,12 @@
     - group: "Cloud"
       context: "KI-Lösungen in der Cloud entwickeln, trainieren und betreiben"
       skills:
-        - name: "Azure"
-          featured: true
+        - "Azure"
         - "Remote Computing / GPU-Training"
     - group: "DevOps & Tooling"
       context: "Reproduzierbare Umgebungen und automatisierte Pipelines"
       skills:
-        - name: "CI / CD"
-          featured: true
+        - "CI / CD"
         - "Docker"
         - "DevContainer"
         - "Git"

@@ -92,7 +92,10 @@ noch Canvas — sie nimmt `{nodes, edges, width, height}` und bewegt Positionen
   per `options` überschreibbar (Repulsion, Federlänge/-konstante, Gravitation,
   velocityDecay, alphaDecay).
 
-**Bewusste Später-Liste** (Stand Juli 2026): Drag + Reheat, Projekt-Knoten und
+**Bewusste Später-Liste** (Stand Juli 2026): Zoom + Pan (erst mit
+Projekt-Knoten sinnvoll; Muster aus `fractal-panel.js` übernehmen —
+Pinch/Rad-Zoom/Reset; Touch-Konflikt mit `touch-action: pan-y` beachten),
+Drag + Reheat, Projekt-Knoten und
 Detailpanel, Canvas-Tooltips, Deep-Links (`#skill=python`), Persistenz des
 Toggles, Kantengewichts-Legende, Anker-Links in die Berufserfahrung.
 
@@ -109,7 +112,7 @@ Toggles, Kantengewichts-Legende, Anker-Links in die Berufserfahrung.
   bei `visibilitychange` und beim Zuklappen des Panels.
 - **Farbdisziplin:** Magenta (`$hover-color`) markiert ausschließlich
   Interaktionszustände — Fokusringe UND die aktive Auswahl (Chip wie
-  Graph-Knoten). Alles Inhaltliche (Verwandtschaft, featured, Kanten)
+  Graph-Knoten). Alles Inhaltliche (Verwandtschaft, Kanten)
   bleibt Cyan.
 - **Determinismus:** Kreis-Startpositionen statt `Math.random()` — das Layout
   ist über Reloads reproduzierbar.
