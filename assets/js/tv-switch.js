@@ -30,10 +30,17 @@
     return path(fromUrl) === '/' && HERO_TARGETS.indexOf(path(toUrl)) !== -1;
   }
 
+  // Nicht-Hero-Navigationen überspringen die Transition KOMPLETT — ohne
+  // skipTransition liefen die CRT-Default-Keyframes bei jeder internen
+  // Navigation (Blog, Footer, Back/Forward), auch mit offenem Drawer
   window.addEventListener('pageswap', function (e) {
-    if (!e.viewTransition || !e.activation || !e.activation.entry) return;
-    if (isHeroSwitch(location.href, e.activation.entry.url) && heroFuellt()) {
+    if (!e.viewTransition) return;
+    var crt = e.activation && e.activation.entry &&
+      isHeroSwitch(location.href, e.activation.entry.url) && heroFuellt();
+    if (crt) {
       e.viewTransition.types.add('crt');
+    } else {
+      e.viewTransition.skipTransition();
     }
   });
 
@@ -82,13 +89,17 @@
 
     if (window.GreedyNav) window.GreedyNav.close();
     if (hlinks) hlinks.addEventListener('transitionend', onEnd);
-    setTimeout(go, 400); // Fallback (z. B. gedrosselte Transition bei reduced motion)
+    setTimeout(go, 350); // Fallback (Slide-Out: 240ms; z. B. für gedrosselte Transitionen)
   }, true);
 
   window.addEventListener('pagereveal', function (e) {
-    if (!e.viewTransition || !e.activation || !e.activation.from) return;
-    if (isHeroSwitch(e.activation.from.url, location.href)) {
+    if (!e.viewTransition) return;
+    var crt = e.activation && e.activation.from &&
+      isHeroSwitch(e.activation.from.url, location.href);
+    if (crt) {
       e.viewTransition.types.add('crt');
+    } else {
+      e.viewTransition.skipTransition();
     }
   });
 })();

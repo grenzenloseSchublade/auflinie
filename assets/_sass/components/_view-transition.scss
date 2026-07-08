@@ -23,9 +23,19 @@
   view-transition-name: masthead;
 }
 
-::view-transition-old(masthead),
+// Group MIT abschalten: ihr statischer Stil ist bereits die neue Geometrie —
+// die UA-Default-Animation (0.25s Position/Größen-Morph) staucht sonst den
+// Header, sobald sich alte und neue Geometrie minimal unterscheiden.
+// old zusätzlich ausblenden: plus-lighter-Doppelbelichtung überhellte den Text.
+::view-transition-group(masthead),
+::view-transition-image-pair(masthead),
 ::view-transition-new(masthead) {
   animation: none;
+}
+
+::view-transition-old(masthead) {
+  animation: none;
+  display: none;
 }
 
 // Nav-Drawer entkoppeln: er ist DOM-Kind des Mastheads — ohne eigenen Namen
@@ -45,11 +55,14 @@
 // Zwischengrund dunkel (Seitengrund); der Phosphor-Blink läuft als eigene
 // kurze Blende auf dem ::view-transition-Pseudo — Charakter exakt wie das
 // Power-Button-Flackern (heroCrtModeFlash: 0.1s, rgb(85 240 145 / 38%),
-// opacity 0 -> 1@35% -> 0, ease-out), nur minimal länger, damit er den
-// Schnitt überdeckt.
-::view-transition {
+// opacity 0 -> 1@35% -> 0, ease-out). Delay 170ms: der Blink-Peak landet
+// damit klar NACH dem 150ms-Kollaps („Röhre klappt zu, DANN Blink") —
+// vorher lag er mitten im Kollaps und wirkte unterbrechend.
+// :active-view-transition-type(crt): nur beim Hero-Umschalt (tv-switch.js
+// überspringt andere Navigationen zusätzlich per skipTransition).
+html:active-view-transition-type(crt)::view-transition {
   background-color: #10141a;
-  animation: tv-phosphor-blink 140ms ease-out 90ms both;
+  animation: tv-phosphor-blink 140ms ease-out 170ms both;
 }
 
 @keyframes tv-phosphor-blink {
@@ -66,17 +79,16 @@
   }
 }
 
-// Die CRT-Keyframes sind der DEFAULT für alle View-Transitions — die
-// Eingrenzung auf die Hero-Buttons erledigt tv-switch.js per
-// skipTransition() im pageswap (läuft auf der ALTEN Seite, wo das Skript
-// sicher geladen ist). Timing (Nutzerkorrektur "deutlich zu lang", Blink
-// wie Power-Button): Aus 150ms, Blink-Peak ~140ms, An 160ms ab 200ms —
-// gesamt ~360ms.
-::view-transition-old(root) {
+// Doppelt eingegrenzt auf die Hero-Buttons: tv-switch.js überspringt andere
+// Navigationen per skipTransition() im pageswap/pagereveal, und die Regeln
+// greifen nur beim gesetzten Transition-Type "crt". Timing (Nutzerkorrektur
+// "deutlich zu lang", Blink wie Power-Button): Aus 150ms, Blink-Peak ~220ms
+// (nachgelagert), An 160ms ab 200ms — gesamt ~360ms.
+html:active-view-transition-type(crt)::view-transition-old(root) {
   animation: tv-switch-out 150ms steps(4, end) forwards;
 }
 
-::view-transition-new(root) {
+html:active-view-transition-type(crt)::view-transition-new(root) {
   animation: tv-switch-in 160ms 200ms steps(4, start) both;
 }
 
