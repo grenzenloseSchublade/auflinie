@@ -134,7 +134,7 @@
   }
 
   .cv-entry__items-label {
-    font-size: 0.8rem;
+    font-size: $cv-items-label-font-size;
     margin: 0 0 0.3rem;
     color: $fg-subtle;
     font-weight: 500;
@@ -144,12 +144,14 @@
     list-style: none;
     margin: 0;
     padding: 0;
-    font-size: 0.85rem;
 
+    // font-size MUSS auf dem li stehen: die Theme-Regel .page__content li
+    // (1em) schlägt jede Vererbung vom ul — auf dem ul war sie tot
     > li {
       position: relative;
       padding-left: 1rem;
-      margin-bottom: 0.35rem;
+      margin-bottom: 0.2rem;
+      font-size: $cv-items-font-size;
       line-height: 1.45;
       color: $fg-muted;
 
@@ -250,7 +252,7 @@
   border-top: 1px dotted rgb(255 255 255 / 10%);
 
   li {
-    font-size: 0.8rem;
+    font-size: $cv-subitems-font-size;
     margin-bottom: 0.3rem;
     color: rgb(255 255 255 / 70%);
     padding-left: 0;
@@ -284,10 +286,14 @@
 // Fähigkeiten als Themen-Gruppen: Kontextzeile trägt das Können,
 // die Chips darunter sind gleichwertig (keine Level, keine Rangordnung)
 .cv-skill-group {
-  // Oben knapp (Titel+Kontext kleben zusammen), unten großzügig
-  // (Luft zwischen Chips und nächster Gruppen-Überschrift)
-  padding: 0.5rem 0 1.1rem;
+  // Kurzer Abstand VOR dem eigenen Trennstrich …
+  padding: 0.4rem 0 0.55rem;
   border-bottom: 1px solid $surface-tint;
+
+  // … und große Luft NACH dem Strich zur nächsten Gruppen-Überschrift
+  + .cv-skill-group {
+    padding-top: 1.15rem;
+  }
 
   &:first-child {
     padding-top: 0.2rem;
@@ -303,8 +309,11 @@
 // den Chips. WICHTIG: p-qualifizierte Selektoren (0,2,1) — die Absatz-Regel
 // ".cv-section .cv-section__content p" überschreibt sonst margin/line-height
 // (genau das machte frühere Fassungen unsichtbar).
+// Titelgröße EXPLIZIT 1em: Die frühere 0.72rem-Angabe war seit jeher tot
+// (Theme ".page__content p{font-size:1em}" gewann) — der Titel wurde immer
+// mit 1em gerendert und ist so abgenommen. Nicht "zurückverkleinern"!
 .cv-skills p.cv-skill-group__title {
-  @include mono-label(0.72rem, 0.07em);
+  @include mono-label($cv-group-title-font-size, 0.07em);
 
   color: $fg-subtle;
   margin: 0;
@@ -312,7 +321,7 @@
 }
 
 .cv-skills p.cv-skill-group__context {
-  font-size: 0.7rem;
+  font-size: $cv-group-context-font-size;
   line-height: 1.35;
   color: rgb(255 255 255 / 45%);
   max-width: 38rem;
@@ -330,11 +339,14 @@
   padding: 0;
 }
 
-.cv-skill-chip {
+// li-qualifiziert: die alte .cv-skill-chip-Größe (0.82rem) war tot —
+// Theme .page__content li (1em) gewann; 1em entspricht dem abgenommenen
+// Ist-Zustand und ist jetzt über $cv-chip-font-size wirklich steuerbar
+li.cv-skill-chip {
   display: inline-flex;
   align-items: center;
   gap: 0.45rem;
-  font-size: 0.82rem;
+  font-size: $cv-chip-font-size;
   color: rgb(255 255 255 / 85%);
   background: $console-panel-bg;
   border: 1px solid rgb(255 255 255 / 10%);

@@ -22,3 +22,15 @@ $mono-font-stack: ui-monospace, "Cascadia Mono", "Segoe UI Mono", "Menlo", "Mona
 // TOC-Label-Größen (zentral — Referenzgröße von der Mandelbrot-Seite)
 $toc-title-font-size: 1rem; // „Inhalt" im Seitenleisten-TOC
 $toc-sticky-label-font-size: 0.68rem; // INHALT-Tag der mitlaufenden Leiste
+
+// CV-Typografie (zentrale Stellgrößen für _cv.scss).
+// ACHTUNG Kaskaden-Falle: Das Theme setzt .page__content p/li DIREKT auf
+// 1em — diese Größen wirken nur, wenn sie in _cv.scss auf dem Element
+// selbst mit Spezifität >= der Theme-Regel und späterer Position gesetzt
+// sind (p-/li-qualifizierte Selektoren, siehe Kommentare dort).
+$cv-group-title-font-size: 1em; // Skill-Gruppen-Titel (mono, uppercase)
+$cv-group-context-font-size: 0.8rem; // Kontextzeile unter dem Gruppen-Titel
+$cv-items-label-font-size: 0.8rem; // „Verantwortlichkeiten:" / „Besondere Erfolge:"
+$cv-items-font-size: 0.85rem; // Stichpunkte der CV-Einträge
+$cv-subitems-font-size: 0.8rem; // Sub-Stichpunkte (aufklappbar)
+$cv-chip-font-size: 1em; // Skill-Chips (entspricht dem abgenommenen Ist-Zustand)
