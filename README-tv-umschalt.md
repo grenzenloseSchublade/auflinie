@@ -52,13 +52,22 @@ während der Punkt noch glimmt.
                       12)          radial nach im Glimmen)
 ```
 
-### 3. `voll` — maximaler Realismus (~700 ms sichtbar)
+### 3. `voll` — maximaler Realismus (~780 ms)
 
-Wie `linie-punkt`, plus: Der Punkt glimmt 450 ms lang **unter der bereits
-aufblühenden neuen Seite** weiter (der Transition-Backdrop liegt hinter dem
-New-Snapshot — wie ein Fernseher, der aus dem noch glimmenden Punkt
-startet), das Einschalten hat ein kurzes Sync-Fang-Zittern (±1.5 %) und
-einen stärkeren Bloom (1.6 → 1.35 → 1, saturate 1.3).
+Der sichtbare Unterschied zu `linie-punkt` ist der **Punkt-Solo-Moment**:
+Die neue Seite blüht erst bei 520 ms auf — dazwischen (260–520 ms) glimmt
+der Leuchtpunkt **allein auf schwarzem Grund** (größerer Punkt, hellerer
+und länger stehender Phosphor-Schein). Das Einschalten hat ein spürbares
+Sync-Fang-Zittern (±2.5 % über 260 ms) und einen stärkeren Bloom
+(1.7 → 1.4 → 1, saturate 1.35).
+
+```
+0      260ms         520ms              780ms
+|-------|-------------|------------------|
+ Kollaps  PUNKT SOLO    Aufbau mit Bloom
+ zu Linie (glimmt allein + Sync-Zittern
+ & Punkt  auf Schwarz)
+```
 
 ## Choreografie mit dem Drawer
 

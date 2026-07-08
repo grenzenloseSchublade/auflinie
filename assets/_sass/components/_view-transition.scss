@@ -188,12 +188,16 @@ html.vt-capture body::before {
   // Leuchtpunkt. Der Phosphor-Schimmer kommt als radialer Puls in
   // Bildmitte (background-size-Animation — Position/Größe sind
   // interpolierbar, eine Fläche blitzt nie).
+  // "voll" unterscheidet sich SICHTBAR durch den Punkt-Solo-Moment: die
+  // neue Seite kommt erst bei 520ms — dazwischen (260-520ms) glimmt der
+  // Leuchtpunkt ALLEIN auf schwarzem Grund (bei linie-punkt blüht die
+  // Seite schon bei 380ms ins Glimmen hinein und verdeckt es größtenteils)
   $voll: $crt-variante == "voll";
-  $out-dur: if($voll, 700ms, 460ms); // Kollaps 0-260ms, danach Punkt-Nachglimmen
+  $out-dur: if($voll, 760ms, 460ms); // Kollaps 0-260ms, danach Punkt-Nachglimmen
   $dot-delay: 240ms; // Puls setzt ein, wenn der Punkt „einschlägt"
-  $dot-dur: if($voll, 450ms, 220ms);
-  $on-delay: 380ms; // neue Seite blüht auf, während der Punkt noch glimmt
-  $on-dur: if($voll, 200ms, 180ms);
+  $dot-dur: if($voll, 520ms, 220ms);
+  $on-delay: if($voll, 520ms, 380ms);
+  $on-dur: if($voll, 260ms, 180ms);
 
   html:active-view-transition-type(crt)::view-transition {
     background:
@@ -236,8 +240,9 @@ html.vt-capture body::before {
   // Nachglimmen füllt den Rest — die Prozentwerte unterscheiden sich
   // deshalb je Variante.
   @if $voll {
-    // 260/700 ≈ 37% Kollaps-Ende; Punkt verglimmt bis 100% unter der
-    // bereits aufgeblühten neuen Seite (wie eine echte Röhre)
+    // 260/760 ≈ 34% Kollaps-Ende; der Punkt ist größer (5% Breite) und
+    // hält seine Helligkeit bis ~55% (= Solo-Phase auf schwarzem Grund),
+    // bevor er verglimmt — der Rest läuft unter der aufblühenden Seite aus
     @keyframes crt-off-punkt {
       0% {
         transform: scale(1, 1);
@@ -245,31 +250,31 @@ html.vt-capture body::before {
         opacity: 1;
       }
 
-      17% {
+      16% {
         transform: scale(1.02, 0.006);
         filter: brightness(4);
         animation-timing-function: cubic-bezier(0.32, 0, 0.67, 0);
       }
 
-      23% {
-        transform: scale(0.85, 0.004);
+      22% {
+        transform: scale(0.85, 0.005);
         filter: brightness(6);
       }
 
-      37% {
-        transform: scale(0.02, 0.003);
-        filter: brightness(12);
-        opacity: 0.85;
+      34% {
+        transform: scale(0.05, 0.005);
+        filter: brightness(14);
+        opacity: 1;
       }
 
-      70% {
-        transform: scale(0.012, 0.003);
-        filter: brightness(9);
-        opacity: 0.5;
+      55% {
+        transform: scale(0.04, 0.004);
+        filter: brightness(12);
+        opacity: 0.9;
       }
 
       100% {
-        transform: scale(0.008, 0.003);
+        transform: scale(0.015, 0.003);
         filter: brightness(6);
         opacity: 0;
       }
@@ -310,18 +315,24 @@ html.vt-capture body::before {
 
   // Radialer Phosphor-Puls in Bildmitte: wächst schnell auf, klingt
   // exponentiell ab (background-size ist animierbar — der Gradient selbst
-  // bleibt konstant)
+  // bleibt konstant). "voll": größerer Schein, hält länger (Solo-Phase)
   @keyframes crt-phosphor-dot {
     0% {
       background-size: 0 0;
     }
 
     20% {
-      background-size: 16vmin 11vmin;
+      background-size: if($voll, 26vmin 18vmin, 16vmin 11vmin);
+    }
+
+    @if $voll {
+      55% {
+        background-size: 18vmin 12vmin;
+      }
     }
 
     100% {
-      background-size: 2vmin 1.4vmin;
+      background-size: if($voll, 3vmin 2vmin, 2vmin 1.4vmin);
     }
   }
 }
@@ -347,7 +358,8 @@ html.vt-capture body::before {
 }
 
 @if $crt-variante == "voll" {
-  // Wie crt-on-bloom, plus Sync-Fang-Zittern (±1.5%) und stärkerer Bloom
+  // Wie crt-on-bloom, plus spürbares Sync-Fang-Zittern (±2.5%, über 260ms
+  // statt 200ms — jede Phase bekommt Zeit) und stärkerer Bloom
   @keyframes crt-on-voll {
     0% {
       transform: scaleY(0.004);
@@ -355,19 +367,24 @@ html.vt-capture body::before {
       opacity: 1;
     }
 
-    15% {
-      transform: scaleY(1) translateY(1.5%);
-      filter: brightness(1.6) saturate(1.3);
+    14% {
+      transform: scaleY(1) translateY(2.5%);
+      filter: brightness(1.7) saturate(1.35);
     }
 
-    25% {
-      transform: scaleY(1) translateY(-1%);
-      filter: brightness(1.45) saturate(1.3);
+    30% {
+      transform: scaleY(1) translateY(-1.6%);
+      filter: brightness(1.5) saturate(1.3);
     }
 
-    55% {
+    45% {
+      transform: scaleY(1) translateY(0.6%);
+      filter: brightness(1.4) saturate(1.25);
+    }
+
+    60% {
       transform: scaleY(1) translateY(0);
-      filter: brightness(1.35) saturate(1.2);
+      filter: brightness(1.3) saturate(1.15);
     }
 
     100% {
