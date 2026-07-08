@@ -263,9 +263,18 @@
         }
     }
 
-    // Scrollspy: aktiver Link fett in dezentem Cyan (Nutzerwunsch —
+    // Theme-Regel ".toc .active a" (heller, fast weißer Hintergrund +
+    // dunkler Text) neutralisieren — sie trifft als Descendant-Regel auch
+    // alle Unterlinks eines aktiven Kapitels
+    .active a {
+        background-color: transparent;
+        color: $fg-subtle;
+    }
+
+    // Scrollspy: aktiver Link selbst fett in dezentem Cyan (Nutzerwunsch —
     // volles Cyan war zu krass)
     .active > a {
+        background-color: transparent;
         color: rgba($link-color, 0.75);
         font-weight: 700;
     }
