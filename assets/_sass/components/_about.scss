@@ -1,128 +1,29 @@
 // About-Seite Komponenten
-// Styles für die About-Seite und ihre Unterkomponenten
+// Styles für die Über-mich-Seite: Epigraphe, Motto und Kontakt.
+// Die Karten-Grids (Interessen/Skills/Zitate) entfielen mit dem Umbau
+// auf erzählende Abschnitte.
 
-// Container für die About-Seite
-.about-container {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 2rem;
+// Epigraph am Abschnittsanfang: keine Karte, nur Hairline und Zurückhaltung
+.section-epigraph {
+  margin: 0.4rem 0 1.6rem;
+  padding: 0.2rem 0 0.2rem 1.1rem;
+  border-left: 2px solid $link-color-subtle;
+  background: none;
+  font-style: italic;
 }
 
-// Sektionen auf der About-Seite
-.about-section {
-  @extend %section-base;
-
-  padding: 1.5rem;
-  background-color: rgb(0 0 0 / 20%);
-  border-radius: 5px;
-  box-shadow: 0 1px 3px rgb(0 0 0 / 12%);
-
-  @include hover-effect;
-
-  h2 {
-    @include accent-header(1.35rem);
-
-    margin-bottom: 1.2rem;
-  }
-
-  // Gemeinsame Stile für direkt auf dem Hintergrund dargestellte Sektionen
-  &.section-wer-bin-ich,
-  &.section-meine-interessen,
-  &.section-meine-projekte {
-    background-color: transparent;
-    box-shadow: none;
-    padding: 1rem 0;
-
-    &:hover {
-      transform: none;
-      box-shadow: none;
-    }
-
-    h2 {
-      margin-bottom: 1.5rem;
-    }
-  }
+.section-epigraph__text {
+  margin: 0;
+  color: $fg-muted;
+  line-height: 1.6;
 }
 
-// Anker-Links für die Navigation
-// Gemeinsame Stile für Karten-Überschriften
-.card-heading {
-  @extend %heading-base;
+.section-epigraph__author {
+  @include mono-label(0.72rem, 0.06em);
 
-  border-bottom: 1px solid rgba($card-heading-color, 0.3);
-  padding-bottom: 0.5rem;
-}
-
-// Interessen-Karten
-.interests-container {
-  // Grid statt Flex: gleiche Kartenhöhen, keine verwaiste Vollbreiten-Karte
-  @include grid-container(1rem, 260px);
-}
-
-.interest-card {
-  @extend %card-base;
-
-  flex: 1 1 250px;
-  background-color: rgb(255 255 255 / 3%);
-
-  &:hover {
-    background-color: rgb(255 255 255 / 5%);
-  }
-
-  h3 {
-    @extend .card-heading;
-  }
-}
-
-// Gemeinsame Stile für Karten in speziellen Sektionen
-.section-meine-interessen,
-.section-meine-projekte {
-  .interests-container,
-  .skills-container {
-    margin-top: 2rem;
-  }
-
-  .interest-card,
-  .skill-card {
-    border-left: 3px solid $card-heading-color;
-    border-radius: 0 5px 5px 0;
-    
-    &:hover {
-      background-color: rgb(0 0 0 / 30%);
-    }
-    
-    h3 {
-      font-size: 1.15rem;
-    }
-  }
-}
-
-.interest-list {
-  @extend %list-base;
-}
-
-// Skills-Karten
-.skills-container {
-  @include grid-container(1rem, 260px);
-}
-
-.skill-card {
-  @extend %card-base;
-
-  flex: 1 1 250px;
-  background-color: rgb(255 255 255 / 3%);
-
-  &:hover {
-    background-color: rgb(255 255 255 / 5%);
-  }
-
-  h3 {
-    @extend .card-heading;
-  }
-}
-
-.skill-list {
-  @extend %list-base;
+  margin-top: 0.5rem;
+  color: $fg-subtle;
+  font-style: normal;
 }
 
 // Kontakt-Karten
@@ -192,105 +93,6 @@
   overflow: hidden;
 }
 
-// Zitate
-.quotes-container {
-  @include grid-container;
-}
-
-.quote-container {
-  @extend %quote-base;
-
-  // Karten im Panel-Ton mit dem site-weiten Cyan-subtle-Anker
-  @include card-panel(3px, 0 8px 8px 0);
-
-  transition: border-color 0.2s ease, background-color 0.2s ease;
-
-  &:hover {
-    background-color: $console-panel-bg-hover;
-    border-left-color: rgba($link-color, 0.8);
-  }
-
-  .quote-author {
-    color: $console-heading;
-    font-weight: 600;
-    font-size: 0.9rem;
-  }
-}
-
-// Spezielle Anordnung für Kontakt und Zitate
-.contact-quotes-container {
-  width: 100%;
-  margin: 0.5rem 0;
-  
-  @media (min-width: 992px) {
-    display: flex;
-    flex-direction: row;
-    gap: 1.2rem;
-    align-items: flex-start;
-
-    // Kontakt (nur ein Eintrag) schmal, Zitate bekommen den Raum
-    .about-section {
-      flex: 1 1 62%;
-      margin: 0;
-
-      &:first-child {
-        flex: 0 1 34%;
-      }
-
-      min-width: 0;
-      height: auto;
-
-    }
-  }
-  
-  // Für mobile Ansicht
-  @media (max-width: 991px) {
-    display: flex;
-    flex-direction: column;
-    
-    .about-section {
-      width: 100%;
-      margin: 0.75rem 0;
-      height: auto;
-    }
-  }
-}
-
-// Responsive Anpassungen
-@media (max-width: 768px) {
-  .interests-container,
-  .skills-container,
-  .contact-container,
-  .quotes-container {
-    flex-direction: column;
-  }
-
-  .interest-card,
-  .skill-card,
-  .contact-card,
-  .quote-container {
-    width: 100%;
-    flex: none;
-  }
-}
-
-// Mobile: Karten-Container einspaltig (vorher aus dem entfernten _cv.scss)
-@media (max-width: 768px) {
-  .skills-container,
-  .interests-container {
-    flex-direction: column;
-
-    > * {
-      flex: none;
-      width: 100%;
-    }
-  }
-
-  .quotes-container {
-    grid-template-columns: 1fr;
-  }
-}
-
 // Leitspruch („anima sana in corpore sano")
 .about-motto-wrap {
   display: flex;
@@ -298,8 +100,6 @@
   margin: 2rem 0 0.6rem;
 }
 
-// Spezifität: .about-section p setzt sonst die Schriftgröße zurück
-.about-section p.about-motto,
 .about-motto {
   display: flex;
   align-items: center;

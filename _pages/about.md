@@ -3,7 +3,6 @@ title: "Über mich"
 excerpt: "Ingenieur, Entwickler, Problemlöser — wer hinter den Projekten steckt."
 permalink: /about/
 layout: single
-classes: wide
 author_profile: true
 toc: false
 header:
@@ -12,96 +11,63 @@ header:
   caption: "Der Mensch hinter den Projekten"
 ---
 
-<div class="about-container">
-{% assign sections_by_name = site.data.about | group_by: "section" %}
+Ingenieur und Problemlöser — die technische Seite zeigt sich am besten in den Projekten selbst: in den [interaktiven Fraktalen]({{ site.baseurl }}/mandelbrot/) und in den Beiträgen des [Blogs]({{ site.baseurl }}/posts/). Was dabei trägt, ist die Verbindung von Theorie und Praxis: Für jedes Vorhaben eigne ich mir die Grundlagen Schritt für Schritt an und bleibe dran, bis das Ergebnis steht.
 
-<div class="about-intro">
-  <details>
-    <summary class="about-intro__summary">
-      <div class="about-intro__icon">
-        <i class="fas fa-file-alt" aria-hidden="true"></i>
-      </div>
-      <h3 class="about-intro__title">Über diese Seite – Entstehung und Philosophie</h3>
-    </summary>
-    <div class="about-intro__content">
-      <p>
-        Diese Seite dokumentiert Projekte, Experimente und Gedanken – entstanden aus der Überzeugung, dass technisches Wissen durch Teilen wertvoller wird.
-        <br>
-        <br>
-        Der autodidaktische Ansatz prägt diese Arbeit: Für jedes Projekt eigne ich mir schrittweise die notwendigen Grundlagen an und gehe Herausforderungen so lange an, bis das gewünschte Ergebnis erreicht ist.
-      </p>
-    </div>
-  </details>
+Diese Seite erzählt vom Rest — von dem, was neben Bildschirm und Schreibtisch stattfindet und die Arbeit dort erst möglich macht. Denn konzentriertes Arbeiten und klares Denken entstehen nicht am Rechner, sondern im Leben drumherum: in Bewegung, Erholung und der Aufmerksamkeit für den eigenen Körper.
+
+<div class="about-motto-wrap">
+  <p class="about-motto">anima sana in corpore sano</p>
 </div>
 
-{% for section in site.data.about %}
-  {% if section.section != "Kontakt" and section.section != "Inspirierende Zitate" %}
-    <div class="about-section {{ section.css_class }}">
-      <h2 id="{{ section.section | slugify }}"><i class="fas fa-{{ section.icon }}" aria-hidden="true"></i> {{ section.section }}</h2>
+## Gesundes Leben
 
-      {% if section.intro %}
-        <p>{{ section.intro }}</p>
-      {% endif %}
+{% include section-epigraph.html text="Man sollte alles so einfach wie möglich machen, aber nicht einfacher." author="Albert Einstein" %}
 
-      {% if section.content %}
-        <p>{{ section.content }}</p>
-      {% endif %}
-      
-      {% if section.interests %}
-        {% include about-interests.html interests=section.interests %}
-      {% endif %}
-      
-      {% if section.skills %}
-        {% include about-skills.html skill_categories=section.skills %}
-      {% endif %}
+Gesundheit ist kein Projekt mit Endtermin, sondern eine tägliche Praxis aus vielen kleinen Entscheidungen: frisch kochen statt bestellen, bewusst atmen statt durchhetzen, ausreichend schlafen statt noch eine Stunde Bildschirm. Meditation und Atemtechniken helfen, den Kopf zu sortieren — nicht als Ritual um seiner selbst willen, sondern als trainierbare Fähigkeit, Aufmerksamkeit zu lenken.
+
+Das Prinzip dahinter ist einfach: Der Körper ist das System, auf dem alles andere läuft. Wer es pflegt, bekommt Konzentration, Geduld und Energie zurück.
+
+## Sport und Bewegung
+
+{% include section-epigraph.html text="Überzeugen durch Leistung." author="Unbekannt" %}
+
+Am liebsten draußen: mit dem Rad unterwegs — im Alltag wie auf Reisen —, wandernd in der Natur oder auf dem Wasser beim Stand-Up-Paddling, Schwimmen und Surfen. Bewegung im Freien ist die verlässlichste Art, den Kopf freizubekommen: Der Rhythmus aus Strecke, Wetter und Anstrengung holt die Aufmerksamkeit aus dem Grübeln zurück ins Hier.
+
+Nebenbei entsteht dabei, was kein Training im Studio ersetzt: echte Erlebnisse — von der Passhöhe bis zur richtigen Welle.
+
+## Yoga und Calisthenics
+
+{% include section-epigraph.html text="Wer glaubt etwas zu sein, hat aufgehört etwas zu werden." author="Sokrates" %}
+
+Yoga und Calisthenics sind die regelmäßige Basis — zwei Praxen, die sich ergänzen: Calisthenics baut Kraft mit dem eigenen Körpergewicht auf, sauber und ohne Gerätepark; Yoga bringt Beweglichkeit, Balance und die Ruhe, die harte Sätze allein nicht liefern.
+
+Beides belohnt vor allem eines: Geduld. Fortschritt kommt in kleinen Schritten über Monate, nicht über Nacht. Genau das macht die Praxis wertvoll — sie ist ein ehrlicher Spiegel: Was heute nicht geht, zeigt, woran zu arbeiten sich lohnt.
+
+## Was Medizin leisten kann — und was nicht
+
+{% include section-epigraph.html text="Alle Dinge sind Gift, und nichts ist ohne Gift; allein die Dosis macht, dass ein Ding kein Gift ist." author="Paracelsus" %}
+
+Die moderne Medizin ist beeindruckend, wo sie stark ist: in der Akutversorgung, der Diagnostik, der Chirurgie. Zugleich stößt sie dort an Grenzen, wo Gesundheit nicht repariert, sondern gelebt werden muss — bei chronischen Beschwerden, deren Ursachen in Ernährung, Bewegung, Stress und Schlaf liegen. Ein Rezept ist schneller ausgestellt als eine Lebensweise geändert; behandelt wird oft das Symptom, nicht das System.
+
+Daraus folgt keine Ablehnung der Schulmedizin, sondern eine Arbeitsteilung: kritisch nachfragen, Studienlage statt Schlagzeilen — und den Teil selbst übernehmen, den keine Praxis verschreiben kann: den eigenen Alltag.
+
+## Kontakt
+
+Austausch und Zusammenarbeit sind willkommen — am einfachsten über GitHub.
+
+{% comment %}
+  Weitere Kanäle, sobald verfügbar:
+  - E-Mail: kontakt@beispiel.de (mailto:kontakt@beispiel.de), Icon "envelope"
+  - LinkedIn: https://linkedin.com/in/username, Icon "linkedin"
+{% endcomment %}
+<div class="contact-container">
+  <a href="https://github.com/grenzenloseSchublade" class="contact-card" target="_blank" rel="noopener noreferrer" aria-label="GitHub: @grenzenloseSchublade">
+    <div class="contact-icon">
+      {% include brand-icon.html icon="github" %}
     </div>
-  {% endif %}
-{% endfor %}
-
-<!-- Kontakt und Zitate nebeneinander -->
-<div class="contact-quotes-container">
-  {% for section in site.data.about %}
-    {% if section.section == "Kontakt" or section.section == "Inspirierende Zitate" %}
-      <div class="about-section">
-        <h2 id="{{ section.section | slugify }}"><i class="fas fa-{{ section.icon }}" aria-hidden="true"></i> {{ section.section }}</h2>
-        
-        {% if section.content %}
-          <p>{{ section.content }}</p>
-        {% endif %}
-        
-        {% if section.contact_info %}
-          <div class="contact-container">
-            {% include about-contact.html contact_info=section.contact_info %}
-          </div>
-        {% endif %}
-        
-        {% if section.quote %}
-          <div class="quote-container">
-            <div class="quote-text">
-              <p>"{{ section.quote.text }}"</p>
-            </div>
-            <div class="quote-author">
-              <p>— {{ section.quote.author }}</p>
-            </div>
-          </div>
-        {% endif %}
-        
-        {% if section.quotes %}
-          <div class="quotes-container">
-          {% for quote in section.quotes %}
-            <div class="quote-container">
-              <div class="quote-text">
-                <p>"{{ quote.text }}"</p>
-              </div>
-              <div class="quote-author">
-                <p>— {{ quote.author }}</p>
-              </div>
-            </div>
-          {% endfor %}
-          </div>
-        {% endif %}
-      </div>
-    {% endif %}
-  {% endfor %}
+    <div class="contact-info">
+      <span class="contact-type">GitHub</span>
+      <span class="contact-value">@grenzenloseSchublade</span>
+    </div>
+  </a>
 </div>
-</div> 

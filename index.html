@@ -14,28 +14,35 @@ header:
 excerpt: "Mathematik und Technik stecken voller Schönheit. Diese Seite ist mein Versuch, sie sichtbar zu machen — in Projekten, Experimenten und Gedanken."
 ---
 
-<div class="landing-sections">
-  <!-- Über mich Teaser -->
-  <div class="landing-section">
-    <h2><i class="fas fa-user-circle"></i> Über mich</h2>
-    <p>Hintergrund, Arbeitsweise und Interessen — ein kurzes Porträt.</p>
-    <a href="{{ site.baseurl }}/about/" class="btn btn--primary">Mehr erfahren</a>
-  </div>
+<section class="home-intro">
+  <p>
+    Theorie hat ihren eigenen Reiz — man kann sich in ihr verlieren, und manchmal ist das genau
+    richtig: In Philosophie und Utopie ist der Gedanke selbst das Werk, und Grundlagenforschung
+    macht Umsetzung überhaupt erst möglich. Und gibt es für die Forschung eine schönere
+    Bestätigung, als wenn die Anwendung am Ende genau so funktioniert wie erdacht? Doch wo Ideen
+    anwendbar sind, gilt: Erst eigene Erfahrung macht aus Gelesenem Können — Erfahrung schlägt
+    reine Buchtheorie. Diese Seite dokumentiert genau diesen Weg: Projekte, Experimente und
+    Gedanken rund um Mathematik und Technik, geteilt in der Überzeugung, dass Wissen durch
+    Teilen wertvoller wird.
+  </p>
+</section>
 
-  <!-- CV Teaser -->
-  <div class="landing-section">
-    <h2><i class="fas fa-graduation-cap"></i> Lebenslauf</h2>
-    <p>Berufserfahrung und Ausbildung im Detail, von den Anfängen bis heute.</p>
-    <a href="{{ site.baseurl }}/cv/" class="btn btn--primary">CV ansehen</a>
+<section class="fractal-showcase" id="fraktale">
+  <a class="fractal-showcase__media" href="{{ site.baseurl }}/mandelbrot/" aria-label="Zur interaktiven Fraktal-Erkundung">
+    <img src="{{ '/assets/images/mandelbrot-preview.jpg' | relative_url }}"
+         alt="Ausschnitt der Mandelbrot-Menge mit spiralförmigen Ausläufern"
+         loading="lazy" width="1920" height="1080">
+  </a>
+  <div class="fractal-showcase__text">
+    <h2>Die Mandelbrot-Menge, interaktiv</h2>
+    <p>
+      Unendliche Komplexität aus einer einfachen Formel. Der Explorer rendert Mandelbrot-
+      und Julia-Mengen direkt im Browser — hineinzoomen, Parameter verändern und die
+      Strukturen entdecken, die dabei sichtbar werden.
+    </p>
+    <a href="{{ site.baseurl }}/mandelbrot/" class="btn btn--primary">Fraktale erkunden</a>
   </div>
-
-  <!-- Projekte Teaser -->
-  <div class="landing-section">
-    <h2><i class="fas fa-code"></i> Projekte</h2>
-    <p>Notizen und Experimente aus Technik und Mathematik, laufend erweitert.</p>
-    <a href="{{ site.baseurl }}/posts/" class="btn btn--primary">Projekte entdecken</a>
-  </div>
-</div>
+</section>
 
 <h3 class="archive__subtitle">Neueste Beiträge</h3>
 

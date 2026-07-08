@@ -1,26 +1,66 @@
 // Styles für die Startseite
 
-// Container für die Landingpage-Sektionen
-.landing-sections {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    margin-bottom: $section-spacing;
+// Positionierungs-Statement unter dem Hero
+.home-intro {
+  max-width: 46rem;
+  margin: 0 auto $section-spacing;
+  text-align: center;
 
-    @media (max-width: 768px) {
-        flex-direction: column;
-    }
+  p {
+    margin: 0;
+    color: $fg-muted;
+    font-size: 1.08rem;
+    line-height: 1.7;
+  }
+}
+
+// Fraktale-Showcase: Vorschaubild + Teaser als ruhiges Panel;
+// Interaktion nur über dezente Border-Aufhellung, kein Transform
+.fractal-showcase {
+  @include card-panel(0);
+
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+  gap: 1.5rem;
+  align-items: center;
+  padding: 1.5rem;
+  margin-bottom: $section-spacing;
+  transition: border-color $standard-transition;
+
+  &:hover {
+    border-color: $border-accent-hover;
+  }
+
+  h2 {
+    @include accent-header(1.35rem);
+
+    margin-top: 0;
+  }
+
+  p {
+    color: $fg-muted;
+    line-height: 1.65;
+  }
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    padding: 1rem;
+  }
+}
+
+.fractal-showcase__media {
+  display: block;
+
+  img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 6px;
+  }
 }
 
 // Zentrieren von Elementen
 .text-center {
-    text-align: center;
-    margin: $section-spacing 0;
-}
-
-// Sektions-Header der Startseite im site-weiten Akzent-Stil
-.landing-section h2 {
-  @include accent-header(1.25rem);
-
-  margin-bottom: 1rem;
+  text-align: center;
+  margin: $section-spacing 0;
 }

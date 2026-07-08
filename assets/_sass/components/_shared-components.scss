@@ -1,20 +1,4 @@
-// Gemeinsame Komponenten für About und CV Seiten
-// Diese Datei enthält wiederverwendbare Stile, die in verschiedenen Komponenten genutzt werden
-
-// Gemeinsame Basis für Karten
-%card-base {
-  border-radius: 8px;
-  padding: 1rem;
-  background-color: $console-panel-bg;
-  border: 1px solid $console-panel-border;
-  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease, background-color 0.3s ease;
-
-  &:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 4px 10px rgb(0 0 0 / 25%);
-    border-color: $border-accent-hover;
-  }
-}
+// Gemeinsame Komponenten und Mixins (sitewide genutzt)
 
 // Gemeinsame Basis für Abschnitte
 %section-base {
@@ -31,27 +15,6 @@
   }
 }
 
-// Gemeinsame Basis für Überschriften
-%heading-base {
-  margin-top: 0;
-  margin-bottom: 0.5rem;
-  color: $card-heading-color;
-  
-  i {
-    margin-right: 0.5rem;
-  }
-}
-
-// Gemeinsame Basis für Listen
-%list-base {
-  margin: 0.5rem 0 0;
-  padding-left: 1.2rem;
-  
-  li {
-    margin-bottom: 0.5rem;
-  }
-}
-
 // Gemeinsame Hover-Effekte
 @mixin hover-effect($transform-value: -5px) {
   transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
@@ -59,54 +22,6 @@
   &:hover {
     transform: translateY($transform-value);
     box-shadow: 0 4px 8px rgb(0 0 0 / 20%);
-  }
-}
-
-// Gemeinsame Basis für Container mit Flexbox
-@mixin flex-container($gap: 1rem, $min-width: 250px) {
-  display: flex;
-  flex-wrap: wrap;
-  gap: $gap;
-  margin-top: 1rem;
-  
-  > * {
-    flex: 1 1 $min-width;
-  }
-}
-
-// Gemeinsame Basis für Grid-Container
-@mixin grid-container($gap: 1rem, $min-width: 250px) {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax($min-width, 1fr));
-  gap: $gap;
-  margin-top: 1rem;
-}
-
-// Gemeinsame Stile für Zitate
-%quote-base {
-  margin: 1rem 0;
-  padding: 1rem;
-  border-radius: 5px;
-  
-  .quote-text {
-    margin: 0;
-    padding: 0;
-    font-style: italic;
-    line-height: 1.6;
-    
-    p {
-      margin: 0;
-    }
-  }
-  
-  .quote-author {
-    margin-top: 0.8rem;
-    text-align: right;
-    font-weight: bold;
-    
-    p {
-      margin: 0;
-    }
   }
 }
 

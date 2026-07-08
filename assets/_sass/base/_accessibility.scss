@@ -45,12 +45,8 @@ html {
 
     // Hover-Transformationen deaktivieren (außer Neon-Elemente)
     .archive__item,
-    .landing-section,
-    .interest-card,
-    .skill-card,
     .contact-card,
-    .quote-container,
-    .about-section,
+    .fractal-showcase,
     .btn {
         transform: none !important;
         transition: none !important;

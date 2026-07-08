@@ -47,6 +47,7 @@ const CACHE_URLS = [
   './assets/vendor/gumshoe.min.js',
   // Sonstiges
   './assets/images/background.jpg',
+  './assets/images/mandelbrot-preview.jpg',
   './assets/webfonts/fa-solid-900-subset.woff2',
   './assets/webfonts/fa-regular-400-subset.woff2',
   './assets/webfonts/fa-brands-400-subset.woff2'
