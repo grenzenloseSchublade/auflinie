@@ -9,6 +9,9 @@
     <style>
       /* Basis-Layout für sofortige Darstellung */
       *,*::before,*::after{box-sizing:border-box}
+      {% comment %} SYNC-PFLICHT: html 16px (FOUC-Basis), .site-title 1.8em und
+      .page__title 2em spiegeln Werte aus assets/_sass/ (variables/_typography.scss,
+      _masthead.scss, Theme) — bei Änderung dort hier manuell nachziehen. {% endcomment %}
       html{font-size:16px;-webkit-text-size-adjust:100%}
       /* Masthead-Höhe: identisch zu variables/_css-properties.scss (74px mobil / 88px ab 768px),
          sonst springt der Inhalt beim Laden von main.css (CLS) */
