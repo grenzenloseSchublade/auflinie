@@ -22,14 +22,21 @@
 
 // Group MIT abschalten: die UA-Default-Animation (0.25s Geometrie-Morph)
 // staucht sonst den Header bei minimal abweichender Geometrie.
-// old ausblenden: plus-lighter-Doppelbelichtung überhellte den Text.
+// Sichtbar bleibt der ALTE Snapshot (eingeschwungener Zustand = exakt das,
+// was gerade auf dem Schirm ist → kein Sprung am Start); der NEUE Snapshot
+// wird versteckt, denn er entsteht VOR dem Nav-JS der Zielseite (Links noch
+// nicht in den Burger kollabiert, Neon uninitialisiert) — ihn zu zeigen las
+// sich als „Header wird neu geladen". Erst am Transitionsende übernimmt der
+// Live-Header, dessen JS ist nach den ~360-510ms längst durch — nahtlos.
+// (Nur eine Seite sichtbar: verhindert zugleich die plus-lighter-
+// Doppelbelichtung.)
 ::view-transition-group(masthead),
 ::view-transition-image-pair(masthead),
-::view-transition-new(masthead) {
+::view-transition-old(masthead) {
   animation: none;
 }
 
-::view-transition-old(masthead) {
+::view-transition-new(masthead) {
   animation: none;
   display: none;
 }
