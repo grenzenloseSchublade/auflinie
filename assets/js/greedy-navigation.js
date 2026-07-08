@@ -117,6 +117,10 @@
       document.body.classList.remove('menu-open');
     }
 
+    // Für andere Skripte (tv-switch.js): Drawer gezielt schließen können,
+    // ohne die Klassen-Logik zu duplizieren
+    window.GreedyNav = { close: closeMenu };
+
     btn.addEventListener('click', function() {
       if (hlinks.classList.contains('hidden')) {
         openMenu();

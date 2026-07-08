@@ -32,10 +32,34 @@
 
   window.addEventListener('pageswap', function (e) {
     if (!e.viewTransition || !e.activation || !e.activation.entry) return;
-    if (isHeroSwitch(location.href, e.activation.entry.url) && heroSichtbar()) {
+    if (isHeroSwitch(location.href, e.activation.entry.url) && heroFuellt()) {
       e.viewTransition.types.add('crt');
     }
   });
+
+  // Drawer erst schließen, DANN umschalten: der pageswap-Schnappschuss
+  // entsteht im Navigationsmoment — ein offener Burger-Drawer wäre Teil
+  // des Schnappschusses und racet sichtbar mit der CRT-Animation.
+  // Capture-Phase, damit preventDefault vor der Default-Navigation greift;
+  // der greedy-nav-Close läuft zusätzlich, GreedyNav.close() ist idempotent.
+  document.addEventListener('click', function (e) {
+    if (!document.body.classList.contains('menu-open')) return;
+    var link = e.target && e.target.closest ? e.target.closest('.greedy-nav .hidden-links a') : null;
+    if (!link || !isHeroSwitch(location.href, link.href)) return;
+    e.preventDefault();
+
+    var hlinks = document.querySelector('.greedy-nav .hidden-links');
+    var done = false;
+    function go() {
+      if (done) return;
+      done = true;
+      location.href = link.href;
+    }
+
+    if (window.GreedyNav) window.GreedyNav.close();
+    if (hlinks) hlinks.addEventListener('transitionend', go, { once: true });
+    setTimeout(go, 350); // Fallback (z. B. gedrosselte Transition bei reduced motion)
+  }, true);
 
   window.addEventListener('pagereveal', function (e) {
     if (!e.viewTransition || !e.activation || !e.activation.from) return;
