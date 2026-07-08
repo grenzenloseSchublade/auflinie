@@ -40,8 +40,8 @@
     linear-gradient(
       90deg,
       transparent,
-      rgba($hover-color, 0.35) 12%,
-      rgba($hover-color, 0.35) 88%,
+      $hover-color-subtle 12%,
+      $hover-color-subtle 88%,
       transparent
     )
     top / 100% 1px no-repeat;
@@ -418,7 +418,7 @@
 }
 
 .cv-skills.has-selection .cv-skills__selection-info {
-  border-left-color: rgba($hover-color, 0.6);
+  border-left-color: $hover-color-subtle;
 }
 
 // Sprachen: Chips in der Formensprache der Fähigkeiten
