@@ -11,7 +11,7 @@
 
 .site-footer__nav {
   font-family: $mono-font-stack;
-  font-size: 0.75rem;
+  font-size: $fs-label; // 0.75→0.72 (R, Token-Skala)
   letter-spacing: 0.05em;
   display: flex;
   align-items: center;

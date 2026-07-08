@@ -60,7 +60,7 @@
 }
 
 .contact-icon {
-  font-size: 1.1rem;
+  font-size: $fs-md; // 1.1→1.125 (R, Token-Skala)
   width: 1.8rem;
   height: 1.8rem;
   display: flex;

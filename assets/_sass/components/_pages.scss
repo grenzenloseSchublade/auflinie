@@ -74,7 +74,7 @@
   grid-row: 1;
   color: $console-heading;
   opacity: 0.85;
-  font-size: 1.1rem;
+  font-size: $fs-md; // 1.1→1.125 (R, Token-Skala)
   margin-top: 0.15rem;
 }
 

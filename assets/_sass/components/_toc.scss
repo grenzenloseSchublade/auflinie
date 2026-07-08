@@ -476,7 +476,7 @@
     }
     
     .toc__menu {
-        font-size: 0.875rem; // 14px - kompakter auf Desktop
+        font-size: $fs-body; // 0.875→0.9 (R, Token-Skala) // 14px - kompakter auf Desktop
         
         a {
             padding: 0.375rem 0.75rem; // 6px 12px
@@ -505,7 +505,7 @@
 }
 
 .wide .toc__menu {
-    font-size: 0.875rem;
+    font-size: $fs-body; // 0.875→0.9 (R, Token-Skala)
 
     a {
         padding: 0.375rem 0.75rem;

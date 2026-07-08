@@ -79,7 +79,7 @@ $sw-toast-z: 10020;
   flex: 1;
   min-width: 10rem;
   margin: 0;
-  font-size: 0.88rem;
+  font-size: $fs-body; // 0.88→0.9 (R, Token-Skala)
   font-weight: 600;
   line-height: 1.3;
 }

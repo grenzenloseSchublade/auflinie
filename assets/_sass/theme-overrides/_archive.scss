@@ -52,7 +52,7 @@
 .entries-grid .page__meta {
   font-family: $mono-font-stack;
   font-variant-numeric: tabular-nums;
-  font-size: 0.7rem;
+  font-size: $fs-label; // 0.7→0.72 (R, Token-Skala)
   letter-spacing: 0.03em;
   color: $fg-subtle;
 }

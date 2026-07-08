@@ -122,7 +122,7 @@
   h6 {
     margin: 0 0 6px;
     color: #d1f7ff;
-    font-size: 0.875rem;
+    font-size: $fs-body; // 0.875→0.9 (R, Token-Skala)
     font-weight: 500;
   }
 
