@@ -363,4 +363,17 @@
       );
     });
   });
+
+  // Dauer-Animationen (box-/text-shadow = Paint-teuer) pausieren, sobald der
+  // Schriftzug aus dem Viewport gescrollt ist — die Klasse wirkt per CSS nur,
+  // wenn keine Choreografie läuft (siehe _neon-base.scss), damit deren
+  // Timer-Zustandsmaschine nicht aus dem Tritt gerät
+  if ("IntersectionObserver" in window) {
+    const paintObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        entry.target.classList.toggle("neon-paused", !entry.isIntersecting);
+      });
+    });
+    document.querySelectorAll(".neon-name").forEach((el) => paintObserver.observe(el));
+  }
 })();

@@ -27,9 +27,10 @@ html {
 // mit Ausnahmen: Neon-Orbit-Trigger und CRT-Hero (läuft immer; Lesemodus nur per Power).
 
 @media (prefers-reduced-motion: reduce) {
-    // Deaktiviere Animationen global, ABER mit Ausnahme der Neon-Orbit-Animation
-    // Die Neon-Orbit-Animation auf der Startseite ist ein wichtiges Designelement
-    // und wird nur bei Benutzerinteraktion ausgelöst
+    // Deaktiviere Animationen global, ABER mit Ausnahme des Neon-Schriftzugs:
+    // Basis-Glow/-Flicker/-Puls laufen BEWUSST permanent — auch bei
+    // reduced-motion (Designentscheidung, Juli 2026 vom Nutzer bestätigt);
+    // nur die Orbit-Choreografie ist zusätzlich nutzerinitiiert
     // CRT-Hero (Roll, Tube-Preboot/Boot, Scanlines …): von der Drossel ausnehmen — Abschaltung nur per Lesemodus (Power), s. _hero.scss
     *:not(.neon-umlaut, .neon-glow, .neon-name, .neon-orbit-trigger, .page__hero-crt-roll, .page__hero-crt-layer, .page__hero-grain, .page__hero-crt-noise, .page__hero--overlay),
     *:not(.neon-umlaut, .neon-glow, .neon-name, .neon-orbit-trigger, .page__hero-crt-roll, .page__hero-crt-layer)::before,

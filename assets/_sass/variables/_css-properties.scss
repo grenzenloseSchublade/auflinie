@@ -68,15 +68,9 @@
   // ============================================
   // Neon Orbit Animation
   // ============================================
-  --neon-orbit-on: 0;
-  --neon-orbit-state: paused;
-  --neon-orbit-return-state: paused;
-  --neon-orbit-return-on: 0;
   --neon-orbit-color-mode: default;
   --neon-orbit-start-angle-before: 360deg; // Spiral-Endposition (0° + 1 Umdrehung)
   --neon-orbit-start-angle-after: 540deg;  // Spiral-Endposition (180° + 1 Umdrehung)
-  --neon-orbit-finish-state: paused;
-  --neon-orbit-popin-state: paused;
   --neon-orbit-period: 6.8s;
   --neon-orbit-finish-duration: 3.2s;
   --neon-orbit-pop-duration: 0.5s;
@@ -88,7 +82,7 @@
   // 2-Click: +0.29em (Mitte "u" = 0.04 + 0.25)
   // 3-Click: -0.5em (unterster Punkt bei -0.04 + (-0.5) + 0.49 = -0.05 → über "u")
   --neon-orbit-center-y: 0.29em; // Default: Mitte des "u" (2-Click)
-  --neon-orbit-origin-y: 0.5em; // Transform-origin Y (nicht mehr aktiv genutzt)
+  --neon-orbit-origin-y: 0.5em; // Transform-origin Y (genutzt in _neon-base.scss)
   --neon-orbit-start-offset-before: -0.12em;
   --neon-orbit-start-offset-after: 0.12em;
   --neon-orbit-radius-em: 0.4;
@@ -96,7 +90,6 @@
 
   // Ramp-Duration: Zeit für die Spiral-Start-Animation (kürzer = schneller)
   --neon-orbit-ramp-duration: 3.25s;
-  --neon-orbit-spiral-rotations: 1; // 1 Umdrehung während Spiral-Start
   --neon-orbit-return-duration: 1.0s;
   --neon-orbit-start-delay: 1.6s;
   --neon-orbit-scatter-duration: 3s; // Dauer der Scatter-Animation (Punkte fliegen wild)
