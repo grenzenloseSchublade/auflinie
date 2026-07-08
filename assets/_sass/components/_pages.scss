@@ -78,11 +78,13 @@
   margin-top: 0.15rem;
 }
 
-.guide-banner__text {
+// p-qualifiziert (0,2,1): Theme .page__content p (1em, margin 1.3em)
+// machte font-size und margin: 0 sonst wirkungslos
+.guide-banner p.guide-banner__text {
   grid-column: 2;
   min-width: 0;
   margin: 0;
-  font-size: 0.92rem;
+  font-size: $fs-body;
   color: rgb(255 255 255 / 82%);
 
   strong {

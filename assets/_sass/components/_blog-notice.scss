@@ -52,9 +52,11 @@
   margin: 0 0 0.5rem;
 }
 
-.blog-notice__text {
+// p-qualifiziert (0,2,1): Theme .page__content p (1em, margin 1.3em)
+// machte font-size und margin sonst wirkungslos
+.blog-notice__panel p.blog-notice__text {
   margin: 0 0 0.9rem;
-  font-size: 0.92rem;
+  font-size: $fs-body;
   line-height: 1.5;
   color: $fg-muted;
 }

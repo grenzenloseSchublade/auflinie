@@ -34,8 +34,10 @@
   }
 }
 
-.skill-graph__note {
-  font-size: 0.8rem;
+// p-qualifiziert (0,2,1): die Theme-Regel .page__content p (1em) und die
+// CV-Absatz-Regel machten font-size/line-height/margin sonst wirkungslos
+.skill-graph p.skill-graph__note {
+  font-size: $fs-ui;
   line-height: 1.5;
   color: $fg-subtle;
   margin: 0 0 0.7rem;
@@ -54,8 +56,11 @@
   }
 }
 
-.skill-graph__context {
-  font-size: 0.85rem;
+// p-qualifiziert wie die Note — erst dadurch stimmt auch der Höhen-calc:
+// er rechnet mit 1.5em der EIGENEN Größe (vorher gewann Theme 1em/1.6
+// und die dritte Zeile clippte)
+.skill-graph p.skill-graph__context {
+  font-size: $fs-body-sm;
   line-height: 1.5;
   color: $fg-subtle;
 
