@@ -1,13 +1,26 @@
 // =============================================================================
 // Cross-Document View Transitions: CRT-Umschalt + Drawer-Exit
 // =============================================================================
-// Aktiv nur mobil + ohne reduced-motion. CRT-Type "crt" wird pro Navigation
-// gesetzt, wenn die alte Seite ganz oben stand (pageswap -> sessionStorage ->
-// pagereveal, siehe tv-switch.js + head/custom.html); Type "drawer" schiebt
-// alle CRT-Delays um +150ms, damit der Drawer-Exit (200ms) zuerst wirkt
-// (~50ms Überlappung, Material-Choreografie: kein Stillstand zwischen den
-// Phasen). Ohne Types: UA-Default-Crossfade — der Masthead steht immer.
+// Aktiv nur mobil + ohne reduced-motion. Type "crt" wird pro Navigation
+// gesetzt, wenn die alte Seite oben stand UND ein Bereichswechsel vorliegt
+// UND der Cooldown abgelaufen ist (Dosierung in tv-switch.js); Type "drawer"
+// schiebt alle CRT-Starts um den Drawer-Exit + 70ms-Beat nach hinten.
+// Ohne Types: UA-Default-Crossfade — der Masthead steht immer.
+// -----------------------------------------------------------------------------
+// EFFEKT-VARIANTEN: drei Ausbaustufen des Röhren-Ausschaltens, per
+// $crt-variante umschaltbar (nur die gewählte wird kompiliert). Details,
+// Timelines und Recherche-Quellen: README-tv-umschalt.md
 /* stylelint-disable selector-pseudo-element-no-unknown, selector-pseudo-class-no-unknown, at-rule-no-unknown */
+
+// "dezent"      — heutige Struktur, aber smooth (easeOutQuint) + Einschalt-Bloom
+// "linie-punkt" — V-Kollaps -> Linie -> Leuchtpunkt mit Nachglimmen (EMPFOHLEN)
+// "voll"        — wie linie-punkt + langes Nachglimmen unter der neuen Seite,
+//                 Sync-Zittern und stärkerer Bloom beim Einschalten
+$crt-variante: "linie-punkt" !default;
+
+// Drawer-Fall: Exit 200ms + 70ms Beat (NN/g: >40ms wahrnehmbar, <100ms
+// verschmilzt die Kette zu EINER Geste) — alle CRT-Starts verschieben sich
+$crt-drawer-offset: 270ms;
 
 @media (max-width: 768px) and (prefers-reduced-motion: no-preference) {
   @view-transition {
@@ -27,7 +40,7 @@
 // wird versteckt, denn er entsteht VOR dem Nav-JS der Zielseite (Links noch
 // nicht in den Burger kollabiert, Neon uninitialisiert) — ihn zu zeigen las
 // sich als „Header wird neu geladen". Erst am Transitionsende übernimmt der
-// Live-Header, dessen JS ist nach den ~360-510ms längst durch — nahtlos.
+// Live-Header, dessen JS ist nach den ~360-700ms längst durch — nahtlos.
 // (Nur eine Seite sichtbar: verhindert zugleich die plus-lighter-
 // Doppelbelichtung.)
 ::view-transition-group(masthead),
@@ -43,9 +56,9 @@
 
 // Der Masthead ist teiltransparent (kein eigener Hintergrund, nur
 // backdrop-blur — der in Snapshots NICHT angewendet wird): ohne eigenen
-// Grund scheinen Kollaps-Aufblitzen (brightness 6) und Phosphor-Grün
-// durch die Titelzeile („Header blinkt"). Fester Grund in der
-// Zwischengrund-Farbe der Transition — optisch identisch, aber blickdicht.
+// Grund scheinen Kollaps-Aufblitzen und Phosphor durch die Titelzeile
+// („Header blinkt"). Fester Grund in der Zwischengrund-Farbe der
+// Transition — optisch identisch, aber blickdicht.
 html:active-view-transition-type(crt)::view-transition-group(masthead) {
   background-color: #10141a;
 }
@@ -95,93 +108,271 @@ html.vt-capture body::before {
   opacity: 0;
 }
 
-// --- CRT-Umschalt (Type "crt") --------------------------------------------------
-// Zwischengrund dunkel; Phosphor-Blink als eigene Blende auf ::view-transition
-// (Charakter wie heroCrtModeFlash). Delay 170ms: Blink-Peak klar NACH dem
-// 150ms-Kollaps („Röhre klappt zu, DANN Blink").
-html:active-view-transition-type(crt)::view-transition {
-  background-color: #10141a;
-  animation: tv-phosphor-blink 140ms ease-out 170ms both;
-}
+// --- CRT-Umschalt (Type "crt") — Variante: siehe $crt-variante oben -------------
 
-html:active-view-transition-type(crt)::view-transition-old(root) {
-  animation: tv-switch-out 150ms steps(4, end) both;
-}
+@if $crt-variante == "dezent" {
+  // Rezept 1 „Dezent verbessert": Struktur wie das Original (V-Kollaps +
+  // Flächen-Blink), aber kontinuierlich statt steps(4) — der reale Kollaps
+  // ist eine Spulen-Entladung, easeOutQuint lässt die helle Linie am Ende
+  // von selbst „stehen". Einschalten mit Bloom-Overshoot statt Treppe.
+  // Timeline: Kollaps 0-190ms · Blink 190-330ms · Aufbau 330-530ms
+  $out-dur: 190ms;
+  $blink-delay: 190ms;
+  $on-delay: 330ms;
 
-// "both" ist hier PFLICHT: das New-Image liegt im Image-Pair ÜBER dem Old —
-// nur mit Backwards-Fill gilt from{opacity:0} schon während des Delays,
-// sonst deckt die neue Seite den Kollaps sofort ab.
-html:active-view-transition-type(crt)::view-transition-new(root) {
-  animation: tv-switch-in 160ms steps(4, start) 200ms both;
-}
-
-// --- Drawer-Variante (Types "crt" UND "drawer"): alles +150ms -------------------
-// Verkettete Pseudoklassen = UND-Verknüpfung; höhere Spezifität überstimmt
-// gezielt nur das animation-delay der Basisregeln. Delay-Phasen halten die
-// Transition am Laufen — der Drawer-Exit (0-200ms) wirkt zuerst.
-html:active-view-transition-type(crt):active-view-transition-type(drawer)::view-transition {
-  animation-delay: 320ms;
-}
-
-html:active-view-transition-type(crt):active-view-transition-type(drawer)::view-transition-old(root) {
-  animation-delay: 150ms;
-}
-
-html:active-view-transition-type(crt):active-view-transition-type(drawer)::view-transition-new(root) {
-  animation-delay: 350ms;
-}
-
-// --- Keyframes (Optik unverändert) ----------------------------------------------
-@keyframes tv-phosphor-blink {
-  0% {
+  html:active-view-transition-type(crt)::view-transition {
     background-color: #10141a;
+    animation: tv-phosphor-blink 140ms ease-out $blink-delay both;
   }
 
-  35% {
-    background-color: rgb(85 240 145 / 42%);
+  html:active-view-transition-type(crt)::view-transition-old(root) {
+    animation: crt-off-dezent $out-dur cubic-bezier(0.23, 1, 0.32, 1) both;
   }
 
-  100% {
-    background-color: #10141a;
+  html:active-view-transition-type(crt)::view-transition-new(root) {
+    animation: crt-on-bloom 200ms cubic-bezier(0.16, 1, 0.3, 1) $on-delay both;
+  }
+
+  // Drawer-Fall: alles + Exit/Beat-Offset
+  html:active-view-transition-type(crt):active-view-transition-type(drawer)::view-transition {
+    animation-delay: $blink-delay + $crt-drawer-offset;
+  }
+
+  html:active-view-transition-type(crt):active-view-transition-type(drawer)::view-transition-old(root) {
+    animation-delay: $crt-drawer-offset;
+  }
+
+  html:active-view-transition-type(crt):active-view-transition-type(drawer)::view-transition-new(root) {
+    animation-delay: $on-delay + $crt-drawer-offset;
+  }
+
+  @keyframes crt-off-dezent {
+    0% {
+      transform: scaleY(1);
+      filter: brightness(1);
+    }
+
+    55% {
+      transform: scaleY(0.006) scaleX(1.04);
+      filter: brightness(4);
+    }
+
+    100% {
+      transform: scaleY(0.004) scaleX(1);
+      filter: brightness(8);
+      opacity: 0.9;
+    }
+  }
+
+  @keyframes tv-phosphor-blink {
+    0% {
+      background-color: #10141a;
+    }
+
+    35% {
+      background-color: rgb(85 240 145 / 42%);
+    }
+
+    100% {
+      background-color: #10141a;
+    }
   }
 }
 
-@keyframes tv-switch-out {
+@if $crt-variante == "linie-punkt" or $crt-variante == "voll" {
+  // Rezept 2/3 „Linie + Leuchtpunkt": physikalisches Phasenmodell (Repair-
+  // FAQ, Android ElectronBeam) — Vertikalablenkung stirbt zuerst (Bild ->
+  // extrem helle Linie), dann bricht die Horizontale zusammen (Linie ->
+  // Punkt in Bildmitte), der Punkt glimmt nach. Alles EINE Animation auf
+  // dem Old-Snapshot: der zusammengeschrumpfte, überhelle Snapshot IST der
+  // Leuchtpunkt. Der Phosphor-Schimmer kommt als radialer Puls in
+  // Bildmitte (background-size-Animation — Position/Größe sind
+  // interpolierbar, eine Fläche blitzt nie).
+  $voll: $crt-variante == "voll";
+  $out-dur: if($voll, 700ms, 460ms); // Kollaps 0-260ms, danach Punkt-Nachglimmen
+  $dot-delay: 240ms; // Puls setzt ein, wenn der Punkt „einschlägt"
+  $dot-dur: if($voll, 450ms, 220ms);
+  $on-delay: 380ms; // neue Seite blüht auf, während der Punkt noch glimmt
+  $on-dur: if($voll, 200ms, 180ms);
+
+  html:active-view-transition-type(crt)::view-transition {
+    background:
+      radial-gradient(
+        circle,
+        rgb(190 255 210 / 90%),
+        rgb(85 240 145 / 50%) 30%,
+        transparent 70%
+      )
+      center / 0 0 no-repeat #10141a;
+    animation: crt-phosphor-dot $dot-dur ease-out $dot-delay both;
+  }
+
+  html:active-view-transition-type(crt)::view-transition-old(root) {
+    animation: crt-off-punkt $out-dur linear both;
+  }
+
+  html:active-view-transition-type(crt)::view-transition-new(root) {
+    @if $voll {
+      animation: crt-on-voll $on-dur cubic-bezier(0.16, 1, 0.3, 1) $on-delay both;
+    } @else {
+      animation: crt-on-bloom $on-dur cubic-bezier(0.16, 1, 0.3, 1) $on-delay both;
+    }
+  }
+
+  // Drawer-Fall: alles + Exit/Beat-Offset
+  html:active-view-transition-type(crt):active-view-transition-type(drawer)::view-transition {
+    animation-delay: $dot-delay + $crt-drawer-offset;
+  }
+
+  html:active-view-transition-type(crt):active-view-transition-type(drawer)::view-transition-old(root) {
+    animation-delay: $crt-drawer-offset;
+  }
+
+  html:active-view-transition-type(crt):active-view-transition-type(drawer)::view-transition-new(root) {
+    animation-delay: $on-delay + $crt-drawer-offset;
+  }
+
+  // Phasen (Anteile der Gesamtdauer): 0-260ms Kollaps ist fix, das
+  // Nachglimmen füllt den Rest — die Prozentwerte unterscheiden sich
+  // deshalb je Variante.
+  @if $voll {
+    // 260/700 ≈ 37% Kollaps-Ende; Punkt verglimmt bis 100% unter der
+    // bereits aufgeblühten neuen Seite (wie eine echte Röhre)
+    @keyframes crt-off-punkt {
+      0% {
+        transform: scale(1, 1);
+        filter: brightness(1);
+        opacity: 1;
+      }
+
+      17% {
+        transform: scale(1.02, 0.006);
+        filter: brightness(4);
+        animation-timing-function: cubic-bezier(0.32, 0, 0.67, 0);
+      }
+
+      23% {
+        transform: scale(0.85, 0.004);
+        filter: brightness(6);
+      }
+
+      37% {
+        transform: scale(0.02, 0.003);
+        filter: brightness(12);
+        opacity: 0.85;
+      }
+
+      70% {
+        transform: scale(0.012, 0.003);
+        filter: brightness(9);
+        opacity: 0.5;
+      }
+
+      100% {
+        transform: scale(0.008, 0.003);
+        filter: brightness(6);
+        opacity: 0;
+      }
+    }
+  } @else {
+    // 260/460 ≈ 57% Kollaps-Ende; kompaktes Nachglimmen bis 460ms
+    @keyframes crt-off-punkt {
+      0% {
+        transform: scale(1, 1);
+        filter: brightness(1);
+        opacity: 1;
+      }
+
+      26% {
+        transform: scale(1.02, 0.006);
+        filter: brightness(4);
+        animation-timing-function: cubic-bezier(0.32, 0, 0.67, 0);
+      }
+
+      35% {
+        transform: scale(0.85, 0.004);
+        filter: brightness(6);
+      }
+
+      57% {
+        transform: scale(0.02, 0.003);
+        filter: brightness(12);
+        opacity: 0.85;
+      }
+
+      100% {
+        transform: scale(0.01, 0.003);
+        filter: brightness(7);
+        opacity: 0;
+      }
+    }
+  }
+
+  // Radialer Phosphor-Puls in Bildmitte: wächst schnell auf, klingt
+  // exponentiell ab (background-size ist animierbar — der Gradient selbst
+  // bleibt konstant)
+  @keyframes crt-phosphor-dot {
+    0% {
+      background-size: 0 0;
+    }
+
+    20% {
+      background-size: 16vmin 11vmin;
+    }
+
+    100% {
+      background-size: 2vmin 1.4vmin;
+    }
+  }
+}
+
+// Einschalt-Aufblühen mit Brightness-Overshoot (Bloom): Referenz lbebber /
+// Android ElectronBeam — das Bild überstrahlt kurz und beruhigt sich
+@keyframes crt-on-bloom {
   0% {
+    transform: scaleY(0.004);
+    filter: brightness(4);
     opacity: 1;
-    transform: scaleY(1);
-    filter: brightness(1);
   }
 
   60% {
-    opacity: 1;
     transform: scaleY(1);
-    filter: brightness(2.2) contrast(0.8);
+    filter: brightness(1.25) saturate(1.15);
   }
 
   100% {
-    opacity: 0;
-    transform: scaleY(0.004);
-    filter: brightness(6);
+    transform: scaleY(1);
+    filter: brightness(1);
   }
 }
 
-@keyframes tv-switch-in {
-  0% {
-    opacity: 0;
-    transform: scaleY(0.004);
-    filter: brightness(2.4);
-  }
+@if $crt-variante == "voll" {
+  // Wie crt-on-bloom, plus Sync-Fang-Zittern (±1.5%) und stärkerer Bloom
+  @keyframes crt-on-voll {
+    0% {
+      transform: scaleY(0.004);
+      filter: brightness(4);
+      opacity: 1;
+    }
 
-  55% {
-    opacity: 1;
-    transform: scaleY(1);
-    filter: brightness(1.35) contrast(0.9);
-  }
+    15% {
+      transform: scaleY(1) translateY(1.5%);
+      filter: brightness(1.6) saturate(1.3);
+    }
 
-  100% {
-    opacity: 1;
-    transform: scaleY(1);
-    filter: brightness(1);
+    25% {
+      transform: scaleY(1) translateY(-1%);
+      filter: brightness(1.45) saturate(1.3);
+    }
+
+    55% {
+      transform: scaleY(1) translateY(0);
+      filter: brightness(1.35) saturate(1.2);
+    }
+
+    100% {
+      transform: scaleY(1);
+      filter: brightness(1);
+    }
   }
 }

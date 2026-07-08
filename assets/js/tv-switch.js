@@ -12,16 +12,40 @@
   'use strict';
 
   var KEY = 'tv-switch:state';
+  var COOLDOWN_KEY = 'tv-switch:last-crt';
+  var COOLDOWN_MS = 8000;
+  var BASE = document.documentElement.getAttribute('data-baseurl') || '';
 
   function normalizePath(p) {
     return p.replace(/\/+$/, '') || '/';
+  }
+
+  // Bereich = erstes Pfad-Segment (baseurl-bereinigt): home, about,
+  // mandelbrot, cv, archiv, posts … — Wechsel INNERHALB eines Bereichs
+  // (Post -> Post, Pagination) bleiben ruhig
+  function area(p) {
+    if (BASE && p.indexOf(BASE) === 0) p = p.slice(BASE.length);
+    return p.split('/')[1] || 'home';
+  }
+
+  // Dosierung: CRT nur bei Ortswechsel (Bereichsgrenze), oben gescrollt
+  // und höchstens einmal pro Cooldown — der Effekt markiert Kapitel,
+  // nicht jeden Klick (Nutzer-Entscheidung, siehe README-tv-umschalt.md)
+  function crtAllowed(fromPath, toPath) {
+    if (window.scrollY > 4) return false;
+    if (!toPath || area(fromPath) === area(toPath)) return false;
+    try {
+      var last = parseInt(sessionStorage.getItem(COOLDOWN_KEY) || '0', 10);
+      if (Date.now() - last < COOLDOWN_MS) return false;
+      sessionStorage.setItem(COOLDOWN_KEY, String(Date.now()));
+    } catch (err) { /* Storage weg: lieber Effekt zeigen als nie */ }
+    return true;
   }
 
   window.addEventListener('pageswap', function (e) {
     if (!e.viewTransition) return;
 
     var drawerOpen = !!document.querySelector('.greedy-nav .hidden-links:not(.hidden)');
-    var crt = window.scrollY <= 4;
 
     // Last-minute-Änderung VOR dem Old-Snapshot (pageswap feuert vor dem
     // letzten Frame): das Content-Overlay (body::before, 0.2s-Fade) sofort
@@ -38,7 +62,7 @@
 
     try {
       sessionStorage.setItem(KEY, JSON.stringify({
-        crt: crt,
+        crt: crtAllowed(location.pathname, to),
         drawer: drawerOpen,
         to: to,
         t: Date.now()
