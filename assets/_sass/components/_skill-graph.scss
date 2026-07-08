@@ -15,7 +15,7 @@
 // Generisches Beta-/WIP-Badge: Pill mit Cyan-subtle-Rand, bewusst dezent
 // (kein Magenta — das bleibt der Interaktion vorbehalten)
 .wip-badge {
-  @include mono-label(0.62rem, 0.07em);
+  @include mono-label($fs-label-xs, 0.07em); // 0.62→0.68 (K6, Skalen-Hygiene)
 
   border: 1px solid $link-color-subtle;
   border-radius: 999px;

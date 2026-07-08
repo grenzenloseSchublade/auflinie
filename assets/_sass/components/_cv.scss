@@ -100,7 +100,7 @@
     display: block;
     margin-top: 0.2rem;
     font-family: $mono-font-stack;
-    font-size: $fs-label-xs;
+    font-size: $fs-label-lg; // 0.68→0.78 (K7/K8, A11y: informationstragend)
     color: rgb(255 255 255 / 40%);
   }
 
@@ -446,7 +446,7 @@ li.cv-skill-chip.is-related {
 
 .cv-language__level {
   font-family: $mono-font-stack;
-  font-size: $fs-label-xs;
+  font-size: $fs-label-lg; // 0.68→0.78 (K7/K8, A11y: informationstragend)
   letter-spacing: 0.04em;
   color: rgb(255 255 255 / 45%);
   border-left: 1px solid rgb(255 255 255 / 15%);

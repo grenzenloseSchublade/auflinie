@@ -243,7 +243,7 @@
   border-top: 1px solid $surface-tint;
   color: rgb(255 255 255 / 45%);
   font-family: "SF Mono", Consolas, monospace;
-  font-size: $fp-fs-xs;
+  font-size: $fp-fs-sm; // 11→12px (K9, A11y: instruktiver Hinweis)
   letter-spacing: 0.3px;
   text-align: center;
 }

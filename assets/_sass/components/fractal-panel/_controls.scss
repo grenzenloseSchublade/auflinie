@@ -128,7 +128,7 @@
     min-width: 88px;
     color: rgb(255 255 255 / 70%);
     font-family: $fp-mono;
-    font-size: $fp-fs-xs;
+    font-size: $fp-fs-sm; // 11→12px (K10, A11y: Regler-Namen)
     font-weight: 600;
     letter-spacing: 0.06em;
     text-transform: uppercase;
@@ -153,10 +153,6 @@
 
   @media (max-width: 480px) {
     padding: 8px 10px;
-
-    label {
-      font-size: $fp-fs-sm;
-    }
   }
 }
 
