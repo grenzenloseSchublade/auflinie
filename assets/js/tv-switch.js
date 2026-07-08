@@ -1,105 +1,54 @@
 /*
- * TV-Umschalt-Übergang (Prototyp): setzt den View-Transition-Type "crt"
- * ausschließlich für Navigationen von der Startseite zu den beiden
- * Hero-Buttons (Über mich / Fraktale erkunden). Ohne Browser-Support
- * feuern die Events nicht — normale Navigation.
+ * Cross-Document View Transitions — Zustandsübergabe (alte Seite).
+ *
+ * Types propagieren NICHT automatisch zum neuen Dokument: pageswap
+ * schreibt die Entscheidung (CRT bei scrollY≈0, Drawer offen?) nach
+ * sessionStorage; das Inline-Script in _includes/head/custom.html liest
+ * sie im pagereveal der Zielseite und setzt dort die Types. Ohne Eintrag
+ * oder ohne Browser-Support: UA-Default-Crossfade bzw. normale Navigation.
+ * Der Masthead steht dabei immer (eigener Snapshot, _view-transition.scss).
  */
 (function () {
   'use strict';
 
-  var HERO_TARGETS = ['/about/', '/mandelbrot/'];
-  var BASE = (document.documentElement.getAttribute('data-baseurl') || '');
+  var KEY = 'tv-switch:state';
 
-  function path(url) {
-    try {
-      var p = new URL(url, location.href).pathname;
-      return BASE && p.indexOf(BASE) === 0 ? p.slice(BASE.length) : p;
-    } catch (e) {
-      return '';
-    }
+  function normalizePath(p) {
+    return p.replace(/\/+$/, '') || '/';
   }
 
-  // Vollbild-Hero-Zustand: der Header reicht bis an den unteren
-  // Bildschirmrand (768px-Breakpoint; gescrollt => nicht mehr erfüllt)
-  function heroFuellt() {
-    var hero = document.querySelector('.page__hero--overlay');
-    return !!hero && hero.getBoundingClientRect().bottom >= window.innerHeight - 4;
-  }
-
-  function isHeroSwitch(fromUrl, toUrl) {
-    return path(fromUrl) === '/' && HERO_TARGETS.indexOf(path(toUrl)) !== -1;
-  }
-
-  // Nicht-Hero-Navigationen überspringen die Transition KOMPLETT — ohne
-  // skipTransition liefen die CRT-Default-Keyframes bei jeder internen
-  // Navigation (Blog, Footer, Back/Forward), auch mit offenem Drawer
   window.addEventListener('pageswap', function (e) {
     if (!e.viewTransition) return;
-    var crt = e.activation && e.activation.entry &&
-      isHeroSwitch(location.href, e.activation.entry.url) && heroFuellt();
-    if (crt) {
-      e.viewTransition.types.add('crt');
-    } else {
-      e.viewTransition.skipTransition();
-    }
+
+    var drawerOpen = !!document.querySelector('.greedy-nav .hidden-links:not(.hidden)');
+    var crt = window.scrollY <= 4;
+
+    // Last-minute-Änderung VOR dem Old-Snapshot (pageswap feuert vor dem
+    // letzten Frame): das Content-Overlay (body::before, 0.2s-Fade) sofort
+    // aus dem Bild nehmen — der Root-Snapshot soll die ungedimmte Seite
+    // zeigen; der Drawer selbst bleibt offen (eigener Snapshot nav-drawer).
+    if (drawerOpen) document.documentElement.classList.add('vt-capture');
+
+    var to = '';
+    try {
+      if (e.activation && e.activation.entry && e.activation.entry.url) {
+        to = normalizePath(new URL(e.activation.entry.url).pathname);
+      }
+    } catch (err) { /* ungültige URL -> leer -> Zielseite ignoriert Eintrag */ }
+
+    try {
+      sessionStorage.setItem(KEY, JSON.stringify({
+        crt: crt,
+        drawer: drawerOpen,
+        to: to,
+        t: Date.now()
+      }));
+    } catch (err) { /* Storage nicht verfügbar: Fallback = Crossfade */ }
   });
 
-  // Drawer erst schließen, DANN umschalten: der pageswap-Schnappschuss
-  // entsteht im Navigationsmoment — ein offener Burger-Drawer wäre Teil
-  // des Schnappschusses und racet sichtbar mit der CRT-Animation.
-  // Capture-Phase, damit preventDefault vor der Default-Navigation greift;
-  // der greedy-nav-Close läuft zusätzlich, GreedyNav.close() ist idempotent.
-  document.addEventListener('click', function (e) {
-    if (!document.body.classList.contains('menu-open')) return;
-    var link = e.target && e.target.closest ? e.target.closest('.greedy-nav .hidden-links a') : null;
-    if (!link || !isHeroSwitch(location.href, link.href)) return;
-    e.preventDefault();
-
-    // Zielseite sofort im Hintergrund laden (deckt /mandelbrot/ ab, das vom
-    // Speculation-Rules-Prerender ausgenommen ist; doppelt schadet nicht)
-    if (!document.querySelector('link[data-tv-prefetch="' + link.href + '"]')) {
-      var pre = document.createElement('link');
-      pre.rel = 'prefetch';
-      pre.href = link.href;
-      pre.setAttribute('data-tv-prefetch', link.href);
-      document.head.appendChild(pre);
-    }
-
-    var hlinks = document.querySelector('.greedy-nav .hidden-links');
-    var done = false;
-    function go() {
-      if (done) return;
-      done = true;
-      if (hlinks) hlinks.removeEventListener('transitionend', onEnd);
-      // Zwei Frames warten: der finale "Drawer weg"-Zustand ist sicher
-      // gemalt, BEVOR der pageswap-Schnappschuss entsteht
-      requestAnimationFrame(function () {
-        requestAnimationFrame(function () {
-          location.href = link.href;
-        });
-      });
-    }
-
-    // transitionend bubbelt von Kind-Elementen hoch (z. B. die 0.2s-color-
-    // Transition des angetippten Links feuert bei 200ms) — nur das
-    // transform-Ende des Drawers selbst (300ms) beendet das Warten
-    function onEnd(ev) {
-      if (ev.target === hlinks && ev.propertyName === 'transform') go();
-    }
-
-    if (window.GreedyNav) window.GreedyNav.close();
-    if (hlinks) hlinks.addEventListener('transitionend', onEnd);
-    setTimeout(go, 350); // Fallback (Slide-Out: 240ms; z. B. für gedrosselte Transitionen)
-  }, true);
-
-  window.addEventListener('pagereveal', function (e) {
-    if (!e.viewTransition) return;
-    var crt = e.activation && e.activation.from &&
-      isHeroSwitch(e.activation.from.url, location.href);
-    if (crt) {
-      e.viewTransition.types.add('crt');
-    } else {
-      e.viewTransition.skipTransition();
-    }
+  // BFCache-Rückkehr: Capture-Klasse zurücksetzen (den Drawer-Reset macht
+  // greedy-navigation.js im eigenen pageshow-Handler)
+  window.addEventListener('pageshow', function (e) {
+    if (e.persisted) document.documentElement.classList.remove('vt-capture');
   });
 })();

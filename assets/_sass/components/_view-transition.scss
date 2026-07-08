@@ -1,32 +1,28 @@
 // =============================================================================
-// TV-Umschalt-Übergang (Cross-Document View Transitions) — PROTOTYP
+// Cross-Document View Transitions: CRT-Umschalt + Drawer-Exit
 // =============================================================================
-// Aktiv nur mobil + ohne reduced-motion; ausgelöst ausschließlich für die
-// Home-Hero-Buttons (Type "crt" via assets/js/tv-switch.js). Browser ohne
-// Support (u.a. Firefox) navigieren einfach normal — Progressive Enhancement.
-// Referenz-Look: heroCrtModeFlash (Phosphorgrün) + Röhren-Kollaps.
+// Aktiv nur mobil + ohne reduced-motion. CRT-Type "crt" wird pro Navigation
+// gesetzt, wenn die alte Seite ganz oben stand (pageswap -> sessionStorage ->
+// pagereveal, siehe tv-switch.js + head/custom.html); Type "drawer" schiebt
+// alle CRT-Delays um +150ms, damit der Drawer-Exit (200ms) zuerst wirkt
+// (~50ms Überlappung, Material-Choreografie: kein Stillstand zwischen den
+// Phasen). Ohne Types: UA-Default-Crossfade — der Masthead steht immer.
 /* stylelint-disable selector-pseudo-element-no-unknown, selector-pseudo-class-no-unknown, at-rule-no-unknown */
 
-// Aktiv nur im Vollbild-Hero-Zustand: derselbe 768px-Breakpoint, bei dem
-// der Header bis an den unteren Bildschirmrand reicht (_hero.scss,
-// min-height: calc(100dvh - masthead)) — gilt damit auch im schmal
-// gezogenen Desktop-Fenster. tv-switch.js sichert zusätzlich ab, dass der
-// Hero den Viewport wirklich füllt (gescrollt => skip).
 @media (max-width: 768px) and (prefers-reduced-motion: no-preference) {
   @view-transition {
     navigation: auto;
   }
 }
 
-// Masthead als stehende Landmarke: eigener Snapshot, keine Animation
+// --- Masthead: stehende Landmarke ---------------------------------------------
 .masthead {
   view-transition-name: masthead;
 }
 
-// Group MIT abschalten: ihr statischer Stil ist bereits die neue Geometrie —
-// die UA-Default-Animation (0.25s Position/Größen-Morph) staucht sonst den
-// Header, sobald sich alte und neue Geometrie minimal unterscheiden.
-// old zusätzlich ausblenden: plus-lighter-Doppelbelichtung überhellte den Text.
+// Group MIT abschalten: die UA-Default-Animation (0.25s Geometrie-Morph)
+// staucht sonst den Header bei minimal abweichender Geometrie.
+// old ausblenden: plus-lighter-Doppelbelichtung überhellte den Text.
 ::view-transition-group(masthead),
 ::view-transition-image-pair(masthead),
 ::view-transition-new(masthead) {
@@ -38,33 +34,88 @@
   display: none;
 }
 
-// Nav-Drawer entkoppeln: er ist DOM-Kind des Mastheads — ohne eigenen Namen
-// würde ein sichtbarer Drawer-Rest in den Masthead-Schnappschuss eingebacken
-// und der Header spränge beim Übergang. Geschlossen (visibility: hidden)
-// wird die Gruppe gar nicht erst gesnapshottet.
-.greedy-nav .hidden-links {
+// --- Drawer: Exit-only-Snapshot ------------------------------------------------
+// Name NUR im offenen Zustand: die Zielseite (Drawer zu) erzeugt so keinen
+// New-Snapshot — der Old-Snapshot ist :only-child und bekommt den Slide-Out.
+// Geschlossen ist der Drawer Teil des (ohnehin versteckten) Masthead-Old.
+.greedy-nav .hidden-links:not(.hidden) {
   view-transition-name: nav-drawer;
 }
 
-::view-transition-group(nav-drawer),
-::view-transition-old(nav-drawer),
+// Group statisch lassen (keine UA-Geometrie-Animation) und explizit über
+// alle anderen Gruppen heben (Default wäre die Paint-Order der alten Seite —
+// der z-index macht das unabhängig davon robust)
+::view-transition-group(nav-drawer) {
+  animation: none;
+  z-index: 10;
+}
+
 ::view-transition-new(nav-drawer) {
   animation: none;
 }
 
-// Zwischengrund dunkel (Seitengrund); der Phosphor-Blink läuft als eigene
-// kurze Blende auf dem ::view-transition-Pseudo — Charakter exakt wie das
-// Power-Button-Flackern (heroCrtModeFlash: 0.1s, rgb(85 240 145 / 38%),
-// opacity 0 -> 1@35% -> 0, ease-out). Delay 170ms: der Blink-Peak landet
-// damit klar NACH dem 150ms-Kollaps („Röhre klappt zu, DANN Blink") —
-// vorher lag er mitten im Kollaps und wirkte unterbrechend.
-// :active-view-transition-type(crt): nur beim Hero-Umschalt (tv-switch.js
-// überspringt andere Navigationen zusätzlich per skipTransition).
+// Exit: gleiche Strecke/Charakteristik wie der DOM-Slide-Out in
+// _masthead.scss (translateX(100% + 24px Shadow), accelerate), aber als
+// Snapshot INNERHALB der Transition — compositor-getrieben, immun gegen
+// Main-Thread-Jank. "both": hält den Endzustand (offscreen) bis zum Ende
+// der Gesamt-Transition. Läuft type-unabhängig: auch im gescrollten Fall
+// (kein crt) slidet ein offener Drawer raus, der Root crossfadet parallel.
+::view-transition-old(nav-drawer):only-child {
+  animation: vt-drawer-exit 200ms cubic-bezier(0.4, 0, 1, 1) both;
+}
+
+@keyframes vt-drawer-exit {
+  to {
+    transform: translateX(calc(100% + 24px));
+  }
+}
+
+// Capture-Hilfsklasse (tv-switch.js setzt sie im pageswap, unmittelbar vor
+// dem Old-Snapshot): das Content-Overlay (body::before, 0.2s-Opacity-Fade)
+// sofort unsichtbar — der Root-Snapshot zeigt die ungedimmte Seite.
+// Spezifität (0,1,3) schlägt body.menu-open::before (0,1,2).
+html.vt-capture body::before {
+  transition: none;
+  opacity: 0;
+}
+
+// --- CRT-Umschalt (Type "crt") --------------------------------------------------
+// Zwischengrund dunkel; Phosphor-Blink als eigene Blende auf ::view-transition
+// (Charakter wie heroCrtModeFlash). Delay 170ms: Blink-Peak klar NACH dem
+// 150ms-Kollaps („Röhre klappt zu, DANN Blink").
 html:active-view-transition-type(crt)::view-transition {
   background-color: #10141a;
   animation: tv-phosphor-blink 140ms ease-out 170ms both;
 }
 
+html:active-view-transition-type(crt)::view-transition-old(root) {
+  animation: tv-switch-out 150ms steps(4, end) both;
+}
+
+// "both" ist hier PFLICHT: das New-Image liegt im Image-Pair ÜBER dem Old —
+// nur mit Backwards-Fill gilt from{opacity:0} schon während des Delays,
+// sonst deckt die neue Seite den Kollaps sofort ab.
+html:active-view-transition-type(crt)::view-transition-new(root) {
+  animation: tv-switch-in 160ms steps(4, start) 200ms both;
+}
+
+// --- Drawer-Variante (Types "crt" UND "drawer"): alles +150ms -------------------
+// Verkettete Pseudoklassen = UND-Verknüpfung; höhere Spezifität überstimmt
+// gezielt nur das animation-delay der Basisregeln. Delay-Phasen halten die
+// Transition am Laufen — der Drawer-Exit (0-200ms) wirkt zuerst.
+html:active-view-transition-type(crt):active-view-transition-type(drawer)::view-transition {
+  animation-delay: 320ms;
+}
+
+html:active-view-transition-type(crt):active-view-transition-type(drawer)::view-transition-old(root) {
+  animation-delay: 150ms;
+}
+
+html:active-view-transition-type(crt):active-view-transition-type(drawer)::view-transition-new(root) {
+  animation-delay: 350ms;
+}
+
+// --- Keyframes (Optik unverändert) ----------------------------------------------
 @keyframes tv-phosphor-blink {
   0% {
     background-color: #10141a;
@@ -77,19 +128,6 @@ html:active-view-transition-type(crt)::view-transition {
   100% {
     background-color: #10141a;
   }
-}
-
-// Doppelt eingegrenzt auf die Hero-Buttons: tv-switch.js überspringt andere
-// Navigationen per skipTransition() im pageswap/pagereveal, und die Regeln
-// greifen nur beim gesetzten Transition-Type "crt". Timing (Nutzerkorrektur
-// "deutlich zu lang", Blink wie Power-Button): Aus 150ms, Blink-Peak ~220ms
-// (nachgelagert), An 160ms ab 200ms — gesamt ~360ms.
-html:active-view-transition-type(crt)::view-transition-old(root) {
-  animation: tv-switch-out 150ms steps(4, end) forwards;
-}
-
-html:active-view-transition-type(crt)::view-transition-new(root) {
-  animation: tv-switch-in 160ms 200ms steps(4, start) both;
 }
 
 @keyframes tv-switch-out {

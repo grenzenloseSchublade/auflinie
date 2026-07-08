@@ -15,6 +15,34 @@
   form-action 'self';
 ">
 
+<!-- View-Transition-Types (Zielseite): MUSS parser-blockierend vor dem
+     ersten Render registriert sein — defer/async verpassen pagereveal.
+     Gegenstück: pageswap in assets/js/tv-switch.js schreibt den Zustand
+     (CRT bei Scroll-Top, Drawer offen) nach sessionStorage. -->
+<script>
+(function () {
+  var KEY = 'tv-switch:state';
+  window.addEventListener('pagereveal', function (e) {
+    if (!e.viewTransition) return;
+    var raw = null;
+    try {
+      raw = sessionStorage.getItem(KEY);
+      if (raw !== null) sessionStorage.removeItem(KEY);
+    } catch (err) { return; }
+    if (!raw) return;
+    var st;
+    try { st = JSON.parse(raw); } catch (err) { return; }
+    var here = location.pathname.replace(/\/+$/, '') || '/';
+    // Stale-Guard: nur akzeptieren, wenn der Eintrag frisch ist und für
+    // GENAU diese Seite geschrieben wurde (Trailing-Slash normalisiert,
+    // deckt den GitHub-Pages-Redirect /about -> /about/ ab)
+    if (!st || st.to !== here || !st.t || (Date.now() - st.t) > 10000) return;
+    if (st.crt) e.viewTransition.types.add('crt');
+    if (st.drawer) e.viewTransition.types.add('drawer');
+  });
+})();
+</script>
+
 {% if page.fractal_panels %}
 <!-- Fraktal-Panels: CSS der CDN-Libs einmal pro Seite (JS in fractal/deps.html) -->
 <link href="{{ '/assets/vendor/nouislider.min.css' | relative_url }}" rel="stylesheet">
@@ -130,9 +158,10 @@
 <!-- Speculation Rules: Prerender interner Links (Chromium) — macht zusätzlich
      zum SW-Cache auch das RENDERN der Zielseite instant; /mandelbrot/ wegen
      Worker-/MathJax-Last ausgenommen; andere Browser ignorieren das folgenlos.
-     Drawer-Links ausgenommen: der Prerender startete sonst mitten in der
-     Slide-Animation (moderate feuert ab Chrome 138 schon nach Scroll-Stopp)
-     und stahl dem Compositor die CPU — tv-switch.js prefetcht dort stattdessen -->
+     Drawer-Links ausgenommen: der Prerender startete sonst mitten im
+     Drawer-Exit (moderate feuert ab Chrome 138 schon nach Scroll-Stopp)
+     und stahl dem Compositor die CPU — der SW-Voll-Precache macht die
+     Drawer-Ziele ohnehin instant -->
 <script type="speculationrules">
 {
   "prerender": [{

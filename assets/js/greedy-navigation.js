@@ -143,7 +143,7 @@
       releaseTimer = setTimeout(releaseMenuOpen, 320); // Fallback (Slide: 240ms)
     }
 
-    // Für andere Skripte (tv-switch.js): Drawer gezielt schließen können,
+    // Für andere Skripte: Drawer gezielt schließen können,
     // ohne die Klassen-Logik zu duplizieren
     window.GreedyNav = { close: closeMenu };
 
@@ -155,11 +155,34 @@
       }
     });
 
-    // Klick auf Menü-Link schließt das Menü
+    // Klick auf Menü-Link: Drawer OFFEN lassen, wenn eine Cross-Document
+    // View Transition den Exit übernimmt — der pageswap-Snapshot braucht
+    // den offenen Zustand, ::view-transition-old(nav-drawer) slidet ihn
+    // innerhalb der Transition raus (_view-transition.scss). Nur ohne VT
+    // (Firefox, Desktop >768px, reduced motion) wie früher schließen —
+    // fire-and-forget parallel zur nativen Navigation.
+    // Die matchMedia-Bedingung spiegelt exakt das @view-transition-Gate
+    // aus _view-transition.scss — beide müssen synchron bleiben.
+    var vtGate = window.matchMedia('(max-width: 768px) and (prefers-reduced-motion: no-preference)');
+
     hlinks.addEventListener('click', function(e) {
-      if (e.target.tagName === 'A') {
+      if (e.target.tagName !== 'A' && !e.target.closest('a')) return;
+      if (!('PageSwapEvent' in window) || !vtGate.matches) {
         closeMenu();
       }
+    });
+
+    // BFCache-Rückkehr: die Seite wurde ggf. mit offenem Drawer eingefroren
+    // (der Klick-Close entfällt bei VT-Navigationen) — ohne Animation
+    // zurücksetzen, bevor der erste Frame gemalt wird
+    window.addEventListener('pageshow', function(e) {
+      if (!e.persisted || hlinks.classList.contains('hidden')) return;
+      cancelRelease();
+      hlinks.style.transition = 'none';
+      hlinks.classList.add('hidden');
+      btn.classList.remove('close');
+      document.body.classList.remove('menu-open');
+      requestAnimationFrame(function() { hlinks.style.transition = ''; });
     });
 
     // Slide-in Menü: kein automatisches Schließen bei mouseleave
