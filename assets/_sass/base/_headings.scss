@@ -15,7 +15,13 @@
 .page__content > h2 {
   @include accent-header(1.35rem);
 
-  margin: 2.2rem 0 1.2rem;
+  // Kapitel-Rhythmus: deutlich mehr Luft VOR der Sektion als in ihr —
+  // das trennt Kapitel spürbar (site-weit, Nutzer-Entscheidung Juli 2026)
+  margin: 3.2rem 0 1.2rem;
+
+  @media (max-width: 640px) {
+    margin-top: 2.4rem;
+  }
 }
 
 .page__content > h3 {

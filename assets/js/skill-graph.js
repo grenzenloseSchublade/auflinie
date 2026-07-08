@@ -310,12 +310,11 @@
     this.selected = skillId;
     if (this.contextLine) {
       if (skillId === null) {
-        this.contextLine.hidden = true;
+        // Platz bleibt reserviert (feste Höhe) — nur der Text wechselt
         this.contextLine.textContent = '';
       } else {
         var node = this.nodes.find(function (n) { return n.id === skillId; });
         var projects = (this.skillProjects && this.skillProjects.get(skillId)) || [];
-        this.contextLine.hidden = false;
         this.contextLine.textContent = projects.length
           ? node.label + ' — gemeinsam im Einsatz bei: ' + projects.map(function (p) { return p.label; }).join(', ')
           : node.label + ' — noch keine Projektzuordnung hinterlegt.';

@@ -65,15 +65,16 @@
     }
 }
 
-// Hero-Action-Buttons: vom weißen Theme-Outline auf die Site-Outline-Rolle
+// Hero-Action-Buttons: schlicht weiß gerahmt — passt zum CRT-Bild
+// (Cyan-Umrandung entfiel auf Nutzerwunsch, Juli 2026)
 .page__hero--overlay .btn--light-outline {
-    border: 1px solid rgba($link-color, 0.45);
+    border: 1px solid rgb(255 255 255 / 45%);
     background-color: rgb(10 14 18 / 35%);
     color: #ffffff;
 
     &:hover {
-        border-color: $link-color;
-        background-color: rgba($link-color, 0.14);
+        border-color: rgb(255 255 255 / 85%);
+        background-color: rgb(255 255 255 / 8%);
         color: #ffffff;
     }
 }

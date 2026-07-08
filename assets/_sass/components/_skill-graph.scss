@@ -58,8 +58,17 @@
   font-size: 0.85rem;
   line-height: 1.5;
   color: $fg-subtle;
-  min-height: 2.55em;
+
+  // Feste Höhe + internes Scrollen — kein Layout-Sprung bei Auswahlwechsel
+  // (analog .cv-skills__selection-info)
+  box-sizing: border-box;
+  height: calc(3 * 1.5em);
+  overflow-y: auto;
   margin: 0.7rem 0 0;
+
+  @media (max-width: 640px) {
+    height: calc(4 * 1.5em);
+  }
 }
 
 // Druckansicht: die Chip-Liste ist vollständig, der Graph entfällt

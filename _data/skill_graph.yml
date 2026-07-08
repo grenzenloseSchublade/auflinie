@@ -25,23 +25,23 @@
 version: 1
 projects:
   - id: doku-system
-    label: "Spracherkennungs- & Dokumentationssystem"
+    label: "Doku-System (Spracherkennung)"
     skills: [python, tensorflow, fastapi, sql, rest, docker, ci-cd, devcontainer, tdd, git]
 
   - id: vue-webapp
-    label: "Vue-Webanwendung für Dokumentationsarbeiten"
+    label: "Vue-Webanwendung"
     skills: [vue, javascript, rest, scrum-kanban, git]
 
   - id: modellvergleich
-    label: "KI-Modell-Vergleichstool"
+    label: "Modellvergleichs-Tool"
     skills: [python, numpy-scikit-learn, dvc, tdd, git]
 
   - id: telematik
-    label: "Telematik-System (Gesundheitswesen)"
+    label: "Telematik-System"
     skills: [springboot, rest, sql, git]
 
   - id: belegerkennung
-    label: "Belegerkennungs-System"
+    label: "Belegerkennung"
     skills: [python, tensorflow, opencv, numpy-scikit-learn, docker, git]
 
   - id: tts-nlp
@@ -49,13 +49,13 @@ projects:
     skills: [python, tensorflow, remote-computing-gpu-training, bash-linux, git]
 
   - id: belege-app
-    label: "Belege-App (opta data Institut)"
+    label: "Belege-App"
     skills: [opencv, git]
 
   - id: genai-beratung
-    label: "GenAI-Beratung (Sopra Steria)"
+    label: "GenAI-Beratung"
     skills: [python, azure, rest, scrum-kanban]
 
   - id: website
-    label: "Diese Website"
+    label: "diese Website"
     skills: [javascript, git, ci-cd, docker, devcontainer, bash-linux]

@@ -15,20 +15,31 @@
     }
   }
 
+  // Ohne Unterstreichung: Die Kapitelgrenze übernimmt der Cyan-Trenner
+  // (eine Linie pro Grenze — Doppel-Linien wirkten schlecht)
   h2 {
-    @include accent-header(1.35rem);
+    @include accent-header(1.35rem, false);
 
     margin-bottom: 1.5rem;
   }
 }
 
-// Kapitelgrenzen: deutlich mehr Luft + volle Hairline ZWISCHEN Sektionen
-// (nicht vor der ersten/Intro; die kurze Linie unter der H2 bleibt).
-// Der Kontrast „viel Luft davor, kompakt darin" trägt die Gliederung.
+// Kapitelgrenzen ZWISCHEN Sektionen (nicht vor der ersten/Intro):
+// viel Luft + dezent auslaufende Cyan-Hairline (Testlauf auf der CV-Seite;
+// beim globalen Ausrollen als Mixin nach _shared-components.scss ziehen).
+// Border kann kein Gradient → 1px-Background an der Oberkante.
 .cv-section + .cv-section {
   margin-top: 3.2rem;
   padding-top: 2.4rem;
-  border-top: 1px solid rgb(255 255 255 / 8%);
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      rgba($link-color, 0.45) 12%,
+      rgba($link-color, 0.45) 88%,
+      transparent
+    )
+    top / 100% 1px no-repeat;
 
   @media (max-width: 640px) {
     margin-top: 2.4rem;
@@ -384,11 +395,20 @@
   font-size: 0.85rem;
   line-height: 1.5;
   color: $fg-muted;
-  min-height: 2.55em;
+
+  // FESTE Höhe (3 Zeilen, mobil 4) + internes Scrollen: der Textwechsel
+  // beim Skill-Klick darf das Layout unter keinen Umständen verschieben
+  box-sizing: border-box;
+  height: calc(3 * 1.5em + 0.8rem);
+  overflow-y: auto;
   margin: 0 0 1rem;
   padding: 0.4rem 0 0.4rem 0.8rem;
   border-left: 2px solid $link-color-subtle;
   transition: border-color 0.2s ease;
+
+  @media (max-width: 640px) {
+    height: calc(4 * 1.5em + 0.8rem);
+  }
 }
 
 .cv-skills.has-selection .cv-skills__selection-info {
