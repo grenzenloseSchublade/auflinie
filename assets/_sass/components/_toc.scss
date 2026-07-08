@@ -313,14 +313,15 @@
         display: flex;
         align-items: center;
 
-        // Hover = Interaktion ⇒ dezentes Magenta (Nutzerwunsch), keine Fläche
+        // Hover = Interaktion ⇒ dezentes Magenta (Nutzerwunsch), keine Fläche;
+        // unter ~0.6 wird Magenta auf dunklem Grund matschig
         &:hover {
-            color: rgba($hover-color, 0.85);
+            color: rgba($hover-color, 0.65);
         }
 
         // Touch-Feedback für Mobile
         &:active {
-            color: rgba($hover-color, 0.85);
+            color: rgba($hover-color, 0.65);
         }
 
         &:focus-visible {
