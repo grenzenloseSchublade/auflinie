@@ -284,7 +284,9 @@
 // Fähigkeiten als Themen-Gruppen: Kontextzeile trägt das Können,
 // die Chips darunter sind gleichwertig (keine Level, keine Rangordnung)
 .cv-skill-group {
-  padding: 0.6rem 0;
+  // Oben knapp (Titel+Kontext kleben zusammen), unten großzügig
+  // (Luft zwischen Chips und nächster Gruppen-Überschrift)
+  padding: 0.5rem 0 1.1rem;
   border-bottom: 1px solid $surface-tint;
 
   &:first-child {
@@ -296,9 +298,12 @@
   }
 }
 
-// Kontextzeile direkt unter der Überschrift und klein — der Fokus liegt
-// auf den Chips selbst (Nutzerwunsch: kompakter, mehr auf eine Seite)
-.cv-skill-group__title {
+// Kontextzeile direkt unter der Überschrift und deutlich klein — der Leser
+// kennt das Thema i. d. R., die Zeile ist Nachschlag; der Fokus liegt auf
+// den Chips. WICHTIG: p-qualifizierte Selektoren (0,2,1) — die Absatz-Regel
+// ".cv-section .cv-section__content p" überschreibt sonst margin/line-height
+// (genau das machte frühere Fassungen unsichtbar).
+.cv-skills p.cv-skill-group__title {
   @include mono-label(0.72rem, 0.07em);
 
   color: $fg-subtle;
@@ -306,14 +311,16 @@
   line-height: 1.3;
 }
 
-.cv-skill-group__context {
-  font-size: 0.72rem;
+.cv-skills p.cv-skill-group__context {
+  font-size: 0.7rem;
   line-height: 1.35;
-  color: $fg-subtle;
+  color: rgb(255 255 255 / 45%);
   max-width: 38rem;
-  margin: 0 0 0.5rem;
+  margin: 0 0 0.55rem;
 }
 
+// Mehrzeilige Chip-Reihen sind vorgesehen (flex-wrap + gap wirkt auf beide
+// Achsen) — die Gruppen wachsen bei zwei und mehr Reihen einfach mit
 .cv-skills__chips {
   display: flex;
   flex-wrap: wrap;
@@ -382,7 +389,9 @@
 // Status-Element (Epigraph-Muster: linke Hairline), damit sie sich von den
 // Gruppen-Kontextzeilen abhebt; min-height gegen Layout-Sprünge.
 // Bei aktiver Auswahl wechselt die Hairline auf Magenta (Interaktionszustand).
-.cv-skills__selection-info {
+// p-qualifiziert (0,2,1): sichert line-height gegen die Absatz-Regel — die
+// feste Höhe rechnet mit 1.5em pro Zeile
+.cv-skills p.cv-skills__selection-info {
   font-size: 0.85rem;
   line-height: 1.5;
   color: $fg-muted;
