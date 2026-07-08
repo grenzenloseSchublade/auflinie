@@ -104,17 +104,43 @@
       }
     }
 
-    // Hilfsfunktion zum Öffnen/Schließen des Menüs
+    // Hilfsfunktion zum Öffnen/Schließen des Menüs.
+    // menu-open (Scroll-Lock + Overlay) wird beim Schließen erst NACH dem
+    // Slide-Out gelöst: das Entfernen erzwingt einen Ganzseiten-Reflow
+    // (overflow: hidden fällt weg) — mitten in der Transform-Animation
+    // verursachte das Ruckeln und ein kurzes Header-„Zucken".
+    let releaseTimer = null;
+
+    function cancelRelease() {
+      if (releaseTimer) {
+        clearTimeout(releaseTimer);
+        releaseTimer = null;
+      }
+      hlinks.removeEventListener('transitionend', onSlideEnd);
+    }
+
+    function releaseMenuOpen() {
+      cancelRelease();
+      document.body.classList.remove('menu-open');
+    }
+
+    function onSlideEnd(e) {
+      if (e.target === hlinks && e.propertyName === 'transform') releaseMenuOpen();
+    }
+
     function openMenu() {
+      cancelRelease(); // erneutes Öffnen während des Slide-Outs abfangen
       hlinks.classList.remove('hidden');
       btn.classList.add('close');
       document.body.classList.add('menu-open');
     }
-    
+
     function closeMenu() {
       hlinks.classList.add('hidden');
       btn.classList.remove('close');
-      document.body.classList.remove('menu-open');
+      cancelRelease();
+      hlinks.addEventListener('transitionend', onSlideEnd);
+      releaseTimer = setTimeout(releaseMenuOpen, 320); // Fallback (Slide: 240ms)
     }
 
     // Für andere Skripte (tv-switch.js): Drawer gezielt schließen können,

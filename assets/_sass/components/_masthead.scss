@@ -325,9 +325,11 @@ body {
     font-weight: $medium-weight;
     border-left: 1px solid $link-color-subtle;
     border-radius: 0;
-    background: rgb(15 15 20 / 98%);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
+    // Voll opak statt 98% + backdrop-blur: der Blur war hinter der fast
+    // deckenden Fläche unsichtbar, wurde aber über dem permanent animierten
+    // Hero (CRT-Layer, Canvas-Noise) JEDEN Frame neu gerastert — die
+    // Hauptursache des ruckelnden Slide-Outs auf Mobilgeräten
+    background: rgb(15 15 20);
     box-shadow: -4px 0 20px rgb(0 0 0 / 40%);
     z-index: 999; // Hinter dem Header (z-index: 1000)
     transform: translateX(100%);
@@ -359,7 +361,10 @@ body {
     transform: translateX(calc(100% + 24px)); // Shadow-Breite einrechnen
     pointer-events: none;
     visibility: hidden;
-    transition: transform 0.3s ease-in-out, visibility 0s 0.3s;
+
+    // Exit beschleunigend und kürzer als der Entrance (Material-Muster:
+    // Abgänge accelerate); visibility-Delay MUSS synchron zur Dauer bleiben
+    transition: transform 0.24s cubic-bezier(0.4, 0, 1, 1), visibility 0s 0.24s;
   }
 }
 
@@ -381,21 +386,31 @@ body .greedy-nav .hidden-links::after {
 }
 
 // Overlay - verdunkelt nur den Content-Bereich (Header und Menü bleiben frei)
-// ::before = Bereich unter dem Header, links vom Menü (klickbar zum Schließen)
-body.menu-open::before {
+// ::before = Bereich unter dem Header, links vom Menü (klickbar zum Schließen).
+// Dauerhaft vorhanden und nur über Deckkraft geschaltet: das frühere
+// Erzeugen/Zerstören baute einen fixed Layer ÜBER dem Masthead (z 1001)
+// mitten in der Drawer-Animation um — sichtbar als kurzes Header-„Zucken".
+// Fadet so auch beim Schließen aus (vorher: hartes Verschwinden).
+body::before {
   content: "";
   position: fixed;
   inset: var(--masthead-height) 180px 0 0; // Beginnt unter dem Header // Spart Menü-Bereich aus (Menü bleibt klickbar)
   background: rgb(0 0 0 / 60%);
-  z-index: 1001;
-  pointer-events: auto; // Klick zum Schließen
-  animation: fadeIn 0.2s ease-out;
+  z-index: 998; // Unter Masthead (1000) und Drawer (999)
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease-out;
   will-change: opacity;
+}
+
+body.menu-open::before {
+  opacity: 1;
+  pointer-events: auto; // Klick zum Schließen
 }
 
 // Responsive: Overlay passt sich an max-width: 75vw an
 @media (max-width: 240px) {
-  body.menu-open::before {
+  body::before {
     right: 75vw;
   }
 }
