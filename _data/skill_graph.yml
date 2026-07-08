@@ -1,0 +1,61 @@
+# =============================================================================
+# Skill-Graph-Daten (Single Source of Truth für das interaktive Skill-Feature)
+# =============================================================================
+# Schema v1:
+#   version:  Schema-Version (Pflicht; das JS prüft sie und degradiert stumm
+#             bei Unbekanntem)
+#   projects: Liste der Projekte, die Skills verbinden
+#     id:     stabiler kebab-case-Schlüssel (Pflicht, nie umbenennen)
+#     label:  Anzeigename für die Kontextzeile (Pflicht)
+#     skills: Liste von Skill-IDs (Pflicht)
+#
+# Skill-IDs = slugify(Chip-Name) aus cv_content.yml → skill_groups, z. B.:
+#   "Python" → python, "NumPy / Scikit-learn" → numpy-scikit-learn,
+#   "CI / CD" → ci-cd, "Bash / Linux" → bash-linux,
+#   "Remote Computing / GPU-Training" → remote-computing-gpu-training
+# Das JS warnt in der Konsole, wenn eine ID keinen Chip im DOM trifft.
+#
+# Kanten Skill↔Skill entstehen im JS implizit über gemeinsame Projekte
+# (Gewicht = Anzahl) — hier bewusst KEINE redundanten Kantenlisten pflegen.
+#
+# Neues Projekt eintragen: Block unten anfügen, id vergeben, Skills als
+# slugifizierte IDs listen — fertig. Optionale Zukunftsfelder (period, url,
+# type) sind vorgesehen; unbekannte Felder ignoriert das JS defensiv.
+# =============================================================================
+version: 1
+projects:
+  - id: doku-system
+    label: "Spracherkennungs- & Dokumentationssystem"
+    skills: [python, tensorflow, fastapi, sql, rest, docker, ci-cd, devcontainer, tdd, git]
+
+  - id: vue-webapp
+    label: "Vue-Webanwendung für Dokumentationsarbeiten"
+    skills: [vue, javascript, rest, scrum-kanban, git]
+
+  - id: modellvergleich
+    label: "KI-Modell-Vergleichstool"
+    skills: [python, numpy-scikit-learn, dvc, tdd, git]
+
+  - id: telematik
+    label: "Telematik-System (Gesundheitswesen)"
+    skills: [springboot, rest, sql, git]
+
+  - id: belegerkennung
+    label: "Belegerkennungs-System"
+    skills: [python, tensorflow, opencv, numpy-scikit-learn, docker, git]
+
+  - id: tts-nlp
+    label: "TTS-/NLP-Forschung"
+    skills: [python, tensorflow, remote-computing-gpu-training, bash-linux, git]
+
+  - id: belege-app
+    label: "Belege-App (opta data Institut)"
+    skills: [opencv, git]
+
+  - id: genai-beratung
+    label: "GenAI-Beratung (Sopra Steria)"
+    skills: [python, azure, rest, scrum-kanban]
+
+  - id: website
+    label: "Diese Website"
+    skills: [javascript, git, ci-cd, docker, devcontainer, bash-linux]

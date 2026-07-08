@@ -15,6 +15,11 @@ header:
   caption: "Akademischer und beruflicher Werdegang"
 show_date: false
 read_time: false
+# Interaktives Skill-Feature (siehe _includes/cv/skills.html):
+#   enabled = Klick-Hervorhebung, stage2 = experimentelles Graph-Panel
+skill_graph:
+  enabled: true
+  stage2: false
 ---
 
 <div class="about-container">

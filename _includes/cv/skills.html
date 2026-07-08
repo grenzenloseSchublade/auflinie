@@ -3,11 +3,22 @@
   pro Gruppe ein Mono-Label + Kontextzeile (wofür), darunter gleichwertige
   Chips ohne Bewertung. skill.featured hebt Schwerpunkt-Chips dezent hervor
   (Cyan-Border, keine Legende nötig).
+
+  Interaktivität (Flag page.skill_graph im Front Matter, Muster blog_notice):
+    enabled: Chips werden Buttons — Klick zeigt verwandte Skills und
+             gemeinsame Projekte (assets/js/skill-chips.js, Daten aus
+             _data/skill_graph.yml via JSON-Tag unten)
+    stage2:  zusätzlich das experimentelle Graph-Panel (cv/skill-graph.html)
+  Ohne Flags rendert der Block exakt wie die statische Fassung.
+
   Parameter:
     skill_groups – Liste aus {group, context, skills}
                    (skills: Strings oder {name, featured})
 {% endcomment %}
 <div class="cv-skills">
+  {% if page.skill_graph.enabled %}
+  <p class="cv-skills__selection-info" data-role="skill-context" aria-live="polite">Ein Klick auf einen Skill zeigt verwandte Skills und gemeinsame Projekte.</p>
+  {% endif %}
   {% for skill_group in include.skill_groups %}
   <div class="cv-skill-group">
     <p class="cv-skill-group__title">{{ skill_group.group }}</p>
@@ -17,9 +28,23 @@
     <ul class="cv-skills__chips">
       {% for skill in skill_group.skills %}
       {% assign skill_name = skill.name | default: skill %}
-      <li class="cv-skill-chip{% if skill.featured %} cv-skill-chip--featured{% endif %}">{{ skill_name }}</li>
+      <li class="cv-skill-chip{% if skill.featured %} cv-skill-chip--featured{% endif %}">
+        {%- if page.skill_graph.enabled -%}
+        <button type="button" class="cv-skill-chip__button" data-skill="{{ skill_name | slugify }}" aria-pressed="false">{{ skill_name }}</button>
+        {%- else -%}
+        {{ skill_name }}
+        {%- endif -%}
+      </li>
       {% endfor %}
     </ul>
   </div>
   {% endfor %}
+
+  {% if page.skill_graph.stage2 %}
+    {% include cv/skill-graph.html %}
+  {% endif %}
+
+  {% if page.skill_graph.enabled or page.skill_graph.stage2 %}
+  <script type="application/json" data-skill-graph-data>{{ site.data.skill_graph | jsonify }}</script>
+  {% endif %}
 </div>

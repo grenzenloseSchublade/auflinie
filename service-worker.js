@@ -34,6 +34,7 @@ const CACHE_URLS = [
   './assets/js/back-to-top.js',
   './assets/js/neon-orbit-toggle.js',
   './assets/js/blog-search.js',
+  './assets/js/skill-chips.js',
   './assets/js/fractal-panel.js',
   './assets/js/fractal-renderer.js',
   './assets/js/fractal-color-utils.js',
