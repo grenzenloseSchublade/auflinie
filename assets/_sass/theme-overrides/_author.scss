@@ -6,7 +6,7 @@
   border: 1px solid $link-color-subtle;
   color: rgb(255 255 255 / 88%);
   border-radius: 6px;
-  font-size: 0.75em;
+  font-size: $fs-label; // 0.75em→0.72rem (R, Token-Skala)
   padding: 0.5em 1.1em;
   transition: border-color 0.2s ease, background-color 0.2s ease;
 
