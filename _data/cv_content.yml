@@ -15,10 +15,23 @@
 - section: "Berufserfahrung"
   icon: "briefcase"
   experiences:
+    # TODO Startmonat ergänzen, sobald bekannt (aktuell nur "2025")
+    # TODO Weitere Tätigkeits-Stichpunkte ergänzen — Details folgen vom Nutzer
+    - position: "Technischer Berater — Data & Analytics"
+      company: "Sopra Steria"
+      location: "Hamburg, Deutschland"
+      period: "2025 - Heute"
+      description: >-
+        Technische Beratung und Entwicklung von End-to-End-Systemen im Bereich Künstliche Intelligenz
+        mit Schwerpunkt auf generativer KI (GenAI).
+      expandable: true
+      responsibilities:
+        - text: "Entwicklung von End-to-End-Systemen im Bereich KI (GenAI)"
+
     - position: "Softwareingenieur"
       company: "opta data Innovationlab"
       location: "Bochum, Deutschland"
-      period: "2020 - Heute"
+      period: "2020 - 2025"
       description: >- 
         Konzeption und Entwicklung von Softwarelösungen auf Basis von (eigenentwickelten) Deep Learning Modellen zur Automatisierung 
         und Optimierung von kundenspezifischen Geschäftsprozessen unter Anwendung moderner Entwicklungspraktiken und -methoden 
@@ -149,100 +162,52 @@
       institution: "Ruhr-Universität Bochum"
       location: "Bochum, Deutschland"
       period: "2015 - 2018"
-      description: "Schwerpunkt: Eingebettete Systeme <br> Abschlussnote: <strong>Sehr Gut</strong>" 
-      #<br> Note Abschlussarbeit: <strong>Ausgezeichnet</strong>"
-      #<br> Thema Abschlussarbeit: 'Erkennung handgeschriebener Worte mittels CNN / BiRNN für eingebettete Systeme'"
+      description: "Schwerpunkt: Eingebettete Systeme <br> Abschlussnote: <strong>Sehr Gut</strong>"
+      achievements:
+        - 'Masterarbeit: „Erkennung handgeschriebener Worte mittels CNN / BiRNN für eingebettete Systeme“ — Note: <strong>Ausgezeichnet</strong>'
+        - "Vertiefung an der Schnittstelle von Machine Learning und eingebetteten Systemen"
 
     - degree: "B. Sc. Elektro- und Informationstechnik"
       institution: "Ruhr-Universität Bochum"
       location: "Bochum, Deutschland"
       period: "2012 - 2015"
-      description: "Grundlagenstudium" 
-      #<br> Note Abschlussarbeit: <strong>Sehr Gut</strong>"
-      #<br> Thema Abschlussarbeit: 'Elektrische Charakterisierung einer Halbleiter Nanostruktur.'"
+      description: "Grundlagenstudium"
+      achievements:
+        - 'Bachelorarbeit: „Elektrische Charakterisierung einer Halbleiter-Nanostruktur“ — Note: <strong>Sehr Gut</strong>'
 
 - section: "Technische Fähigkeiten"
   icon: "laptop-code"
-  skill_categories:
-# 4 bis 6 anführen -> 1 schlechteres mit angeben
-# TODO NOCHMAL schauen was hier genau rein soll und wichtig ist -> prüfen ob die Bewertungen so passen
-    - category: "Programmiersprachen"
-      skills:
-        - name: "Python"
-          level: 92
-        - name: "JavaScript"
-          level: 85
-        - name: "C / C++"
-          level: 65
-        - name: "HTML"
-          level: 77
-        - name: "SQL"
-          level: 73
-        # - name: "LaTeX"
-        #   level: 90
+  # Kern-Stack + Weitere (Mockup-Review Juli 2026): Hierarchie statt Levels —
+  # der Kontext sagt, WOFÜR ein Skill steht; die Chips darunter kommen ohne
+  # Bewertung aus (was gelistet ist, ist im Einsatz).
+  core_skills:
+    - name: "Python"
+      context: "ML-Pipelines, GenAI, Prototypen"
+    - name: "TensorFlow"
+      context: "eigene Modelle — Training und Optimierung"
+    - name: "Vue"
+      context: "responsive Web-Anwendungen"
+    - name: "FastAPI"
+      context: "API-Schnittstellen, Systemintegration"
+    - name: "Docker"
+      context: "Deployment, DevContainer, Buildpipelines"
+    - name: "CI / CD"
+      context: "GitHub Actions, DVC, MLOps"
+  more_skills:
+    - "JavaScript"
+    - "SQL"
+    - "C / C++"
+    - "SpringBoot"
+    - "NumPy / Scikit-learn"
+    - "OpenCV"
+    - "Node"
+    - "Git"
+    - "Bash / Linux"
+    - "TDD"
+    - "Scrum / Kanban"
+    - "REST"
 
-# 5 bis 6 anführen -> 1 schlechteres mit angeben
-    - category: "Frameworks & Bibliotheken"
-      skills:
-        - name: "Vue"
-          level: 91
-          special: true # Skill Bar Color in hover-color
-        - name: "SpringBoot" 
-          level: 73
-        - name: "TensorFlow"
-          level: 84
-        - name: "NumPy / Scikit-learn"
-          level: 90
-        - name: "Node"
-          level: 77
-        - name: "FastAPI"
-          level: 88
 
-        # TODO Prüfen ob diese Bibliotheken wichtig sind
-        # - name: "NumPy / SciPy"
-        #   level: 92
-        # - name: "Plotly"
-        #   level: 68
-        # - name: "Matplotlib"
-        #   level: 80
-        # - name: "Pandas"
-        #   level: 68
-        # - name: "OpenCV"
-        #   level: 77
-          
-# 5 bis 6 anführen -> 1 schlechteres mit angeben
-    - category: "Tools & Technologien"
-      skills:
-        - name: "Git"
-          level: 93
-        - name: "Docker"
-          level: 81
-        - name: "DevContainer"
-          level: 92
-        - name: "CI / CD"
-          level: 83
-          special: true # Skill Bar Color in hover-color
-        - name: "TDD"
-          level: 78
-        - name: "Scrum / Kanban"
-          level: 88
-        - name: "REST"
-          level: 69
-
-    - category: "Softwareentwicklung"
-      skills:
-        - name: "UNIX / Linux"
-          level: 93
-        - name: "Bash"
-          level: 88
-        - name: "VS Code"
-          level: 85
-        - name: "IntelliJ"
-          level: 77
-        - name: "PyCharm"
-          level: 81
-          
-          
 - section: "Sprachen"
   icon: "language"
   languages:

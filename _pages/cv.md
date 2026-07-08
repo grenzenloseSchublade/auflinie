@@ -45,8 +45,8 @@ read_time: false
       </ol>
     {% endif %}
 
-    {% if section.skill_categories %}
-      {% include cv/skills.html skill_categories=section.skill_categories %}
+    {% if section.core_skills %}
+      {% include cv/skills.html core_skills=section.core_skills more_skills=section.more_skills %}
     {% endif %}
 
     {% if section.languages %}

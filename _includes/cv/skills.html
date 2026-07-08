@@ -1,38 +1,29 @@
 {% comment %}
-  Fähigkeiten als Chip-Cluster pro Kategorie (Mockup-Variante T1):
-  Mono-Kategorielabel links, Skills als Chips mit Level-Punkten.
-  Level als Tooltip + Screenreader-Text (Punkte allein wären nicht zugänglich).
-  Mapping: level >= 85 Experte, >= 65 Fortgeschritten, sonst Grundlagen.
+  Technische Fähigkeiten als „Kern-Stack + Weitere" (Mockup-Review Juli 2026):
+  oben 5–6 Kern-Skills mit Kontextzeile (wofür ein Skill steht), darunter
+  kuratierte Chips ohne Bewertung. Ersetzt die 3-Stufen-Level-Punkte —
+  Hierarchie statt Selbstbewertung.
+  Parameter:
+    core_skills – Liste aus {name, context}
+    more_skills – Liste aus Strings
 {% endcomment %}
 <div class="cv-skills">
-  {% for skill_category in include.skill_categories %}
-  <div class="cv-skills__group">
-    <div class="cv-skills__cat">{{ skill_category.category | markdownify | remove: '<p>' | remove: '</p>' }}</div>
-    <ul class="cv-skills__chips">
-      {% for skill in skill_category.skills %}
-      {% assign skill_name = skill.name | markdownify | remove: '<p>' | remove: '</p>' | strip %}
-      {% if skill.level %}
-      {% assign lvl = skill.level | plus: 0 %}
-      {% if lvl >= 85 %}{% assign lvl_label = "Experte" %}{% assign lvl_n = 3 %}
-      {% elsif lvl >= 65 %}{% assign lvl_label = "Fortgeschritten" %}{% assign lvl_n = 2 %}
-      {% else %}{% assign lvl_label = "Grundlagen" %}{% assign lvl_n = 1 %}{% endif %}
-      <li class="cv-skill-chip{% if skill.special %} cv-skill-chip--special{% endif %}" title="{{ skill_name | strip_html }} — {{ lvl_label }}">
-        {{ skill_name }}
-        <span class="cv-skill-chip__dots cv-skill-chip__dots--{{ lvl_n }}" aria-hidden="true"><i></i><i></i><i></i></span>
-        <span class="sr-only">({{ lvl_label }})</span>
-      </li>
-      {% else %}
-      <li class="cv-skill-chip">{{ skill_name }}</li>
-      {% endif %}
-      {% endfor %}
-    </ul>
-  </div>
-  {% endfor %}
-  <p class="cv-skills__legend" aria-hidden="true">
-    <span class="cv-skill-chip__dots cv-skill-chip__dots--1"><i></i><i></i><i></i></span> Grundlagen
-    <span class="cv-skills__legend-sep">·</span>
-    <span class="cv-skill-chip__dots cv-skill-chip__dots--2"><i></i><i></i><i></i></span> Fortgeschritten
-    <span class="cv-skills__legend-sep">·</span>
-    <span class="cv-skill-chip__dots cv-skill-chip__dots--3"><i></i><i></i><i></i></span> Experte
-  </p>
+  <p class="cv-skills__label">Technischer Schwerpunkt</p>
+  <ul class="cv-core-skills">
+    {% for skill in include.core_skills %}
+    <li class="cv-core-skill">
+      <span class="cv-core-skill__name">{{ skill.name }}</span>
+      <span class="cv-core-skill__context">{{ skill.context }}</span>
+    </li>
+    {% endfor %}
+  </ul>
+
+  {% if include.more_skills %}
+  <p class="cv-skills__label">Außerdem im Einsatz</p>
+  <ul class="cv-skills__chips">
+    {% for skill in include.more_skills %}
+    <li class="cv-skill-chip">{{ skill }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %}
 </div>

@@ -268,39 +268,52 @@
   }
 }
 
-// Fähigkeiten als Chip-Cluster pro Kategorie (Mockup T1)
-.cv-skills__group {
-  display: flex;
-  align-items: baseline;
+// Fähigkeiten als „Kern-Stack + Weitere": Hierarchie statt Level-Punkte
+.cv-skills__label {
+  @include mono-label(0.72rem, 0.07em);
+
+  color: $fg-subtle;
+  margin: 1.1rem 0 0.5rem;
+
+  &:first-child {
+    margin-top: 0.2rem;
+  }
+}
+
+.cv-core-skills {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.cv-core-skill {
+  display: grid;
+  grid-template-columns: 140px 1fr;
   gap: 1rem;
-  padding: 0.7rem 0;
+  align-items: baseline;
+  padding: 0.45rem 0;
   border-bottom: 1px solid $surface-tint;
-  flex-wrap: wrap;
 
   &:last-child {
     border-bottom: none;
   }
 }
 
-.cv-skills__cat {
-  @include mono-label(0.72rem, 0.07em);
+.cv-core-skill__name {
+  font-family: $mono-font-stack;
+  font-size: 0.88rem;
+  color: rgb(255 255 255 / 92%);
+}
 
-  flex: 0 0 210px;
+.cv-core-skill__context {
+  font-size: 0.85rem;
   color: $fg-subtle;
-  padding-top: 0.3rem;
-
-  p {
-    margin: 0;
-    display: inline;
-  }
 }
 
 .cv-skills__chips {
-  flex: 1;
   display: flex;
   flex-wrap: wrap;
   gap: 0.45rem;
-  min-width: 280px;
   list-style: none;
   margin: 0;
   padding: 0;
@@ -324,59 +337,10 @@
   }
 }
 
-.cv-skill-chip__dots {
-  display: inline-flex;
-  gap: 3px;
-
-  i {
-    width: 6px;
-    height: 6px;
-    border-radius: 2px;
-    background: rgb(255 255 255 / 15%);
-  }
-}
-
-.cv-skill-chip__dots--1 i:nth-child(-n+1),
-.cv-skill-chip__dots--2 i:nth-child(-n+2),
-.cv-skill-chip__dots--3 i:nth-child(-n+3) {
-  background: $card-heading-color;
-}
-
-.cv-skill-chip--special .cv-skill-chip__dots--1 i:nth-child(-n+1),
-.cv-skill-chip--special .cv-skill-chip__dots--2 i:nth-child(-n+2),
-.cv-skill-chip--special .cv-skill-chip__dots--3 i:nth-child(-n+3) {
-  background: $hover-color;
-}
-
-.cv-skills__legend {
-  margin: 0.9rem 0 0;
-  font-family: $mono-font-stack;
-  font-size: 0.68rem;
-  letter-spacing: 0.05em;
-  color: rgb(255 255 255 / 45%);
-  display: flex;
-  align-items: center;
-  gap: 0.45rem;
-  flex-wrap: wrap;
-
-  .cv-skills__legend-sep {
-    color: rgb(255 255 255 / 25%);
-  }
-}
-
 @media (max-width: 640px) {
-  .cv-skills__group {
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-
-  .cv-skills__cat {
-    flex: none;
-    padding-top: 0;
-  }
-
-  .cv-skills__chips {
-    min-width: 0;
+  .cv-core-skill {
+    grid-template-columns: 1fr;
+    gap: 0.1rem;
   }
 }
 
