@@ -177,35 +177,47 @@
 
 - section: "Technische Fähigkeiten"
   icon: "laptop-code"
-  # Kern-Stack + Weitere (Mockup-Review Juli 2026): Hierarchie statt Levels —
-  # der Kontext sagt, WOFÜR ein Skill steht; die Chips darunter kommen ohne
-  # Bewertung aus (was gelistet ist, ist im Einsatz).
-  core_skills:
-    - name: "Python"
-      context: "ML-Pipelines, GenAI, Prototypen"
-    - name: "TensorFlow"
-      context: "eigene Modelle — Training und Optimierung"
-    - name: "Vue"
-      context: "responsive Web-Anwendungen"
-    - name: "FastAPI"
-      context: "API-Schnittstellen, Systemintegration"
-    - name: "Docker"
-      context: "Deployment, DevContainer, Buildpipelines"
-    - name: "CI / CD"
-      context: "GitHub Actions, DVC, MLOps"
-  more_skills:
-    - "JavaScript"
-    - "SQL"
-    - "C / C++"
-    - "SpringBoot"
-    - "NumPy / Scikit-learn"
-    - "OpenCV"
-    - "Node"
-    - "Git"
-    - "Bash / Linux"
-    - "TDD"
-    - "Scrum / Kanban"
-    - "REST"
+  # Themen-Gruppen mit Kontextzeile (Mockup-Review Juli 2026): eine Form für
+  # alle Skills, keine Rangordnung — das Können steckt in der Kontextzeile.
+  # featured: true hebt Schwerpunkt-Chips dezent hervor (Cyan-Border,
+  # max. 1–2 pro Gruppe; Magenta bleibt der Interaktion vorbehalten).
+  skill_groups:
+    - group: "Machine Learning & Data"
+      context: "Entwicklung, Training und Deployment eigener Modelle — von Computer Vision bis GenAI"
+      skills:
+        - name: "Python"
+          featured: true
+        - "TensorFlow"
+        - "NumPy / Scikit-learn"
+        - "OpenCV"
+        - "DVC"
+    - group: "Web & APIs"
+      context: "End-to-End: Frontends, Schnittstellen und Integration in Produktivumgebungen"
+      skills:
+        - name: "Vue"
+          featured: true
+        - "JavaScript"
+        - "FastAPI"
+        - "SpringBoot"
+        - "REST"
+        - "SQL"
+    - group: "Cloud"
+      context: "KI-Lösungen in der Cloud entwickeln, trainieren und betreiben"
+      skills:
+        - name: "Azure"
+          featured: true
+        - "Remote Computing / GPU-Training"
+    - group: "DevOps & Tooling"
+      context: "Reproduzierbare Umgebungen und automatisierte Pipelines"
+      skills:
+        - name: "CI / CD"
+          featured: true
+        - "Docker"
+        - "DevContainer"
+        - "Git"
+        - "Bash / Linux"
+        - "TDD"
+        - "Scrum / Kanban"
 
 
 - section: "Sprachen"

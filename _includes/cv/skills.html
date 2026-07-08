@@ -1,29 +1,25 @@
 {% comment %}
-  Technische Fähigkeiten als „Kern-Stack + Weitere" (Mockup-Review Juli 2026):
-  oben 5–6 Kern-Skills mit Kontextzeile (wofür ein Skill steht), darunter
-  kuratierte Chips ohne Bewertung. Ersetzt die 3-Stufen-Level-Punkte —
-  Hierarchie statt Selbstbewertung.
+  Technische Fähigkeiten als Themen-Gruppen (Mockup-Review Juli 2026):
+  pro Gruppe ein Mono-Label + Kontextzeile (wofür), darunter gleichwertige
+  Chips ohne Bewertung. skill.featured hebt Schwerpunkt-Chips dezent hervor
+  (Cyan-Border, keine Legende nötig).
   Parameter:
-    core_skills – Liste aus {name, context}
-    more_skills – Liste aus Strings
+    skill_groups – Liste aus {group, context, skills}
+                   (skills: Strings oder {name, featured})
 {% endcomment %}
 <div class="cv-skills">
-  <p class="cv-skills__label">Technischer Schwerpunkt</p>
-  <ul class="cv-core-skills">
-    {% for skill in include.core_skills %}
-    <li class="cv-core-skill">
-      <span class="cv-core-skill__name">{{ skill.name }}</span>
-      <span class="cv-core-skill__context">{{ skill.context }}</span>
-    </li>
-    {% endfor %}
-  </ul>
-
-  {% if include.more_skills %}
-  <p class="cv-skills__label">Außerdem im Einsatz</p>
-  <ul class="cv-skills__chips">
-    {% for skill in include.more_skills %}
-    <li class="cv-skill-chip">{{ skill }}</li>
-    {% endfor %}
-  </ul>
-  {% endif %}
+  {% for skill_group in include.skill_groups %}
+  <div class="cv-skill-group">
+    <p class="cv-skill-group__title">{{ skill_group.group }}</p>
+    {% if skill_group.context %}
+    <p class="cv-skill-group__context">{{ skill_group.context }}</p>
+    {% endif %}
+    <ul class="cv-skills__chips">
+      {% for skill in skill_group.skills %}
+      {% assign skill_name = skill.name | default: skill %}
+      <li class="cv-skill-chip{% if skill.featured %} cv-skill-chip--featured{% endif %}">{{ skill_name }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+  {% endfor %}
 </div>

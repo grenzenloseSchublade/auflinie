@@ -268,46 +268,34 @@
   }
 }
 
-// Fähigkeiten als „Kern-Stack + Weitere": Hierarchie statt Level-Punkte
-.cv-skills__label {
-  @include mono-label(0.72rem, 0.07em);
-
-  color: $fg-subtle;
-  margin: 1.1rem 0 0.5rem;
+// Fähigkeiten als Themen-Gruppen: Kontextzeile trägt das Können,
+// die Chips darunter sind gleichwertig (keine Level, keine Rangordnung)
+.cv-skill-group {
+  padding: 0.8rem 0;
+  border-bottom: 1px solid $surface-tint;
 
   &:first-child {
-    margin-top: 0.2rem;
+    padding-top: 0.2rem;
   }
-}
-
-.cv-core-skills {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-.cv-core-skill {
-  display: grid;
-  grid-template-columns: 140px 1fr;
-  gap: 1rem;
-  align-items: baseline;
-  padding: 0.45rem 0;
-  border-bottom: 1px solid $surface-tint;
 
   &:last-child {
     border-bottom: none;
   }
 }
 
-.cv-core-skill__name {
-  font-family: $mono-font-stack;
-  font-size: 0.88rem;
-  color: rgb(255 255 255 / 92%);
+.cv-skill-group__title {
+  @include mono-label(0.72rem, 0.07em);
+
+  color: $fg-subtle;
+  margin: 0 0 0.25rem;
 }
 
-.cv-core-skill__context {
+.cv-skill-group__context {
   font-size: 0.85rem;
+  line-height: 1.5;
   color: $fg-subtle;
+  max-width: 38rem;
+  margin: 0 0 0.65rem;
 }
 
 .cv-skills__chips {
@@ -337,11 +325,10 @@
   }
 }
 
-@media (max-width: 640px) {
-  .cv-core-skill {
-    grid-template-columns: 1fr;
-    gap: 0.1rem;
-  }
+// Schwerpunkt-Chips: dezenter Cyan-Rand als Betonung, keine Benotung
+// (Magenta bleibt der Interaktion vorbehalten)
+.cv-skill-chip--featured {
+  border-color: $link-color-subtle;
 }
 
 // Sprachen: Chips in der Formensprache der Fähigkeiten
