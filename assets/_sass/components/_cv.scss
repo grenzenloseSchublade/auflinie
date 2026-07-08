@@ -133,9 +133,12 @@
     }
   }
 
-  .cv-entry__items-label {
+  // p-qualifiziert (0,2,1): sonst gewinnt die Absatz-Regel
+  // .cv-section .cv-section__content p mit margin-bottom: 1rem —
+  // der alte 0.3rem-Wert war tot, das Label hing weit über der Liste
+  p.cv-entry__items-label {
     font-size: $cv-items-label-font-size;
-    margin: 0 0 0.3rem;
+    margin: 0 0 0.15rem;
     color: $fg-subtle;
     font-weight: 500;
   }
