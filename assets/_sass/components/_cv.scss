@@ -358,8 +358,12 @@ li.cv-skill-chip {
   margin: 0;
   transition: border-color 0.2s ease, opacity 0.2s ease;
 
-  &:hover {
-    border-color: $link-color-subtle;
+  // Nur auf echten Hover-Geräten: auf Touch bleibt :hover nach dem Tippen
+  // kleben und übermalte die Auswahl-Border (cyan Rand + magenta Glow)
+  @media (hover: hover) {
+    &:hover {
+      border-color: $link-color-subtle;
+    }
   }
 }
 
@@ -390,13 +394,18 @@ li.cv-skill-chip {
 }
 
 // Aktive Auswahl = Interaktionszustand ⇒ Magenta (wie Fokusringe);
-// Cyan bleibt Inhalt/Verwandtschaft — dezent: Border + weicher Glow
-.cv-skill-chip.is-selected {
+// Cyan bleibt Inhalt/Verwandtschaft — dezent: Border + weicher Glow.
+// li-qualifiziert (0,2,1): gewinnt auch gegen einen klebenden :hover.
+// z-index hebt den Chip über seine Geschwister: deren opake Hintergründe
+// übermalten sonst den Glow (wirkte rechts/unten „abgeschnitten")
+li.cv-skill-chip.is-selected {
+  position: relative;
+  z-index: 1;
   border-color: rgba($hover-color, 0.75);
   box-shadow: 0 0 7px rgba($hover-color, 0.35);
 }
 
-.cv-skill-chip.is-related {
+li.cv-skill-chip.is-related {
   border-color: rgba($link-color, 0.5);
 }
 
