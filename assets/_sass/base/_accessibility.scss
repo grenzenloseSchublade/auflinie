@@ -26,6 +26,10 @@ html {
 // Deaktiviert Animationen und Transitions für Nutzer mit reduzierter Bewegung,
 // mit Ausnahmen: Neon-Orbit-Trigger und CRT-Hero (läuft immer; Lesemodus nur per Power).
 
+// !IMPORTANT-KEEP (Kategorie d, Audit 2026-07): Der Reduced-Motion-
+// Kill-Switch muss beliebige Animations-/Transition-Deklarationen im
+// gesamten Baum überstimmen — ohne !important prinzipiell unmöglich.
+/* stylelint-disable declaration-no-important -- globaler Reduced-Motion-Kill-Switch */
 @media (prefers-reduced-motion: reduce) {
     // Deaktiviere Animationen global, ABER mit Ausnahme des Neon-Schriftzugs:
     // Basis-Glow/-Flicker/-Puls laufen BEWUSST permanent — auch bei
@@ -67,6 +71,7 @@ html {
         transition: none !important;
     }
 }
+/* stylelint-enable declaration-no-important */
 
 // ============================================
 // Accessibility: Focus Styles

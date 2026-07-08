@@ -364,8 +364,11 @@
   }
 
   // Kollision: Tom Select vergibt die Zustandsklasse "full", das Theme hat
-  // eine gleichnamige Layout-Utility (.full { margin-inline-end: -20% !important })
+  // eine gleichnamige Layout-Utility (.full { margin-inline-end: -20% !important }).
+  // !IMPORTANT-KEEP (Kategorie d, Audit 2026-07): Die Theme-Utility nutzt
+  // selbst !important — nur !important + spätere Position gewinnt.
   .ts-wrapper.full {
+    // stylelint-disable-next-line declaration-no-important -- Theme-Utility nutzt !important
     margin-inline-end: 0 !important;
     width: 100%;
   }

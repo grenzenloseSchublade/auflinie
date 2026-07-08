@@ -596,8 +596,15 @@
 @media print {
   .page__hero {
     &--overlay {
+      // !IMPORTANT-KEEP (Kategorie d, Audit 2026-07): schlägt den Inline-
+      // Style element.style.backgroundImage aus assets/js/hero-crt.js —
+      // per CSS nur mit !important möglich; entfällt erst nach Umstellung
+      // des JS auf eine CSS-Variable.
+      // stylelint-disable-next-line declaration-no-important -- Inline-Style aus JS
       background-image: none !important;
-      
+
+      // !IMPORTANT-KEEP (Kategorie d, Audit 2026-07): Print-Kill-Switch
+      // gegen die hochspezifischen CRT-Effektregeln weiter oben.
       .page__hero-crt-media,
       .page__hero-crt-layer,
       .page__hero-grain,
@@ -605,7 +612,9 @@
       .page__hero-crt-noise,
       .page__hero-crt-svg-defs,
       &::after {
+        // stylelint-disable-next-line declaration-no-important -- Print-Kill-Switch
         display: none !important;
+        // stylelint-disable-next-line declaration-no-important -- Print-Kill-Switch
         content: none !important;
       }
 

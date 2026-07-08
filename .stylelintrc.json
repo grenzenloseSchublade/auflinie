@@ -30,7 +30,7 @@
       }
     ],
     "selector-max-compound-selectors": 6,
-    "declaration-no-important": null,
+    "declaration-no-important": true,
     "scss/no-global-function-names": null,
     "scss/operator-no-newline-after": null,
     "function-no-unknown": [
