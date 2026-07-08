@@ -1,0 +1,373 @@
+// Fractal Panel — Info-Panel, Erklärbereich, CRT-off, Fokus- und Vollbild-Zustände
+// Teil des Splits von components/_fractal-panel.scss (Umbrella dort)
+
+// -----------------------------------------------------------------------------
+// Info-Panel (nur --dual, sichtbar bei erweiterten Optionen)
+// -----------------------------------------------------------------------------
+.fractal-panel__info-panel {
+  margin-top: 10px;
+  background: #333333;
+  padding: 12px 15px;
+  border-radius: 4px;
+  color: #dddddd;
+  font-size: 16px;
+  line-height: 1.5;
+  text-align: left;
+  display: none;
+
+  p {
+    margin: 5px 0;
+  }
+}
+
+.fractal-panel.is-advanced-open .fractal-panel__info-panel {
+  display: block;
+}
+
+.fractal-panel__info-value {
+  font-weight: bold;
+  color: #ffffff;
+  font-family: $fp-mono;
+  font-variant-numeric: tabular-nums;
+
+  // Mathematische Notation nicht mit-uppercasen (0.270i, nicht 0.270I)
+  text-transform: none;
+  letter-spacing: normal;
+}
+
+// -----------------------------------------------------------------------------
+// Erklärbereich
+// -----------------------------------------------------------------------------
+.fractal-panel__explanation {
+  margin-top: 20px;
+  display: block;
+}
+
+.fractal-panel__explanation-toggle {
+  width: 100%;
+  text-align: center;
+  margin-bottom: 0;
+  background: linear-gradient(145deg, rgb(42 42 42 / 95%), rgb(30 30 30 / 98%));
+  color: $fp-accent;
+  padding: 12px 16px;
+  border: 1px solid rgb(5 217 232 / 30%);
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  &:hover {
+    background: linear-gradient(145deg, rgb(50 50 50 / 95%), rgb(35 35 35 / 98%));
+    border-color: rgb(5 217 232 / 50%);
+    box-shadow: 0 0 15px rgb(5 217 232 / 20%);
+  }
+
+  &.is-active {
+    background: linear-gradient(145deg, rgb(5 217 232 / 15%), rgb(5 217 232 / 8%));
+    border-color: rgb(5 217 232 / 50%);
+  }
+
+  .toggle-icon {
+    font-size: 10px;
+    transition: transform 0.3s ease;
+  }
+}
+
+.fractal-panel__explanation-box {
+  background: linear-gradient(145deg, rgb(42 42 42 / 95%), rgb(30 30 30 / 98%));
+  border: 1px solid rgb(5 217 232 / 20%);
+  border-radius: 12px;
+  padding: 20px;
+  margin-top: 12px;
+  color: #e0e0e0;
+  font-size: 14px;
+  line-height: 1.6;
+  display: none;
+  box-shadow: 0 4px 20px rgb(0 0 0 / 30%);
+  max-height: 70vh;
+  overflow-y: auto;
+
+  &.is-visible {
+    display: block;
+  }
+
+  @media (max-width: 768px) {
+    max-height: 50vh;
+  }
+
+  h4 {
+    margin: 0 0 20px;
+    color: $fp-heading;
+    font-size: 1.25rem;
+    font-weight: 600;
+    border-bottom: 1px solid rgb(255 255 255 / 12%);
+    padding-bottom: 12px;
+  }
+
+  h5 {
+    margin: 0 0 12px;
+    color: $fp-accent;
+    font-size: 1rem;
+    font-weight: 600;
+    border-bottom: 1px solid rgb(5 217 232 / 30%);
+    padding-bottom: 8px;
+  }
+
+  h6 {
+    margin: 0 0 6px;
+    color: #d1f7ff;
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+
+  p {
+    margin: 0 0 10px;
+  }
+
+  p.hint {
+    font-style: italic;
+    color: #a0a0a0;
+    font-size: 0.85rem;
+  }
+
+  code {
+    background: rgb(5 217 232 / 10%);
+    color: $fp-accent;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.9em;
+    font-family: "JetBrains Mono", "Fira Code", monospace;
+  }
+
+  ul {
+    margin: 8px 0;
+    padding-left: 0;
+    list-style: none;
+  }
+
+  li {
+    position: relative;
+    padding-left: 16px;
+    margin-bottom: 6px;
+  }
+
+  li::before {
+    content: "›";
+    position: absolute;
+    left: 0;
+    color: $fp-accent;
+    font-weight: bold;
+  }
+
+  strong {
+    color: $fp-accent;
+  }
+
+  .explanation-section {
+    margin-bottom: 20px;
+  }
+
+  .explanation-section:last-child {
+    margin-bottom: 0;
+  }
+
+  .param-group {
+    margin: 12px 0;
+    padding-left: 12px;
+    border-left: 2px solid rgb(5 217 232 / 20%);
+  }
+
+  .color-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 8px;
+  }
+
+  .color-tag {
+    background: rgb(255 255 255 / 8%);
+    border: 1px solid rgb(255 255 255 / 15%);
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    color: #d1f7ff;
+  }
+
+  .nav-columns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-top: 12px;
+  }
+
+  @media (max-width: 500px) {
+    .nav-columns {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .nav-column h6 {
+    margin-bottom: 8px;
+    color: $fp-heading;
+  }
+}
+
+// Zustand: Retro-Bildschirm-Effekt aus (CRT-Toggle in der Toolbar)
+.fractal-panel.is-crt-off .crt-overlay {
+  display: none;
+}
+
+// -----------------------------------------------------------------------------
+// Zustand: Fokusmodus
+// -----------------------------------------------------------------------------
+.fractal-panel.is-focus-mode {
+  padding: 10px;
+
+  .fractal-panel__controls,
+  .fractal-panel__info-panel {
+    display: none;
+  }
+
+  .fractal-panel__explanation {
+    margin-top: 10px;
+  }
+
+  .fractal-panel__row {
+    gap: 10px;
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Zustand: Vollbild
+// -----------------------------------------------------------------------------
+.fractal-panel.is-fullscreen {
+  position: relative;
+  padding: 0 !important;
+  width: 100vw;
+  max-width: 100vw;
+
+  .fractal-panel__toolbar,
+  .fractal-panel__controls {
+    position: absolute;
+    left: 12px;
+    right: 12px;
+    z-index: 200;
+    background: rgb(34 34 34 / 90%);
+    backdrop-filter: blur(6px);
+    border-radius: 8px;
+    box-shadow: 0 6px 18px rgb(0 0 0 / 35%);
+    margin-bottom: 0;
+  }
+
+  .fractal-panel__toolbar {
+    top: 12px;
+    padding: 8px 12px;
+  }
+
+  .fractal-panel__controls {
+    top: 72px;
+    max-height: 55vh;
+    overflow: auto;
+    display: block;
+  }
+
+  .fractal-panel__explanation {
+    position: absolute;
+    bottom: 12px;
+    left: 12px;
+    right: 12px;
+    z-index: 300;
+    margin-top: 0;
+  }
+
+  .fractal-panel__explanation-toggle {
+    position: relative;
+    z-index: 2;
+    background: rgb(34 34 34 / 90%);
+    backdrop-filter: blur(6px);
+  }
+
+  .fractal-panel__explanation-box {
+    position: absolute;
+    bottom: 100%;
+    left: 0;
+    right: 0;
+    margin-bottom: 8px;
+    display: block !important;
+    max-height: 70vh;
+    overflow-y: auto;
+    background: rgb(34 34 34 / 95%);
+    backdrop-filter: blur(8px);
+    box-shadow: 0 -4px 24px rgb(0 0 0 / 50%);
+    transform: translateY(20px);
+    opacity: 0;
+    visibility: hidden;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease, visibility 0.3s ease;
+
+    &.is-visible {
+      transform: translateY(0);
+      opacity: 1;
+      visibility: visible;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .fractal-panel__explanation-box {
+      max-height: 60vh;
+    }
+  }
+
+  .fractal-panel__mobile-zoom {
+    bottom: 80px;
+  }
+}
+
+// Fokusmodus im Vollbild: Controls bleiben aus, nur Toolbar
+.fractal-panel.is-fullscreen.is-focus-mode .fractal-panel__controls {
+  display: none;
+}
+
+// Vollbild --single: ein Canvas füllt den Screen
+.fractal-panel--single.is-fullscreen {
+  .fractal-panel__canvas-frame {
+    height: 100vh;
+    position: absolute;
+    inset: 0;
+  }
+
+  .fractal-panel__canvas {
+    width: 100%;
+    height: 100%;
+    max-height: 100vh !important;
+    min-height: auto !important;
+    object-fit: contain;
+  }
+
+  .fractal-panel__hud {
+    top: 140px;
+  }
+
+  &.is-focus-mode .fractal-panel__hud {
+    top: 80px;
+  }
+}
+
+// Vollbild --dual: zwei Spalten nebeneinander
+.fractal-panel--dual.is-fullscreen {
+  .fractal-panel__canvas-frame {
+    height: calc(100vh - 24px);
+  }
+
+  .fractal-panel__canvas {
+    max-height: 100vh;
+    min-height: auto;
+    height: 100%;
+    object-fit: contain;
+  }
+}
