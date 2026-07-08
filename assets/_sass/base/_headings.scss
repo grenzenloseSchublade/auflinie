@@ -47,3 +47,10 @@
   letter-spacing: 0.04em;
   color: rgb(255 255 255 / 45%);
 }
+
+// Blogpost-Kopf: Meta-Zeile (Datum + Lesezeit) deutlich vom Titel absetzen,
+// aber näher am Titel als am Fließtext-Beginn. Sitzt im <header> VOR
+// .page__content — die Theme-Absatz-Regel greift hier nicht
+.page__inner-wrap > header .page__meta {
+  margin: 0.75rem 0 0;
+}

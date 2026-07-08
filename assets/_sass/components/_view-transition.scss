@@ -28,6 +28,20 @@
   animation: none;
 }
 
+// Nav-Drawer entkoppeln: er ist DOM-Kind des Mastheads — ohne eigenen Namen
+// würde ein sichtbarer Drawer-Rest in den Masthead-Schnappschuss eingebacken
+// und der Header spränge beim Übergang. Geschlossen (visibility: hidden)
+// wird die Gruppe gar nicht erst gesnapshottet.
+.greedy-nav .hidden-links {
+  view-transition-name: nav-drawer;
+}
+
+::view-transition-group(nav-drawer),
+::view-transition-old(nav-drawer),
+::view-transition-new(nav-drawer) {
+  animation: none;
+}
+
 // Zwischengrund dunkel (Seitengrund); der Phosphor-Blink läuft als eigene
 // kurze Blende auf dem ::view-transition-Pseudo — Charakter exakt wie das
 // Power-Button-Flackern (heroCrtModeFlash: 0.1s, rgb(85 240 145 / 38%),

@@ -48,17 +48,41 @@
     if (!link || !isHeroSwitch(location.href, link.href)) return;
     e.preventDefault();
 
+    // Zielseite sofort im Hintergrund laden (deckt /mandelbrot/ ab, das vom
+    // Speculation-Rules-Prerender ausgenommen ist; doppelt schadet nicht)
+    if (!document.querySelector('link[data-tv-prefetch="' + link.href + '"]')) {
+      var pre = document.createElement('link');
+      pre.rel = 'prefetch';
+      pre.href = link.href;
+      pre.setAttribute('data-tv-prefetch', link.href);
+      document.head.appendChild(pre);
+    }
+
     var hlinks = document.querySelector('.greedy-nav .hidden-links');
     var done = false;
     function go() {
       if (done) return;
       done = true;
-      location.href = link.href;
+      if (hlinks) hlinks.removeEventListener('transitionend', onEnd);
+      // Zwei Frames warten: der finale "Drawer weg"-Zustand ist sicher
+      // gemalt, BEVOR der pageswap-Schnappschuss entsteht
+      requestAnimationFrame(function () {
+        requestAnimationFrame(function () {
+          location.href = link.href;
+        });
+      });
+    }
+
+    // transitionend bubbelt von Kind-Elementen hoch (z. B. die 0.2s-color-
+    // Transition des angetippten Links feuert bei 200ms) — nur das
+    // transform-Ende des Drawers selbst (300ms) beendet das Warten
+    function onEnd(ev) {
+      if (ev.target === hlinks && ev.propertyName === 'transform') go();
     }
 
     if (window.GreedyNav) window.GreedyNav.close();
-    if (hlinks) hlinks.addEventListener('transitionend', go, { once: true });
-    setTimeout(go, 350); // Fallback (z. B. gedrosselte Transition bei reduced motion)
+    if (hlinks) hlinks.addEventListener('transitionend', onEnd);
+    setTimeout(go, 400); // Fallback (z. B. gedrosselte Transition bei reduced motion)
   }, true);
 
   window.addEventListener('pagereveal', function (e) {
