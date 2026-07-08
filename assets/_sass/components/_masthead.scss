@@ -325,6 +325,7 @@ body {
     font-weight: $medium-weight;
     border-left: 1px solid $link-color-subtle;
     border-radius: 0;
+
     // Voll opak statt 98% + backdrop-blur: der Blur war hinter der fast
     // deckenden Fläche unsichtbar, wurde aber über dem permanent animierten
     // Hero (CRT-Layer, Canvas-Noise) JEDEN Frame neu gerastert — die
