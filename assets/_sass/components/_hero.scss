@@ -419,24 +419,30 @@
       animation: heroCrtModeFlash var(--hero-crt-mode-flash-dur) ease-out forwards;
     }
 
-    // Lesemodus: Text vor CRT; Grain / Roll / Noise / laufende Layer-Animationen hart aus (CRT-Layer-Basis bleibt)
+    // Lesemodus: Text vor CRT; Grain / Roll / Noise / laufende Layer-Animationen hart aus (CRT-Layer-Basis bleibt).
+    // Die .loaded-Varianten stehen zusätzlich in der Liste, damit die Regel
+    // auch die spezifischeren Effekt-Regeln des geladenen Zustands schlägt —
+    // additiv statt !important; der Nicht-loaded-Zustand matcht weiterhin
     &.page__hero--crt-read .page__hero-grain,
+    &[data-background-image].loaded.page__hero--crt-read .page__hero-grain,
     &.page__hero--crt-read .page__hero-crt-roll,
-    &.page__hero--crt-read .page__hero-crt-noise {
-      opacity: 0 !important;
-      transition: none !important;
+    &[data-background-image].loaded.page__hero--crt-read .page__hero-crt-roll,
+    &.page__hero--crt-read .page__hero-crt-noise,
+    &[data-background-image].loaded.page__hero--crt-read .page__hero-crt-noise {
+      opacity: 0;
+      transition: none;
     }
 
     &.page__hero--crt-read .page__hero-crt-roll::before {
-      animation: none !important;
+      animation: none;
     }
 
     &[data-background-image].loaded.page__hero--crt-read:not(.page__hero--crt-boot, .page__hero--crt-preboot) .page__hero-crt-layer {
-      animation: none !important;
+      animation: none;
     }
 
     &[data-background-image].loaded.page__hero--crt-read:not(.page__hero--crt-boot, .page__hero--crt-preboot) .page__hero-crt-layer::after {
-      animation: none !important;
+      animation: none;
     }
 
     // Startseite: Power (über Effekten/Vorhang, klickbar)
@@ -604,7 +610,7 @@
       }
 
       .page__hero-crt-power-wrap {
-        display: none !important;
+        display: none;
       }
       
       &::before {
