@@ -124,9 +124,9 @@
   }
 
   &.is-active {
-    background: rgb(5 217 232 / 22%) !important;
-    color: #ffffff !important;
-    border-color: rgb(5 217 232 / 60%) !important;
+    background: rgb(5 217 232 / 22%);
+    color: #ffffff;
+    border-color: rgb(5 217 232 / 60%);
     box-shadow: 0 2px 0 rgb(0 0 0 / 45%), 0 0 8px rgb(5 217 232 / 35%), inset 0 0 4px rgb(5 217 232 / 20%);
   }
 }

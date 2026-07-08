@@ -367,7 +367,7 @@
   // eine gleichnamige Layout-Utility (.full { margin-inline-end: -20% !important })
   .ts-wrapper.full {
     margin-inline-end: 0 !important;
-    width: 100% !important;
+    width: 100%;
   }
 
   .ts-wrapper.single .ts-control {
@@ -427,12 +427,12 @@
     margin-top: 4px;
     overflow: hidden;
     z-index: 250;
-    width: 100% !important;
-    min-width: 0 !important;
-    max-width: 100% !important;
-    left: 0 !important;
-    right: auto !important;
-    box-sizing: border-box !important;
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    left: 0;
+    right: auto;
+    box-sizing: border-box;
   }
 
   .ts-dropdown .ts-dropdown-content {
@@ -463,6 +463,6 @@
   }
 
   select.tomselected {
-    display: none !important;
+    display: none;
   }
 }
