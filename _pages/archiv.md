@@ -12,7 +12,7 @@ show_date: false
 read_time: false
 ---
 
-Im Archiv finden Sie alle Beiträge nach Jahren gruppiert. Für die neuesten Beiträge mit Pagination wechseln Sie zur Blog‑Übersicht.
+Das Archiv sammelt alle Beiträge nach Jahren gruppiert. Die neuesten Beiträge mit Pagination stehen in der Blog‑Übersicht.
 
 <div class="category-filter-container">
   <span class="filter-label">Jahresübersicht:</span>

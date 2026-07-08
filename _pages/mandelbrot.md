@@ -29,8 +29,10 @@ header:
 {% assign heading_id = section.anchor | default: nil %}
 {% unless heading_id %}{% assign heading_id = section.section | slugify %}{% endunless %}
 
+{% unless section.intro %}
 ## <i class="fas fa-{{ section.icon }}" aria-hidden="true"></i> {{ section.section }}
 {: id="{{ heading_id }}"}
+{% endunless %}
 
 {{ section.content | markdownify }}
 

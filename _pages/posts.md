@@ -24,7 +24,7 @@ show_date: false
 read_time: false
 ---
 
-{{ "Hier finden Sie Beiträge zu Technik, Projekten und dem, was mich gerade beschäftigt. Ohne festen Rhythmus – dafür mit dem Anspruch, dass jeder Beitrag einen Mehrwert bietet." | markdownify }}
+{{ "Beiträge zu Technik, Projekten und dem, was mich gerade beschäftigt. Ohne festen Rhythmus – dafür mit dem Anspruch, dass jeder Beitrag einen Mehrwert bietet." | markdownify }}
 
 {% include blog-notice.html %}
 

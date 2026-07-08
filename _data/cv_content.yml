@@ -1,19 +1,15 @@
 - section: "Profil"
   icon: "user"
+  # Einleitung ohne Überschrift (site-weites Muster: Hero → Intro-Text → H2-Abschnitte)
+  intro: true
 
   content: >-
 
-        Ich bin Ingenieur und **Machine Learning** Experte. An der Ruhr-Uni Bochum habe ich ein Studium der **Elektro- und Informationstechnik** M.Sc. mit dem Schwerpunkt *Eingebettete Systeme* abgeschlossen. 
+        Ingenieur mit Schwerpunkt **Machine Learning** — an der Ruhr-Universität Bochum habe ich **Elektro- und Informationstechnik** (M.Sc., *Eingebettete Systeme*) studiert.
+        Seit sechs Jahren entwickle ich KI-Softwarelösungen von der ersten Idee bis in die Produktivumgebung: Prototypen bauen, Anforderungen mit Stakeholdern schärfen, Modelle entwickeln und optimieren, deployen.
         <br> <br>
-        Über einen Zeitraum von sechs Jahren habe ich umfassende Erfahrung in der Entwicklung vollständiger Softwarelösungen gesammelt, die Komponenten künstlicher Intelligenz (KI) umfassen und sich über sämtliche Phasen des Entwicklungsprozesses erstrecken. 
-        Dies beinhaltet die Entwicklung von Prototypen, die Spezifizierung des Nutzungsumfanges in Kooperation mit relevanten Stakeholdern, die Entwicklung und Optimierung eigener KI Modelle sowie das Deployment bzw. die Integration in Produktivumgebungen.
-        <br>
-        Ergänzend zu den Ingenieursqualifikationen wurden im Laufe der Jahre umfassende Fähigkeiten erworben, die denen eines **Full-Stack-Entwicklers** (Frontend, Backend, DevOps / MLOps) entsprechen.
-        <br> <br>
-        Sowohl in der Forschung als auch in der Industrie habe ich umfassende praktische Erfahrungen gesammelt, sodass ich über aktuelle technische Kenntnisse und auch die Fähigkeit verfüge, praktische Herausforderungen zu bewältigen. 
-        Darüber hinaus halte ich Beteiligungen an einer Vielzahl von Projekten und habe umfangreiche Erfahrung in der Arbeit mit Teams unterschiedlicher Größe.
-        <br> <br>
-        Ein wesentlicher Schwerpunkt meines Engagements besteht dabei in der Umsetzung komplexer theoretischer Problemstellungen in praktische Lösungen.
+        Gearbeitet habe ich dabei in Forschung wie Industrie und in Teams unterschiedlicher Größe; über die Jahre ist so das komplette **Full-Stack**-Handwerk dazugekommen — Frontend, Backend, DevOps und MLOps.
+        Was mich am meisten reizt: komplexe theoretische Probleme in Lösungen zu übersetzen, die im Alltag funktionieren.
 
 
 - section: "Berufserfahrung"

@@ -223,7 +223,6 @@ auflinie/
 ├── _config.yml                    # Hauptkonfiguration mit allen Einstellungen
 ├── _data/                         # Strukturierte Daten in YAML-Format
 │   ├── navigation.yml             # Hauptnavigation und Menüstruktur
-│   ├── about.yml                  # About-Seite Inhalte und Metadaten
 │   ├── cv_content.yml             # Lebenslauf-Daten und Berufserfahrung
 │   └── mandelbrot.yml             # Fraktal-Konfiguration und Parameter
 ├── _includes/                     # Wiederverwendbare HTML-Komponenten

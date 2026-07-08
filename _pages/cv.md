@@ -20,7 +20,9 @@ read_time: false
 <div class="about-container">
 {% for section in site.data.cv_content %}
 <div class="cv-section">
+  {% unless section.intro %}
   <h2 id="{{ section.section | slugify }}"><i class="fas fa-{{ section.icon }}" aria-hidden="true"></i> {{ section.section }}</h2>
+  {% endunless %}
 
   <div class="cv-section__content">
     {% if section.content %}

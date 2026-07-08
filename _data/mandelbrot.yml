@@ -1,6 +1,8 @@
 sections:
   - section: "Einführung und Bedeutung"
     icon: "info-circle"
+    # Einleitung ohne Überschrift (site-weites Muster: Hero → Intro-Text → H2-Abschnitte)
+    intro: true
     content: >-
       Die Mandelbrot-Menge ist eines der herausragenden Beispiele
       für die Entstehung komplexer Strukturen infolge einfacher rekursiver Regeln in der modernen Mathematik.
