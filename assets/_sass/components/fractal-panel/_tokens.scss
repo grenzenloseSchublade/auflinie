@@ -34,7 +34,7 @@ $fp-heading: $console-heading;
 }
 
 .fractal-panel__title {
-  @include accent-header(1.2rem);
+  @include accent-header($fs-heading-sm);
 
   margin: 0 0 16px;
 }

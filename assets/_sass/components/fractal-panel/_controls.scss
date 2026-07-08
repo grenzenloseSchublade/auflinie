@@ -128,7 +128,7 @@
     min-width: 88px;
     color: rgb(255 255 255 / 70%);
     font-family: $fp-mono;
-    font-size: 11px;
+    font-size: $fp-fs-xs;
     font-weight: 600;
     letter-spacing: 0.06em;
     text-transform: uppercase;
@@ -155,7 +155,7 @@
     padding: 8px 10px;
 
     label {
-      font-size: 12px;
+      font-size: $fp-fs-sm;
     }
   }
 }
@@ -202,7 +202,7 @@
 
   label {
     color: rgb(255 255 255 / 70%);
-    font-size: 12px;
+    font-size: $fp-fs-sm;
     font-weight: 500;
     text-transform: uppercase;
     letter-spacing: 0.5px;
@@ -307,7 +307,7 @@
   width: 65px;
   padding: 5px 8px;
   color: $fp-accent;
-  font-size: 13px;
+  font-size: $fp-fs-md;
   font-weight: 600;
   font-family: $fp-mono;
   font-variant-numeric: tabular-nums;
@@ -346,14 +346,14 @@
   border-radius: 10px;
   cursor: pointer;
   font-family: inherit;
-  font-size: 13px;
+  font-size: $fp-fs-md;
   line-height: 1.2;
 }
 
 .fractal-panel select option {
   background: #333333;
   color: #eeeeee;
-  font-size: 1rem;
+  font-size: $fs-base;
 }
 
 // stylelint-disable-next-line no-duplicate-selectors -- thematisch getrennter Abschnitt (Tom-Select-Integration), bewusst nicht mit dem Basis-Block gemerged
@@ -405,7 +405,7 @@
   .ts-control input {
     color: #ffffff;
     font-family: $fp-mono;
-    font-size: 12px;
+    font-size: $fp-fs-sm;
     font-variant-numeric: tabular-nums;
   }
 
@@ -450,7 +450,7 @@
     cursor: pointer;
     transition: all 0.15s ease;
     font-family: $fp-mono;
-    font-size: 12px;
+    font-size: $fp-fs-sm;
     font-variant-numeric: tabular-nums;
   }
 

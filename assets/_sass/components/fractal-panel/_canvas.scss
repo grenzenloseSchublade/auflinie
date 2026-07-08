@@ -22,7 +22,7 @@
 }
 
 .fractal-panel__column-title {
-  @include accent-header(1rem, false);
+  @include accent-header($fs-base, false);
 
   margin: 0 0 12px;
   padding: 2px 0;
@@ -130,7 +130,7 @@
   border: 1px solid rgb(5 217 232 / 25%);
   padding: 4px 8px;
   border-radius: 4px;
-  font-size: 11px;
+  font-size: $fp-fs-xs;
   font-family: $fp-mono;
   font-variant-numeric: tabular-nums;
   font-weight: 500;
@@ -148,7 +148,7 @@
 
   @media (max-width: 600px) {
     padding: 3px 6px;
-    font-size: 10px;
+    font-size: $fp-fs-2xs;
   }
 }
 
@@ -162,7 +162,7 @@
   padding: 10px 20px;
   border-radius: 4px;
   display: none;
-  font-size: 16px;
+  font-size: $fp-fs-xl;
   z-index: 5;
   animation: fractal-panel-loading-pulse 1.6s ease-in-out infinite;
 }
@@ -175,7 +175,7 @@
   color: #ffd1d1;
   padding: 6px 10px;
   border-radius: 6px;
-  font-size: 12px;
+  font-size: $fp-fs-sm;
   display: none;
   z-index: 5;
 }
@@ -202,7 +202,7 @@
   border-radius: 50%;
   background: #444444;
   color: #ffffff;
-  font-size: 20px;
+  font-size: $fp-fs-icon;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -226,7 +226,7 @@
 
 .fractal-panel__zoom-level {
   color: #ffffff;
-  font-size: 12px;
+  font-size: $fp-fs-sm;
   background: rgb(0 0 0 / 30%);
   padding: 2px 6px;
   border-radius: 8px;
@@ -243,7 +243,7 @@
   border-top: 1px solid $surface-tint;
   color: rgb(255 255 255 / 45%);
   font-family: "SF Mono", Consolas, monospace;
-  font-size: 11px;
+  font-size: $fp-fs-xs;
   letter-spacing: 0.3px;
   text-align: center;
 }
@@ -272,7 +272,7 @@
   color: #ffffff;
   padding: 10px 16px;
   border-radius: 8px;
-  font-size: 14px;
+  font-size: $fp-fs-lg;
   text-align: center;
   pointer-events: none;
   opacity: 0;

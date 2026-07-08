@@ -10,7 +10,7 @@
   padding: 12px 15px;
   border-radius: 4px;
   color: #dddddd;
-  font-size: 16px;
+  font-size: $fp-fs-xl;
   line-height: 1.5;
   text-align: left;
   display: none;
@@ -53,7 +53,7 @@
   border: 1px solid rgb(5 217 232 / 30%);
   border-radius: 12px;
   cursor: pointer;
-  font-size: 14px;
+  font-size: $fp-fs-lg;
   font-weight: 500;
   transition: all 0.3s ease;
   min-height: 44px;
@@ -74,7 +74,7 @@
   }
 
   .toggle-icon {
-    font-size: 10px;
+    font-size: $fp-fs-2xs;
     transition: transform 0.3s ease;
   }
 }
@@ -86,7 +86,7 @@
   padding: 20px;
   margin-top: 12px;
   color: #e0e0e0;
-  font-size: 14px;
+  font-size: $fp-fs-lg;
   line-height: 1.6;
   display: none;
   box-shadow: 0 4px 20px rgb(0 0 0 / 30%);
@@ -104,7 +104,7 @@
   h4 {
     margin: 0 0 20px;
     color: $fp-heading;
-    font-size: 1.25rem;
+    font-size: $fs-title;
     font-weight: 600;
     border-bottom: 1px solid rgb(255 255 255 / 12%);
     padding-bottom: 12px;
@@ -113,7 +113,7 @@
   h5 {
     margin: 0 0 12px;
     color: $fp-accent;
-    font-size: 1rem;
+    font-size: $fs-base;
     font-weight: 600;
     border-bottom: 1px solid rgb(5 217 232 / 30%);
     padding-bottom: 8px;
@@ -133,7 +133,7 @@
   p.hint {
     font-style: italic;
     color: #a0a0a0;
-    font-size: 0.85rem;
+    font-size: $fs-body-sm;
   }
 
   code {
@@ -195,7 +195,7 @@
     border: 1px solid rgb(255 255 255 / 15%);
     padding: 4px 10px;
     border-radius: 12px;
-    font-size: 0.8rem;
+    font-size: $fs-ui;
     color: #d1f7ff;
   }
 

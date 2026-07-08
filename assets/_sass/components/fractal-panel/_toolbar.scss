@@ -39,7 +39,7 @@
 
     .icon {
       margin-right: 0;
-      font-size: 1rem;
+      font-size: $fs-base;
     }
 
     .btn-text {
@@ -103,7 +103,7 @@
   }
 
   .icon i {
-    font-size: 12px;
+    font-size: $fp-fs-sm;
     line-height: 1;
   }
 
@@ -146,7 +146,7 @@
   flex: 1;
   min-width: 120px;
   padding: 8px 12px;
-  font-size: 12px;
+  font-size: $fp-fs-sm;
 }
 
 .fractal-panel__button--icon-only {
@@ -179,7 +179,7 @@
   box-shadow: none;
   border-radius: 6px;
   color: rgb(255 255 255 / 60%);
-  font-size: 13px;
+  font-size: $fp-fs-md;
   transition: all 0.25s ease;
 
   &:hover {
@@ -196,7 +196,7 @@
   }
 
   .chevron i {
-    font-size: 12px;
+    font-size: $fp-fs-sm;
   }
 }
 
