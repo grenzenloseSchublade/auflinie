@@ -16,10 +16,14 @@
   }
 
   // Ohne Unterstreichung: Die Kapitelgrenze übernimmt der Cyan-Trenner
-  // (eine Linie pro Grenze — Doppel-Linien wirkten schlecht)
+  // (eine Linie pro Grenze — Doppel-Linien wirkten schlecht).
+  // border/padding explizit zurücksetzen: die Theme-Descendant-Regel
+  // .page__content h2 setzt sonst weiter ihren feinen Strich.
   h2 {
     @include accent-header(1.35rem, false);
 
+    border-bottom: none;
+    padding-bottom: 0;
     margin-bottom: 1.5rem;
   }
 }
@@ -79,11 +83,12 @@
     padding-bottom: 0.5rem;
   }
 
-  // Punkt-Marker auf der Linie
+  // Punkt-Marker auf der Linie — left so, dass die Punkt-Mitte (137 + 5)
+  // exakt auf der Linien-Mitte (141 + 1) liegt; box-sizing ist border-box
   &::after {
     content: "";
     position: absolute;
-    left: 135px;
+    left: 137px;
     top: 5px;
     width: 10px;
     height: 10px;

@@ -170,8 +170,15 @@ document.addEventListener('DOMContentLoaded', function() {
       if (link && isMobile()) {
         updateCurrentHeading(link.textContent.trim());
       }
+      // aria-current als semantischer Aktiv-Marker (Gumshoe setzt nur Klassen)
+      if (link) { link.setAttribute('aria-current', 'true'); }
       // Sync auch das Dropdown
       syncDropdownActive(link);
+    });
+
+    document.addEventListener('gumshoeDeactivate', function(event) {
+      const link = event.detail.link;
+      if (link) { link.removeAttribute('aria-current'); }
     });
   }
   

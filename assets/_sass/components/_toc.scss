@@ -58,21 +58,11 @@
     color: $text-color;
     text-align: left;
 
-    // Akzent-Balken links (gleiche Sprache wie die Sektions-Header)
-    &::before {
-        content: "";
-        flex-shrink: 0;
-        width: 4px;
-        height: 1.15em;
-        border-radius: 2px;
-        background: linear-gradient(180deg, $link-color, rgb(5 217 232 / 35%));
-        box-shadow: 0 0 8px rgb(5 217 232 / 30%);
-    }
-    
+    // Kein Akzent-Balken mehr — schlichtes Mono-Label (Rail-Design)
     &:active {
-        background: rgba($link-color, 0.1);
+        background: rgba($hover-color, 0.08);
     }
-    
+
     &:focus-visible {
         outline: 2px solid $hover-color;
         outline-offset: -2px;
@@ -166,69 +156,25 @@
     }
 }
 
-// TOC-Menü im Dropdown
+// TOC-Menü im Dropdown: erbt Rail, gedämpfte Einträge, Magenta-Hover und
+// Cyan-Aktiv aus den geteilten .toc__menu-Regeln — hier nur Layout
+// (Innenabstand fürs Dropdown, größere Touch-Ziele)
 .toc-sticky-mobile__menu {
-    margin: 0;
-    padding: 0.5rem 0;
-    list-style: none;
+    margin: 0.5rem 1rem;
+    width: auto;
     font-size: $type-size-5;
-    
+
     a {
-        display: flex;
-        align-items: center;
         padding: 0.75rem 1.25rem;
         min-height: 44px;
-        color: $text-color;
-        text-decoration: none;
-        font-weight: 500;
-        line-height: 1.4;
-        border-bottom: 1px solid rgba($border-color, 0.5);
-        transition: background-color $standard-transition, color $standard-transition;
-        
-        &:hover,
-        &:focus {
-            color: $link-color;
-            background: rgba($link-color, 0.08);
-        }
-        
-        &:active {
-            background: rgba($link-color, 0.15);
-        }
     }
-    
-    // Aktives Element
-    .active > a {
-        color: $link-color;
-        font-weight: 700;
-        background: rgba($link-color, 0.05);
-        border-left: 3px solid $link-color;
-        padding-left: calc(1.25rem - 3px);
+
+    li ul > li a {
+        padding-left: 2rem;
     }
-    
-    // Verschachtelte Listen
-    li ul {
-        margin: 0;
-        padding: 0;
-        
-        a {
-            padding-left: 2rem;
-            font-size: 0.9375em;
-            font-weight: 400;
-        }
-        
-        .active > a {
-            padding-left: calc(2rem - 3px);
-        }
-    }
-    
+
     li ul li ul a {
         padding-left: 2.75rem;
-        font-size: 0.875em;
-    }
-    
-    // stylelint-disable-next-line selector-max-compound-selectors -- tiefe TOC-Verschachtelung (Ebene 3), bewusst
-    li ul li ul .active > a {
-        padding-left: calc(2.75rem - 3px);
     }
 }
 
@@ -280,54 +226,46 @@
 // =============================================================================
 // GRUNDLEGENDE TOC-STILE
 // =============================================================================
+// Rail-Design (Juli 2026, VitePress-Muster): keine Panel-Box mehr —
+// eine durchlaufende dezente Rail, aktives Segment + Text cyan,
+// Hover magenta (Interaktion), keine Trenner, kein Bold.
 .toc {
     font-family: $sans-serif-narrow;
     color: $text-color;
-    background-color: $console-panel-bg;
-    border: 1px solid $console-panel-border;
-    border-radius: $border-radius;
-    box-shadow: 0 2px 6px rgb(0 0 0 / 25%);
-    overflow: hidden;
 
-    // Kopf im Akzent-Balken-Stil (leise statt Voll-Teal)
+    // Theme-Basisregel (Panel mit Rahmen/Schatten) explizit zurücksetzen —
+    // Weglassen reicht nicht, die Theme-Deklarationen scheinen sonst durch
+    background-color: transparent;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    overflow: visible;
+
+    // Kopf: schlichtes gedimmtes Mono-Label, kein Balken, keine Fläche
     .nav__title {
-        color: rgb(255 255 255 / 70%);
+        color: $fg-subtle;
         font-family: $mono-font-stack;
         font-size: $toc-title-font-size;
         text-transform: uppercase;
         letter-spacing: 0.08em;
-        background: rgb(255 255 255 / 3%);
-        border-bottom: 1px solid $console-panel-border;
-        border-top-left-radius: $border-radius;
-        border-top-right-radius: $border-radius;
-        padding: 0.6em 1em;
+        background: none; // Theme setzt hier Voll-Teal
+        border-bottom: none;
+        border-radius: 0;
+        padding: 0.4em 0;
         font-weight: 600;
-        min-height: 44px;
         display: flex;
         align-items: center;
-
-        &::before {
-            content: "";
-            flex-shrink: 0;
-            width: 4px;
-            height: 1.05em;
-            border-radius: 2px;
-            background: linear-gradient(180deg, $link-color, rgb(5 217 232 / 35%));
-            box-shadow: 0 0 8px rgb(5 217 232 / 30%);
-            margin-right: 0.6em;
-        }
+        gap: 0.5rem;
 
         i {
-            color: $link-color;
+            color: $fg-subtle;
             font-size: 0.85em;
         }
     }
 
-    // Scrollspy marks toc items as .active when they are in focus
-    // Nur der DIREKTE Link des aktiven Elements, nicht Unterkapitel
+    // Scrollspy: aktiver Link cyan (kein Bold — kein Layout-Jitter)
     .active > a {
         color: $link-color;
-        font-weight: bold;
     }
 }
 
@@ -341,6 +279,10 @@
     list-style: none;
     font-size: 0.92em;
 
+    // Durchgehende Rail: EINE dezente Linie vor allen Einträgen; das
+    // aktive Segment (li.active > a::before) legt sich cyan darüber
+    border-left: 2px solid rgb(255 255 255 / 12%);
+
     // Browser-Default "ul ul { list-style: circle }" schlägt die Vererbung —
     // ohne das ragen abgeschnittene Kreis-Marker in den linken Rand (Dropdown)
     ul {
@@ -348,27 +290,26 @@
     }
 
     a {
-        padding: 0.55rem 1rem;
-        min-height: 38px;
-        color: $text-color;
-        font-weight: 600;
+        padding: 0.45rem 1rem;
+        min-height: 36px;
+        color: $fg-subtle;
+        font-weight: 400;
         line-height: 1.4;
         text-decoration: none !important; // Theme-Hover-Unterstrich unterbinden
-        border-bottom: 1px solid rgb(255 255 255 / 10%);
-        transition: background-color $standard-transition, color $standard-transition;
-        
+        transition: color $standard-transition;
+
         // Flexbox für vertikale Zentrierung
         display: flex;
         align-items: center;
 
+        // Hover = Interaktion ⇒ dezentes Magenta (Nutzerwunsch), keine Fläche
         &:hover {
-            color: $link-color;
-            background-color: rgb(0 0 0 / 20%);
+            color: rgba($hover-color, 0.85);
         }
-        
+
         // Touch-Feedback für Mobile
         &:active {
-            background-color: rgba($link-color, 0.15);
+            color: rgba($hover-color, 0.85);
         }
 
         &:focus-visible {
@@ -378,92 +319,66 @@
 
         // Touch: größere Ziele nur dort, wo grob gezeigt wird
         @media (pointer: coarse) {
-            padding: 0.75rem 1rem;
+            padding: 0.7rem 1rem;
             min-height: 44px;
         }
     }
 
-    // Verschachtelte Listen
+    // Verschachtelte Listen: Einrückung nur über padding — die eine Rail
+    // links trägt die Hierarchie, keine zusätzlichen Linien
     li ul {
         margin: 0;
         padding-left: 0;
-        border-left: 2px solid rgba($border-color, 0.3);
-        margin-left: 0.75rem;
     }
 
     li ul a {
-        font-weight: 500;
         font-size: 0.9375em; // 15px - etwas kleiner für Hierarchie
     }
 
     li ul > li a {
-        padding-left: 1.25rem;
-        font-weight: normal;
+        padding-left: 1.75rem;
     }
 
     // stylelint-disable-next-line selector-max-compound-selectors -- tiefe TOC-Verschachtelung (Ebene 3), bewusst
     li ul li ul > li a {
-        padding-left: 1.75rem;
+        padding-left: 2.25rem;
         font-size: 0.875em; // 14px für tiefere Ebenen
     }
 
     // stylelint-disable-next-line selector-max-compound-selectors -- TOC-Ebenen 4-6
     li ul li ul li ul > li a {
-        padding-left: 2.25rem;
-    }
-
-    // stylelint-disable-next-line selector-max-compound-selectors -- TOC-Ebenen 4-6
-    li ul li ul li ul li ul > li a {
         padding-left: 2.75rem;
     }
 
     // stylelint-disable-next-line selector-max-compound-selectors -- TOC-Ebenen 4-6
-    li ul li ul li ul li ul li ul > li a {
+    li ul li ul li ul li ul > li a {
         padding-left: 3.25rem;
     }
 
+    // stylelint-disable-next-line selector-max-compound-selectors -- TOC-Ebenen 4-6
+    li ul li ul li ul li ul li ul > li a {
+        padding-left: 3.75rem;
+    }
+
     // ==========================================================================
-    // ACTIVE STATE - Scrollspy Highlighting (Desktop & Mobile)
-    // Gumshoe setzt .active auf das <li> Element
+    // ACTIVE STATE - Scrollspy (Gumshoe setzt .active auf das <li>,
+    // das JS zusätzlich aria-current auf das <a>)
+    // Zwei Kanäle: Text cyan + cyan Rail-Segment über der grauen Rail —
+    // kein Bold, kein Hintergrund, kein Layout-Jitter
     // ==========================================================================
     li.active > a {
         color: $link-color;
-        font-weight: 700;
-        background: rgb(0 0 0 / 25%);
         position: relative;
-        
-        // Linker Indikator-Balken (Cyan für Akzent)
+
         &::before {
             content: '';
             position: absolute;
-            left: 0;
+            left: -2px; // deckt die Container-Rail exakt ab
             top: 0;
             bottom: 0;
-            width: 3px;
+            width: 2px;
             background: $link-color;
-            border-radius: 0 2px 2px 0;
         }
-    }
-    
-    // WICHTIG: Unterkapitel innerhalb eines aktiven Hauptkapitels
-    // zurücksetzen auf Standard (verhindert Vererbung)
-    li.active > ul a {
-        color: $text-color;
-        font-weight: 500;
-        background: transparent;
-        
-        &:hover {
-            color: $link-color;
-            background-color: rgb(0 0 0 / 20%);
-        }
-    }
-    
-    // Wenn ein Unterkapitel SELBST aktiv ist
-    li.active > ul li.active > a,
-    li ul li.active > a {
-        color: $link-color;
-        font-weight: 700;
-        background: rgb(0 0 0 / 20%);
     }
 }
 
@@ -482,9 +397,9 @@
     display: block;
     box-sizing: border-box;
     
-    // Touch-Feedback
+    // Touch-Feedback (Interaktion ⇒ Magenta)
     &:active .nav__title {
-        background: rgb(5 217 232 / 10%);
+        background: rgba($hover-color, 0.08);
     }
 }
 
@@ -495,7 +410,6 @@
     align-items: center;
     width: 100%;
     box-sizing: border-box;
-    border-radius: $border-radius $border-radius 0 0;
     gap: 0.5rem;
 }
 
@@ -542,8 +456,8 @@
     .toc {
         .nav__title {
             // Größe kommt zentral aus $toc-title-font-size
-            padding: 0.5em 0.75em;
-            min-height: 36px;
+            padding: 0.3em 0;
+            min-height: 32px;
         }
     }
     
@@ -572,7 +486,7 @@
 .wide .toc {
     .nav__title {
         // Größe kommt zentral aus $toc-title-font-size
-        padding: 0.5em 0.75em;
+        padding: 0.4em 0;
     }
 }
 
@@ -589,7 +503,7 @@
     .wide .toc {
         .nav__title {
             // Größe kommt zentral aus $toc-title-font-size
-            padding: 0.75em 1em;
+            padding: 0.6em 0;
             min-height: 44px;
         }
     }
