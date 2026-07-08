@@ -60,9 +60,11 @@
   }
 }
 
-// Verwandte Beiträge unter Artikeln
+// Verwandte Beiträge unter Artikeln. Kein margin-top: die frühere
+// 2.5rem-Angabe war TOT (Reset "body .page__related { margin-top: 0 }"
+// in _masthead.scss überstimmt class-only-Regeln) — der abgenommene
+// Look hat effektiv 0
 .page__related {
-  margin-top: 2.5rem;
 
   .page__related-title {
     @include accent-header($fs-heading);

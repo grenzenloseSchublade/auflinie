@@ -565,14 +565,16 @@ html body {
   margin-top: 0;
 }
 
-// Content-Bereiche ohne zusätzliches Padding
-body .initial-content,
-body .page__content,
+// Content-Bereiche ohne Theme-Kopfabstände. TRAGENDE Resets (Audit 8.7.26,
+// kaskadengeprüft): sie überstimmen Theme-Regeln mit gleicher Basis-Klasse
+// (.page__meta 2em / .page__related 2em+1em / .archive 1em). ACHTUNG
+// Kaskaden-Falle: (0,1,1) schlägt jede eigene class-only-Regel (0,1,0) —
+// kontextuelle Abstände brauchen ≥2 Klassen (siehe Hero-/Header-page__meta).
+// Entfernt als TOT (keine Konkurrenz-Deklaration im gebauten CSS):
+// .initial-content, .page__content, header.page__title, article.page
 body .page__meta,
 body .page__related,
-body .archive,
-body header.page__title,
-body article.page {
+body .archive {
   padding-top: 0;
   margin-top: 0;
 }
