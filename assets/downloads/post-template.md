@@ -1,8 +1,8 @@
 <!--
-ANLEITUNG: Entfernen Sie diesen gesamten Kommentar-Block (<!-- ... -->) und befüllen Sie die Felder!
+ANLEITUNG: Diesen gesamten Kommentar-Block (<!-- ... -->) entfernen und die Felder befüllen!
 
 ---
-title: "Hier Ihren aussagekräftigen Titel eingeben"
+title: "Hier den aussagekräftigen Titel eintragen"
 date: YYYY-MM-DD
 author_profile: true
 categories:
@@ -24,13 +24,13 @@ excerpt: "Kurze Zusammenfassung (wird in der Übersicht angezeigt)"
 
 ## Einleitung
 
-Erzählen Sie hier, worum es in diesem Beitrag geht. Stellen Sie das Thema vor und erklären Sie, warum es für Ihre Leser interessant ist.
+Hier steht, worum es in diesem Beitrag geht: das Thema kurz vorstellen und erklären, warum es lesenswert ist.
 
-**Tipp:** Beginnen Sie mit einem interessanten Fakt oder einer Frage, die neugierig macht.
+**Tipp:** Ein interessanter Fakt oder eine Frage am Anfang macht neugierig.
 
-## Was Sie lernen werden
+## Was dieser Beitrag vermittelt
 
-Listen Sie hier die wichtigsten Punkte auf, die der Leser nach dem Beitrag wissen wird:
+Die wichtigsten Punkte, die nach dem Lesen sitzen sollen:
 
 - **Punkt 1:** Was wird erklärt
 - **Punkt 2:** Welches Problem wird gelöst  
@@ -40,16 +40,16 @@ Listen Sie hier die wichtigsten Punkte auf, die der Leser nach dem Beitrag wisse
 
 ### Abschnitt 1: Überschrift anpassen
 
-Erklären Sie hier den ersten wichtigen Aspekt Ihres Themas. Verwenden Sie kurze Absätze für bessere Lesbarkeit.
+Hier den ersten wichtigen Aspekt des Themas erklären. Kurze Absätze verbessern die Lesbarkeit.
 
 **Wichtige Hinweise:**
-- Verwenden Sie `##` für Hauptabschnitte
-- Verwenden Sie `###` für Unterabschnitte
-- Halten Sie Absätze kurz (max. 3-4 Sätze)
+- `##` für Hauptabschnitte verwenden
+- `###` für Unterabschnitte verwenden
+- Absätze kurz halten (max. 3-4 Sätze)
 
 ### Abschnitt 2: Überschrift anpassen
 
-Weiterer wichtiger Aspekt. Hier können Sie auch Code-Beispiele einfügen:
+Weiterer wichtiger Aspekt. Hier passen auch Code-Beispiele gut:
 
 ```python
 # Beispiel-Code
@@ -57,11 +57,11 @@ def hallo_welt():
     print("Hallo aus Jekyll!")
 ```
 
-**Code-Tipp:** Verwenden Sie drei Backticks (```) und geben Sie die Programmiersprache an.
+**Code-Tipp:** Drei Backticks (```) verwenden und die Programmiersprache angeben.
 
 ## Praktisches Beispiel
 
-Zeigen Sie hier ein konkretes Beispiel oder eine Schritt-für-Schritt-Anleitung:
+Ein konkretes Beispiel oder eine Schritt-für-Schritt-Anleitung:
 
 1. **Schritt 1:** Was ist zu tun
 2. **Schritt 2:** Wie wird es gemacht
@@ -69,9 +69,9 @@ Zeigen Sie hier ein konkretes Beispiel oder eine Schritt-für-Schritt-Anleitung:
 
 ## Wichtige Erkenntnisse
 
-> **Zitat-Tipp:** Verwenden Sie `>` für wichtige Aussagen oder Zitate
+> **Zitat-Tipp:** `>` eignet sich für wichtige Aussagen oder Zitate
 
-Fassen Sie hier die wichtigsten Erkenntnisse zusammen.
+Hier die wichtigsten Erkenntnisse zusammenfassen.
 
 ## Fazit
 

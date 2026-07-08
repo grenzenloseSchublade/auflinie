@@ -93,7 +93,7 @@ Die SEO-Optimierung und Metadaten-Verwaltung ist ein weiterer Stärkebereich des
 
 Die erweiterten Customization-Optionen bieten umfangreiche Anpassungsmöglichkeiten. Das Skin-System bietet verschiedene vorgefertigte Farbschemata wie Dark, Light und Aqua, während multiple Layout-Varianten für verschiedene Content-Typen verfügbar sind. Die flexible Navigation unterstützt Dropdown-Menüs und Breadcrumbs, und konfigurierbare Sidebar-Elemente wie Archiv, Tags und Kategorien ermöglichen individuelle Anpassungen. Anpassbare Footer-Bereiche mit Links und Informationen vervollständigen die Customization-Optionen.
 
-Die Performance-Optimierungen sind ein weiterer wichtiger Aspekt des Themes. Optimiertes CSS/JS-Bundling und Minimierung sorgen für schnelle Ladezeiten, während Lazy Loading das verzögerte Laden von Bildern für bessere Performance ermöglicht. Inline-Critical-CSS sorgt für schnelleres First Paint, und der integrierte Service Worker bietet Offline-Funktionalität und Caching-Strategien. Die automatische Bildgrößen-Anpassung und WebP-Unterstützung runden die Performance-Optimierungen ab.
+Die Performance-Optimierungen sind ein weiterer wichtiger Aspekt des Themes. Optimiertes CSS/JS-Bundling und Minimierung sorgen für schnelle Ladezeiten, während Lazy Loading das verzögerte Laden von Bildern für bessere Performance ermöglicht. Inline-Critical-CSS sorgt für schnelleres First Paint, und die automatische Bildgrößen-Anpassung samt WebP-Unterstützung rundet die Performance-Optimierungen ab. Einen Service Worker bringt das Theme dagegen nicht mit — die Offline-Funktionalität dieser Website ist ein Eigenbau (mehr dazu in Kapitel III).
 
 Die detaillierte Community- und Support-Analyse des Minimal Mistakes Themes zeigt eine außergewöhnlich hohe Qualität und Aktivität. Die Dokumentationsqualität ist beeindruckend mit über 200 Seiten detaillierter Dokumentation, die alle Aspekte des Themes abdecken. Praktische Code-Beispiele für alle Features und Customizations erleichtern die Implementierung, während Video-Tutorials Schritt-für-Schritt-Anleitungen für häufige Aufgaben bieten. Eine umfassende FAQ-Sektion beantwortet häufige Fragen und Problemstellungen, und detaillierte Migration-Guides unterstützen bei Updates und Theme-Wechseln.
 
@@ -117,7 +117,7 @@ Die finale Entscheidung für Minimal Mistakes basierte auf der Kombination aus u
 
 Die Einrichtung einer produktiven Entwicklungsumgebung war ein kritischer Schritt für den Erfolg des Projekts. Die gewählte Lösung kombiniert moderne Container-Technologie mit bewährten Entwicklungstools für eine optimale Developer Experience.
 
-Die umfassende Installation und Konfiguration der Dependencies bildet das Fundament für eine produktive Entwicklungsumgebung. Die Ruby-Installation und das Version-Management erfordern mindestens Ruby 2.5.0, wobei Version 2.7.0 für optimale Performance und erweiterte Features empfohlen wird. Für das Version-Management bietet rbenv eine elegante Lösung, die verschiedene Ruby-Versionen parallel verwalten kann und die Installation über ein einfaches Installationsskript ermöglicht.
+Die umfassende Installation und Konfiguration der Dependencies bildet das Fundament für eine produktive Entwicklungsumgebung. Die Ruby-Version ist über die `.ruby-version` auf 3.4.8 festgelegt, damit lokale Umgebung, Dev Container und CI identisch bauen. Für lokales Version-Management bietet rbenv eine elegante Lösung, die verschiedene Ruby-Versionen parallel verwalten kann — im Alltag übernimmt diese Aufgabe allerdings der Dev Container.
 
 Die Bundler-Installation und Konfiguration ist ein kritischer Schritt für das Dependency-Management. Bundler fungiert als Ruby Dependency Manager und ermöglicht reproduzierbare Builds durch die Gemfile.lock. Die Konfiguration für Deployment-Modus und das Ausschließen von Development- und Test-Dependencies sorgt für optimale Build-Performance in Produktionsumgebungen.
 
@@ -127,36 +127,31 @@ Das Projekt-Setup beginnt mit der Repository-Klonierung und dem Wechsel in das P
 
 **Dev Container mit Visual Studio Code:**
 ```json
-// .devcontainer/devcontainer.json
+// .devcontainer/devcontainer.json (gekürzt)
 {
-  "name": "Jekyll Development Environment",
-  "image": "mcr.microsoft.com/devcontainers/ruby:2.7",
+  "name": "Python 3.11 & Jekyll",
+  "image": "mcr.microsoft.com/devcontainers/python:3.11",
   "features": {
-    "ghcr.io/devcontainers/features/node:1": {
-      "version": "18"
-    }
+    "ghcr.io/devcontainers/features/ruby:1": { "version": "3.4.8" },
+    "ghcr.io/devcontainers/features/node:1": { "version": "lts" },
+    "ghcr.io/devcontainers/features/github-cli:1": {}
   },
+  "postCreateCommand": "bash -i .devcontainer/post-create.sh",
+  "forwardPorts": [4000],
   "customizations": {
     "vscode": {
       "extensions": [
-        "ms-vscode.vscode-json",
-        "bradlc.vscode-tailwindcss",
-        "ms-vscode.vscode-typescript-next"
+        "sissel.shopify-liquid",
+        "davidanson.vscode-markdownlint",
+        "yzhang.markdown-all-in-one",
+        "redhat.vscode-yaml"
       ]
-    }
-  },
-  "postCreateCommand": "bundle install",
-  "forwardPorts": [4000],
-  "portsAttributes": {
-    "4000": {
-      "label": "Jekyll Server",
-      "onAutoForward": "notify"
     }
   }
 }
 ```
 
-Das Ruby-Ökosystem bildet das technische Fundament der Entwicklungsumgebung. Ruby Version 2.7.0 bietet optimierte Performance und erweiterte Features, während Bundler Version 2.1.4 für Dependency-Management und reproduzierbare Builds sorgt. Jekyll Version 4.2.0 bringt verbesserte Performance und neue Features mit sich, während Liquid als Template-Engine für dynamische Inhalte und Layouts fungiert. Kramdown dient als Markdown-Parser mit erweiterten Features für mathematische Formeln, was besonders für technische Inhalte von Vorteil ist.
+Das Ruby-Ökosystem bildet das technische Fundament der Entwicklungsumgebung. Ruby 3.4.8 bildet die Basis, während Bundler über die Gemfile.lock für Dependency-Management und reproduzierbare Builds sorgt. Jekyll 4.4 bringt verbesserte Performance und den modernen dart-sass-Konverter mit, während Liquid als Template-Engine für dynamische Inhalte und Layouts fungiert. Kramdown dient als Markdown-Parser mit erweiterten Features für mathematische Formeln, was besonders für technische Inhalte von Vorteil ist.
 
 Die Entwicklungstools und Workflow-Integration sorgen für eine produktive Entwicklungsumgebung. LiveReload ermöglicht automatische Browser-Aktualisierung bei Dateiänderungen, während der SCSS-Compiler automatische Kompilierung von SCSS zu CSS gewährleistet. Die Asset-Pipeline übernimmt Optimierung und Minimierung von CSS/JS-Dateien, und das Image-Processing sorgt für automatische Bildoptimierung und Größenanpassung.
 
@@ -224,64 +219,41 @@ auflinie/
 ├── _data/                         # Strukturierte Daten in YAML-Format
 │   ├── navigation.yml             # Hauptnavigation und Menüstruktur
 │   ├── cv_content.yml             # Lebenslauf-Daten und Berufserfahrung
-│   └── mandelbrot.yml             # Fraktal-Konfiguration und Parameter
+│   └── mandelbrot.yml             # Fraktal-Seiteninhalte und Sektionen
 ├── _includes/                     # Wiederverwendbare HTML-Komponenten
-│   ├── head/                      # HTML-Head-Bereich Komponenten
-│   │   └── custom.html            # Custom CSS/JS für spezielle Seiten
-│   ├── julia-interactive.html     # Interaktiver Julia-Menge Generator
-│   ├── mandelbrot-julia-explorer.html # Mandelbrot-Julia Explorer
-│   ├── cv-*.html                  # Lebenslauf-Komponenten
-│   └── *.html                     # Weitere wiederverwendbare Komponenten
+│   ├── head/custom.html           # Custom CSS/JS für spezielle Seiten
+│   ├── fractal/                   # Fraktal-Panel (canvas, panel, deps, Erklärtexte)
+│   ├── cv/                        # Lebenslauf-Komponenten (entry, skills, languages)
+│   ├── julia-interactive.html     # Wrapper um das Julia-Panel
+│   ├── mandelbrot-julia-explorer.html # Wrapper um den Explorer
+│   ├── section-epigraph.html      # Zitat-Epigraph für Abschnitte
+│   └── *.html                     # Masthead, Hero, Footer, TOC u. a.
 ├── _layouts/                      # HTML-Layout-Templates
 │   ├── default.html               # Basis-Layout für alle Seiten
-│   ├── home.html                  # Spezielles Layout für Startseite
-│   ├── single.html                # Layout für einzelne Blogbeiträge
-│   └── archive.html               # Layout für Archiv-Seiten
+│   └── single.html                # Layout für Seiten und Blogbeiträge
 ├── _pages/                        # Statische Seiten (nicht Blog-Posts)
-│   ├── about.md                   # Über mich Seite
-│   ├── cv.md                      # Lebenslauf Seite
-│   ├── mandelbrot.md              # Fraktal-Visualisierung Seite
-│   ├── posts.md                   # Blog-Übersichtsseite
-│   └── category-archive.md        # Kategorie-Archiv
+│   ├── about.md                   # Über mich
+│   ├── cv.md                      # Lebenslauf
+│   ├── mandelbrot.md              # Fraktal-Visualisierung
+│   ├── posts.md                   # Blog-Übersicht
+│   └── archiv.md                  # Jahres-Archiv
 ├── _posts/                        # Blogbeiträge (Jekyll-Konvention)
-│   ├── 2025-02-15-erster-beitrag.md
-│   ├── 2025-03-04-blogbeitrag-erstellen.md
-│   └── 2025-03-04-erstellung-dieser-website.md
-├── _drafts/                       # Entwürfe (nicht veröffentlicht)
-│   ├── 2024-03-15-gyros-geschichte.md
-│   └── 2025-03-05-css-struktur-analyse.md
-├── assets/                        # Statische Assets (CSS, JS, Bilder)
-│   ├── _sass/                     # SCSS-Stylesheets
-│   │   ├── _custom.scss           # Custom Styles und Overrides
-│   │   ├── _variables.scss        # SCSS-Variablen
-│   │   ├── components/            # Komponenten-spezifische Styles
-│   │   ├── layouts/               # Layout-spezifische Styles
-│   │   └── variables/             # Farbschemata und Typografie
-│   ├── css/                       # Kompilierte CSS-Dateien
-│   │   └── main.scss              # Haupt-SCSS-Datei
-│   ├── js/                        # JavaScript-Dateien
-│   │   ├── julia-worker.js        # Web Worker für Julia-Menge
-│   │   ├── mandelbrot-worker.js   # Web Worker für Mandelbrot
-│   │   ├── image-cache.js         # Bild-Caching-System
-│   │   └── plugins/               # JavaScript-Plugins
-│   ├── images/                    # Bilder und Grafiken
-│   │   ├── fractals/              # Fraktal-Bilder
-│   │   ├── animations/            # GIF-Animationen
-│   │   ├── background.jpg         # Hintergrundbilder
-│   │   └── Logo.jpg               # Website-Logo
-│   └── downloads/                 # Downloadbare Dateien
-│       └── post-template.md       # Blog-Template zum Download
-├── _site/                         # Generierte Website (Build-Output)
-│   ├── assets/                    # Optimierte Assets
-│   ├── posts/                     # Generierte Blogbeiträge
-│   ├── index.html                 # Startseite
-│   └── sitemap.xml                # Automatisch generierte Sitemap
-├── .devcontainer/                 # Development Container Konfiguration
-│   └── devcontainer.json          # VS Code Dev Container Setup
-├── Gemfile                        # Ruby Dependencies
-├── Gemfile.lock                   # Dependency-Versionslock
-├── README.md                      # Projekt-Dokumentation
-└── service-worker.js              # Service Worker für Offline-Funktionalität
+├── assets/
+│   ├── _sass/                     # SCSS: _custom.scss + base/components/layouts/variables
+│   ├── css/main.scss              # Haupt-SCSS-Einstieg
+│   ├── js/                        # Eigene Skripte: fractal-renderer, fractal-panel,
+│   │                              #   julia-/mandelbrot-worker, hero-crt, tv-switch,
+│   │                              #   sw-register, blog-search u. a.
+│   ├── vendor/                    # Selbst gehostete Bibliotheken (tom-select,
+│   │                              #   nouislider, gumshoe) — vormals CDN
+│   ├── webfonts/                  # Font-Awesome-Subset (pyftsubset, woff2)
+│   ├── images/                    # background.jpg, mandelbrot-preview.jpg, Logo.svg
+│   └── downloads/post-template.md # Blog-Template zum Download
+├── .devcontainer/                 # Dev-Container (python:3.11 + Ruby 3.4.8 Feature)
+├── .github/workflows/             # CI: Build, htmlproofer, Stylelint, Deploy
+├── Gemfile / Gemfile.lock         # Ruby Dependencies (Jekyll ~> 4.4)
+├── offline.html / 404.html        # Offline-Fallback und Fehlerseite
+└── service-worker.js              # App-Shell-Precache (Liquid-generierte URL-Liste)
 ```
 
 Die umfassende Minimal Mistakes Integration bildet das Herzstück der Website-Konfiguration. Die Theme-Konfiguration erfolgt über die `_config.yml` mit der Spezifikation des Remote-Themes und der gewünschten Skin-Variante. Das Dark Theme wurde für bessere Augenfreundlichkeit gewählt, während verschiedene Skin-Optionen wie "default", "air", "aqua", "contrast", "dark", "dirt", "neon", "mint", "plum" und "sunrise" verfügbar sind.
@@ -335,7 +307,7 @@ mathjax: true
 
 Die Performance-Optimierungen sind ein kritischer Aspekt der Konfiguration. Die Build-Optimierungen umfassen die Verwendung von Rouge als Highlighter, die Deaktivierung von LSI für bessere Performance und die Definition eines Excerpt-Separators für konsistente Zusammenfassungen. Die SASS-Kompilierung erfolgt mit komprimiertem CSS-Output und ohne Source Maps in der Produktion für optimale Performance. Die Asset-Optimierung durch HTML-Komprimierung entfernt alle unnötigen Zeichen und Kommentare für minimale Dateigrößen.
 
-Die Plugin-Konfiguration erweitert die Grundfunktionalität von Jekyll um wichtige Features. Jekyll-Paginate ermöglicht Blog-Pagination, während Jekyll-Sitemap automatische XML-Sitemap-Generierung bereitstellt. Jekyll-Gist integriert GitHub Gists, und Jekyll-Feed generiert RSS-Feeds für Blog-Abonnements. Jemoji unterstützt Emoji-Darstellung, Jekyll-Include-Cache verbessert die Performance durch Caching, und Jekyll-Last-Modified-At verfolgt Änderungszeiten. Die GitHub Pages kompatiblen Gems stellen sicher, dass alle Plugins in der Produktionsumgebung funktionieren.
+Die Plugin-Konfiguration erweitert die Grundfunktionalität von Jekyll um wichtige Features. Jekyll-Paginate-v2 ermöglicht Blog-Pagination, während Jekyll-Sitemap automatische XML-Sitemap-Generierung bereitstellt. Jekyll-Gist integriert GitHub Gists, und Jekyll-Feed generiert RSS-Feeds für Blog-Abonnements. Jemoji unterstützt Emoji-Darstellung, Jekyll-Include-Cache verbessert die Performance durch Caching, und Jekyll-Last-Modified-At verfolgt Änderungszeiten. Die GitHub Pages kompatiblen Gems stellen sicher, dass alle Plugins in der Produktionsumgebung funktionieren.
 
 **Layout-Defaults und Standardwerte:**
 ```yaml
@@ -408,34 +380,16 @@ Die Layout-Anpassungen definieren eine maximale Breite von 1200px, eine Sidebar-
 Die Custom-Komponenten umfassen spezielle Styling für den Fraktal-Canvas mit Akzent-Farben, abgerundeten Ecken und Schatten-Effekten, sowie Code-Blöcke mit dunklem Hintergrund und heller Schrift für bessere Lesbarkeit. Diese Anpassungen schaffen eine konsistente und professionelle Optik der Website.
 
 **Layout-Modifikationen und Includes:**
-```html
-<!-- _includes/julia-interactive.html -->
-<div class="fractal-container">
-  <div class="controls">
-    <label for="real-part">Realteil (c):</label>
-    <input type="range" id="real-part" min="-2" max="2" step="0.01" value="-0.7">
-    <span id="real-value">-0.7</span>
-    
-    <label for="imag-part">Imaginärteil (c):</label>
-    <input type="range" id="imag-part" min="-2" max="2" step="0.01" value="0.27015">
-    <span id="imag-value">0.27015</span>
-    
-    <label for="iterations">Max. Iterationen:</label>
-    <input type="range" id="iterations" min="50" max="1000" step="50" value="200">
-    <span id="iterations-value">200</span>
-  </div>
-  
-  <canvas id="julia-canvas" width="800" height="600"></canvas>
-  
-  <div class="info">
-    <h3>Julia-Menge Parameter</h3>
-    <p>c = <span id="c-value">-0.7 + 0.27015i</span></p>
-    <p>Iterationen: <span id="iter-display">200</span></p>
-  </div>
-</div>
 
-<script src="{{ '/assets/js/julia-worker.js' | relative_url }}"></script>
+Die Fraktal-Visualisierungen sind als geteilte Panel-Komponente organisiert: Markup in `_includes/fractal/panel.html`, Rendering-Logik in `assets/js/fractal-renderer.js` und `fractal-panel.js`, Berechnung in Web Workern (`julia-worker.js`, `mandelbrot-worker.js`). Die Seiten binden davon nur dünne Wrapper ein:
+
+```liquid
+{% raw %}<!-- _includes/julia-interactive.html — dünner Wrapper um das geteilte Panel -->
+{% include fractal/panel.html variant="julia" id="julia-container"
+   title="Interaktive Julia-Menge" crt="dezent" %}{% endraw %}
 ```
+
+Die gesamte Panel-Kette (inklusive der selbst gehosteten Bibliotheken nouislider und tom-select) lädt nur auf Seiten, die im Front Matter `fractal_panels: true` setzen — alle anderen Seiten bleiben JavaScript-leicht.
 
 **Navigation und Menüstruktur:**
 ```yaml
@@ -470,103 +424,25 @@ Die strukturierten Daten und YAML-Konfiguration in der `cv_content.yml` organisi
 
 **Asset-Management und Optimierung:**
 
-**Bildoptimierung und Responsive Images:**
-```html
-<!-- Responsive Bild-Integration -->
-<figure class="image-container">
-  <img src="/assets/images/fractals/mandelbrot-zoom.jpg" 
-       alt="Mandelbrot-Menge Zoom-Animation"
-       loading="lazy"
-       sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-       srcset="/assets/images/fractals/mandelbrot-zoom-400.jpg 400w,
-               /assets/images/fractals/mandelbrot-zoom-800.jpg 800w,
-               /assets/images/fractals/mandelbrot-zoom-1200.jpg 1200w">
-  <figcaption>Mandelbrot-Menge mit Zoom-Animation</figcaption>
-</figure>
-```
-
-**JavaScript-Asset-Management:**
-```javascript
-// assets/js/image-cache.js
-class ImageCache {
-  constructor() {
-    this.cache = new Map();
-    this.maxSize = 50; // Maximale Anzahl gecachter Bilder
-  }
-
-  async loadImage(src) {
-    if (this.cache.has(src)) {
-      return this.cache.get(src);
-    }
-
-    return new Promise((resolve, reject) => {
-      const img = new Image();
-      img.onload = () => {
-        if (this.cache.size >= this.maxSize) {
-          const firstKey = this.cache.keys().next().value;
-          this.cache.delete(firstKey);
-        }
-        this.cache.set(src, img);
-        resolve(img);
-      };
-      img.onerror = reject;
-      img.src = src;
-    });
-  }
-
-  preloadImages(urls) {
-    return Promise.all(urls.map(url => this.loadImage(url)));
-  }
-}
-
-// Service Worker Integration
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('/service-worker.js')
-    .then(registration => {
-      console.log('Service Worker registriert:', registration);
-    })
-    .catch(error => {
-      console.log('Service Worker Registrierung fehlgeschlagen:', error);
-    });
-}
-```
+Das Asset-Management folgt dem Prinzip „selbst hosten statt CDN": Font Awesome liegt als per pyftsubset generiertes Subset (nur die tatsächlich genutzten Icons) in `assets/webfonts/`, die Bibliotheken der Fraktal-Panels (tom-select, nouislider, gumshoe) in `assets/vendor/`. Damit entfallen externe Abhängigkeiten und die Seite bleibt vollständig offline-fähig — einzige verbleibende externe Quelle ist MathJax. Bilder werden nicht über eine generische Pipeline skaliert, sondern einzeln von Hand optimiert (etwa `background.jpg` und das per Skript gerenderte `mandelbrot-preview.jpg`, jeweils als komprimiertes JPEG unter 250 KB).
 
 **Performance-Optimierungen und Caching:**
 
-**Service Worker für Offline-Funktionalität:**
+**Service Worker für Offline-Funktionalität (Eigenbau):**
+
+Der Service Worker verfolgt eine App-Shell-Strategie: Beim Installieren wird die komplette Site vorab gecacht — die Seitenliste generiert Jekyll per Liquid direkt in die Datei, statische Assets stehen in einer gepflegten Liste. Seitenwechsel sind danach netzunabhängig.
+
 ```javascript
-// service-worker.js
-const CACHE_NAME = 'online-praesenz-v1';
-const urlsToCache = [
-  '/',
-  '/assets/css/main.css',
-  '/assets/js/main.min.js',
-  '/assets/images/background.jpg',
-  '/assets/images/Logo.jpg'
+// service-worker.js (Auszug)
+const CACHE_VERSION = '<build-zeitstempel via Liquid>';
+const CACHE_NAME = `kraftstoff-cache-${CACHE_VERSION}`;
+const CACHE_URLS = [
+  // Alle Seiten + Posts (per Liquid aus site.html_pages generiert),
+  // dazu CSS, eigene Skripte, Vendor-Bibliotheken, Fonts und Bilder
 ];
-
-self.addEventListener('install', event => {
-  event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then(cache => {
-        return cache.addAll(urlsToCache);
-      })
-  );
-});
-
-self.addEventListener('fetch', event => {
-  event.respondWith(
-    caches.match(event.request)
-      .then(response => {
-        if (response) {
-          return response;
-        }
-        return fetch(event.request);
-      }
-    )
-  );
-});
 ```
+
+Die Registrierung übernimmt `assets/js/sw-register.js`: Sie ist per `data-enable-service-worker`-Attribut schaltbar und zeigt bei neuen Versionen einen Update-Toast statt eines blockierenden Dialogs — „Jetzt laden" aktiviert den wartenden Worker (`SKIP_WAITING`) und lädt erst nach dem `controllerchange` neu, damit kein Mischzustand aus altem DOM und neuem Cache entsteht. Frische kommt über den Cache-Versionsstempel: Jeder Build erzeugt einen neuen Cache-Namen, alte Caches werden beim Aktivieren aufgeräumt.
 
 **Build-Optimierungen:**
 ```yaml
@@ -581,13 +457,6 @@ compress_html:
 sass:
   style: compressed
   sourcemap: never
-
-# Bildoptimierung
-image_optimization:
-  enabled: true
-  formats: [webp, jpg, png]
-  quality: 85
-  max_width: 1920
 ```
 
 **Content-Management-Workflow:**
@@ -596,10 +465,10 @@ image_optimization:
 ```markdown
 <!-- assets/downloads/post-template.md -->
 <!--
-ANLEITUNG: Entfernen Sie diesen gesamten Kommentar-Block (<!-- ... -->) und befüllen Sie die Felder!
+ANLEITUNG: Diesen gesamten Kommentar-Block (<!-- ... -->) entfernen und die Felder befüllen!
 
 ---
-title: "Hier Ihren aussagekräftigen Titel eingeben"
+title: "Hier den aussagekräftigen Titel eintragen"
 date: YYYY-MM-DD
 author_profile: true
 categories:
@@ -629,7 +498,7 @@ Das Deployment und die kontinuierliche Wartung der Website stellten verschiedene
 
 Die GitHub Pages Integration und Konfiguration bildet das Herzstück der Deployment-Strategie. Die Wahl für GitHub Pages als Hosting-Plattform basierte auf mehreren strategischen Überlegungen, die sowohl technische als auch wirtschaftliche Aspekte umfassten. Die Repository-Konfiguration in der `_config.yml` definiert das Repository, die URL und den kritischen Baseurl für Subdirectory-Hosting. Die GitHub Pages kompatiblen Plugins und Build-Einstellungen mit Rouge als Highlighter, deaktiviertem LSI und definiertem Excerpt-Separator gewährleisten optimale Performance in der Produktionsumgebung.
 
-Die automatisierte Build-Pipeline über GitHub Actions ermöglicht einen effizienten Deployment-Workflow. Die Branch-Strategie triggert Builds bei Pushes auf den Main-Branch und Pull Requests, während der Workflow auf Ubuntu-Latest läuft. Die Schritte umfassen Checkout des Codes, Ruby-Setup mit Version 2.7 und Bundler-Cache, Jekyll-Build und schließlich das Deployment zu GitHub Pages mit dem GitHub Token. Diese automatisierte Pipeline reduziert manuelle Arbeit und gewährleistet konsistente Deployments.
+Die automatisierte Build-Pipeline über GitHub Actions ermöglicht einen effizienten Deployment-Workflow. Die Branch-Strategie triggert Builds bei Pushes auf den Main-Branch und Pull Requests, während der Workflow auf Ubuntu-Latest läuft. Die Schritte umfassen Checkout des Codes, Ruby-Setup (Version 3.4.8 aus der `.ruby-version`) mit Bundler-Cache, Stylelint, Jekyll-Build mit `--strict_front_matter`, htmlproofer für die interne Link-Prüfung und schließlich das Deployment zu GitHub Pages. Diese automatisierte Pipeline reduziert manuelle Arbeit und gewährleistet konsistente Deployments.
 
 Die Build-Performance und Optimierung sind entscheidend für eine effiziente Entwicklungsumgebung. Die Standard-Build-Zeit beträgt 2-3 Minuten für vollständige Regenerierung, während Incremental Builds nur 30-60 Sekunden für Änderungen an einzelnen Dateien benötigen. Optimierte Cache-Strategien für Asset-Caching verbessern die Performance erheblich, und die Nutzung mehrerer CPU-Kerne durch Parallel-Processing optimiert die Build-Zeiten weiter.
 
@@ -663,30 +532,7 @@ Das Build-Performance-Monitoring ermöglicht kontinuierliche Optimierung durch M
 
 **Asset-Handling und Optimierung:**
 
-**Bildoptimierung-Pipeline:**
-```bash
-#!/bin/bash
-# Bildoptimierung-Script
-# usage: ./optimize-images.sh
-
-# WebP-Konvertierung für bessere Kompression
-for file in assets/images/*.{jpg,png}; do
-  if [ -f "$file" ]; then
-    filename=$(basename "$file" | cut -d. -f1)
-    cwebp -q 85 "$file" -o "assets/images/${filename}.webp"
-  fi
-done
-
-# Responsive Bildgrößen generieren
-for file in assets/images/*.jpg; do
-  if [ -f "$file" ]; then
-    filename=$(basename "$file" | cut -d. -f1)
-    convert "$file" -resize 400x "assets/images/${filename}-400.jpg"
-    convert "$file" -resize 800x "assets/images/${filename}-800.jpg"
-    convert "$file" -resize 1200x "assets/images/${filename}-1200.jpg"
-  fi
-done
-```
+Statt einer generischen Bildoptimierungs-Pipeline setzt die Website auf wenige, gezielt optimierte Bilder: Das Hero-Hintergrundbild und das Mandelbrot-Vorschaubild der Startseite sind handkomprimierte JPEGs (Ziel: unter 250 KB), Logo und Favicons liegen als SVG bzw. PNG vor. Bei einer Handvoll Bilder schlägt Kuratieren jede Automatisierung — die Pipeline-Komplexität (WebP-Varianten, responsive Größen, srcset) stünde in keinem Verhältnis zum Nutzen.
 
 **JavaScript-Performance-Optimierung:**
 
@@ -800,50 +646,21 @@ bundle exec jekyll build --config _config.yml,_config.dev.yml
 **Strukturierte Asset-Organisation:**
 ```
 assets/
-├── images/
-│   ├── fractals/           # Fraktal-Bilder
-│   │   ├── mandelbrot/     # Mandelbrot-spezifische Bilder
-│   │   └── julia/          # Julia-Menge Bilder
-│   ├── animations/         # GIF-Animationen
-│   ├── icons/              # Icon-Sets
-│   └── backgrounds/        # Hintergrundbilder
-├── js/
-│   ├── workers/            # Web Workers
-│   ├── plugins/            # JavaScript-Plugins
-│   └── utils/              # Utility-Funktionen
-└── css/
-    ├── components/         # Komponenten-spezifische Styles
-    ├── layouts/            # Layout-Styles
-    └── themes/             # Theme-Varianten
+├── _sass/                  # SCSS: base / components / layouts / variables
+├── css/main.scss           # Einstieg für die Sass-Kompilierung
+├── js/                     # Eigene Skripte (flach, sprechende Namen):
+│   │                       #   fractal-renderer, fractal-panel,
+│   │                       #   julia-worker, mandelbrot-worker,
+│   │                       #   hero-crt, tv-switch, sw-register, …
+├── vendor/                 # Selbst gehostete Bibliotheken (vormals CDN)
+├── webfonts/               # Font-Awesome-Subset (woff2)
+├── images/                 # Wenige, handoptimierte Bilder
+└── downloads/              # Downloadbare Dateien (Post-Template)
 ```
 
 **Asset-Versionierung und Caching:**
-```yaml
-# _config.yml - Asset-Versionierung
-version: "1.0.0"
 
-# Cache-Busting für Assets
-asset_cache_busting: true
-```
-
-**Automatisierte Asset-Optimierung:**
-```bash
-#!/bin/bash
-# Asset-Optimierung-Pipeline
-# usage: ./optimize-assets.sh
-
-echo "Optimizing CSS..."
-sass assets/_sass/main.scss:assets/css/main.css --style=compressed
-
-echo "Optimizing JavaScript..."
-terser assets/js/main.js -o assets/js/main.min.js -c -m
-
-echo "Optimizing Images..."
-find assets/images -name "*.jpg" -exec jpegoptim --max=85 {} \;
-find assets/images -name "*.png" -exec optipng -o2 {} \;
-
-echo "Asset optimization complete!"
-```
+Cache-Busting läuft nicht über Query-Parameter oder Config-Felder, sondern über den Service Worker: Der Cache-Name enthält einen Build-Zeitstempel (per Liquid aus `site.time`), sodass jeder Deploy einen frischen Cache erzeugt und alte Caches beim Aktivieren aufgeräumt werden. Die Sass-Kompilierung mit `style: compressed` übernimmt Jekyll selbst — eine separate Minifizierungs-Pipeline für CSS/JS existiert bewusst nicht.
 
 ### 4.3 Kritische Reflexion und Empfehlungen
 
@@ -853,7 +670,7 @@ Die umfassende Bewertung der gewählten Lösung zeigt, dass die Kombination aus 
 
 Die Minimal Mistakes Theme-Vorteile überzeugten durch professionelle Qualität mit hochwertigem Design ohne Custom-Entwicklung, umfangreiche Customization-Optionen für alle gewünschten Anpassungen und perfekte responsive Darstellung auf allen Geräten. Die SEO-Optimierung mit automatischen Meta-Tags und strukturierten Daten sowie optimierte Asset-Delivery und Lazy Loading für bessere Performance rundeten die Theme-Vorteile ab.
 
-Die GitHub Pages Integration bot nahtlose Integration ohne zusätzliche Konfiguration, kostenloses Hosting ohne laufende Kosten für Hosting und CDN, automatische Deployments bei jedem Git-Push und automatische Bereitstellung und Erneuerung von SSL-Zertifikaten. Die CDN-Integration sorgte für globale Performance mit minimalen Latenzzeiten.
+Die GitHub Pages Integration bot nahtlose Integration ohne zusätzliche Konfiguration, kostenloses Hosting ohne laufende Kosten für Hosting und CDN, automatische Deployments bei jedem Git-Push und automatische Bereitstellung und Erneuerung von SSL-Zertifikaten. Das GitHub-Pages-CDN sorgte für globale Performance mit minimalen Latenzzeiten — Drittanbieter-CDNs für Bibliotheken und Fonts wurden dagegen bewusst abgelöst: Vendor-Skripte und das Font-Awesome-Subset liegen selbst gehostet im Repository, einzig MathJax lädt noch extern.
 
 Die Markdown-Workflow-Vorteile ermöglichten einfache Content-Erstellung ohne technische Expertise, vollständige Nachverfolgbarkeit aller Änderungen durch Versionierung, einfache Zusammenarbeit durch Git-Workflow und Portabilität der Inhalte unabhängig von der Plattform. Die strukturierten, menschenlesbaren Inhalte sorgten für optimale Wartbarkeit.
 
@@ -1043,20 +860,4 @@ Die langfristigen Perspektiven (3+ Jahre) umfassen Technologie-Evaluation mit Be
 - **Internationalization**: Mehrsprachige Unterstützung und Lokalisierung
 - **Content-Recommendation**: Intelligente Empfehlungssysteme für verwandte Inhalte
 
----
-
-## Abschließendes Fazit
-
-Die Implementierung dieser Website mit Jekyll und Minimal Mistakes Theme demonstriert eindrucksvoll, wie moderne Webentwicklung mit statischen Site Generatoren erfolgreich und nachhaltig umgesetzt werden kann. Die gewählte Technologie-Stack bietet nicht nur eine solide Basis für aktuelle Anforderungen, sondern auch eine zukunftsfähige Plattform für kontinuierliche Weiterentwicklung.
-
-Die Kernaussagen der Implementierung zeigen, dass die Kombination aus Jekyll, Minimal Mistakes Theme und GitHub Pages eine außergewöhnlich robuste und leistungsfähige Lösung darstellt. Die statische Generierung bietet nicht nur hervorragende Performance, sondern auch eine bemerkenswerte Stabilität und Vorhersagbarkeit in der Entwicklung. Diese technische Exzellenz bildet das Fundament für eine erfolgreiche Website-Implementierung.
-
-Die erfolgreiche Integration komplexer interaktiver Elemente wie der Fraktal-Visualisierungen demonstriert, dass auch anspruchsvolle Anforderungen in statischen Websites realisiert werden können. Web Workers, Canvas-APIs und moderne JavaScript-Features ermöglichen eine reichhaltige Benutzererfahrung, die über traditionelle statische Websites hinausgeht. Diese innovativen Features zeigen das Potenzial moderner Web-Technologien auch in statischen Umgebungen.
-
-Die systematische Herangehensweise an die Technologieauswahl, die strukturierte Implementierung und die kontinuierliche Optimierung haben zu einer leistungsfähigen, wartbaren und erweiterbaren Website geführt, die sowohl technische als auch inhaltliche Anforderungen erfüllt. Diese nachhaltige Architektur bildet die Grundlage für langfristigen Erfolg und kontinuierliche Weiterentwicklung.
-
-Die gewählte Architektur bietet eine solide Grundlage für zukünftige Entwicklungen und zeigt, dass statische Site Generators eine ernstzunehmende Alternative zu traditionellen Content-Management-Systemen darstellen können. Diese Zukunftsfähigkeit ist entscheidend für die langfristige Nachhaltigkeit des Projekts.
-
-Die in diesem Projekt gewonnenen Erkenntnisse und entwickelten Lösungen sind nicht nur für diese spezifische Website relevant, sondern bieten wertvolle Einblicke für ähnliche Projekte und Technologie-Entscheidungen. Die dokumentierten Best Practices, Lösungsansätze und Lessons Learned können als Referenz für zukünftige Webentwicklungsprojekte dienen und zeigen den praktischen Nutzen einer systematischen Herangehensweise an Webentwicklung.
-
-Diese Website steht als Beispiel dafür, wie moderne Webentwicklung mit statischen Site Generatoren erfolgreich umgesetzt werden kann. Sie demonstriert, dass technische Exzellenz, innovative Features und nachhaltige Architektur in einem kosteneffizienten und wartbaren System vereint werden können. Die gewählte Technologie-Stack hat sich als zukunftsfähig und erweiterbar erwiesen und bietet eine solide Basis für kontinuierliche Weiterentwicklung und Innovation.
+Was bleibt als Schlussgedanke: Die Integration der Fraktal-Visualisierungen zeigt, dass auch anspruchsvolle interaktive Anforderungen in statischen Websites realisierbar sind — Web Workers, Canvas-APIs und moderne JavaScript-Features ermöglichen eine Erfahrung, die weit über die klassische statische Seite hinausgeht, ohne deren Stärken (Performance, Stabilität, Kostenfreiheit) aufzugeben. Die dokumentierten Entscheidungen und Lessons Learned taugen damit als Referenz für ähnliche Projekte.
