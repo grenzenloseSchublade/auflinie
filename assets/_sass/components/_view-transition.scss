@@ -34,6 +34,15 @@
   display: none;
 }
 
+// Der Masthead ist teiltransparent (kein eigener Hintergrund, nur
+// backdrop-blur — der in Snapshots NICHT angewendet wird): ohne eigenen
+// Grund scheinen Kollaps-Aufblitzen (brightness 6) und Phosphor-Grün
+// durch die Titelzeile („Header blinkt"). Fester Grund in der
+// Zwischengrund-Farbe der Transition — optisch identisch, aber blickdicht.
+html:active-view-transition-type(crt)::view-transition-group(masthead) {
+  background-color: #10141a;
+}
+
 // --- Drawer: Exit-only-Snapshot ------------------------------------------------
 // Name NUR im offenen Zustand: die Zielseite (Drawer zu) erzeugt so keinen
 // New-Snapshot — der Old-Snapshot ist :only-child und bekommt den Slide-Out.
