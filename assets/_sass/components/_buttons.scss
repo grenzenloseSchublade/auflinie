@@ -33,7 +33,7 @@
         // Grundfarbe des Buttons
         // background-color: $link-color; // Deine Variable aus _colors.scss
         color: #ffffff; // Textfarbe anpassen
-        font-size: 0.8rem;
+        font-size: $fs-ui;
         font-weight: 600;
 
         &:hover {

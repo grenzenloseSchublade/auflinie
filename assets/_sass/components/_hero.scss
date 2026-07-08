@@ -681,7 +681,7 @@
   margin: 0;
   padding: 0.28rem 0.6rem;
   font-family: $mono-font-stack;
-  font-size: 0.8rem; // 0.62rem war dem Nutzer zu klein
+  font-size: $fs-ui; // 0.62rem war dem Nutzer zu klein
   text-transform: uppercase;
   letter-spacing: 0.06em;
   background: rgb(10 14 18 / 55%);

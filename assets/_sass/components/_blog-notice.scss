@@ -46,7 +46,7 @@
 }
 
 .blog-notice__title {
-  @include mono-label(0.72rem, 0.08em);
+  @include mono-label($fs-label, 0.08em);
 
   color: $console-heading;
   margin: 0 0 0.5rem;
@@ -61,5 +61,5 @@
 
 .blog-notice__close {
   margin: 0;
-  font-size: 0.8rem;
+  font-size: $fs-ui;
 }

@@ -19,18 +19,58 @@ $bold-weight: 700;
 // Monospace-Stack ohne Webfont (Labels, Werte, Konsolen-Header)
 $mono-font-stack: ui-monospace, "Cascadia Mono", "Segoe UI Mono", "Menlo", "Monaco", "Consolas", "Liberation Mono", monospace;
 
+// =============================================================================
+// Schriftgrößen-Token-Skala (site-weit, Juli 2026)
+// =============================================================================
+// rem-Semantik: html font-size wächst per Theme-Breakpoint 16→18→20→22px
+// (768/1024/1280, tmp/…/_reset.scss) — rem-Tokens skalieren mit dem Viewport.
+// Die Skala ist bewusst cluster-treu zu den gewachsenen Ist-Werten (statt
+// der Lehrbuch-Skala 0.75/0.875/1/…, die ~30 sichtbare Änderungen erzwänge).
+// SYNC-PFLICHT: Critical-CSS in _layouts/default.html (html 16px,
+// site-title 1.8em, page__title 2em) muss bei Änderungen an $site-title-
+// font-size bzw. der Basis manuell nachgezogen werden.
+// KASKADEN-FALLE: Theme setzt .page__content p/li direkt auf 1em — Tokens
+// auf p/li wirken nur mit p-/li-qualifizierten Selektoren (siehe _cv.scss).
+$fs-label-xs: 0.68rem; // Deko-Mikro-Labels (Sticky-INHALT-Tag, Copyright)
+$fs-label: 0.72rem; // Standard-Chrome-Label = mono-label-Default (Meta, Epigraph-Autor)
+$fs-label-lg: 0.78rem; // betonte Labels (CV-Daten, Archiv-Subtitle, Toast-Buttons)
+$fs-ui: 0.8rem; // kleine Buttons, Kontextzeilen, Hero-Caption
+$fs-body-sm: 0.85rem; // Sekundär-Fließtext (CV-Items, Hinweise)
+$fs-body: 0.9rem; // Karten-/Panel-Fließtext
+$fs-body-lg: 0.95rem; // Excerpts, Sticky-Current
+$fs-base: 1rem; // Grundgröße (TOC-Titel, kleine Panel-Header)
+$fs-title-sm: 1.05rem; // Item-Titel (CV-H3, Related)
+$fs-md: 1.125rem; // Lead-/Intro-Text, größere Icons
+$fs-heading-sm: 1.2rem; // accent-header Panel-Variante
+$fs-title: 1.25rem; // Karten-Titel, Erklärbox-H4
+$fs-heading: 1.35rem; // accent-header Standard (Sektions-H2)
+
+// Leitspruch der Über-mich-Seite (einzige fluide Größe)
+$about-motto-font-size: clamp(1.35rem, 3vw, 1.9rem);
+
+// Fraktal-Panel: bewusst px (viewport-FIX, Karten-UI-Muster) — das Panel-
+// Chrome soll auf großen Schirmen nicht mit der html-Rampe mitwachsen
+// (rem hätte HUD/Toolbar auf Desktop um 25–37 % vergrößert)
+$fp-fs-2xs: 10px; // HUD mobil, Deko-Icons
+$fp-fs-xs: 11px; // HUD
+$fp-fs-sm: 12px; // Buttons, Labels, Tom-Select
+$fp-fs-md: 13px; // Value-Chips, Selects
+$fp-fs-lg: 14px; // Erklärbox, Gesten-Hinweis
+$fp-fs-xl: 16px; // Info-Panel, Loading
+$fp-fs-icon: 20px; // Zoom-Glyphe
+
 // TOC-Label-Größen (zentral — Referenzgröße von der Mandelbrot-Seite)
-$toc-title-font-size: 1rem; // „Inhalt" im Seitenleisten-TOC
-$toc-sticky-label-font-size: 0.68rem; // INHALT-Tag der mitlaufenden Leiste
+$toc-title-font-size: $fs-base; // „Inhalt" im Seitenleisten-TOC
+$toc-sticky-label-font-size: $fs-label-xs; // INHALT-Tag der mitlaufenden Leiste
 
 // CV-Typografie (zentrale Stellgrößen für _cv.scss).
 // ACHTUNG Kaskaden-Falle: Das Theme setzt .page__content p/li DIREKT auf
 // 1em — diese Größen wirken nur, wenn sie in _cv.scss auf dem Element
 // selbst mit Spezifität >= der Theme-Regel und späterer Position gesetzt
 // sind (p-/li-qualifizierte Selektoren, siehe Kommentare dort).
-$cv-group-title-font-size: 1em; // Skill-Gruppen-Titel (mono, uppercase)
-$cv-group-context-font-size: 0.8rem; // Kontextzeile unter dem Gruppen-Titel
-$cv-items-label-font-size: 0.8rem; // „Verantwortlichkeiten:" / „Besondere Erfolge:"
-$cv-items-font-size: 0.85rem; // Stichpunkte der CV-Einträge
-$cv-subitems-font-size: 0.8rem; // Sub-Stichpunkte (aufklappbar)
-$cv-chip-font-size: 1em; // Skill-Chips (entspricht dem abgenommenen Ist-Zustand)
+$cv-group-title-font-size: 1em; // Skill-Gruppen-Titel (mono, uppercase; bewusst em)
+$cv-group-context-font-size: $fs-ui; // Kontextzeile unter dem Gruppen-Titel
+$cv-items-label-font-size: $fs-ui; // „Verantwortlichkeiten:" / „Besondere Erfolge:"
+$cv-items-font-size: $fs-body-sm; // Stichpunkte der CV-Einträge
+$cv-subitems-font-size: $fs-ui; // Sub-Stichpunkte (aufklappbar)
+$cv-chip-font-size: 1em; // Skill-Chips (entspricht dem abgenommenen Ist-Zustand; bewusst em)

@@ -15,7 +15,7 @@
 .page__content > h2 {
   // Kapitelgrenze site-weit: Beige-Trenner + Luft (section-break) übernimmt
   // die Gliederung — die H2 steht ohne Unterstreichung (eine Linie pro Grenze)
-  @include accent-header(1.35rem, false);
+  @include accent-header($fs-heading, false);
   @include section-break;
 
   // Theme-Descendant-Regel .page__content h2 (border + padding) explizit
@@ -32,7 +32,7 @@
 
 // Archiv-Zwischenüberschriften (Jahre, „Neueste Beiträge"): Chrome-Label-Stil
 .archive__subtitle {
-  @include mono-label(0.78rem, 0.08em);
+  @include mono-label($fs-label-lg, 0.08em);
 
   font-weight: 600;
   color: $fg-subtle;
@@ -43,7 +43,7 @@
 // Meta-Zeilen (Aktualisiert, Lesezeit): gedimmtes Chrome-Label
 .page__meta {
   font-family: $mono-font-stack;
-  font-size: 0.72rem;
+  font-size: $fs-label;
   letter-spacing: 0.04em;
   color: rgb(255 255 255 / 45%);
 }

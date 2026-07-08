@@ -19,7 +19,7 @@
 }
 
 .section-epigraph__author {
-  @include mono-label(0.72rem, 0.06em);
+  @include mono-label($fs-label, 0.06em);
 
   margin-top: 0.5rem;
   color: $fg-subtle;
@@ -45,7 +45,7 @@
 
   @include hover-effect(-3px);
 
-  font-size: 0.9rem;
+  font-size: $fs-body;
 
   &:hover {
     background-color: rgb(255 255 255 / 5%);
@@ -80,7 +80,7 @@
 .contact-info {
   display: flex;
   flex-direction: column;
-  font-size: 0.9rem;
+  font-size: $fs-body;
   min-width: 0;
   overflow: hidden;
 }
@@ -113,7 +113,7 @@
   font-style: italic;
 
   // Prominent, aber nicht erschlagend: der warme Einzelakzent der Seite
-  font-size: clamp(1.35rem, 3vw, 1.9rem);
+  font-size: $about-motto-font-size;
   line-height: 1.4;
   color: $console-heading;
   letter-spacing: 0.02em;

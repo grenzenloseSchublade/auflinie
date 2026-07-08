@@ -95,7 +95,7 @@ $sw-toast-z: 10020;
 .sw-update-toast__ghost {
   margin: 0;
   font-family: inherit;
-  font-size: 0.78rem;
+  font-size: $fs-label-lg;
   font-weight: 600;
   line-height: 1.2;
   cursor: pointer;

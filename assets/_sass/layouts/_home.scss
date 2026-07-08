@@ -32,7 +32,7 @@
   }
 
   h2 {
-    @include accent-header(1.35rem);
+    @include accent-header($fs-heading);
 
     margin-top: 0;
   }

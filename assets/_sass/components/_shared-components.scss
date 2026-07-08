@@ -60,7 +60,7 @@
 }
 
 // Mono-Chrome-Label (Mono + Uppercase + Letterspacing) — Größen pro Einsatzort
-@mixin mono-label($size: 0.72rem, $tracking: 0.07em) {
+@mixin mono-label($size: $fs-label, $tracking: 0.07em) {
   font-family: $mono-font-stack;
   font-size: $size;
   text-transform: uppercase;
@@ -70,7 +70,7 @@
 // Sektions-Header: ruhige weiße Überschrift mit Hairline
 // (Balken und Beige entfielen auf Nutzerwunsch — Struktur kommt von
 // Größe, Hairline und Abstand, nicht von Farbe)
-@mixin accent-header($size: 1.35rem, $rule: true) {
+@mixin accent-header($size: $fs-heading, $rule: true) {
   display: flex;
   align-items: center;
   gap: 0.7rem;

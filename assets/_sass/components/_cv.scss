@@ -20,7 +20,7 @@
   // border/padding explizit zurücksetzen: die Theme-Descendant-Regel
   // .page__content h2 setzt sonst weiter ihren feinen Strich.
   h2 {
-    @include accent-header(1.35rem, false);
+    @include accent-header($fs-heading, false);
 
     border-bottom: none;
     padding-bottom: 0;
@@ -90,7 +90,7 @@
     display: block;
     font-family: $mono-font-stack;
     font-variant-numeric: tabular-nums;
-    font-size: 0.78rem;
+    font-size: $fs-label-lg;
     letter-spacing: 0.03em;
     color: rgba($link-color, 0.85);
     white-space: nowrap;
@@ -100,7 +100,7 @@
     display: block;
     margin-top: 0.2rem;
     font-family: $mono-font-stack;
-    font-size: 0.68rem;
+    font-size: $fs-label-xs;
     color: rgb(255 255 255 / 40%);
   }
 
@@ -109,19 +109,19 @@
 
     h3 {
       margin: 0 0 0.2rem;
-      font-size: 1.05rem;
+      font-size: $fs-title-sm;
       color: $card-heading-color;
     }
   }
 
   .cv-entry__org {
-    font-size: 0.85rem;
+    font-size: $fs-body-sm;
     color: #aaaaaa;
     margin: 0 0 0.55rem;
   }
 
   .cv-entry__desc {
-    font-size: 0.9rem;
+    font-size: $fs-body;
     color: rgb(255 255 255 / 85%);
     margin: 0 0 0.55rem;
     line-height: 1.55;
@@ -225,7 +225,7 @@
       right: 0.5rem;
       top: 0.1rem;
       color: $card-heading-color;
-      font-size: 0.8rem;
+      font-size: $fs-ui;
       width: 1rem;
       text-align: center;
       transition: transform 0.3s ease;
@@ -416,7 +416,7 @@ li.cv-skill-chip.is-related {
 // p-qualifiziert (0,2,1): sichert line-height gegen die Absatz-Regel — die
 // feste Höhe rechnet mit 1.5em pro Zeile
 .cv-skills p.cv-skills__selection-info {
-  font-size: 0.85rem;
+  font-size: $fs-body-sm;
   line-height: 1.5;
   color: $fg-muted;
 
@@ -446,7 +446,7 @@ li.cv-skill-chip.is-related {
 
 .cv-language__level {
   font-family: $mono-font-stack;
-  font-size: 0.68rem;
+  font-size: $fs-label-xs;
   letter-spacing: 0.04em;
   color: rgb(255 255 255 / 45%);
   border-left: 1px solid rgb(255 255 255 / 15%);
