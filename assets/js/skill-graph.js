@@ -283,7 +283,14 @@
       ctx.lineWidth = state === 'selected' ? 2 : 1.25;
       ctx.stroke();
       ctx.shadowBlur = 0;
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+      if (state === 'selected') {
+        // Dezenter Schimmer am Label des gewählten Knotens (Magenta = Auswahl)
+        ctx.shadowColor = 'rgba(' + MAGENTA + ', 0.55)';
+        ctx.shadowBlur = 6;
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.98)';
+      } else {
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+      }
       ctx.fillText(node.label, node.x, node.y - NODE_RADIUS - 5);
       ctx.restore();
     });
@@ -294,6 +301,7 @@
     var rect = this.canvas.getBoundingClientRect();
     var x = event.clientX - rect.left;
     var y = event.clientY - rect.top;
+    var ctx = this.ctx;
     var hit = null;
     var best = HIT_RADIUS * HIT_RADIUS;
     this.nodes.forEach(function (node) {
@@ -301,6 +309,17 @@
       var dy = node.y - y;
       var d = dx * dx + dy * dy;
       if (d <= best) { best = d; hit = node.id; }
+
+      // Auch das Label ist Klickfläche (Text sitzt zentriert über dem Knoten)
+      if (hit !== node.id && ctx) {
+        var w = ctx.measureText(node.label).width;
+        var labelBottom = node.y - NODE_RADIUS - 5;
+        if (x >= node.x - w / 2 - 4 && x <= node.x + w / 2 + 4 &&
+            y >= labelBottom - 13 && y <= labelBottom + 3) {
+          hit = node.id;
+          best = 0;
+        }
+      }
     });
     this.setSelection(hit === this.selected ? null : hit);
     this.dispatch();
