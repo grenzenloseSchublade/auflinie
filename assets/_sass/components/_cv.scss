@@ -357,9 +357,11 @@
   opacity: 0.35;
 }
 
+// Aktive Auswahl = Interaktionszustand ⇒ Magenta (wie Fokusringe);
+// Cyan bleibt Inhalt/Verwandtschaft — dezent: Border + weicher Glow
 .cv-skill-chip.is-selected {
-  border-color: $link-color;
-  box-shadow: 0 0 6px rgb(5 217 232 / 45%);
+  border-color: rgba($hover-color, 0.75);
+  box-shadow: 0 0 7px rgba($hover-color, 0.35);
 }
 
 .cv-skill-chip.is-related {
