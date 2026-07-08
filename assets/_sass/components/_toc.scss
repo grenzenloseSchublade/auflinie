@@ -308,7 +308,7 @@
         color: $fg-subtle;
         font-weight: 400;
         line-height: 1.4;
-        text-decoration: none !important; // Theme-Hover-Unterstrich unterbinden
+        text-decoration: none; // Hover-Fall: siehe Zusatzregel am Dateiende
         transition: color $standard-transition;
 
         // Flexbox für vertikale Zentrierung
@@ -582,4 +582,11 @@
 .toc-toggle .nav__title,
 .toc .nav__title {
   font-size: $toc-title-font-size;
+}
+
+// Theme-Regel ".page__content a:not(.btn):hover { underline }" (0,3,1) ohne
+// !important schlagen: gleiche Spezifität, später geladen — gilt für das
+// Sidebar-TOC UND das Mobile-Dropdown (beide liegen im page__content)
+.page__content .toc__menu a:hover {
+    text-decoration: none;
 }

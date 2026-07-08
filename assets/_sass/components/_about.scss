@@ -49,8 +49,14 @@
 
   &:hover {
     background-color: rgb(255 255 255 / 5%);
-    text-decoration: none !important;
+    text-decoration: none; // Theme-Hover-Fall: siehe Zusatzregel unten
   }
+}
+
+// Theme-Regel ".page__content a:not(.btn):hover { underline }" (0,3,1) ohne
+// !important schlagen: gleiche Spezifität, später geladen
+.page__content a.contact-card:hover {
+  text-decoration: none;
 }
 
 .contact-icon {

@@ -109,12 +109,13 @@ textarea:focus-visible {
     border-color: $hover-color;
 }
 
-// Focus-Styles für Navigation
+// Focus-Styles für Navigation (der Fokus-HINTERGRUND liegt am Ende von
+// components/_masthead.scss — diese Datei lädt vor den Komponenten, dort
+// gewinnt er ohne !important per Spezifität + spätester Position)
 .greedy-nav a:focus-visible,
 .masthead__menu-item a:focus-visible {
     outline: 2px solid $hover-color;
     outline-offset: 2px;
-    background-color: $hover-color-subtle !important;
 }
 
 // Focus-Styles für Kontakt-Karten

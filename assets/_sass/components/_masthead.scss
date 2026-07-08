@@ -144,11 +144,9 @@
 
 // Neon-Utilities (.neon-umlaut, .neon-name, .neon-glow, etc.) sind in _neon-base.scss definiert
 
-// WICHTIG: Die Neon-Orbit-Animation bleibt IMMER aktiv
-// Sie ist ein essenzielles Designelement der Startseite und wird 
-// bei prefers-reduced-motion NICHT deaktiviert, da sie nur bei
-// Benutzerinteraktion (Klick auf "a") ausgelöst wird.
-// @media (prefers-reduced-motion: reduce) - ENTFERNT für Neon-Animation
+// WICHTIG: Der Neon-Schriftzug bleibt IMMER aktiv — Basis-Glow/-Puls laufen
+// bewusst auch bei prefers-reduced-motion (Designentscheidung, Juli 2026);
+// die Orbit-Choreografie ist zusätzlich nutzerinitiiert.
 
 // (Der frühere padding-bottom-Block für .page__hero--overlay entfiel:
 // Hero-Höhen sind jetzt zentral in components/_hero.scss vereinheitlicht.)
@@ -606,4 +604,13 @@ body .greedy-nav__toggle:focus-visible {
 
 .site-logo:hover img {
     filter: drop-shadow(0 0 4px rgba($link-color, 0.5)) drop-shadow(0 0 10px rgba($hover-color, 0.35));
+}
+
+// Fokus-Hintergrund der Navigation (aus base/_accessibility.scss hierher
+// verschoben): gewinnt gegen die Hover-/Basis-Regeln oben per gleicher bzw.
+// höherer Spezifität und spätester Position — ohne !important
+body .greedy-nav .visible-links a:focus-visible,
+body .greedy-nav .hidden-links li a:focus-visible,
+body .masthead__menu-item a:focus-visible {
+    background-color: $hover-color-subtle;
 }
