@@ -82,7 +82,7 @@
 // Sekundär-/Outline-Rolle (site-weit): Cyan-subtle-Border, transparent
 .btn.btn--outline {
     background-color: transparent;
-    border: 1px solid rgba($link-color, 0.45);
+    border: 1px solid $link-color-subtle;
     color: rgb(255 255 255 / 88%);
 
     &:hover,

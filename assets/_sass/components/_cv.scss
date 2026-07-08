@@ -29,9 +29,9 @@
 }
 
 // Kapitelgrenzen ZWISCHEN Sektionen (nicht vor der ersten/Intro):
-// viel Luft + dezent auslaufende Magenta-Hairline (Testlauf auf der CV-Seite,
-// Nutzerwunsch: Cyan war hier zu viel; beim globalen Ausrollen als Mixin
-// nach _shared-components.scss ziehen).
+// viel Luft + dezent auslaufende Beige-Hairline — dieselbe Sprache wie die
+// flankierenden Motto-Linien auf der Über-mich-Seite (Testlauf auf /cv/;
+// beim globalen Ausrollen als Mixin nach _shared-components.scss ziehen).
 // Border kann kein Gradient → 1px-Background an der Oberkante.
 .cv-section + .cv-section {
   margin-top: 3.2rem;
@@ -40,8 +40,8 @@
     linear-gradient(
       90deg,
       transparent,
-      $hover-color-subtle 12%,
-      $hover-color-subtle 88%,
+      rgba($console-heading, 0.5) 12%,
+      rgba($console-heading, 0.5) 88%,
       transparent
     )
     top / 100% 1px no-repeat;
@@ -352,7 +352,7 @@
   transition: border-color 0.2s ease, opacity 0.2s ease;
 
   &:hover {
-    border-color: rgba($link-color, 0.4);
+    border-color: $link-color-subtle;
   }
 }
 

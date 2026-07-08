@@ -190,7 +190,7 @@
     }
     
     &::-webkit-scrollbar-thumb {
-        background: rgba($link-color, 0.4);
+        background: $link-color-subtle;
         border-radius: 3px;
         
         &:hover {
@@ -554,7 +554,7 @@
     }
     
     &::-webkit-scrollbar-thumb {
-        background: rgba($link-color, 0.4);
+        background: $link-color-subtle;
         border-radius: 3px;
         
         &:hover {

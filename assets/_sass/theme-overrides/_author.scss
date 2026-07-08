@@ -3,7 +3,7 @@
 // Toggle-Logik: assets/js/author-follow.js (Vanilla-Ersatz fürs Theme-jQuery).
 .author__urls-wrapper button {
   background-color: transparent;
-  border: 1px solid rgba($link-color, 0.45);
+  border: 1px solid $link-color-subtle;
   color: rgb(255 255 255 / 88%);
   border-radius: 6px;
   font-size: 0.75em;

@@ -101,7 +101,7 @@
 // Vorheriger/Nächster Beitrag: Outline-Paar statt Theme-Grau
 .pagination--pager {
   background-color: transparent;
-  border: 1px solid rgba($link-color, 0.45);
+  border: 1px solid $link-color-subtle;
   border-radius: 6px;
   color: rgb(255 255 255 / 88%);
   font-size: 0.9rem;
