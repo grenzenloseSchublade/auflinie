@@ -29,27 +29,9 @@
 }
 
 // Kapitelgrenzen ZWISCHEN Sektionen (nicht vor der ersten/Intro):
-// viel Luft + dezent auslaufende Beige-Hairline — dieselbe Sprache wie die
-// flankierenden Motto-Linien auf der Über-mich-Seite (Testlauf auf /cv/;
-// beim globalen Ausrollen als Mixin nach _shared-components.scss ziehen).
-// Border kann kein Gradient → 1px-Background an der Oberkante.
+// site-weites Muster, siehe section-break in _shared-components.scss
 .cv-section + .cv-section {
-  margin-top: 3.2rem;
-  padding-top: 2.4rem;
-  background:
-    linear-gradient(
-      90deg,
-      transparent,
-      rgba($console-heading, 0.5) 12%,
-      rgba($console-heading, 0.5) 88%,
-      transparent
-    )
-    top / 100% 1px no-repeat;
-
-  @media (max-width: 640px) {
-    margin-top: 2.4rem;
-    padding-top: 1.8rem;
-  }
+  @include section-break;
 }
 
 // Einträge im Rail-Layout (Mockup B2): Zeitraum/Ort links an der Linie,

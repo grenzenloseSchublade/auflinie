@@ -37,6 +37,28 @@
   }
 }
 
+// Kapitelgrenze (site-weit): viel Luft + dezent auslaufende Beige-Hairline —
+// dieselbe Sprache wie die flankierenden Motto-Linien auf Über-mich.
+// Border kann kein Gradient → 1px-Background an der Oberkante.
+@mixin section-break {
+  margin-top: 3.2rem;
+  padding-top: 2.4rem;
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      rgba($console-heading, 0.5) 12%,
+      rgba($console-heading, 0.5) 88%,
+      transparent
+    )
+    top / 100% 1px no-repeat;
+
+  @media (max-width: 640px) {
+    margin-top: 2.4rem;
+    padding-top: 1.8rem;
+  }
+}
+
 // Mono-Chrome-Label (Mono + Uppercase + Letterspacing) — Größen pro Einsatzort
 @mixin mono-label($size: 0.72rem, $tracking: 0.07em) {
   font-family: $mono-font-stack;

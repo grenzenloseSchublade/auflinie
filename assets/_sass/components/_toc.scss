@@ -87,7 +87,10 @@
     text-overflow: ellipsis;
     font-size: 0.95rem;
     font-weight: 500;
-    color: rgb(255 255 255 / 88%);
+
+    // Gleiche Aktiv-Sprache wie das Sidebar-TOC (dezentes Cyan) —
+    // klares Weiß fiel aus dem Muster
+    color: rgba($link-color, 0.75);
     
     // Slide Animation Setup
     display: inline-block;
