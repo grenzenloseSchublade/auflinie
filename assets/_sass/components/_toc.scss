@@ -263,9 +263,11 @@
         }
     }
 
-    // Scrollspy: aktiver Link cyan (kein Bold — kein Layout-Jitter)
+    // Scrollspy: aktiver Link fett in dezentem Cyan (Nutzerwunsch —
+    // volles Cyan war zu krass)
     .active > a {
-        color: $link-color;
+        color: rgba($link-color, 0.75);
+        font-weight: 700;
     }
 }
 
@@ -367,7 +369,8 @@
     // kein Bold, kein Hintergrund, kein Layout-Jitter
     // ==========================================================================
     li.active > a {
-        color: $link-color;
+        color: rgba($link-color, 0.75);
+        font-weight: 700;
         position: relative;
 
         &::before {
@@ -377,7 +380,7 @@
             top: 0;
             bottom: 0;
             width: 2px;
-            background: $link-color;
+            background: rgba($link-color, 0.6);
         }
     }
 }
