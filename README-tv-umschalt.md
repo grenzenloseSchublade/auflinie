@@ -18,22 +18,22 @@ Wert ändern, neu bauen — es wird nur die gewählte Variante kompiliert.
 
 ## Die vier Varianten
 
-### 1. `dezent` — geglättetes Original (~530 ms)
+### 1. `dezent` — geglättetes Original (~1930 ms)
 
 Struktur des ursprünglichen Effekts (vertikaler Kollaps + flächiger
 Phosphor-Blink), aber physikalisch plausibel gemacht: `easeOutQuint` statt
 `steps(4)` (der reale Kollaps ist eine kontinuierliche Spulen-Entladung —
 Stufen lesen sich als Digital-Glitch), kontinuierlicher Helligkeitsanstieg,
-leichter horizontaler Overshoot, Einschalten mit Bloom (überstrahlt kurz
-auf 1.25 und beruhigt sich).
+leichter horizontaler Overshoot, Einschalten als Warm-up (siehe
+`$glitch-variante: "aus"`).
 
 ```
-0         190ms        330ms         530ms
-|----------|------------|-------------|
- V-Kollaps  Grün-Blink   Aufbau mit Bloom
+0         190ms        330ms                             1930ms
+|----------|------------|------------------------|
+ V-Kollaps  Grün-Blink   Warm-up (gedimmt -> hell)
 ```
 
-### 2. `linie-punkt` — Standard, empfohlen (~560 ms)
+### 2. `linie-punkt` — Standard, empfohlen (~1980 ms)
 
 Das physikalische Phasenmodell echter Röhren: Die Vertikalablenkung stirbt
 zuerst (Bild kollabiert zur extrem hellen Linie — real ~480-fache
@@ -41,15 +41,15 @@ Zeilenhelligkeit), dann bricht die Horizontale zusammen (Linie zieht sich
 zum Leuchtpunkt in der Bildmitte), der Punkt glimmt nach und verlischt.
 Der geschrumpfte, überhelle Old-Snapshot selbst ist der Leuchtpunkt; der
 Phosphor-Schimmer kommt als radialer Puls in Bildmitte (animierte
-`background-size` — keine Fläche blitzt mehr). Die neue Seite blüht auf,
-während der Punkt noch glimmt.
+`background-size` — keine Fläche blitzt mehr). Die neue Seite klappt auf,
+während der Punkt noch glimmt, und wärmt dann langsam hoch.
 
 ```
-0      120    190   260ms        380ms       560ms
-|-------|------|-----|------------|-----------|
- Bild    V-Kol  Linie Linie→Punkt  Punkt       Aufbau mit
-         laps   steht (brightness  glimmt      Bloom (startet
-                      12)          radial nach im Glimmen)
+0      120    190   260ms        380ms                           1980ms
+|-------|------|-----|------------|----------------------|
+ Bild    V-Kol  Linie Linie→Punkt  Punkt glimmt · Warm-up
+         laps   steht (brightness  (Bild klappt gedimmt auf
+                      12)          und wird träge hell)
 ```
 
 ### 3. `voll` — maximaler Realismus (~780 ms)
@@ -109,15 +109,19 @@ diesen Pseudos (würde das Filter-Ergebnis clippen).
 Optionaler zweiter Schalter direkt unter `$crt-variante`:
 
 ```scss
-$glitch-variante: "schwimmen" !default; // "aus" | "dezent" | "deutlich" | "schwimmen"
+$glitch-variante: "aus" !default; // "aus" | "dezent" | "deutlich" | "schwimmen"
 ```
 
-Ersetzt beim Einschalten die reine Bloom-Animation auf
-`::view-transition-new(root)` durch Bloom-Öffnung **plus abklingende
-Störung** — das Bild rastet ein. Wirkt in den Varianten
-dezent/linie-punkt/voll; bei `antenne` ohne Wirkung.
+Wählt die Einschalt-Animation auf `::view-transition-new(root)`. Wirkt in
+den Varianten dezent/linie-punkt/voll; bei `antenne` ohne Wirkung.
 
-- **`aus`** — bisheriges Verhalten (`crt-on-bloom` bzw. `crt-on-voll`).
+- **`aus`** — **Röhren-Warm-up** (`crt-on-warmup`, 1600 ms): Das Bild
+  klappt auf und zeigt die drei belegten Aufwärm-Symptome echter Röhren
+  (Repair-FAQ): **kalte Kathode** (Start bei brightness 0.22, saturate
+  0.5 — dunkel und blass), **Fokus-Drift** (blur 2.8px → 0, das Bild
+  kontinuierlich-monoton scharf) und **Geometrie-Setzung** (scale 0.985 → 1, bis die
+  Hochspannung steht), dazu zwei kleine Helligkeits-Wobbles. Bei `voll`
+  stattdessen `crt-on-voll` (Sync-Zittern + starker Bloom).
 - **`dezent`** — Slice-Glitch: 2 Stöße (2.2 % → −1.6 % → 0.8 %), 480 ms
   gesamt, Tear-Fenster ~120–346 ms nach Animationsstart.
 - **`deutlich`** — Slice-Glitch: 3 Stoß-Pakete (bis 3.6 %), 760 ms gesamt,
@@ -151,7 +155,8 @@ Technik-Entscheidungen:
   eines Frames dieselbe Verschiebung teilen, ist der authentische VHS-Look —
   der „gegeneinander"-Eindruck entsteht temporal durch frame-weises
   Alternieren der Richtung.
-- **Verschmolzene Keyframes** statt zweiter Animation: `crt-on-bloom`
+- **Verschmolzene Keyframes** statt zweiter Animation: die Einschalt-Basis
+  (`crt-on-warmup`)
   animiert bereits `transform`/`filter` — bei zwei Animationen gewinnt pro
   Property die letzte, der scaleY-Aufbau ginge verloren.
 - **Risse** per `clip-path`-Schlangen-Polygon (mehrere Bänder in einem
@@ -209,6 +214,9 @@ ein offener Drawer slidet trotzdem raus.
 
 - CRT-Physik: Sam Goldwasser, TV Repair FAQ — „Bright Spot at Power-Off"
   (repairfaq.org); Patent US4390817 (Spot-Cut-off-Network)
+- Warm-up-Symptome: TV Repair FAQ — „Focus drift with warmup" (Fokus
+  zieht erst mit der Erwärmung scharf) und Blooming/Emission (kalte
+  Kathode liefert zu wenige Elektronen → Bild dunkel und blass)
 - Android „ElectronBeam"-Ausschalt-Animation (AOSP 4.x,
   DisplayPowerController/ElectronBeam.java): 400 ms Off als Sigmoid,
   250 ms On

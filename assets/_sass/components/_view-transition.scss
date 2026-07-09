@@ -29,7 +29,10 @@ $crt-variante: "antenne" !default;
 // das Bild „rastet ein". Nur die gewählte Variante wird kompiliert.
 // Wirkt in den Varianten dezent/linie-punkt/voll; bei "antenne" ohne
 // Wirkung. Details: README-tv-umschalt.md
-// "aus"       — bisheriges Verhalten (crt-on-bloom bzw. crt-on-voll)
+// "aus"       — Röhren-Warm-up (crt-on-warmup, 1600ms: Bild klappt auf,
+//               steht erst dunkel/blass/UNSCHARF und minimal kleiner da und
+//               fährt träge hoch — kalte Kathode, Fokus-Drift, Geometrie-
+//               Setzung, Repair-FAQ); bei "voll" crt-on-voll
 // "dezent"    — Slice-Glitch (VHS-Tracking), 2 abklingende Stöße, 480ms
 // "deutlich"  — Slice-Glitch, 3 Stöße + Chroma-Versatz, 760ms
 // "schwimmen" — Antennen-Störung als Einlauf: neue Seite schwimmt wellig-
@@ -37,7 +40,7 @@ $crt-variante: "antenne" !default;
 //               nutzt die vtAntenneN-Filterstufen), 750ms
 // Bei $crt-variante "voll" ersetzen die Einläufe auch crt-on-voll, denn
 // dessen Sync-Fang-Zittern würde sich mit der Störung doppeln.
-$glitch-variante: "schwimmen" !default;
+$glitch-variante: "aus" !default;
 
 // Tippfehler-Schutz: ein unbekannter Wert würde sonst still eine animation
 // auf nicht existierende Keyframes kompilieren — die neue Seite stünde ab
@@ -180,7 +183,7 @@ html.vt-capture body::before {
     } @else if $glitch-variante == "schwimmen" {
       animation: crt-on-schwimmen 750ms linear $on-delay both;
     } @else {
-      animation: crt-on-bloom 200ms cubic-bezier(0.16, 1, 0.3, 1) $on-delay both;
+      animation: crt-on-warmup 1600ms linear $on-delay both;
     }
   }
 
@@ -292,7 +295,7 @@ html.vt-capture body::before {
     } @else if $voll {
       animation: crt-on-voll $on-dur cubic-bezier(0.16, 1, 0.3, 1) $on-delay both;
     } @else {
-      animation: crt-on-bloom $on-dur cubic-bezier(0.16, 1, 0.3, 1) $on-delay both;
+      animation: crt-on-warmup 1600ms linear $on-delay both;
     }
   }
 
@@ -567,24 +570,81 @@ html.vt-capture body::before {
   }
 }
 
-// Einschalt-Aufblühen mit Brightness-Overshoot (Bloom): Referenz lbebber /
-// Android ElectronBeam — das Bild überstrahlt kurz und beruhigt sich
+// Einschalt-Warm-up statt Bloom-Blitz: echte Röhren wurden nach dem
+// Einschalten LANGSAM hell (Kathode/Phosphor brauchen Temperatur). Drei
+// belegte Aufwärm-Symptome (Repair-FAQ): schwache Kathodenemission
+// (dunkel UND blass), Fokus-Drift (weich -> scharf, „Focus drift with
+// warmup") und Geometrie-Setzung (Bild minimal kleiner, bis die Hoch-
+// spannung steht). Dazu zwei kleine Helligkeits-Wobbles. brightness/
+// saturate/blur sind fein interpolierbar (kein url()-Filter -> kein
+// Diskret-Problem); der freigelegte Rand bei scale(0.985) zeigt den
+// dunklen ::view-transition-Grund.
 @if $glitch-variante == "aus" and ($crt-variante == "dezent" or $crt-variante == "linie-punkt") {
-  @keyframes crt-on-bloom {
+  // Scharfstellen KONTINUIERLICH: blur fällt monoton und quasi-exponentiell
+  // über ALLE Frames (kein Rück-Bump im Wobble — der lebt nur in brightness),
+  // Mittelsegmente linear, damit die Kurvigkeit in den WERTEN steckt statt
+  // im Stop-and-go verketteter Eases (las sich als zweistufiges Fokussieren).
+  @keyframes crt-on-warmup {
+    // Öffnungslinie noch leicht hell (kommt aus dem Leuchtpunkt)
     0% {
       transform: scaleY(0.004);
-      filter: brightness(4);
+      filter: brightness(1.6);
       opacity: 1;
+      animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    60% {
-      transform: scaleY(1);
-      filter: brightness(1.25) saturate(1.15);
+    // 96ms: Bild offen, aber KALT — dunkel, blass, unscharf, etwas kleiner
+    6% {
+      transform: scaleY(1) scale(0.985);
+      filter: brightness(0.22) saturate(0.5) blur(2.8px);
+      animation-timing-function: linear;
+    }
+
+    // 352ms: träges Hochfahren
+    22% {
+      transform: scaleY(1) scale(0.988);
+      filter: brightness(0.34) saturate(0.58) blur(2.2px);
+      animation-timing-function: linear;
+    }
+
+    // 544ms: Helligkeits-Wobble — der Fokus zieht dabei WEITER an
+    34% {
+      transform: scaleY(1) scale(0.99);
+      filter: brightness(0.3) saturate(0.6) blur(1.85px);
+      animation-timing-function: linear;
+    }
+
+    // 800ms
+    50% {
+      transform: scaleY(1) scale(0.994);
+      filter: brightness(0.52) saturate(0.7) blur(1.35px);
+      animation-timing-function: linear;
+    }
+
+    // 1024ms
+    64% {
+      transform: scaleY(1) scale(0.997);
+      filter: brightness(0.68) saturate(0.82) blur(0.9px);
+      animation-timing-function: linear;
+    }
+
+    // 1184ms: zweiter Mini-Wobble (nur Helligkeit)
+    74% {
+      transform: scaleY(1) scale(0.998);
+      filter: brightness(0.62) saturate(0.85) blur(0.65px);
+      animation-timing-function: linear;
+    }
+
+    // 1376ms: fast warm, volle Größe fast erreicht
+    86% {
+      transform: scaleY(1) scale(1);
+      filter: brightness(0.82) saturate(0.92) blur(0.3px);
+      animation-timing-function: ease-out;
     }
 
     100% {
-      transform: scaleY(1);
-      filter: brightness(1);
+      transform: scaleY(1) scale(1);
+      filter: brightness(1) saturate(1) blur(0);
     }
   }
 }
