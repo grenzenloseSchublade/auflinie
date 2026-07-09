@@ -76,6 +76,36 @@
     var defaultText = contextLine.textContent;
     var selected = null;
 
+    // Strukturierte Anzeige statt Komma-Fließtext: Skill als Mono-Label
+    // (Formensprache der Gruppen-Titel), Projekte darunter mit ·-Trennern.
+    // Aufbau per DOM-Knoten (kein innerHTML mit Datenwerten); aria-live
+    // liest die Region weiterhin als einen zusammenhängenden Satz vor.
+    function renderContext(label, projects) {
+      contextLine.textContent = '';
+
+      var labelEl = document.createElement('span');
+      labelEl.className = 'cv-skills__selection-skill';
+      labelEl.textContent = label;
+      contextLine.appendChild(labelEl);
+
+      var roleEl = document.createElement('span');
+      roleEl.className = 'cv-skills__selection-rolle';
+      roleEl.textContent = projects.length
+        ? ' — gemeinsam im Einsatz bei'
+        : ' — noch keine Projektzuordnung hinterlegt.';
+      contextLine.appendChild(roleEl);
+
+      if (projects.length) {
+        contextLine.appendChild(document.createElement('br'));
+        var listEl = document.createElement('span');
+        listEl.className = 'cv-skills__selection-projekte';
+        listEl.textContent = projects.map(function (project) {
+          return project.label;
+        }).join(' · ');
+        contextLine.appendChild(listEl);
+      }
+    }
+
     function applySelection(skillId) {
       var projects = skillProjects.get(skillId) || [];
       var related = new Set();
@@ -95,12 +125,7 @@
       });
       container.classList.add('has-selection');
 
-      if (projects.length) {
-        contextLine.textContent = selectedLabel + ' — gemeinsam im Einsatz bei: ' +
-          projects.map(function (project) { return project.label; }).join(', ');
-      } else {
-        contextLine.textContent = selectedLabel + ' — noch keine Projektzuordnung hinterlegt.';
-      }
+      renderContext(selectedLabel, projects);
       selected = skillId;
     }
 

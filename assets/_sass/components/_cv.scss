@@ -410,8 +410,12 @@ li.cv-skill-chip.is-related {
 }
 
 // Kontext-/Hinweiszeile über den Gruppen (aria-live): eigene Identität als
-// Status-Element (Epigraph-Muster: linke Hairline), damit sie sich von den
-// Gruppen-Kontextzeilen abhebt; min-height gegen Layout-Sprünge.
+// ANZEIGEFLÄCHE — DUNKLER als die Umgebung eingesenkt (Schwarz-Tint statt
+// $console-panel-bg: der Chip-Ton stellte die Anzeige auf dieselbe Ebene
+// wie die interaktiven Chips und konkurrierte mit ihnen — Chips sind die
+// Akteure/erhaben, die Anzeige ist die Bühne/zurückgesetzt). Kein Rahmen,
+// die linke Hairline bleibt der einzige harte Rand; feste Höhe gegen
+// Layout-Sprünge.
 // Bei aktiver Auswahl wechselt die Hairline auf Magenta (Interaktionszustand).
 // p-qualifiziert (0,2,1): sichert line-height gegen die Absatz-Regel — die
 // feste Höhe rechnet mit 1.5em pro Zeile
@@ -426,7 +430,9 @@ li.cv-skill-chip.is-related {
   height: calc(3 * 1.5em + 0.8rem);
   overflow-y: auto;
   margin: 0 0 1rem;
-  padding: 0.4rem 0 0.4rem 0.8rem;
+  padding: 0.4rem 0.8rem;
+  background: rgb(0 0 0 / 18%);
+  border-radius: 6px;
   border-left: 2px solid $link-color-subtle;
   transition: border-color 0.2s ease;
 
@@ -437,6 +443,19 @@ li.cv-skill-chip.is-related {
 
 .cv-skills.has-selection .cv-skills__selection-info {
   border-left-color: $hover-color-subtle;
+}
+
+// Strukturierte Auswahl-Anzeige (skill-chips.js renderContext): Skill-Name
+// in der Mono-Formensprache der Gruppen-Titel, aber heller (er ist der
+// Fokus der Anzeige); Projektliste eine Stufe heller als der muted-Grundton
+.cv-skills__selection-skill {
+  @include mono-label($cv-group-title-font-size, 0.07em);
+
+  color: rgb(255 255 255 / 85%);
+}
+
+.cv-skills__selection-projekte {
+  color: rgb(255 255 255 / 70%);
 }
 
 // Sprachen: Chips in der Formensprache der Fähigkeiten
