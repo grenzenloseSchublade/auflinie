@@ -69,6 +69,72 @@ Sync-Fang-Zittern (±2.5 % über 260 ms) und einen stärkeren Bloom
  & Punkt  auf Schwarz)
 ```
 
+## Glitch-Einlauf (`$glitch-variante`)
+
+Optionaler zweiter Schalter direkt unter `$crt-variante`:
+
+```scss
+$glitch-variante: "deutlich" !default; // "aus" | "dezent" | "deutlich"
+```
+
+Ersetzt beim Einschalten die reine Bloom-Animation auf
+`::view-transition-new(root)` durch Bloom-Öffnung **plus abklingende
+Tear-Stöße** — der Look eines VHS-Tracking-Fehlers bzw. eines CRT, dessen
+Horizontal-Sync sich erst fängt: horizontale Bildbereiche springen seitlich
+und rasten in immer schwächeren Stößen ein.
+
+- **`aus`** — bisheriges Verhalten (`crt-on-bloom` bzw. `crt-on-voll`).
+- **`dezent`** — 2 Stöße (2.2 % → −1.6 % → 0.8 %), 480 ms gesamt,
+  Tear-Fenster ~120–346 ms nach Animationsstart.
+- **`deutlich`** — 3 Stoß-Pakete (bis 3.6 %), 760 ms gesamt, zusätzlich
+  `hue-rotate`-Stöße als Chroma-Sync-Fehler.
+
+Jeder Tear-Frame hält 45–60 ms (3–4 Bildschirm-Frames). Die erste Fassung
+mit ~30 ms-Frames lag unter der Wahrnehmungsschwelle — der Effekt las sich
+als kurzes Flackern statt als Streifen-Springen.
+
+```
+dezent    0     106ms      230ms     298 346ms      480ms
+          |------|--●--●----|---------●---|----------|
+           Öffnung Stoß 1a/b  Ruhe    Stoß 2  Ausklang
+
+deutlich  0    91ms        289ms     380  479ms 562 608ms  760ms
+          |-----|--●--●--●--|---------●--●-|------●--|------|
+           Öffnung Stoß 1a-c  Ruhe    Stoß 2a/b  Stoß 3 Ausklang
+```
+
+Technik-Entscheidungen:
+
+- **Ein-Layer-Tearing** auf dem Root-New-Snapshot statt eines zweiten
+  `view-transition-name`-Kopie-Layers: Element-Snapshots erfassen die
+  gesamte Ink-Overflow-Höhe (riesige GPU-Textur auf langen Posts, ausge-
+  rechnet mobil) und wären bei jeder Transition aktiv. Dass alle Streifen
+  eines Frames dieselbe Verschiebung teilen, ist der authentische VHS-Look —
+  der „gegeneinander"-Eindruck entsteht temporal durch frame-weises
+  Alternieren der Richtung.
+- **Verschmolzene Keyframes** statt zweiter Animation: `crt-on-bloom`
+  animiert bereits `transform`/`filter` — bei zwei Animationen gewinnt pro
+  Property die letzte, der scaleY-Aufbau ginge verloren.
+- **Risse** per `clip-path`-Schlangen-Polygon (mehrere Bänder in einem
+  Pfad); freigelegt wird der dunkle `::view-transition`-Grund (`#10141a`) —
+  schwarze Tearing-Linien, kein Aufblitzen. `step-end` hält jeden Frame und
+  springt hart; `clip-path` steht in jedem Frame explizit, sonst schaltete
+  die diskrete Interpolation schon ab dem impliziten 0%-Frame um.
+- **Chroma statt RGB-Split:** `drop-shadow`-Tricks greifen auf opaken
+  Snapshots nicht (und `clip-path` clippt das Filter-Ergebnis weg);
+  `hue-rotate(±4–8deg)`-Stöße sind kompositierbar und lesen sich als
+  Chroma-Sync-Fehler. Optionaler Ausbau: schwache Cyan/Magenta-Linien im
+  `::view-transition`-Hintergrund, die durch die Risse durchscheinen.
+- Bei `$crt-variante: "voll"` ersetzt der Glitch auch `crt-on-voll`, dessen
+  Sync-Fang-Zittern sich sonst mit dem Tearing doppeln würde.
+
+Timing-Verzahnung (`linie-punkt`): Öffnung startet wie bisher bei 380 ms
+und blüht ins Punkt-Nachglimmen (endet 460 ms) hinein; der erste Tear liegt
+bei ~505 ms — der Phosphor-Puls ist dann fertig, nichts flackert durch die
+Risse. Gesamtdauer der Transition: 860 ms (`dezent`) / 1140 ms (`deutlich`)
+statt 560 ms. Der Drawer-Offset wirkt unverändert (die Offset-Regeln
+überschreiben nur `animation-delay`).
+
 ## Choreografie mit dem Drawer
 
 Ist der Drawer beim Wechsel offen, slidet sein Old-Snapshot zuerst raus
