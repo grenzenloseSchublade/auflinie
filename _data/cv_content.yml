@@ -106,11 +106,15 @@
           subitems:
             # Bewusst ohne Jahreszahl: Datierung unsicher (ca. 2019–2021). Die Architektur
             # verortet die Arbeit für Fachleute ohnehin selbst.
+            # Bewusst offen formuliert: ob das deutsche Modell von Grund auf oder als
+            # Nachtraining eines englischen Checkpoints entstand, ist nicht mehr sicher
+            # rekonstruierbar. "Training auf deutschen Sprachdaten" trifft beide Fälle.
             - "Aufbau einer betriebsfertigen Text-to-Speech-Pipeline aus **Tacotron 2** — Encoder und Decoder erzeugen aus dem Text Mel-Spektrogramme — und **WaveNet** als Vocoder für die Sprachausgabe"
             - "Training der Modelle auf deutschen Sprachdaten, für die es zu der Zeit keine verfügbaren Modelle gab"
+            - "Erhebung eigener Sprachdaten, da die öffentlich verfügbaren Datensätze für das Training nicht ausreichten"
+            - "Entwicklung von Algorithmen zur Erkennung, Verifikation und Bereinigung von Qualitätsmängeln in den erhobenen Sprachaufnahmen"
             - "Optimierung der Modellarchitekturen für die Sprachsynthese"
             - "Anpassung der Konfiguration an die eigenen Anforderungen und Bewertung der Synthesequalität"
-            - "Entwicklung von Algorithmen zur Erkennung, Verifikation und Bereinigung von Qualitätsmängeln in Sprachaufnahmen"
 
         # [FORSCHUNG / INFRASTRUKTUR]
         - text: "Training von Deep-Learning-Modellen auf Remote-Infrastruktur"
