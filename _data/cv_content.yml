@@ -113,7 +113,8 @@
             - "Aufbau einer betriebsfertigen Text-to-Speech-Pipeline aus **Tacotron 2** — Encoder und Decoder erzeugen aus dem Text Mel-Spektrogramme — und **WaveNet** als Vocoder für die Sprachausgabe"
             - "Auswahl und Evaluation der Modellarchitektur sowie Bewertung der Synthesequalität"
             - "Anpassung der Konfiguration an die eigenen Anforderungen"
-            - "Aufbereitung von Sprachaufnahmen mit Deep-Learning-Ansätzen"
+            - "Entwicklung von Algorithmen zur Erkennung, Verifikation und Bereinigung von Qualitätsmängeln in Sprachaufnahmen"
+            - "Aufbereitung der Sprachdaten für die weitere Verarbeitung"
 
         # [FORSCHUNG / INFRASTRUKTUR]
         - text: "Training von Deep-Learning-Modellen auf Remote-Infrastruktur"
