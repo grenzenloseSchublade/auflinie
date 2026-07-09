@@ -11,6 +11,10 @@
     color: $fg-muted;
     font-size: $fs-md; // 1.08→1.125 (R, Token-Skala)
     line-height: 1.7;
+
+    + p {
+      margin-top: 1.2em;
+    }
   }
 }
 
