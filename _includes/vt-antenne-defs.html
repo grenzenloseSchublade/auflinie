@@ -1,0 +1,47 @@
+{% comment %}
+  SVG-Filterstufen für die Antennen-Störung des TV-Umschalt-Effekts
+  ($crt-variante "antenne" bzw. $glitch-variante "schwimmen" in
+  assets/_sass/components/_view-transition.scss).
+
+  Zeilenwelle: feTurbulence fractalNoise (X fast konstant, Y fein) ->
+  feColorMatrix (R = Welle, G = konstant 0.5, A = 1) -> feDisplacementMap
+  verschiebt NUR horizontal (yChannelSelector G = 0.5 -> Y-Versatz exakt 0).
+  fractalNoise statt turbulence: nur fractalNoise ist um 0.5 zentriert,
+  turbulence wäre Richtung 0 verzerrt -> konstanter Linksdrift statt Pendeln.
+  Schnee (hochfrequentes Rauschen, feComposite over) nur in den hohen Stufen.
+  A = 1 in der Karten-Matrix ist Pflicht: sonst verfälscht Premultiplied-
+  Alpha die Displacement-Werte. sRGB hält die Noise-Werte ungegammat.
+
+  Alle Stufen sind STATISCH (kein animiertes feTurbulence — CPU-Doktrin,
+  siehe _crt-overlay.scss); die Keyframes springen per step-end zwischen
+  den url(#vtAntenneN)-Referenzen. Der Seed variiert pro Stufe, damit jeder
+  Sprung auch die Wellenform wechselt — die Störung wirkt lebendig.
+
+  Cross-Doc View Transitions rendern old- UND new-Snapshot im NEUEN
+  Dokument: die Defs müssen daher auf JEDER Zielseite stehen (dieses
+  Include hängt in _layouts/default.html direkt nach <body>) und werden
+  bewusst IMMER ausgegeben — Liquid kennt die SCSS-Variantenwahl nicht,
+  und unreferenzierte Filter kosten nichts (werden nie evaluiert).
+
+  Stufen: id | displacement-scale | schnee-alpha | seed
+{% endcomment %}
+{% assign ant_stufen = "1|12|0|11,2|30|0|23,3|60|0.35|37,4|100|0.6|41,4b|100|0.6|53" | split: "," %}
+<svg class="vt-antenne-defs" aria-hidden="true" focusable="false" width="0" height="0" style="position:absolute">
+  <defs>
+    {%- for stufe in ant_stufen %}
+    {%- assign p = stufe | split: "|" %}
+    <filter id="vtAntenne{{ p[0] }}" x="-15%" y="-5%" width="130%" height="110%" color-interpolation-filters="sRGB">
+      <feTurbulence type="fractalNoise" baseFrequency="0.002 0.1" numOctaves="2" seed="{{ p[3] }}" result="welle" />
+      <feColorMatrix in="welle" type="matrix" values="1 0 0 0 0  0 0 0 0 0.5  0 0 0 0 0  0 0 0 0 1" result="karte" />
+      {%- if p[2] == "0" %}
+      <feDisplacementMap in="SourceGraphic" in2="karte" scale="{{ p[1] }}" xChannelSelector="R" yChannelSelector="G" />
+      {%- else %}
+      <feDisplacementMap in="SourceGraphic" in2="karte" scale="{{ p[1] }}" xChannelSelector="R" yChannelSelector="G" result="verzerrt" />
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="{{ p[3] }}" result="schneeRoh" />
+      <feColorMatrix in="schneeRoh" type="matrix" values="1 0 0 0 0  1 0 0 0 0  1 0 0 0 0  0 0 0 0 {{ p[2] }}" result="schnee" />
+      <feComposite in="schnee" in2="verzerrt" operator="over" />
+      {%- endif %}
+    </filter>
+    {%- endfor %}
+  </defs>
+</svg>

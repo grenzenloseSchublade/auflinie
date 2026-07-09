@@ -16,18 +16,28 @@
 // "linie-punkt" — V-Kollaps -> Linie -> Leuchtpunkt mit Nachglimmen (EMPFOHLEN)
 // "voll"        — wie linie-punkt + langes Nachglimmen unter der neuen Seite,
 //                 Sync-Zittern und stärkerer Bloom beim Einschalten
-$crt-variante: "linie-punkt" !default;
+// "antenne"     — analoge Empfangsstörung statt Röhren-Kollaps: Bild wird
+//                 zeilenweise wellig verzerrt + verschneit bis zur Unkennt-
+//                 lichkeit (SVG feDisplacementMap, Defs: _includes/
+//                 vt-antenne-defs.html), Wechsel als Cut im Peak, neue
+//                 Seite rastet aus der Störung ein. Ignoriert
+//                 $glitch-variante — das Abklingen IST der Einlauf.
+$crt-variante: "antenne" !default;
 
-// Glitch/Slice-Einlauf beim Einschalten (VHS-Tracking-Fehler): ersetzt die
-// reine Bloom-Animation auf ::view-transition-new(root) durch Bloom-Öffnung
-// plus abklingende Tear-Stöße — das Bild „rastet ein". Nur die gewählte
-// Variante wird kompiliert. Details: README-tv-umschalt.md
-// "aus"      — bisheriges Verhalten (crt-on-bloom bzw. crt-on-voll)
-// "dezent"   — 2 abklingende Stöße, 480ms gesamt
-// "deutlich" — 3 abklingende Stöße + Chroma-Versatz, 760ms gesamt
-// Bei $crt-variante "voll" ersetzt der Glitch auch crt-on-voll, denn dessen
-// Sync-Fang-Zittern würde sich mit dem Tearing doppeln.
-$glitch-variante: "deutlich" !default;
+// Glitch-Einlauf beim Einschalten: ersetzt die reine Bloom-Animation auf
+// ::view-transition-new(root) durch Bloom-Öffnung plus Störungs-Abklingen —
+// das Bild „rastet ein". Nur die gewählte Variante wird kompiliert.
+// Wirkt in den Varianten dezent/linie-punkt/voll; bei "antenne" ohne
+// Wirkung. Details: README-tv-umschalt.md
+// "aus"       — bisheriges Verhalten (crt-on-bloom bzw. crt-on-voll)
+// "dezent"    — Slice-Glitch (VHS-Tracking), 2 abklingende Stöße, 480ms
+// "deutlich"  — Slice-Glitch, 3 Stöße + Chroma-Versatz, 760ms
+// "schwimmen" — Antennen-Störung als Einlauf: neue Seite schwimmt wellig-
+//               verrauscht herein und fängt sich (Kanal-Umschalt-Look,
+//               nutzt die vtAntenneN-Filterstufen), 750ms
+// Bei $crt-variante "voll" ersetzen die Einläufe auch crt-on-voll, denn
+// dessen Sync-Fang-Zittern würde sich mit der Störung doppeln.
+$glitch-variante: "schwimmen" !default;
 
 // Drawer-Fall: Exit 200ms + 70ms Beat (NN/g: >40ms wahrnehmbar, <100ms
 // verschmilzt die Kette zu EINER Geste) — alle CRT-Starts verschieben sich
@@ -145,6 +155,8 @@ html.vt-capture body::before {
       animation: crt-on-glitch-dezent 480ms linear $on-delay both;
     } @else if $glitch-variante == "deutlich" {
       animation: crt-on-glitch-deutlich 760ms linear $on-delay both;
+    } @else if $glitch-variante == "schwimmen" {
+      animation: crt-on-schwimmen 750ms linear $on-delay both;
     } @else {
       animation: crt-on-bloom 200ms cubic-bezier(0.16, 1, 0.3, 1) $on-delay both;
     }
@@ -237,6 +249,8 @@ html.vt-capture body::before {
       animation: crt-on-glitch-dezent 480ms linear $on-delay both;
     } @else if $glitch-variante == "deutlich" {
       animation: crt-on-glitch-deutlich 760ms linear $on-delay both;
+    } @else if $glitch-variante == "schwimmen" {
+      animation: crt-on-schwimmen 750ms linear $on-delay both;
     } @else if $voll {
       animation: crt-on-voll $on-dur cubic-bezier(0.16, 1, 0.3, 1) $on-delay both;
     } @else {
@@ -354,6 +368,163 @@ html.vt-capture body::before {
 
     100% {
       background-size: if($voll, 3vmin 2vmin, 2vmin 1.4vmin);
+    }
+  }
+}
+
+@if $crt-variante == "antenne" {
+  // Rezept 4 „Antennen-Störung": verstimmte Antenne statt Röhren-Kollaps.
+  // Jede Bildzeile wandert horizontal um einen weich variierenden Betrag
+  // (feDisplacementMap-Zeilenwelle, Defs: _includes/vt-antenne-defs.html),
+  // dazu zunehmender Schnee — bis zur Unkenntlichkeit. Der Seitenwechsel
+  // ist ein harter Cut mitten im Peak: der New-Snapshot liegt opak über
+  // dem Old-Snapshot und startet mit derselben Maximal-Störung (anderer
+  // Seed) — der Cut liest sich als weiterer Rausch-Frame, kein Crossfade
+  // nötig. NUR statische Filterstufen, zwischen denen step-end diskret
+  // springt (Anti-CPU-Doktrin _crt-overlay.scss: kein animiertes
+  // feTurbulence). $glitch-variante wird hier IGNORIERT — das Abklingen
+  // ist der Einlauf. KEIN clip-path auf diesen Pseudos: clip-path würde
+  // das Filter-Ergebnis clippen.
+  // Timeline: Anstieg 0-350 · Peak (unkenntlich) 350-800 · Einrasten -1200
+  $ant-out-dur: 700ms; // old: Anstieg 0-350, hält Stufe 4 bis 700 (unter new)
+  $ant-on-delay: 450ms; // Cut mitten im Peak — new startet voll gestört
+  $ant-on-dur: 750ms; // endet bei 1200ms
+
+  html:active-view-transition-type(crt)::view-transition {
+    // Dunkler Grund + statische Scanlines (Muster _crt-overlay.scss __mask):
+    // scheint an den ausgefransten Displacement-Rändern durch. Statisch,
+    // keine Animation — deshalb hier auch keine Drawer-Offset-Regel.
+    background:
+      repeating-linear-gradient(
+        0deg,
+        transparent 0 2px,
+        rgb(0 0 0 / 25%) 2px 4px
+      )
+      #10141a;
+  }
+
+  html:active-view-transition-type(crt)::view-transition-old(root) {
+    animation: crt-ant-aus $ant-out-dur linear both;
+  }
+
+  html:active-view-transition-type(crt)::view-transition-new(root) {
+    animation: crt-ant-ein $ant-on-dur linear $ant-on-delay both;
+  }
+
+  // Drawer-Fall: alles + Exit/Beat-Offset
+  html:active-view-transition-type(crt):active-view-transition-type(drawer)::view-transition-old(root) {
+    animation-delay: $crt-drawer-offset;
+  }
+
+  html:active-view-transition-type(crt):active-view-transition-type(drawer)::view-transition-new(root) {
+    animation-delay: $ant-on-delay + $crt-drawer-offset;
+  }
+
+  // Alte Seite: Störung schwillt an (S1-S4), Peak flackert per Seed-Wechsel
+  // und dunkelt ab, hält bis 700ms unter dem New-Snapshot durch
+  @keyframes crt-ant-aus {
+    0% {
+      filter: none;
+      animation-timing-function: step-end;
+    }
+
+    // 84ms: erste Wellen
+    12% {
+      filter: url("#vtAntenne1");
+      animation-timing-function: step-end;
+    }
+
+    // 182ms: deutliches Schwimmen
+    26% {
+      filter: url("#vtAntenne2");
+      animation-timing-function: step-end;
+    }
+
+    // 294ms: stark + erster Schnee
+    42% {
+      filter: url("#vtAntenne3") brightness(0.92);
+      animation-timing-function: step-end;
+    }
+
+    // 350ms: Peak — unkenntlich
+    50% {
+      filter: url("#vtAntenne4") brightness(0.8);
+      animation-timing-function: step-end;
+    }
+
+    // 497ms: Peak-Flackern (anderer Seed)
+    71% {
+      filter: url("#vtAntenne4b") brightness(0.75);
+      animation-timing-function: step-end;
+    }
+
+    100% {
+      filter: url("#vtAntenne4") brightness(0.7);
+    }
+  }
+
+  // Neue Seite: startet voll gestört (Cut im Peak), flackert, rastet ein.
+  // opacity 0 -> 1 bei 0% -> 1%: fill-mode both zeigt den 0%-Frame schon
+  // WÄHREND des Delays — ohne das Versteck verdeckte der opake New-
+  // Snapshot von Transitionsbeginn an den anschwellenden Old-Snapshot.
+  @keyframes crt-ant-ein {
+    0% {
+      opacity: 0;
+      filter: url("#vtAntenne4") brightness(0.8);
+      animation-timing-function: step-end;
+    }
+
+    // = ~457ms absolut: Cut im Peak, identische Maximal-Störung wie old
+    1% {
+      opacity: 1;
+      filter: url("#vtAntenne4") brightness(0.8);
+      animation-timing-function: step-end;
+    }
+
+    // ~548ms
+    13% {
+      filter: url("#vtAntenne4b") brightness(0.8);
+      animation-timing-function: step-end;
+    }
+
+    // ~653ms
+    27% {
+      filter: url("#vtAntenne4") brightness(0.85);
+      animation-timing-function: step-end;
+    }
+
+    // ~750ms
+    40% {
+      filter: url("#vtAntenne4b") brightness(0.9);
+      animation-timing-function: step-end;
+    }
+
+    // ~803ms: Peak-Ende, Schnee dünnt aus
+    47% {
+      filter: url("#vtAntenne3") brightness(0.95);
+      animation-timing-function: step-end;
+    }
+
+    // ~900ms
+    60% {
+      filter: url("#vtAntenne2");
+      animation-timing-function: step-end;
+    }
+
+    // ~998ms: letztes Schwimmen
+    73% {
+      filter: url("#vtAntenne1");
+      animation-timing-function: step-end;
+    }
+
+    // ~1103ms: eingerastet + Mini-Bloom
+    87% {
+      filter: brightness(1.06);
+      animation-timing-function: ease-out;
+    }
+
+    100% {
+      filter: brightness(1);
     }
   }
 }
@@ -594,6 +765,77 @@ html.vt-capture body::before {
       transform: scaleY(1);
       filter: brightness(1);
       clip-path: none;
+    }
+  }
+}
+
+@if $glitch-variante == "schwimmen" {
+  // Antennen-Störung als Einlauf (Kanal-Umschalt-Look): die neue Seite
+  // blüht voll gestört auf (Zeilenwellen + Schnee, Defs: _includes/
+  // vt-antenne-defs.html) und fängt sich in abklingenden Stufen — wie ein
+  // Sender, dessen Signal nach dem Umschalten erst einrastet. step-end
+  // zwischen STATISCHEN Filterstufen (Anti-CPU-Doktrin), Seed-Wechsel
+  // 4/4b als Flackern. Kein clip-path (würde das Filter-Ergebnis clippen).
+  @keyframes crt-on-schwimmen {
+    0% {
+      transform: scaleY(0.004);
+      filter: url("#vtAntenne4") brightness(4);
+      opacity: 1;
+      animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    // 98ms: Bild offen, voll gestört
+    13% {
+      transform: scaleY(1);
+      filter: url("#vtAntenne4") brightness(1.4);
+      animation-timing-function: step-end;
+    }
+
+    // 180ms: Flackern (anderer Seed)
+    24% {
+      transform: scaleY(1);
+      filter: url("#vtAntenne4b") brightness(1.25);
+      animation-timing-function: step-end;
+    }
+
+    // 263ms
+    35% {
+      transform: scaleY(1);
+      filter: url("#vtAntenne4") brightness(1.15);
+      animation-timing-function: step-end;
+    }
+
+    // 345ms: Schnee dünnt aus
+    46% {
+      transform: scaleY(1);
+      filter: url("#vtAntenne3") brightness(1.1);
+      animation-timing-function: step-end;
+    }
+
+    // 450ms
+    60% {
+      transform: scaleY(1);
+      filter: url("#vtAntenne2");
+      animation-timing-function: step-end;
+    }
+
+    // 555ms: letztes Schwimmen
+    74% {
+      transform: scaleY(1);
+      filter: url("#vtAntenne1");
+      animation-timing-function: step-end;
+    }
+
+    // 653ms: eingerastet + Mini-Bloom
+    87% {
+      transform: scaleY(1);
+      filter: brightness(1.06);
+      animation-timing-function: ease-out;
+    }
+
+    100% {
+      transform: scaleY(1);
+      filter: brightness(1);
     }
   }
 }

@@ -11,12 +11,12 @@ Recherche-Grundlagen fest und erklärt Umschaltung und Dosierung.
 In `assets/_sass/components/_view-transition.scss` ganz oben:
 
 ```scss
-$crt-variante: "linie-punkt" !default; // "dezent" | "linie-punkt" | "voll"
+$crt-variante: "antenne" !default; // "dezent" | "linie-punkt" | "voll" | "antenne"
 ```
 
 Wert ändern, neu bauen — es wird nur die gewählte Variante kompiliert.
 
-## Die drei Varianten
+## Die vier Varianten
 
 ### 1. `dezent` — geglättetes Original (~530 ms)
 
@@ -69,25 +69,64 @@ Sync-Fang-Zittern (±2.5 % über 260 ms) und einen stärkeren Bloom
  & Punkt  auf Schwarz)
 ```
 
+### 4. `antenne` — Antennen-Störung (~1200 ms)
+
+Analoge Empfangsstörung statt Röhren-Kollaps: Jede Bildzeile wandert
+horizontal um einen weich variierenden Betrag (Wellenlinie — das Bild
+„schwimmt" wie bei verstimmter Antenne), dazu schwillt Schnee an, bis
+nichts mehr erkennbar ist. **Der Seitenwechsel ist ein harter Cut mitten
+im Peak** — der New-Snapshot liegt opak über dem Old-Snapshot und startet
+mit derselben Maximal-Störung (nur anderer Rausch-Seed), der Cut liest
+sich als weiterer Rausch-Frame. Danach rastet die neue Seite in
+abklingenden Stufen ein. `$glitch-variante` ist hier ohne Wirkung — das
+Abklingen ist der Einlauf.
+
+```
+0        84   182   294  350ms                 800   900  1000  1100  1200ms
+|--------|-----|-----|----|=====================|-----|-----|-----|-----|
+alt:  none → S1 → S2 → S3 → S4/S4b (Peak, +Schnee, abgedunkelt)
+neu:                        450ms: Cut im Peak (unsichtbar) → Flackern
+                            → S3 → S2 → S1 → Einrasten + Mini-Bloom
+```
+
+Technik: SVG-Filterstufen `#vtAntenne1..4b` (`_includes/vt-antenne-defs.html`,
+global in `_layouts/default.html` direkt nach `<body>` — Cross-Doc-VT
+rendert beide Snapshots im NEUEN Dokument, die Defs müssen daher auf jeder
+Zielseite und wegen des frühen `pagereveal` am Body-Anfang stehen).
+Zeilenwelle: `feTurbulence` **fractalNoise** (nur der ist um 0.5 zentriert —
+`turbulence` wäre Richtung 0 verzerrt → konstanter Drift statt Pendeln),
+`baseFrequency="0.002 0.1"`, dann `feColorMatrix` (R = Welle, G = konstant
+0.5, A = 1) und `feDisplacementMap xChannelSelector="R"
+yChannelSelector="G"` → Verschiebung exakt horizontal. Schnee = zweites,
+hochfrequentes fractalNoise per `feComposite over` (nur Stufen 3/4/4b).
+Alle Stufen sind **statisch**; die Keyframes springen per `step-end`
+zwischen den `url(#…)`-Referenzen (kein animiertes feTurbulence — CPU-
+Doktrin), der Seed-Wechsel 4/4b wirkt als Flackern. Kein `clip-path` auf
+diesen Pseudos (würde das Filter-Ergebnis clippen).
+
 ## Glitch-Einlauf (`$glitch-variante`)
 
 Optionaler zweiter Schalter direkt unter `$crt-variante`:
 
 ```scss
-$glitch-variante: "deutlich" !default; // "aus" | "dezent" | "deutlich"
+$glitch-variante: "schwimmen" !default; // "aus" | "dezent" | "deutlich" | "schwimmen"
 ```
 
 Ersetzt beim Einschalten die reine Bloom-Animation auf
 `::view-transition-new(root)` durch Bloom-Öffnung **plus abklingende
-Tear-Stöße** — der Look eines VHS-Tracking-Fehlers bzw. eines CRT, dessen
-Horizontal-Sync sich erst fängt: horizontale Bildbereiche springen seitlich
-und rasten in immer schwächeren Stößen ein.
+Störung** — das Bild rastet ein. Wirkt in den Varianten
+dezent/linie-punkt/voll; bei `antenne` ohne Wirkung.
 
 - **`aus`** — bisheriges Verhalten (`crt-on-bloom` bzw. `crt-on-voll`).
-- **`dezent`** — 2 Stöße (2.2 % → −1.6 % → 0.8 %), 480 ms gesamt,
-  Tear-Fenster ~120–346 ms nach Animationsstart.
-- **`deutlich`** — 3 Stoß-Pakete (bis 3.6 %), 760 ms gesamt, zusätzlich
-  `hue-rotate`-Stöße als Chroma-Sync-Fehler.
+- **`dezent`** — Slice-Glitch: 2 Stöße (2.2 % → −1.6 % → 0.8 %), 480 ms
+  gesamt, Tear-Fenster ~120–346 ms nach Animationsstart.
+- **`deutlich`** — Slice-Glitch: 3 Stoß-Pakete (bis 3.6 %), 760 ms gesamt,
+  zusätzlich `hue-rotate`-Stöße als Chroma-Sync-Fehler.
+- **`schwimmen`** — Antennen-Störung als Einlauf (Kanal-Umschalt-Look):
+  die neue Seite blüht voll gestört auf (Zeilenwellen + Schnee, nutzt die
+  `#vtAntenneN`-Filterstufen der Variante 4) und fängt sich in 6 Stufen,
+  750 ms gesamt. Dramaturgie: Röhre kollabiert (linie-punkt), der „neue
+  Sender" rastet erst wellig-verrauscht ein.
 
 Jeder Tear-Frame hält 45–60 ms (3–4 Bildschirm-Frames). Die erste Fassung
 mit ~30 ms-Frames lag unter der Wahrnehmungsschwelle — der Effekt las sich

@@ -40,6 +40,10 @@
   </head>
 
   <body class="layout--{{ page.layout | default: layout.layout }}{% if page.classes or layout.classes %}{{ page.classes | default: layout.classes | join: ' ' | prepend: ' ' }}{% endif %}" dir="{% if site.rtl %}rtl{% else %}ltr{% endif %}">
+    {% comment %} Muss am Body-ANFANG stehen: pagereveal feuert zur ersten
+    Render-Gelegenheit, u.U. vor Parse-Ende — die View-Transition-Filter
+    (url(#vtAntenneN)) brauchen die Defs dann bereits im DOM. {% endcomment %}
+    {% include vt-antenne-defs.html %}
     {% include_cached skip-links.html %}
     {% comment %} Bewusst NICHT include_cached: der Aktiv-Marker hängt von page.url ab {% endcomment %}
     {% include masthead.html %}
