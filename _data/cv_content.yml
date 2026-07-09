@@ -78,26 +78,26 @@
             - "Pseudonymisierung personenbezogener Daten mit dem Framework **spaCy** aus Datenschutzgründen"
             - "Interne Ausarbeitung zur theoretischen Einschätzung von Metriken für LLMs"
 
-      # TODO Beschreibung prüfen und anpassen
-      # [BACKEND / ZUSATZ] -> Normkonforme Nachbildung des IT-Systems des deutschen Gesundheitswesens mit Fokus auf Standards
-        - text: "Entwicklung eines normkonformen Systems zur Abbildung und Integration der Telematik-Infrastruktur" 
+      # [BACKEND / ZUSATZ] -> Normkonforme Nachbildung des IT-Systems des deutschen Gesundheitswesens
+        - text: "Entwicklung eines normkonformen Systems zur Abbildung und Integration der Telematik-Infrastruktur"
           subitems:
+            - "Normkonforme Nachbildung von Teilen des IT-Systems im deutschen Gesundheitswesen"
             - "Umsetzung als SpringBoot-Anwendung mit Fokus auf Standards"
             - "Spezifizierung von REST-Schnittstellen zur Integration des Telematik-Systems"
             - "Integration von FHIR-Ressourcen"
-            - "Erweiterung des Systems um normübergreifende Funktionen und Services"
+            - "Erarbeitung eigener Umsetzungen über die bestehenden Spezifikationen hinaus und Abstimmung der Vorschläge mit der **gematik**"
             - "Integration im Produktivumfeld mit spezialisierter Hardware"
         # [BACKEND]
 
-        # TODO verrauschte bzw. qualititiv schlechte Bilder 
         - text: "Entwicklung eines KI-gestützten Systems zur automatisierten Erkennung und Verarbeitung verschiedener Belegtypen"
           subitems:
             - "Entwicklung und Optimierung der Lösung in Python mit spezialisierten <strong>Computer-Vision</strong>- und Deep-Learning-Algorithmen"
+            - "Robuste Verarbeitung schwieriger Vorlagen: Belege und Trainingsdaten mit Auflösungen unter 100 dpi, eingerissen oder verschmutzt"
             - "Entwicklung von Algorithmen zur präzisen Textlokalisation und -segmentierung im Dokumentlayout mit OpenCV"
-            # - "Implementierung von OCR Algorithmen zur Optimierung der Texterkennung mit OpenCV"
+            - "Entwicklung eigener Ansätze auf Basis von Deep Learning, die die Texterkennung (OCR) auf diesen Vorlagen deutlich verbesserten"
+            - "Qualitätsverbesserung der Vorlagen mit Computer-Vision-Techniken als Grundlage der Texterkennung"
             - "KI-basierte Klassifizierung von unterschiedlichen Belegtypen mit einer Genauigkeit von 98 %"
             - "Rotationserkennung und -korrektur mittels Deep Learning"
-            - "Optimierung der Texterkennung durch Qualitätsverbesserung der Daten mit Computer-Vision-Techniken"
             - "Integration und Erprobung der Lösung mit einer Erkennungsgenauigkeit von 92 % im produktiven Betrieb"
 
         # [FORSCHUNG]
