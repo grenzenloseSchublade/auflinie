@@ -49,12 +49,12 @@
       # [BACKEND] -> System zur automatisierten Dokumentationsarbeit in Gesundheitsfachberufen
         - text: "Entwicklung eines Systems zur automatisierten Datenaufnahme und -verarbeitung in Gesundheitsfachberufen"
           subitems:
-            - "Integration von Spracherkennung mittels Encoder-Decoder-Modell mit Attention-Mechanismen"
+            - "Anbindung einer Open-Source-Spracherkennung auf Basis eines Encoder-Decoder-Modells mit Attention-Mechanismen"
             - "Semantische Analyse und Strukturierung mit LLMs in branchenspezifische Datenformate"
             - "Konzeption und Implementierung von **FastAPI**-Schnittstellen zur systemübergreifenden Integration"
             - "Entwicklung und Implementierung eines Datenbanksystems zur Speicherung von Anwendungsdaten zu Optimierungszwecken"
             - "Erstellung einer Buildpipeline für die kontinuierliche und automatische Erstellung und Bereitstellung von Docker-Images"
-            - "Deployment als produktive Anwendung in der Alpha-Version: Praktische Erprobung zur Reduktion des Zeitaufwandes von Dokumentationsarbeiten"
+            - "Deployment und Erprobung im Pilotbetrieb mit dem Ziel, den Zeitaufwand für Dokumentationsarbeiten zu senken"
         # [FRONTEND]
         - text: "Konzeption und Implementierung einer responsiven Web-Anwendung für branchenspezifische Dokumentationsarbeiten"
           subitems:
@@ -62,7 +62,7 @@
             - "Deployment einer plattformunabhängigen Vue.js-Anwendung"
             - "Integration der oben genannten Schnittstellen"
             - "Vollautomatisierter Ablauf mit Speech-to-Text und Überführung der Dokumentation in branchenspezifische Masken"
-            - "Skalierbare Umsetzung zur schnellen Adaption auf verschiedenste Dokumentationstypen"
+            - "Erweiterbar auf weitere Dokumentationstypen"
             - "Manuelle Korrektur der automatisch erstellten Dokumentation bleibt jederzeit möglich"
             - "Nutzung von **Keycloak** für die Verwaltung und Berechtigungen von Benutzern"
 
@@ -70,13 +70,13 @@
         - text: "Entwicklung eines Systems zur aufgabenbezogenen Bewertung und zum visuellen Vergleich von KI-Modellen"
           subitems:
             - "Erstellung einer grafischen Oberfläche mit Tkinter in Python"
-            - "Vielfältige Konfigurationsmöglichkeiten zur detaillierten Auswertung und Visualisierung von verschiedenen Metriken zur Laufzeit"
+            - "Konfigurierbare Auswertung und Visualisierung von Metriken zur Laufzeit"
             - "Visuelle Gegenüberstellung mehrerer Speech-to-Text-Modelle oder LLMs"
-            - "Skalierbare Umsetzung zur schnellen Adaption auf weitere Modelltypen, Daten oder Aufgaben"
+            - "Erweiterbar auf weitere Modelltypen, Daten oder Aufgaben"
             - "Entwicklung einer lokalen Pipeline zur adjustierbaren taskspezifischen Auswertung von LLMs"
             - "Umsetzung mittels Hugging Face und Integration von **DVC** für die Versionierung und Verwaltung von Daten"
-            - "Datenschutzkonforme Pseudonymisierung von Daten mit dem Framework **spaCy**"
-            - "Erstellung einer wissenschaftlichen Abhandlung zur theoretischen Einschätzung von Metriken für LLMs"
+            - "Pseudonymisierung personenbezogener Daten mit dem Framework **spaCy** aus Datenschutzgründen"
+            - "Interne Ausarbeitung zur theoretischen Einschätzung von Metriken für LLMs"
 
       # TODO Beschreibung prüfen und anpassen
       # [BACKEND / ZUSATZ] -> Normkonforme Nachbildung des IT-Systems des deutschen Gesundheitswesens mit Fokus auf Standards
@@ -92,8 +92,7 @@
         # TODO verrauschte bzw. qualititiv schlechte Bilder 
         - text: "Entwicklung eines KI-gestützten Systems zur automatisierten Erkennung und Verarbeitung verschiedener Belegtypen"
           subitems:
-            - "Entwicklung und Optimierung der Lösung mit Deep Learning in Python"
-            - "Integration spezialisierter <strong>Computer-Vision</strong>- und Deep-Learning-Algorithmen"
+            - "Entwicklung und Optimierung der Lösung in Python mit spezialisierten <strong>Computer-Vision</strong>- und Deep-Learning-Algorithmen"
             - "Entwicklung von Algorithmen zur präzisen Textlokalisation und -segmentierung im Dokumentlayout mit OpenCV"
             # - "Implementierung von OCR Algorithmen zur Optimierung der Texterkennung mit OpenCV"
             - "KI-basierte Klassifizierung von unterschiedlichen Belegtypen mit einer Genauigkeit von 98 %"
