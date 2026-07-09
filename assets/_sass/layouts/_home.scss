@@ -1,10 +1,11 @@
 // Styles für die Startseite
 
 // Positionierungs-Statement unter dem Hero
+// Spalte mittig, Zeilen linksbündig: mehrere Absätze zentriert zu setzen
+// zwingt das Auge, nach jedem Umbruch den Zeilenanfang zu suchen
 .home-intro {
   max-width: 46rem;
   margin: 0 auto $section-spacing;
-  text-align: center;
 
   p {
     margin: 0;
