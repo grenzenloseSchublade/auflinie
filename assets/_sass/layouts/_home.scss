@@ -1,8 +1,10 @@
 // Styles für die Startseite
 
 // Positionierungs-Statement unter dem Hero
-// Spalte mittig, Zeilen linksbündig: mehrere Absätze zentriert zu setzen
-// zwingt das Auge, nach jedem Umbruch den Zeilenanfang zu suchen
+// Spalte mittig, Zeilen im Blocksatz. Blocksatz ohne Silbentrennung
+// reißt Löcher in die Wortabstände, daher hyphens zwingend (lang="de-DE"
+// steht im html-Tag). Auf schmalen Viewports bleibt zu wenig Zeilenbreite,
+// um Trennung auszugleichen — dort linksbündig.
 .home-intro {
   max-width: 46rem;
   margin: 0 auto $section-spacing;
@@ -12,6 +14,12 @@
     color: $fg-muted;
     font-size: $fs-md; // 1.08→1.125 (R, Token-Skala)
     line-height: 1.7;
+    hyphens: auto;
+    text-align: justify;
+
+    @media (max-width: 480px) {
+      text-align: left;
+    }
 
     + p {
       margin-top: 1.2em;
