@@ -26,15 +26,15 @@ version: 1
 projects:
   - id: doku-system
     label: "Doku-System (Spracherkennung)"
-    skills: [python, tensorflow, fastapi, sql, rest, docker, ci-cd, devcontainer, tdd, git]
+    skills: [python, tensorflow, llms, fastapi, sql, rest, docker, ci-cd, devcontainer, tdd, git]
 
   - id: vue-webapp
     label: "Vue-Webanwendung"
-    skills: [vue, javascript, rest, scrum-kanban, git]
+    skills: [vue, javascript, rest, keycloak, scrum-kanban, git]
 
   - id: modellvergleich
     label: "Modellvergleichs-Tool"
-    skills: [python, numpy-scikit-learn, dvc, tdd, git]
+    skills: [python, llms, hugging-face, spacy, numpy-scikit-learn, dvc, tdd, git]
 
   - id: telematik
     label: "Telematik-System"
@@ -54,7 +54,7 @@ projects:
 
   - id: genai-beratung
     label: "GenAI-Beratung"
-    skills: [python, azure, rest, scrum-kanban]
+    skills: [python, llms, neo4j, azure, rest, scrum-kanban]
 
   - id: website
     label: "diese Website"

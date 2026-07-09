@@ -6,36 +6,44 @@
   content: >-
 
         Ingenieur mit Schwerpunkt **Machine Learning** — an der Ruhr-Universität Bochum habe ich **Elektro- und Informationstechnik** (M.Sc., *Eingebettete Systeme*) studiert.
-        Seit sechs Jahren entwickle ich KI-Softwarelösungen von der ersten Idee bis in die Produktivumgebung: Prototypen bauen, Anforderungen mit Stakeholdern schärfen, Modelle entwickeln und optimieren, deployen.
+        Seit nunmehr vielen Jahren entwickle ich KI-Software von der ersten Idee bis in den produktiven Betrieb: das Problem mit den Menschen klären, die es haben, Prototypen bauen, Modelle entwickeln und optimieren, deployen.
         <br> <br>
-        Gearbeitet habe ich dabei in Forschung wie Industrie und in Teams unterschiedlicher Größe; über die Jahre ist so das komplette **Full-Stack**-Handwerk dazugekommen — Frontend, Backend, DevOps und MLOps.
-        Was mich am meisten reizt: komplexe theoretische Probleme in Lösungen zu übersetzen, die im Alltag funktionieren.
+        Gearbeitet habe ich in Forschung wie Industrie, in Teams unterschiedlicher Größe; über die Jahre ist so das komplette **Full-Stack**-Handwerk dazugekommen — Frontend, Backend, DevOps und MLOps.
+        Zwischen dem, was ein Modell auf dem Testset kann, und dem, was es im Alltag leistet, liegt der Teil der Arbeit, der mich interessiert.
 
 
 - section: "Berufserfahrung"
   icon: "briefcase"
   experiences:
     # TODO Startmonat ergänzen, sobald bekannt (aktuell nur "2025")
-    # TODO Weitere Tätigkeits-Stichpunkte ergänzen — Details folgen vom Nutzer
     - position: "Technischer Berater — Data & Analytics"
       company: "Sopra Steria"
       location: "Hamburg, Deutschland"
       period: "2025 - Heute"
       description: >-
-        Technische Beratung und Entwicklung von End-to-End-Systemen im Bereich Künstliche Intelligenz
-        mit Schwerpunkt auf generativer KI (GenAI).
+        Technische Beratung im Umfeld Data & Analytics, aktuell mit Schwerpunkt auf generativer KI (GenAI):
+        Ziele und Problemstellungen gemeinsam mit dem Kunden schärfen, die Architektur festlegen
+        und die Systeme anschließend selbst konzipieren und umsetzen.
       expandable: true
       responsibilities:
-        - text: "Entwicklung von End-to-End-Systemen im Bereich KI (GenAI)"
+        - text: "Technische Beratung von der Problemstellung bis zur Architekturentscheidung"
+          subitems:
+            - "Schärfung von Zielen und Problemstellungen gemeinsam mit dem Kunden"
+            - "Architekturentscheidungen für End-to-End-Systeme im KI-Umfeld"
+        - text: "Selbstständige Konzeption und Umsetzung der Systeme — vom Prototyp bis in den produktiven Betrieb"
+        - text: "Aufbau und Evaluation von Graphdatenbanken mit **Neo4j**"
+          subitems:
+            - "Modellierung von Prozessen und komplexen Sachverhalten als Graph"
+            - "Aufbau der Graphen für unterschiedliche Anwendungsfälle"
+            - "Evaluation der Graphen und iterative Verbesserung entlang der Ergebnisse"
 
     - position: "Softwareingenieur"
       company: "opta data Innovationlab"
       location: "Bochum, Deutschland"
       period: "2020 - 2025"
-      description: >- 
-        Konzeption und Entwicklung von Softwarelösungen auf Basis von (eigenentwickelten) Deep Learning Modellen zur Automatisierung 
-        und Optimierung von kundenspezifischen Geschäftsprozessen unter Anwendung moderner Entwicklungspraktiken und -methoden 
-        sowie zukunftsweisender Frameworks und Technologien.
+      description: >-
+        Konzeption und Entwicklung von Softwarelösungen auf Basis eigenentwickelter Deep-Learning-Modelle,
+        die Geschäftsprozesse der Kunden automatisieren — von der Machbarkeitsstudie bis in den produktiven Betrieb.
       expandable: true # Standard ist true
 
 
@@ -48,77 +56,78 @@
 
       responsibilities:
       # [BACKEND] -> System zur automatisierten Dokumentationsarbeit in Gesundheitsfachberufen
-        - text: "Vollständige Entwicklung eines Systems zur automatisierten Datenaufnahme und -verarbeitung in Gesundheitsfachberufen"
+        - text: "Entwicklung eines Systems zur automatisierten Datenaufnahme und -verarbeitung in Gesundheitsfachberufen"
           subitems:
-            - "Integration von Spracherkennung mittels Encoder-Decoder Modell mit Attention Mechanismen"
+            - "Integration von Spracherkennung mittels Encoder-Decoder-Modell mit Attention-Mechanismen"
             - "Semantische Analyse und Strukturierung mit LLMs in branchenspezifische Datenformate"
-            - "Konzeption und Implementierung von API Schnittstellen mit **FastAPI** zur systemübergreifenden Integration"
+            - "Konzeption und Implementierung von **FastAPI**-Schnittstellen zur systemübergreifenden Integration"
             - "Entwicklung und Implementierung eines Datenbanksystems zur Speicherung von Anwendungsdaten zu Optimierungszwecken"
-            - "Erstellung einer Buildpipeline für die kontinuierliche und automatische Erstellung und Bereitstellung von Docker Images"
+            - "Erstellung einer Buildpipeline für die kontinuierliche und automatische Erstellung und Bereitstellung von Docker-Images"
             - "Deployment als produktive Anwendung in der Alpha-Version: Praktische Erprobung zur Reduktion des Zeitaufwandes von Dokumentationsarbeiten"
         # [FRONTEND]
-        - text: "Vollständige Konzeption und Implementierung einer responsiven Web Anwendung für branchenspezifische Dokumentationsarbeiten"
+        - text: "Konzeption und Implementierung einer responsiven Web-Anwendung für branchenspezifische Dokumentationsarbeiten"
           subitems:
             - "Entwicklung einer intuitiven Benutzeroberfläche zur automatisierten Erstellung von Dokumentationen"
-            - "Deployment einer plattformunabhängigen Vue.js Anwendung"
-            - "Integration oben benannter System API-Schnittstellen"
+            - "Deployment einer plattformunabhängigen Vue.js-Anwendung"
+            - "Integration der oben genannten Schnittstellen"
             - "Vollautomatisierter Ablauf mit Speech-to-Text und Überführung der Dokumentation in branchenspezifische Masken"
             - "Skalierbare Umsetzung zur schnellen Adaption auf verschiedenste Dokumentationstypen"
-            - "Beibehaltung der Möglichkeit der manuellen Korrektur der automatisch erstellten Dokumentation"
+            - "Manuelle Korrektur der automatisch erstellten Dokumentation bleibt jederzeit möglich"
             - "Nutzung von **Keycloak** für die Verwaltung und Berechtigungen von Benutzern"
 
         # [BACKEND / FRONTEND]
-        - text: "Vollständige Entwicklung eines Systems zur aufgabenbezogenen Bewertung und zum visuellen Vergleich von KI Modellen"
+        - text: "Entwicklung eines Systems zur aufgabenbezogenen Bewertung und zum visuellen Vergleich von KI-Modellen"
           subitems:
-            - "Erstellung einer grafischen Oberfläche mit tkInter in Python"
+            - "Erstellung einer grafischen Oberfläche mit Tkinter in Python"
             - "Vielfältige Konfigurationsmöglichkeiten zur detaillierten Auswertung und Visualisierung von verschiedenen Metriken zur Laufzeit"
-            - "Visuelle Gegenüberstellung von mehreren Speech-to-Text oder LLM Modellen"
+            - "Visuelle Gegenüberstellung mehrerer Speech-to-Text-Modelle oder LLMs"
             - "Skalierbare Umsetzung zur schnellen Adaption auf weitere Modelltypen, Daten oder Aufgaben"
-            - "Vollständige Entwicklung einer lokalen Pipeline zur adjustierbaren taskspezifischen Auswertung von LLM Modellen"
-            - "Umsetzung mittels Hugingface und Integration von **DVC** für die Versionierung und Verwaltung von Daten" 
+            - "Entwicklung einer lokalen Pipeline zur adjustierbaren taskspezifischen Auswertung von LLMs"
+            - "Umsetzung mittels Hugging Face und Integration von **DVC** für die Versionierung und Verwaltung von Daten"
             - "Datenschutzkonforme Pseudonymisierung von Daten mit dem Framework **spaCy**"
-            - "Erstellung einer wissenschaftlichen Abhandlung zur theoretischen Einschätzung von Metriken von LLM Modellen"
+            - "Erstellung einer wissenschaftlichen Abhandlung zur theoretischen Einschätzung von Metriken für LLMs"
 
       # TODO Beschreibung prüfen und anpassen
       # [BACKEND / ZUSATZ] -> Normkonforme Nachbildung des IT-Systems des deutschen Gesundheitswesens mit Fokus auf Standards
         - text: "Entwicklung eines normkonformen Systems zur Abbildung und Integration der Telematik-Infrastruktur" 
           subitems:
-            - "Umsetzung als SpringBoot Anwendung mit Fokus auf Standards"
-            - "Spezifizierung von REST Schnittstellen zur Integration des Telematik-Systems"
-            - "Integration von FHIR Ressourcen"
+            - "Umsetzung als SpringBoot-Anwendung mit Fokus auf Standards"
+            - "Spezifizierung von REST-Schnittstellen zur Integration des Telematik-Systems"
+            - "Integration von FHIR-Ressourcen"
             - "Erweiterung des Systems um normübergreifende Funktionen und Services"
             - "Integration im Produktivumfeld mit spezialisierter Hardware"
         # [BACKEND]
 
         # TODO verrauschte bzw. qualititiv schlechte Bilder 
-        - text: "Vollumfängliche Entwicklung eines KI gestützten Systems zur automatisierten Erkennung und Verarbeitung verschiedener Belegtypen"
+        - text: "Entwicklung eines KI-gestützten Systems zur automatisierten Erkennung und Verarbeitung verschiedener Belegtypen"
           subitems:
             - "Entwicklung und Optimierung der Lösung mit Deep Learning in Python"
-            - "Integration spezialisierter <strong>Computer Vision</strong> und Deep Learning Algorithmen"
+            - "Integration spezialisierter <strong>Computer-Vision</strong>- und Deep-Learning-Algorithmen"
             - "Entwicklung von Algorithmen zur präzisen Textlokalisation und -segmentierung im Dokumentlayout mit OpenCV"
             # - "Implementierung von OCR Algorithmen zur Optimierung der Texterkennung mit OpenCV"
-            - "KI basierte Klassifizierung von unterschiedlichen Belegtypen mit Genauigkeit von [98%]"
+            - "KI-basierte Klassifizierung von unterschiedlichen Belegtypen mit einer Genauigkeit von 98 %"
             - "Rotationserkennung und -korrektur mittels Deep Learning"
-            - "Optimierung der Texterkennung durch Qualitätsverbesserung der Daten mit Computer Vision Techniken"
-            - "Integration und Erprobung der Lösung mit einer Erkennungsgenauigkeit von [94%] im produktiven Betrieb"
+            - "Optimierung der Texterkennung durch Qualitätsverbesserung der Daten mit Computer-Vision-Techniken"
+            - "Integration und Erprobung der Lösung mit einer Erkennungsgenauigkeit von 92 % im produktiven Betrieb"
 
         # TODO Beschreibung prüfen und anpassen
         # [FORSCHUNG]
-        - text: "Entwicklung und Optimierung von **Deep Learning** Modellen im NLP Kontext"
+        - text: "Entwicklung und Optimierung von **Deep-Learning**-Modellen im NLP-Kontext"
           subitems:
-            - "Sprachsynythese durch dreistufiges Text-to-Speech TTS System (zu der Zeit nicht so weit verbreitet)"
-            - "Training mittels Remote Computing von unterschiedlichen Deep Learning Modellen"
-            - "Konfiguration der Hardware (GPUs) für das Training und die Optimierung von TensorFlow Modellarchitekturen"
-            - "Optimierungen im Bereich der Modell Architekturen für die Sprachsynthese"
+            # TODO Jahr ergänzen, sobald bekannt — macht den damaligen Stand der Technik ohne Kommentar deutlich
+            - "Sprachsynthese durch ein dreistufiges Text-to-Speech-System (TTS)"
+            - "Training unterschiedlicher Deep-Learning-Modelle mittels Remote Computing"
+            - "Konfiguration der Hardware (GPUs) für das Training und die Optimierung von TensorFlow-Modellarchitekturen"
+            - "Optimierungen im Bereich der Modellarchitekturen für die Sprachsynthese"
             - "Aufbereitung und Augmentation von Daten für das Training"
-            - "Aufbereitung von Sprachaufnahmen mit Deep Learning Ansätzen"
+            - "Aufbereitung von Sprachaufnahmen mit Deep-Learning-Ansätzen"
 
         # [DEV OPS]
         - text: "Etablierung moderner Entwicklungspraktiken und Automatisierungen"
           subitems:
             - "Erstellung und Verteilung von Entwicklungsumgebungen mittels **DevContainer** und GitHub Codespaces"
             - "Umsetzung von Test-Driven Development und Erstellung von **CI / CD Pipelines**"
-            - "Implementierung von Buildpipelines mit GitHub Actions für die automatische Bereitstellung von Docker Images"
+            - "Implementierung von Buildpipelines mit GitHub Actions für die automatische Bereitstellung von Docker-Images"
             - "Einführung von **DVC** für die übergreifende Versionierung und Verwaltung von Daten und das Tracking von Experimenten"
             
         # [SOZIAL]
@@ -132,7 +141,7 @@
       company: "opta data Institut e.V."
       location: "Essen, Deutschland"
       period: "2018 - 2020"
-      description: "Entwicklung von Algorithmen und Prototypen mit Computer Vision für die Prozessautomatisierung." #Deep Learning und 
+      description: "Entwicklung von Algorithmen und Prototypen mit Computer Vision für die Prozessautomatisierung."
       expandable: false
 
        # TODO Beschreibung prüfen und anpassen
@@ -140,18 +149,18 @@
         # [FRONTEND & BACKEND]
         - text: "Konzeption und gesamte Entwicklung einer mobilen Applikation zur Digitalisierung von Belegen im Unternehmenskontext"
           subitems:
-            - "Umsetzung als plattformübergreifende App mit Xamarin Framework in C#"
+            - "Umsetzung als plattformübergreifende App mit dem Xamarin-Framework in C#"
             - "Implementierung der Algorithmen in C / C++ mit OpenCV"
             - "Entwicklung einer intuitiven Benutzeroberfläche für die Dokumentenverarbeitung"
-            - "Entwicklung von Computer Vision Algorithmen zur robusten Erkennung von Dokumenten vor verauschten und kontrastarmen Hintergründen"
+            - "Entwicklung von Computer-Vision-Algorithmen zur robusten Erkennung von Dokumenten vor verrauschten und kontrastarmen Hintergründen"
             - "Automatische Erkennung und Extraktion der Region of Interest (ROI) und zusätzlich optionaler manueller Korrekturfunktion"
             - "Automatischer Ausgleich von perspektivischen Verzerrungen mittels Homographie"
             - "Optimierung des Kontrastes und der Bildqualität mittels Edge Detection" 
         # [FORSCHUNG]
-        - text: "Entwicklung von Protoypen als Machbarkeitsstudien zur Identifizierung potenzieller Anwendungsfälle"
+        - text: "Entwicklung von Prototypen als Machbarkeitsstudien zur Identifizierung potenzieller Anwendungsfälle"
           subitems:
             - "Durchführung detaillierter technischer Machbarkeitsanalysen zur Entscheidungsfindung"
-            - "Evaluierung und statistische Analysen grosser Datenmengen"
+            - "Evaluierung und statistische Analysen großer Datenmengen"
             - "Säuberung und Augmentation von Daten"
 
 
@@ -187,8 +196,11 @@
       skills:
         - "Python"
         - "TensorFlow"
+        - "LLMs"
+        - "Hugging Face"
         - "NumPy / Scikit-learn"
         - "OpenCV"
+        - "spaCy"
         - "DVC"
     - group: "Web & APIs"
       context: "End-to-End: Frontends, Schnittstellen und Integration in Produktivumgebungen"
@@ -199,6 +211,8 @@
         - "SpringBoot"
         - "REST"
         - "SQL"
+        - "Neo4j"
+        - "Keycloak"
     - group: "Cloud"
       context: "KI-Lösungen in der Cloud entwickeln, trainieren und betreiben"
       skills:
@@ -226,7 +240,7 @@
     - language: "Russisch"
       level: "Grundkenntnisse (A2) - lernend"
     - language: "Spanisch"
-      level: "(A0) - lernend"
+      level: "Anfänger - lernend"
 
 # - section: "Zertifikate & Auszeichnungen"
 #   icon: "award"
