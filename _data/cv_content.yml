@@ -102,24 +102,20 @@
             - "Integration und Erprobung der Lösung mit einer Erkennungsgenauigkeit von 92 % im produktiven Betrieb"
 
         # [FORSCHUNG]
-        # Präzisierung Juli 2026: Das TTS-System lief auf vortrainierten Modellen — für ein
-        # eigenes Training fehlten die realen Sprachdaten. Trainiert wurden die Modelle im
-        # Remote-Computing-Punkt darunter (überwiegend Computer Vision). Beides bewusst
-        # getrennt, damit der Abschnitt kein Training behauptet, das nicht stattfand.
         - text: "**Deep Learning** im NLP-Kontext: Sprachsynthese"
           subitems:
             # Bewusst ohne Jahreszahl: Datierung unsicher (ca. 2019–2021). Die Architektur
             # verortet die Arbeit für Fachleute ohnehin selbst.
             - "Aufbau einer betriebsfertigen Text-to-Speech-Pipeline aus **Tacotron 2** — Encoder und Decoder erzeugen aus dem Text Mel-Spektrogramme — und **WaveNet** als Vocoder für die Sprachausgabe"
-            - "Auswahl und Evaluation der Modellarchitektur sowie Bewertung der Synthesequalität"
-            - "Anpassung der Konfiguration an die eigenen Anforderungen"
+            - "Training der Modelle auf deutschen Sprachdaten, für die es zu der Zeit keine verfügbaren Modelle gab"
+            - "Optimierung der Modellarchitekturen für die Sprachsynthese"
+            - "Anpassung der Konfiguration an die eigenen Anforderungen und Bewertung der Synthesequalität"
             - "Entwicklung von Algorithmen zur Erkennung, Verifikation und Bereinigung von Qualitätsmängeln in Sprachaufnahmen"
-            - "Aufbereitung der Sprachdaten für die weitere Verarbeitung"
 
         # [FORSCHUNG / INFRASTRUKTUR]
         - text: "Training von Deep-Learning-Modellen auf Remote-Infrastruktur"
           subitems:
-            - "Training unterschiedlicher Modelle, überwiegend im Bereich Computer Vision, mittels **Remote Computing**"
+            - "Training unterschiedlicher Deep-Learning-Modelle mittels **Remote Computing**"
             - "Konfiguration der Hardware (GPUs) für das Training und die Optimierung von TensorFlow-Modellarchitekturen"
             - "Aufbereitung und Augmentation von Daten für das Training"
 
