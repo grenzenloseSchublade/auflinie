@@ -115,7 +115,7 @@
           subitems:
             # Bewusst ohne Jahreszahl: Datierung unsicher (ca. 2019–2021). Die Architektur
             # verortet die Arbeit für Fachleute ohnehin selbst.
-            - "Sprachsynthese durch ein dreistufiges Text-to-Speech-System (TTS)"
+            - "Sprachsynthese mit einem zweistufigen Text-to-Speech-System: **Tacotron 2** erzeugt aus dem Text Mel-Spektrogramme, **WaveNet** synthetisiert daraus die Sprachausgabe"
             - "Training unterschiedlicher Deep-Learning-Modelle mittels Remote Computing"
             - "Konfiguration der Hardware (GPUs) für das Training und die Optimierung von TensorFlow-Modellarchitekturen"
             - "Optimierungen im Bereich der Modellarchitekturen für die Sprachsynthese"
