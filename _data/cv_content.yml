@@ -45,14 +45,6 @@
         die Geschäftsprozesse der Kunden automatisieren — von der Machbarkeitsstudie bis in den produktiven Betrieb.
       expandable: true # Standard ist true
 
-
-    # TODO Generell die Beteiligung UND Mitwirkung der gesamten Prozesskette hervorheben
-
-    # TODO Beschreibung prüfen und anpassen -> Gerne technische Aspekte mkit reinbrignen
-    # TODO Tiefgehende Erfahrungen mit Remote Computing von modellen hervorheben
-    # TODO NLP Sachen beschreiben
-    # TODO DevOps / MLops Sachen benennen
-
       responsibilities:
       # [BACKEND] -> System zur automatisierten Dokumentationsarbeit in Gesundheitsfachberufen
         - text: "Entwicklung eines Systems zur automatisierten Datenaufnahme und -verarbeitung in Gesundheitsfachberufen"
@@ -109,18 +101,26 @@
             - "Optimierung der Texterkennung durch Qualitätsverbesserung der Daten mit Computer-Vision-Techniken"
             - "Integration und Erprobung der Lösung mit einer Erkennungsgenauigkeit von 92 % im produktiven Betrieb"
 
-        # TODO Beschreibung prüfen und anpassen
         # [FORSCHUNG]
-        - text: "Entwicklung und Optimierung von **Deep-Learning**-Modellen im NLP-Kontext"
+        # Präzisierung Juli 2026: Das TTS-System lief auf vortrainierten Modellen — für ein
+        # eigenes Training fehlten die realen Sprachdaten. Trainiert wurden die Modelle im
+        # Remote-Computing-Punkt darunter (überwiegend Computer Vision). Beides bewusst
+        # getrennt, damit der Abschnitt kein Training behauptet, das nicht stattfand.
+        - text: "**Deep Learning** im NLP-Kontext: Sprachsynthese"
           subitems:
             # Bewusst ohne Jahreszahl: Datierung unsicher (ca. 2019–2021). Die Architektur
             # verortet die Arbeit für Fachleute ohnehin selbst.
-            - "Sprachsynthese mit einem Text-to-Speech-System aus **Tacotron 2** — Encoder und Decoder erzeugen aus dem Text Mel-Spektrogramme — und **WaveNet** als Vocoder für die Sprachausgabe"
-            - "Training unterschiedlicher Deep-Learning-Modelle mittels Remote Computing"
-            - "Konfiguration der Hardware (GPUs) für das Training und die Optimierung von TensorFlow-Modellarchitekturen"
-            - "Optimierungen im Bereich der Modellarchitekturen für die Sprachsynthese"
-            - "Aufbereitung und Augmentation von Daten für das Training"
+            - "Aufbau einer betriebsfertigen Text-to-Speech-Pipeline aus **Tacotron 2** — Encoder und Decoder erzeugen aus dem Text Mel-Spektrogramme — und **WaveNet** als Vocoder für die Sprachausgabe"
+            - "Auswahl und Evaluation der Modellarchitektur sowie Bewertung der Synthesequalität"
+            - "Anpassung der Konfiguration an die eigenen Anforderungen"
             - "Aufbereitung von Sprachaufnahmen mit Deep-Learning-Ansätzen"
+
+        # [FORSCHUNG / INFRASTRUKTUR]
+        - text: "Training von Deep-Learning-Modellen auf Remote-Infrastruktur"
+          subitems:
+            - "Training unterschiedlicher Modelle, überwiegend im Bereich Computer Vision, mittels **Remote Computing**"
+            - "Konfiguration der Hardware (GPUs) für das Training und die Optimierung von TensorFlow-Modellarchitekturen"
+            - "Aufbereitung und Augmentation von Daten für das Training"
 
         # [DEV OPS]
         - text: "Etablierung moderner Entwicklungspraktiken und Automatisierungen"
