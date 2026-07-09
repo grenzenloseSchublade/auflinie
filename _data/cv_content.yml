@@ -106,11 +106,12 @@
           subitems:
             # Bewusst ohne Jahreszahl: Datierung unsicher (ca. 2019–2021). Die Architektur
             # verortet die Arbeit für Fachleute ohnehin selbst.
-            # Bewusst offen formuliert: ob das deutsche Modell von Grund auf oder als
-            # Nachtraining eines englischen Checkpoints entstand, ist nicht mehr sicher
-            # rekonstruierbar. "Training auf deutschen Sprachdaten" trifft beide Fälle.
+            # Transfer-Learning-Zeile auf ausdrücklichen Wunsch (Juli 2026), gestützt auf
+            # Erinnerung, nicht auf wiedergefundene Configs. Falls sich das Gegenteil
+            # herausstellt: Zeile streichen, "Training der Modelle" trägt allein.
             - "Aufbau einer betriebsfertigen Text-to-Speech-Pipeline aus **Tacotron 2** — Encoder und Decoder erzeugen aus dem Text Mel-Spektrogramme — und **WaveNet** als Vocoder für die Sprachausgabe"
             - "Training der Modelle auf deutschen Sprachdaten, für die es zu der Zeit keine verfügbaren Modelle gab"
+            - "Nachtraining eines englischen Modells auf deutschen Daten (**Transfer Learning**), um der Knappheit deutscher Sprachdaten zu begegnen"
             - "Erhebung eigener Sprachdaten, da die öffentlich verfügbaren Datensätze für das Training nicht ausreichten"
             - "Entwicklung von Algorithmen zur Erkennung, Verifikation und Bereinigung von Qualitätsmängeln in den erhobenen Sprachaufnahmen"
             - "Optimierung der Modellarchitekturen für die Sprachsynthese"
