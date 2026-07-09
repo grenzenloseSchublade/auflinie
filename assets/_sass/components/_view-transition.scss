@@ -39,6 +39,17 @@ $crt-variante: "antenne" !default;
 // dessen Sync-Fang-Zittern würde sich mit der Störung doppeln.
 $glitch-variante: "schwimmen" !default;
 
+// Tippfehler-Schutz: ein unbekannter Wert würde sonst still eine animation
+// auf nicht existierende Keyframes kompilieren — die neue Seite stünde ab
+// Transitionsbeginn statisch da, der Einschalt-Effekt fehlte kommentarlos.
+@if not index(("dezent" "linie-punkt" "voll" "antenne"), $crt-variante) {
+  @error "Unbekannte $crt-variante: '#{$crt-variante}' (erlaubt: dezent, linie-punkt, voll, antenne)";
+}
+
+@if not index(("aus" "dezent" "deutlich" "schwimmen"), $glitch-variante) {
+  @error "Unbekannte $glitch-variante: '#{$glitch-variante}' (erlaubt: aus, dezent, deutlich, schwimmen)";
+}
+
 // Drawer-Fall: Exit 200ms + 70ms Beat (NN/g: >40ms wahrnehmbar, <100ms
 // verschmilzt die Kette zu EINER Geste) — alle CRT-Starts verschieben sich
 $crt-drawer-offset: 270ms;
@@ -147,7 +158,18 @@ html.vt-capture body::before {
   }
 
   html:active-view-transition-type(crt)::view-transition-old(root) {
-    animation: crt-off-dezent $out-dur cubic-bezier(0.23, 1, 0.32, 1) both;
+    @if $glitch-variante == "aus" {
+      animation: crt-off-dezent $out-dur cubic-bezier(0.23, 1, 0.32, 1) both;
+    } @else {
+      // Die Einläufe reißen Löcher/Ränder in den New-Snapshot (clip-path/
+      // translateX bzw. Displacement) — die stehende überhelle Linie
+      // (fill both hält brightness(8)) würde durchblitzen. Zweite Animation
+      // blendet sie ab $on-delay aus, bevor die erste Störung sichtbar wird
+      // (opacity gewinnt als spätere Animation der Liste).
+      animation:
+        crt-off-dezent $out-dur cubic-bezier(0.23, 1, 0.32, 1) both,
+        vt-old-linie-aus 60ms linear $on-delay both;
+    }
   }
 
   html:active-view-transition-type(crt)::view-transition-new(root) {
@@ -168,7 +190,11 @@ html.vt-capture body::before {
   }
 
   html:active-view-transition-type(crt):active-view-transition-type(drawer)::view-transition-old(root) {
-    animation-delay: $crt-drawer-offset;
+    @if $glitch-variante == "aus" {
+      animation-delay: $crt-drawer-offset;
+    } @else {
+      animation-delay: $crt-drawer-offset, $on-delay + $crt-drawer-offset;
+    }
   }
 
   html:active-view-transition-type(crt):active-view-transition-type(drawer)::view-transition-new(root) {
@@ -204,6 +230,18 @@ html.vt-capture body::before {
 
     100% {
       background-color: #10141a;
+    }
+  }
+
+  @if $glitch-variante != "aus" {
+    @keyframes vt-old-linie-aus {
+      0% {
+        opacity: 0.9;
+      }
+
+      100% {
+        opacity: 0;
+      }
     }
   }
 }
@@ -531,7 +569,7 @@ html.vt-capture body::before {
 
 // Einschalt-Aufblühen mit Brightness-Overshoot (Bloom): Referenz lbebber /
 // Android ElectronBeam — das Bild überstrahlt kurz und beruhigt sich
-@if $glitch-variante == "aus" {
+@if $glitch-variante == "aus" and ($crt-variante == "dezent" or $crt-variante == "linie-punkt") {
   @keyframes crt-on-bloom {
     0% {
       transform: scaleY(0.004);
@@ -562,7 +600,7 @@ html.vt-capture body::before {
 // Interpolation ab dem impliziten 0%-Frame und der erste Riss erschiene
 // mitten in der Öffnung statt hart am Frame-Übergang.
 
-@if $glitch-variante == "dezent" {
+@if $glitch-variante == "dezent" and $crt-variante != "antenne" {
   // 2 Stöße, Amplituden 2.2% -> -1.6% -> 0.8%; Tear-Fenster ~120-346ms
   // nach Animationsstart, danach ruhiger Ausklang. Jeder Tear-Frame hält
   // ~50-60ms (3-4 Bildschirm-Frames): kürzere Haltezeiten (~30ms) lagen
@@ -642,7 +680,7 @@ html.vt-capture body::before {
   }
 }
 
-@if $glitch-variante == "deutlich" {
+@if $glitch-variante == "deutlich" and $crt-variante != "antenne" {
   // 3 Stöße, Amplituden 3.6% -> -2.8% -> 2.2% | -1.4% -> 1% | -0.5%, dazu
   // hue-rotate-Stöße als Chroma-Sync-Fehler (drop-shadow-RGB-Tricks greifen
   // auf opaken Snapshots nicht, und clip-path clippt das Filter-Ergebnis).
@@ -769,7 +807,7 @@ html.vt-capture body::before {
   }
 }
 
-@if $glitch-variante == "schwimmen" {
+@if $glitch-variante == "schwimmen" and $crt-variante != "antenne" {
   // Antennen-Störung als Einlauf (Kanal-Umschalt-Look): die neue Seite
   // blüht voll gestört auf (Zeilenwellen + Schnee, Defs: _includes/
   // vt-antenne-defs.html) und fängt sich in abklingenden Stufen — wie ein
@@ -777,11 +815,21 @@ html.vt-capture body::before {
   // zwischen STATISCHEN Filterstufen (Anti-CPU-Doktrin), Seed-Wechsel
   // 4/4b als Flackern. Kein clip-path (würde das Filter-Ergebnis clippen).
   @keyframes crt-on-schwimmen {
+    // filter-Listen mit url() sind NICHT interpolierbar (Filter Effects:
+    // diskret) — der Bloom 4 -> 1.4 wird deshalb über einen Zwischenframe
+    // GESTUFT abgebaut. transform steht bewusst nicht im 6%-Frame: sein
+    // Intervall bleibt 0% -> 13% und die Öffnung east weiter weich.
     0% {
       transform: scaleY(0.004);
       filter: url("#vtAntenne4") brightness(4);
       opacity: 1;
       animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    // 45ms: Bloom-Zwischenstufe
+    6% {
+      filter: url("#vtAntenne4") brightness(2.2);
+      animation-timing-function: step-end;
     }
 
     // 98ms: Bild offen, voll gestört
