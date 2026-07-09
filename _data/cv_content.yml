@@ -15,7 +15,6 @@
 - section: "Berufserfahrung"
   icon: "briefcase"
   experiences:
-    # TODO Startmonat ergänzen, sobald bekannt (aktuell nur "2025")
     - position: "Technischer Berater — Data & Analytics"
       company: "Sopra Steria"
       location: "Hamburg, Deutschland"
@@ -114,7 +113,8 @@
         # [FORSCHUNG]
         - text: "Entwicklung und Optimierung von **Deep-Learning**-Modellen im NLP-Kontext"
           subitems:
-            # TODO Jahr ergänzen, sobald bekannt — macht den damaligen Stand der Technik ohne Kommentar deutlich
+            # Bewusst ohne Jahreszahl: Datierung unsicher (ca. 2019–2021). Die Architektur
+            # verortet die Arbeit für Fachleute ohnehin selbst.
             - "Sprachsynthese durch ein dreistufiges Text-to-Speech-System (TTS)"
             - "Training unterschiedlicher Deep-Learning-Modelle mittels Remote Computing"
             - "Konfiguration der Hardware (GPUs) für das Training und die Optimierung von TensorFlow-Modellarchitekturen"
