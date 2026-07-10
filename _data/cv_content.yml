@@ -31,7 +31,7 @@
             - "Architekturentscheidungen für End-to-End-Systeme im KI-Umfeld"
             - "Schnitt und Verteilung von Arbeitspaketen im Projektteam"
         - text: "Selbstständige Konzeption und Umsetzung der Systeme — vom Prototyp bis in den produktiven Betrieb"
-        - text: "Eigenverantwortung für einzelne Use Cases"
+        - text: "Verantwortung für einzelne Use Cases"
           subitems:
             - "Migration eines Use Cases in ein übergeordnetes System"
             - "Fachliche Verantwortung für zwei daraus abgeleitete Use Cases"
