@@ -19,12 +19,12 @@ pagination:
 header:
   overlay_image: /assets/images/background.jpg
   overlay_filter: 0.5
-  caption: "Einblicke und Experimente"
+  caption: "Ohne festen Rhythmus"
 show_date: false
 read_time: false
 ---
 
-{{ "Beiträge zu Technik, Projekten und dem, was mich gerade beschäftigt. Ohne festen Rhythmus – dafür mit dem Anspruch, dass jeder Beitrag einen Mehrwert bietet." | markdownify }}
+{{ "Beiträge zu Technik, Projekten und dem, was mich gerade beschäftigt — dann, wenn es etwas zu sagen gibt." | markdownify }}
 
 {% include blog-notice.html %}
 

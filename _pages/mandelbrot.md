@@ -17,7 +17,7 @@ toc_collapse: true
 header:
   overlay_image: /assets/images/background.jpg
   overlay_filter: 0.5
-  caption: "Interaktive Erkundungen fraktaler Welten"
+  caption: "In Echtzeit gerechnet"
   actions:
     - label: "Interaktive Julia-Menge"
       url: "/mandelbrot/#julia-container"

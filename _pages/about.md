@@ -1,6 +1,6 @@
 ---
 title: "Über mich"
-excerpt: "Ingenieur, Entwickler, Entdecker — wer hinter den Projekten steckt."
+excerpt: "Der Körper ist das System, auf dem alles andere läuft — was neben Bildschirm und Schreibtisch stattfindet."
 permalink: /about/
 layout: single
 author_profile: true
@@ -8,7 +8,7 @@ toc: false
 header:
   overlay_image: /assets/images/background.jpg
   overlay_filter: 0.5
-  caption: "Der Mensch hinter den Projekten"
+  caption: "Abseits vom Schreibtisch"
 ---
 
 Ingenieur und Problemlöser — die technische Seite zeigt sich am besten in den Projekten selbst: in den [interaktiven Fraktalen]({{ site.baseurl }}/mandelbrot/) und in den Beiträgen des [Blogs]({{ site.baseurl }}/posts/). Was dabei trägt, ist die Verbindung von Theorie und Praxis: Für jedes Vorhaben eigne ich mir die Grundlagen Schritt für Schritt an und bleibe dran, bis das Ergebnis steht.

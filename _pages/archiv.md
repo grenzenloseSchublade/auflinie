@@ -7,7 +7,9 @@ author_profile: false
 header:
   overlay_image: /assets/images/background.jpg
   overlay_filter: 0.5
-  caption: "Alle Beiträge im Überblick"
+  # Zahl bewusst ohne: bei wenigen Beiträgen arbeitet sie gegen die Seite.
+  # Ab ca. 15–20 Beiträgen: caption: "%POST_COUNT% Beiträge seit 2025"
+  caption: "Seit 2025"
 show_date: false
 read_time: false
 ---

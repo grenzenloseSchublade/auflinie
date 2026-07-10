@@ -104,9 +104,14 @@
   <span class="page__hero-scroll-cue" aria-hidden="true"><i class="fas fa-chevron-down"></i></span>
   {% if page.header.caption %}
   {%- comment -%} Styling vollständig in _hero.scss — der frühere Inline-Style
-      hat mit max-width:90% jede Chip-Kompaktierung überstimmt {%- endcomment -%}
+      hat mit max-width:90% jede Chip-Kompaktierung überstimmt.
+      Die Caption ist eine Statuszeile: eine harte Tatsache, die sonst nirgends
+      auf der Seite steht — nie eine Paraphrase des Titels.
+      Platzhalter %POST_COUNT% wird durch die Anzahl der Beiträge ersetzt
+      (Front Matter selbst kennt kein Liquid). {%- endcomment -%}
+  {%- assign post_count = site.posts | size -%}
   <span class="caption">
-    {{ page.header.caption | markdownify | remove: "<p>" | remove: "</p>" }}
+    {{ page.header.caption | replace: "%POST_COUNT%", post_count | markdownify | remove: "<p>" | remove: "</p>" }}
   </span>
   {% endif %}
 </div>
