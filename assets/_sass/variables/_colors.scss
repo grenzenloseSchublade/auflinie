@@ -7,6 +7,15 @@ $white: #ffffff; // Einheitliches Weiß für alle Verwendungen
 // Primäre Farbpalette (Cyan, Magenta, Grün)
 $link-color: #05d9e8; // Cyan - Linkfarbe
 $link-color-subtle: rgb(5 217 232 / 40%); // Dezentes Cyan - für subtile Akzente (Trennlinien, Hamburger)
+// Aktiv-Zustände im TOC. Bewusst kräftiger als $link-color-subtle: 40% ergibt auf
+// dunklem Grund nur 2,63:1 Kontrast und fällt als TEXTfarbe durch WCAG AA (4,5:1).
+// Das subtle-Token bleibt daher den Flächen und Linien vorbehalten.
+// 60% ist die Untergrenze für den Text (4,52:1) — Nutzerwunsch Juli 2026, "sehr hell".
+// Darunter ist der aktive Eintrag schlechter lesbar als die inaktiven daneben.
+// Nicht ohne Kontrastrechnung senken. Text und Rail liegen bewusst auf demselben
+// Wert, bleiben aber getrennte Tokens: Fläche und Schrift dürfen später auseinander.
+$link-color-active: rgba($link-color, 0.6); // Aktiver TOC-Eintrag (Text) - 4,52:1
+$link-color-rail: rgba($link-color, 0.6); // Aktives Rail-Segment (Fläche) - 4,52:1
 $hover-color: #ff00ff; // Magenta - Hover-Effekt Farbe
 $hover-color-subtle: rgb(255 29 206 / 60%); // Dezentes Magenta - für subtile Akzente (Trennlinien, Hamburger)
 // Electric Pink rgba(255, 0, 153, 0.6)

@@ -89,7 +89,7 @@
 
     // Gleiche Aktiv-Sprache wie das Sidebar-TOC (dezentes Cyan) —
     // klares Weiß fiel aus dem Muster
-    color: rgba($link-color, 0.75);
+    color: $link-color-active;
     
     // Slide Animation Setup
     display: inline-block;
@@ -196,7 +196,7 @@
         border-radius: 3px;
         
         &:hover {
-            background: rgba($link-color, 0.6);
+            background: $link-color-rail;
         }
     }
 }
@@ -277,7 +277,7 @@
     // volles Cyan war zu krass)
     .active > a {
         background-color: transparent;
-        color: rgba($link-color, 0.75);
+        color: $link-color-active;
         font-weight: 700;
     }
 }
@@ -379,11 +379,11 @@
     // ==========================================================================
     // ACTIVE STATE - Scrollspy (Gumshoe setzt .active auf das <li>,
     // das JS zusätzlich aria-current auf das <a>)
-    // Zwei Kanäle: Text cyan + cyan Rail-Segment über der grauen Rail —
-    // kein Bold, kein Hintergrund, kein Layout-Jitter
+    // Drei Kanäle: Text cyan + Bold + cyan Rail-Segment über der grauen Rail —
+    // kein Hintergrund, kein Layout-Jitter
     // ==========================================================================
     li.active > a {
-        color: rgba($link-color, 0.75);
+        color: $link-color-active;
         font-weight: 700;
         position: relative;
 
@@ -394,7 +394,7 @@
             top: 0;
             bottom: 0;
             width: 2px;
-            background: rgba($link-color, 0.6);
+            background: $link-color-rail;
         }
     }
 }
@@ -563,7 +563,7 @@
         border-radius: 3px;
         
         &:hover {
-            background: rgba($link-color, 0.6);
+            background: $link-color-rail;
         }
     }
 }
