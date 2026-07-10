@@ -29,6 +29,7 @@
           subitems:
             - "Schärfung von Zielen und Problemstellungen gemeinsam mit dem Kunden"
             - "Architekturentscheidungen für End-to-End-Systeme im KI-Umfeld"
+            - "Schnitt und Verteilung von Arbeitspaketen im Projektteam"
         - text: "Selbstständige Konzeption und Umsetzung der Systeme — vom Prototyp bis in den produktiven Betrieb"
         - text: "Aufbau und Evaluation von Graphdatenbanken mit **Neo4j**"
           subitems:
@@ -137,6 +138,7 @@
             - "Selbstständige kontinuierliche Kommunikation mit Verantwortlichen für die Spezifizierung von Anforderungen"
             - "Ausführliche Dokumentation aller Prozesse"
             - "Kundenkommunikation zur Anpassung des Nutzungsumfangs und Nutzerbedarfs"
+            - "Fachliche Anleitung eines Werkstudenten"
 
     - position: "Innovationsingenieur"
       company: "opta data Institut e.V."
