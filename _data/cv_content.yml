@@ -31,6 +31,10 @@
             - "Architekturentscheidungen für End-to-End-Systeme im KI-Umfeld"
             - "Schnitt und Verteilung von Arbeitspaketen im Projektteam"
         - text: "Selbstständige Konzeption und Umsetzung der Systeme — vom Prototyp bis in den produktiven Betrieb"
+        - text: "Eigenverantwortung für einzelne Use Cases"
+          subitems:
+            - "Migration eines Use Cases in ein übergeordnetes System"
+            - "Fachliche Verantwortung für zwei daraus abgeleitete Use Cases"
         - text: "Aufbau und Evaluation von Graphdatenbanken mit **Neo4j**"
           subitems:
             - "Modellierung von Prozessen und komplexen Sachverhalten als Graph"
