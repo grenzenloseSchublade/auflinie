@@ -5,11 +5,11 @@
 
   content: >-
 
-        Ingenieur mit Schwerpunkt **Machine Learning** — an der Ruhr-Universität Bochum habe ich **Elektro- und Informationstechnik** (M.Sc., *Eingebettete Systeme*) studiert.
-        Seit nunmehr vielen Jahren entwickle ich KI-Software von der ersten Idee bis in den produktiven Betrieb: das Problem mit den Menschen klären, die es haben, Prototypen bauen, Modelle entwickeln und optimieren, deployen.
+        Ingenieur mit Schwerpunkt **Machine Learning**, ausgebildet in **Elektro- und Informationstechnik** an der Ruhr-Universität Bochum (M.Sc., *Eingebettete Systeme*).
+        Seit vielen Jahren baue ich KI-Software, von der ersten Idee bis in den laufenden Betrieb. Am Anfang steht dabei immer die gleiche Frage: Welches Problem haben die Menschen eigentlich, für die das Ganze gedacht ist? Ist das geklärt, entstehen Prototypen, werden Modelle entwickelt, verbessert und in Betrieb genommen.
         <br> <br>
-        Gearbeitet habe ich in Forschung wie Industrie, in Teams unterschiedlicher Größe. Über die Jahre ist so das komplette **Full-Stack**-Handwerk dazugekommen — Frontend, Backend, DevOps und MLOps.
-        Zwischen dem, was ein Modell auf dem Testset kann, und dem, was es im Alltag leistet, liegt der Teil der Arbeit, der mich interessiert.
+        Gearbeitet habe ich in Forschung und Industrie, in Teams jeder Größe. So ist nach und nach das ganze **Full-Stack**-Handwerk dazugekommen — Frontend, Backend, DevOps und MLOps.
+        Was mich am meisten reizt, ist der Abstand zwischen dem, was ein Modell im Test zeigt, und dem, was es im Alltag wirklich leistet.
 
 
 - section: "Berufserfahrung"
@@ -248,16 +248,3 @@
       level: "Grundkenntnisse (A2)"
     - language: "Spanisch"
       level: "Anfänger"
-
-# - section: "Zertifikate & Auszeichnungen"
-#   icon: "award"
-#   awards:
-#     - title: "Best Paper Award"
-#       organization: "International Conference on Visualization"
-#       date: "2019"
-#       description: "Auszeichnung für die Publikation 'Innovative Ansätze zur Visualisierung fraktaler Strukturen'"
-
-#     - title: "Certified Python Developer"
-#       organization: "Python Software Foundation"
-#       date: "2017"
-#       description: "Zertifizierung für fortgeschrittene Python-Entwicklung"

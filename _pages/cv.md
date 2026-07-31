@@ -12,7 +12,7 @@ toc_collapse: true
 header:
   overlay_image: /assets/images/background.jpg
   overlay_filter: 0.5
-  caption: "Stand: Juli 2026"
+  caption: "Stand: 2026"
 show_date: false
 read_time: false
 # Interaktives Skill-Feature (siehe _includes/cv/skills.html):
