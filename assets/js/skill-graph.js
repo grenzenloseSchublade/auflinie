@@ -55,6 +55,9 @@
     this.initialized = false;
     this.rafId = null;
     this.selected = null;
+    this.dragId = null;
+    this.dragMoved = false;
+    this.pointerStart = null;
     this.reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
     var signal = { signal: this.abort.signal };
@@ -83,23 +86,34 @@
     var data = dataTag && parseData(dataTag);
     if (!data) { return; }
 
-    // Knoten aus den DOM-Chips (deterministische Reihenfolge, kein Random)
+    var self = this;
+
+    // Nur verbundene Skills werden Knoten: erst die IDs sammeln, die in
+    // mindestens einem Projekt vorkommen. Basis-Skills (foundations) und
+    // projektlose Breite-Chips bleiben bewusst außen vor — sonst schweben
+    // sie kantenlos herum und überfüllen die Fläche.
+    var connected = new Set();
+    data.projects.forEach(function (project) {
+      if (project && Array.isArray(project.skills)) {
+        project.skills.forEach(function (id) { connected.add(id); });
+      }
+    });
+
+    // Knoten aus den DOM-Chips (deterministische Reihenfolge), gefiltert auf verbundene
     var buttons = document.querySelectorAll('.cv-skill-chip__button[data-skill]');
     var indexById = new Map();
-    this.nodes = Array.prototype.map.call(buttons, function (btn, i) {
+    this.nodes = [];
+    Array.prototype.forEach.call(buttons, function (btn) {
       var id = btn.getAttribute('data-skill');
-      indexById.set(id, i);
-      return {
-        id: id,
-        label: btn.textContent.trim()
-      };
+      if (!connected.has(id) || indexById.has(id)) { return; }
+      indexById.set(id, self.nodes.length);
+      self.nodes.push({ id: id, label: btn.textContent.trim() });
     });
 
     // Kanten: Skill-Paare mit gemeinsamen Projekten (Gewicht = Anzahl);
     // Nachbarschaft + Projektlisten fürs Kontext-Panel gleich mitsammeln
     var edgeMap = new Map();
     this.skillProjects = new Map();
-    var self = this;
     data.projects.forEach(function (project) {
       if (!project || !project.id || !project.label || !Array.isArray(project.skills)) { return; }
       var ids = project.skills.filter(function (id) {
@@ -165,7 +179,11 @@
     });
     this.observer.observe(this.wrap);
 
-    this.canvas.addEventListener('click', this.onCanvasClick.bind(this), { signal: this.abort.signal });
+    var canvasSignal = { signal: this.abort.signal };
+    this.canvas.addEventListener('pointerdown', this.onPointerDown.bind(this), canvasSignal);
+    this.canvas.addEventListener('pointermove', this.onPointerMove.bind(this), canvasSignal);
+    this.canvas.addEventListener('pointerup', this.onPointerUp.bind(this), canvasSignal);
+    this.canvas.addEventListener('pointercancel', this.onPointerUp.bind(this), canvasSignal);
     this.reduceMotion.addEventListener('change', this.startOrStill.bind(this), { signal: this.abort.signal });
     this.initialized = true;
   };
@@ -297,10 +315,20 @@
     void self;
   };
 
-  SkillGraph.prototype.onCanvasClick = function (event) {
+  SkillGraph.prototype.canvasPos = function (event) {
     var rect = this.canvas.getBoundingClientRect();
-    var x = event.clientX - rect.left;
-    var y = event.clientY - rect.top;
+    return { x: event.clientX - rect.left, y: event.clientY - rect.top };
+  };
+
+  SkillGraph.prototype.nodeById = function (id) {
+    for (var i = 0; i < this.nodes.length; i++) {
+      if (this.nodes[i].id === id) { return this.nodes[i]; }
+    }
+    return null;
+  };
+
+  // Treffer: nächster Knoten im HIT_RADIUS oder dessen Label (zentriert darüber)
+  SkillGraph.prototype.hitTest = function (x, y) {
     var ctx = this.ctx;
     var hit = null;
     var best = HIT_RADIUS * HIT_RADIUS;
@@ -310,7 +338,7 @@
       var d = dx * dx + dy * dy;
       if (d <= best) { best = d; hit = node.id; }
 
-      // Auch das Label ist Klickfläche (Text sitzt zentriert über dem Knoten)
+      // Auch das Label ist Trefferfläche (Text sitzt zentriert über dem Knoten)
       if (hit !== node.id && ctx) {
         var w = ctx.measureText(node.label).width;
         var labelBottom = node.y - NODE_RADIUS - 5;
@@ -321,8 +349,58 @@
         }
       }
     });
-    this.setSelection(hit === this.selected ? null : hit);
-    this.dispatch();
+    return hit;
+  };
+
+  SkillGraph.prototype.onPointerDown = function (event) {
+    if (!this.sim || this.panel.hidden) { return; }
+    var pos = this.canvasPos(event);
+    this.pointerStart = pos;
+    this.dragId = this.hitTest(pos.x, pos.y);
+    this.dragMoved = false;
+    if (this.dragId !== null) {
+      try { this.canvas.setPointerCapture(event.pointerId); } catch (e) { /* noop */ }
+    }
+  };
+
+  SkillGraph.prototype.onPointerMove = function (event) {
+    if (this.dragId === null || !this.pointerStart) { return; }
+    var pos = this.canvasPos(event);
+    if (!this.dragMoved) {
+      var dx = pos.x - this.pointerStart.x;
+      var dy = pos.y - this.pointerStart.y;
+      if (dx * dx + dy * dy < 25) { return; } // 5px-Schwelle: darunter bleibt es ein Klick
+      this.dragMoved = true;
+    }
+    if (event.cancelable) { event.preventDefault(); }
+    var node = this.nodeById(this.dragId);
+    if (!node) { return; }
+    // An den Cursor pinnen: die Sim hält fx/fy fest (siehe skill-graph-sim.js)
+    node.fx = pos.x;
+    node.fy = pos.y;
+    if (this.reduceMotion.matches) {
+      node.x = pos.x; node.y = pos.y; node.vx = 0; node.vy = 0;
+      this.render();
+    } else {
+      this.sim.alpha = Math.max(this.sim.alpha, 0.35);
+      this.startOrStill();
+    }
+  };
+
+  SkillGraph.prototype.onPointerUp = function (event) {
+    if (this.dragId === null) { this.pointerStart = null; return; }
+    if (!this.dragMoved) {
+      // Kein echtes Ziehen → als Klick behandeln (Auswahl togglen)
+      var hit = this.dragId;
+      this.setSelection(hit === this.selected ? null : hit);
+      this.dispatch();
+    }
+    // War es ein Drag: fx/fy bleiben gesetzt → der Knoten bleibt liegen
+    // (manuelles Entwirren; die übrigen Knoten haben sich darum entspannt).
+    try { this.canvas.releasePointerCapture(event.pointerId); } catch (e) { /* noop */ }
+    this.dragId = null;
+    this.dragMoved = false;
+    this.pointerStart = null;
   };
 
   SkillGraph.prototype.setSelection = function (skillId) {

@@ -44,14 +44,18 @@
 }
 
 .skill-graph__canvas-wrap {
-  height: clamp(300px, 45vh, 460px);
+  // Etwas mehr Fläche fürs Graph-Panel (mehr Luft für die Knoten)
+  height: clamp(360px, 55vh, 560px);
 
   canvas {
     display: block;
     width: 100%;
     height: 100%;
 
-    // Seite bleibt über dem Canvas scrollbar (Touch)
+    // Seite bleibt über dem Canvas vertikal scrollbar (Touch); waagerechtes
+    // Ziehen von Knoten wird als Pointer-Geste geliefert. Für volles Ziehen
+    // auf Touch (auch senkrecht) müsste hier "none" stehen — Trade-off: dann
+    // scrollt die Seite nicht mehr über dem Canvas.
     touch-action: pan-y;
   }
 }

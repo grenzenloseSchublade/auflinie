@@ -100,6 +100,15 @@
     var maxStep = 0.1 * this.width * this.alpha;
     for (i = 0; i < nodes.length; i++) {
       var node = nodes[i];
+      // Per Drag fixierte Knoten (fx/fy) bleiben liegen — sie wirken über
+      // Repulsion/Federn weiter auf andere, bewegen sich aber selbst nicht.
+      if (node.fx != null && node.fy != null) {
+        node.x = node.fx;
+        node.y = node.fy;
+        node.vx = 0;
+        node.vy = 0;
+        continue;
+      }
       node.vx += (cx - node.x) * opts.gravity * this.alpha;
       node.vy += (cy - node.y) * opts.gravity * this.alpha;
       node.vx *= opts.velocityDecay;
