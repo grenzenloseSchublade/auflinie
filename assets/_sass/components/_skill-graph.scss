@@ -34,13 +34,52 @@
   }
 }
 
+// Kopfzeile des Panels: Hinweis links, Reset-Button rechts
+.skill-graph__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.8rem;
+  margin: 0 0 0.7rem;
+}
+
 // p-qualifiziert (0,2,1): die Theme-Regel .page__content p (1em) und die
 // CV-Absatz-Regel machten font-size/line-height/margin sonst wirkungslos
 .skill-graph p.skill-graph__note {
   font-size: $fs-ui;
   line-height: 1.5;
   color: $fg-subtle;
-  margin: 0 0 0.7rem;
+  margin: 0;
+  flex: 1;
+}
+
+// Layout zurücksetzen: dezenter Mono-Button, rechts neben dem Hinweis
+.skill-graph__reset {
+  @include mono-label($fs-label, 0.06em);
+
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: transparent;
+  border: 1px solid $console-panel-border;
+  border-radius: 6px;
+  color: $fg-subtle;
+  padding: 0.28rem 0.6rem;
+  cursor: pointer;
+  transition: border-color 0.2s ease, color 0.2s ease;
+
+  @media (hover: hover) {
+    &:hover {
+      border-color: $link-color-subtle;
+      color: rgb(255 255 255 / 80%);
+    }
+  }
+
+  &:focus-visible {
+    outline: 2px solid $hover-color;
+    outline-offset: 2px;
+  }
 }
 
 .skill-graph__canvas-wrap {

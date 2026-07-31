@@ -12,7 +12,12 @@
     <span class="wip-badge">In Entwicklung</span>
   </div>
   <div class="skill-graph__panel" data-role="graph-panel" hidden>
-    <p class="skill-graph__note">Experimentelle Ansicht — die Liste oben ist vollständig und maßgeblich. Ein Klick auf einen Knoten hebt verbundene Skills hervor.</p>
+    <div class="skill-graph__head">
+      <p class="skill-graph__note">Experimentelle Ansicht — die Liste oben ist vollständig und maßgeblich. Ein Klick hebt verbundene Skills hervor, Knoten lassen sich ziehen.</p>
+      <button type="button" class="skill-graph__reset" data-role="graph-reset">
+        <i class="fas fa-undo" aria-hidden="true"></i> Zurücksetzen
+      </button>
+    </div>
     <div class="skill-graph__canvas-wrap" data-role="canvas-wrap">
       <canvas data-role="canvas" role="img"
               aria-label="Netzdiagramm der Skills, verbunden über gemeinsame Projekte. Die vollständigen Informationen stehen in der Liste darüber."></canvas>

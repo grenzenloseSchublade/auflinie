@@ -49,6 +49,7 @@
     this.canvas = root.querySelector('[data-role="canvas"]');
     this.wrap = root.querySelector('[data-role="canvas-wrap"]');
     this.contextLine = root.querySelector('[data-role="graph-context"]');
+    this.resetBtn = root.querySelector('[data-role="graph-reset"]');
     if (!this.toggle || !this.panel || !this.canvas || !this.wrap) { return; }
 
     this.abort = new AbortController();
@@ -184,6 +185,9 @@
     this.canvas.addEventListener('pointermove', this.onPointerMove.bind(this), canvasSignal);
     this.canvas.addEventListener('pointerup', this.onPointerUp.bind(this), canvasSignal);
     this.canvas.addEventListener('pointercancel', this.onPointerUp.bind(this), canvasSignal);
+    if (this.resetBtn) {
+      this.resetBtn.addEventListener('click', this.reset.bind(this), canvasSignal);
+    }
     this.reduceMotion.addEventListener('change', this.startOrStill.bind(this), { signal: this.abort.signal });
     this.initialized = true;
   };
@@ -210,6 +214,31 @@
     } else {
       this.render();
     }
+  };
+
+  // Layout zurücksetzen: Fixierungen lösen, Knoten auf die deterministische
+  // Kreis-Startlage zurücksetzen, Sim neu aufheizen.
+  SkillGraph.prototype.reset = function () {
+    if (!this.sim) { return; }
+    var w = this.sim.width;
+    var h = this.sim.height;
+    var radius = Math.min(w, h) * 0.36;
+    var count = this.nodes.length || 1;
+    this.nodes.forEach(function (node, i) {
+      node.fx = null;
+      node.fy = null;
+      node.vx = 0;
+      node.vy = 0;
+      var angle = (i / count) * Math.PI * 2 - Math.PI / 2;
+      node.x = w / 2 + Math.cos(angle) * radius;
+      node.y = h / 2 + Math.sin(angle) * radius;
+    });
+    this.sim.alpha = 1;
+    if (this.selected !== null) {
+      this.setSelection(null);
+      this.dispatch();
+    }
+    this.startOrStill();
   };
 
   SkillGraph.prototype.loop = function () {
@@ -253,7 +282,13 @@
     var nodes = this.nodes;
     var selected = this.selected;
     var neighbors = selected !== null ? (this.neighbors.get(selected) || new Set()) : null;
-    ctx.clearRect(0, 0, this.sim.width, this.sim.height);
+
+    // Vollflächig löschen unabhängig von der DPR-Rundung — sonst bleibt am
+    // rechten/unteren Rand eine Subpixel-Spalte mit Geister-Pixeln stehen.
+    ctx.save();
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    ctx.restore();
 
     // Kanten: Deckkraft nach Gewicht; bei Auswahl nur die Nachbarschaft betonen
     var self = this;
