@@ -1,6 +1,6 @@
 ---
 title: "Über mich"
-excerpt: "Arbeit nimmt viel Zeit ein, aber sie macht nicht den ganzen Menschen aus. Einige weitere Aspekte, die mich neben der Arbeit begeistern und beschäftigen."
+excerpt: "Arbeit nimmt viel Zeit ein, aber nicht den ganzen Menschen."
 permalink: /about/
 layout: single
 author_profile: true
@@ -19,7 +19,7 @@ Auf dieser Seite geht es aber vor allem um das, was daneben passiert: ums Drauß
   <p class="about-motto">anima sana in corpore sano</p>
 </div>
 
-## Gesundes Leben
+## Achtsamkeit und Alltag
 
 {% include section-epigraph.html text="Man sollte alles so einfach wie möglich machen, aber nicht einfacher." author="Albert Einstein" %}
 
