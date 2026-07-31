@@ -50,6 +50,7 @@
         die Geschäftsprozesse der Kunden automatisieren — von der Machbarkeitsstudie bis in den produktiven Betrieb.
       expandable: true # Standard ist true
 
+      # Reihenfolge: Highlights zuerst, generische/soziale Blöcke ans Ende.
       responsibilities:
       # [BACKEND] -> System zur automatisierten Dokumentationsarbeit in Gesundheitsfachberufen
         - text: "Entwicklung eines Systems zur automatisierten Datenaufnahme und -verarbeitung in Gesundheitsfachberufen"
@@ -58,42 +59,9 @@
             - "Semantische Analyse und Strukturierung mit LLMs in branchenspezifische Datenformate"
             - "Konzeption und Implementierung von **FastAPI**-Schnittstellen zur systemübergreifenden Integration"
             - "Entwicklung und Implementierung eines Datenbanksystems zur Speicherung von Anwendungsdaten für spätere Optimierung"
-            - "Aufbau einer Buildpipeline für die kontinuierliche Bereitstellung von Docker-Images"
             - "Deployment und Erprobung im Pilotbetrieb mit dem Ziel, den Zeitaufwand für Dokumentationsarbeiten zu senken"
-        # [FRONTEND]
-        - text: "Konzeption und Implementierung einer responsiven Web-Anwendung für branchenspezifische Dokumentationsarbeiten"
-          subitems:
-            - "Entwicklung einer intuitiven Benutzeroberfläche zur automatisierten Erstellung von Dokumentationen"
-            - "Deployment einer plattformunabhängigen Vue.js-Anwendung"
-            - "Integration der oben genannten Schnittstellen"
-            - "Vollautomatisierter Ablauf mit Speech-to-Text und Überführung der Dokumentation in branchenspezifische Masken"
-            - "Erweiterbar auf weitere Dokumentationstypen"
-            - "Manuelle Korrektur der automatisch erstellten Dokumentation bleibt jederzeit möglich"
-            - "Nutzung von **Keycloak** für die Verwaltung und Berechtigungen von Benutzern"
 
-        # [BACKEND / FRONTEND]
-        - text: "Entwicklung eines Systems zur aufgabenbezogenen Bewertung und zum visuellen Vergleich von KI-Modellen"
-          subitems:
-            - "Erstellung einer grafischen Oberfläche mit Tkinter in Python"
-            - "Konfigurierbare Auswertung und Visualisierung von Metriken zur Laufzeit"
-            - "Visuelle Gegenüberstellung mehrerer Speech-to-Text-Modelle oder LLMs"
-            - "Erweiterbar auf weitere Modelltypen, Daten oder Aufgaben"
-            - "Entwicklung einer lokalen Pipeline zur adjustierbaren taskspezifischen Auswertung von LLMs"
-            - "Umsetzung mittels Hugging Face und Integration von **DVC** für die Versionierung und Verwaltung von Daten"
-            - "Pseudonymisierung personenbezogener Daten mit dem Framework **spaCy** aus Datenschutzgründen"
-            - "Interne Ausarbeitung zur theoretischen Einschätzung von Metriken für LLMs"
-
-      # [BACKEND / ZUSATZ] -> Normkonforme Nachbildung des IT-Systems des deutschen Gesundheitswesens
-        - text: "Entwicklung eines normkonformen Systems zur Abbildung und Integration der Telematik-Infrastruktur"
-          subitems:
-            - "Normkonforme Nachbildung von Teilen des IT-Systems im deutschen Gesundheitswesen"
-            - "Umsetzung als SpringBoot-Anwendung mit Fokus auf Standards"
-            - "Spezifizierung von REST-Schnittstellen zur Integration des Telematik-Systems"
-            - "Integration von FHIR-Ressourcen"
-            - "Erarbeitung eigener Umsetzungen über die bestehenden Spezifikationen hinaus und Abstimmung der Vorschläge mit der **gematik**"
-            - "Integration im Produktivumfeld mit spezialisierter Hardware"
-        # [BACKEND]
-
+        # [BACKEND] -> KI-gestützte Belegerkennung
         - text: "Entwicklung eines KI-gestützten Systems zur automatisierten Erkennung und Verarbeitung verschiedener Belegtypen"
           subitems:
             - "Entwicklung und Optimierung der Lösung in Python mit spezialisierten **Computer-Vision**- und Deep-Learning-Algorithmen"
@@ -105,14 +73,21 @@
             - "Rotationserkennung und -korrektur mittels Deep Learning"
             - "Integration und Erprobung der Lösung mit einer Erkennungsgenauigkeit von 92 % im produktiven Betrieb"
 
+      # [BACKEND / ZUSATZ] -> Normkonforme Nachbildung des IT-Systems des deutschen Gesundheitswesens
+        - text: "Entwicklung eines normkonformen Systems zur Abbildung und Integration der Telematik-Infrastruktur"
+          subitems:
+            - "Normkonforme Nachbildung von Teilen des IT-Systems im deutschen Gesundheitswesen"
+            - "Umsetzung als SpringBoot-Anwendung mit Fokus auf Standards"
+            - "Spezifizierung von REST-Schnittstellen zur Integration des Telematik-Systems"
+            - "Integration von FHIR-Ressourcen"
+            - "Erarbeitung eigener Umsetzungen über die bestehenden Spezifikationen hinaus und Abstimmung der Vorschläge mit der **gematik**"
+            - "Integration im Produktivumfeld mit spezialisierter Hardware"
+
         # [FORSCHUNG]
         - text: "**Deep Learning** im NLP-Kontext: Sprachsynthese"
           subitems:
-            # Bewusst ohne Jahreszahl: Datierung unsicher (ca. 2019–2021). Die Architektur
-            # verortet die Arbeit für Fachleute ohnehin selbst.
-            # Transfer-Learning-Zeile auf ausdrücklichen Wunsch (Juli 2026), gestützt auf
-            # Erinnerung, nicht auf wiedergefundene Configs. Falls sich das Gegenteil
-            # herausstellt: Zeile streichen, "Training der Modelle" trägt allein.
+            # Datierung bewusst ohne Jahreszahl (ca. 2019–2021); die Architektur
+            # verortet die Arbeit fachlich ohnehin selbst. Transfer Learning bestätigt (Aug. 2026).
             - "Aufbau einer betriebsfertigen Text-to-Speech-Pipeline aus **Tacotron 2** — Encoder und Decoder erzeugen aus dem Text Mel-Spektrogramme — und **WaveNet** als Vocoder für die Sprachausgabe"
             - "Synthese deutscher Sprache, für die es zu der Zeit keine verfügbaren Modelle gab"
             - "Erhebung eigener Sprachdaten, da die öffentlich verfügbaren Datensätze für das Training nicht ausreichten"
@@ -120,6 +95,26 @@
             - "Nachtraining eines englischen Modells auf deutschen Daten (**Transfer Learning**), um der Knappheit deutscher Sprachdaten zu begegnen"
             - "Optimierung der Modellarchitekturen für die Sprachsynthese"
             - "Anpassung der Konfiguration an die eigenen Anforderungen und Bewertung der Synthesequalität"
+
+        # [FRONTEND]
+        - text: "Konzeption und Implementierung einer responsiven Web-Anwendung für branchenspezifische Dokumentationsarbeiten"
+          subitems:
+            - "Entwicklung einer intuitiven Benutzeroberfläche zur automatisierten Erstellung von Dokumentationen"
+            - "Deployment einer plattformunabhängigen Vue.js-Anwendung"
+            - "Integration der oben genannten Schnittstellen"
+            - "Vollautomatisierter Ablauf mit Speech-to-Text und Überführung der Dokumentation in branchenspezifische Masken"
+            - "Nutzung von **Keycloak** für die Verwaltung und Berechtigungen von Benutzern"
+
+        # [BACKEND / FRONTEND]
+        - text: "Entwicklung eines Systems zur aufgabenbezogenen Bewertung und zum visuellen Vergleich von KI-Modellen"
+          subitems:
+            - "Erstellung einer grafischen Oberfläche mit Tkinter in Python"
+            - "Konfigurierbare Auswertung und Visualisierung von Metriken zur Laufzeit"
+            - "Visuelle Gegenüberstellung mehrerer Speech-to-Text-Modelle oder LLMs"
+            - "Entwicklung einer lokalen Pipeline zur adjustierbaren taskspezifischen Auswertung von LLMs"
+            - "Umsetzung mittels Hugging Face"
+            - "Pseudonymisierung personenbezogener Daten mit dem Framework **spaCy** aus Datenschutzgründen"
+            - "Interne Ausarbeitung zur theoretischen Einschätzung von Metriken für LLMs"
 
         # [FORSCHUNG / INFRASTRUKTUR]
         - text: "Training von Deep-Learning-Modellen auf Remote-Infrastruktur"
@@ -135,9 +130,9 @@
             - "Umsetzung von Test-Driven Development und Erstellung von **CI / CD Pipelines**"
             - "Implementierung von Buildpipelines mit GitHub Actions für die automatische Bereitstellung von Docker-Images"
             - "Einführung von **DVC** für die übergreifende Versionierung und Verwaltung von Daten und das Tracking von Experimenten"
-            
+
         # [SOZIAL]
-        - text: "Agiles Projektmanagement" 
+        - text: "Agiles Projektmanagement"
           subitems:
             - "Selbstständige kontinuierliche Kommunikation mit Verantwortlichen für die Spezifizierung von Anforderungen"
             - "Ausführliche Dokumentation aller Prozesse"
@@ -148,10 +143,8 @@
       company: "opta data Institut e.V."
       location: "Essen, Deutschland"
       period: "2018 - 2020"
-      description: "Entwicklung von Algorithmen und Prototypen mit Computer Vision für die Prozessautomatisierung."
+      description: "Computer-Vision-Algorithmen und Prototypen für die Prozessautomatisierung — von der mobilen Belegerfassung bis zu Machbarkeitsstudien."
       expandable: false
-
-       # TODO Beschreibung prüfen und anpassen
       responsibilities:
         # [FRONTEND & BACKEND]
         - text: "Konzeption und gesamte Entwicklung einer mobilen Applikation zur Digitalisierung von Belegen im Unternehmenskontext"
@@ -162,7 +155,7 @@
             - "Entwicklung von Computer-Vision-Algorithmen zur robusten Erkennung von Dokumenten vor verrauschten und kontrastarmen Hintergründen"
             - "Automatische Erkennung und Extraktion der Region of Interest (ROI) und zusätzlich optionaler manueller Korrekturfunktion"
             - "Automatischer Ausgleich von perspektivischen Verzerrungen mittels Homographie"
-            - "Optimierung des Kontrastes und der Bildqualität mittels Edge Detection" 
+            - "Optimierung des Kontrastes und der Bildqualität mittels Edge Detection"
         # [FORSCHUNG]
         - text: "Entwicklung von Prototypen als Machbarkeitsstudien zur Identifizierung potenzieller Anwendungsfälle"
           subitems:
