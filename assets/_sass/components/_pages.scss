@@ -25,6 +25,12 @@
 }
 
 // Blog/Archiv Filter- und Suchbereich
+// section-break über dem Suchbereich: trennt Intro/Leitfaden oben von
+// Suche + Ergebnissen, die zusammengehören.
+.category-filter-container {
+  @include section-break;
+}
+
 .blog-filter-row {
   display: flex;
   gap: 0.6em;
