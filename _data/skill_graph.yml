@@ -2,60 +2,63 @@
 # Skill-Graph-Daten (Single Source of Truth für das interaktive Skill-Feature)
 # =============================================================================
 # Schema v1:
-#   version:  Schema-Version (Pflicht; das JS prüft sie und degradiert stumm
-#             bei Unbekanntem)
-#   projects: Liste der Projekte, die Skills verbinden
-#     id:     stabiler kebab-case-Schlüssel (Pflicht, nie umbenennen)
-#     label:  Anzeigename für die Kontextzeile (Pflicht)
-#     skills: Liste von Skill-IDs (Pflicht)
+#   version:     Schema-Version (Pflicht; das JS prüft sie und degradiert stumm)
+#   foundations: Basis-Skills (generische Dev-Infra), die in fast jedem Projekt
+#                stecken. BEWUSST ohne Projektkanten — sonst werden sie zu Hubs
+#                und ein Klick leuchtet den halben Graphen an. Das JS zeigt beim
+#                Klick eine eigene "Basis-Werkzeug"-Meldung statt einer Projektliste.
+#   projects:    Liste der Projekte, die (Signature-)Skills verbinden
+#     id:        stabiler kebab-case-Schlüssel (Pflicht, nie umbenennen)
+#     label:     Anzeigename für die Kontextzeile (Pflicht)
+#     skills:    Liste von Skill-IDs — nur die PROJEKT-DEFINIERENDEN Skills
+#                (Signature), nicht jede Nutzung; Basis-Skills gehören hier NICHT rein.
 #
-# Skill-IDs = slugify(Chip-Name) aus cv_content.yml → skill_groups, z. B.:
-#   "Python" → python, "NumPy / Scikit-learn" → numpy-scikit-learn,
-#   "CI / CD" → ci-cd, "Bash / Linux" → bash-linux,
-#   "Remote Computing / GPU-Training" → remote-computing-gpu-training
+# Skill-IDs = slugify(Chip-Name) aus cv_content.yml → skill_groups (core + breadth),
+#   z. B.: "Computer Vision" → computer-vision, "OCR / Tesseract" → ocr-tesseract,
+#   "HTML5 / CSS3" → html5-css3, "C#" → c, ".NET" → net.
 # Das JS warnt in der Konsole, wenn eine ID keinen Chip im DOM trifft.
 #
-# Kanten Skill↔Skill entstehen im JS implizit über gemeinsame Projekte
-# (Gewicht = Anzahl) — hier bewusst KEINE redundanten Kantenlisten pflegen.
-#
-# Neues Projekt eintragen: Block unten anfügen, id vergeben, Skills als
-# slugifizierte IDs listen — fertig. Optionale Zukunftsfelder (period, url,
-# type) sind vorgesehen; unbekannte Felder ignoriert das JS defensiv.
+# Kanten Skill↔Skill entstehen im JS implizit über gemeinsame Projekte (Gewicht
+# = Anzahl) — hier bewusst KEINE redundanten Kantenlisten pflegen.
 # =============================================================================
 version: 1
+
+# Generische Dev-Infra: als Chips sichtbar, im Graphen kantenlos.
+foundations: [git, docker, bash-linux, ci-cd, devcontainer, vs-code, pip]
+
 projects:
   - id: doku-system
     label: "Doku-System (Spracherkennung)"
-    skills: [python, tensorflow, llms, fastapi, sql, rest, docker, ci-cd, devcontainer, tdd, git]
-
-  - id: vue-webapp
-    label: "Vue-Webanwendung"
-    skills: [vue, javascript, rest, keycloak, scrum-kanban, git]
-
-  - id: modellvergleich
-    label: "Modellvergleichs-Tool"
-    skills: [python, llms, hugging-face, spacy, numpy-scikit-learn, dvc, tdd, git]
-
-  - id: telematik
-    label: "Telematik-System"
-    skills: [springboot, rest, sql, git]
+    skills: [python, tensorflow, neural-networks, llms, nlp, fastapi, sql, rest]
 
   - id: belegerkennung
     label: "Belegerkennung"
-    skills: [python, tensorflow, opencv, numpy-scikit-learn, docker, git]
+    skills: [python, tensorflow, computer-vision, opencv, ocr-tesseract, numpy-scikit-learn]
+
+  - id: telematik
+    label: "Telematik-System"
+    skills: [springboot, kotlin, rest, sql, microservices]
 
   - id: tts-nlp
     label: "TTS-/NLP-Forschung"
-    skills: [python, tensorflow, remote-computing-gpu-training, bash-linux, git]
+    skills: [python, tensorflow, neural-networks, nlp, remote-computing-gpu-training, hyperparameter-tuning]
+
+  - id: vue-webapp
+    label: "Vue-Webanwendung"
+    skills: [vue, typescript, javascript, rest, keycloak, vite, pinia, scss, responsive-design]
+
+  - id: modellvergleich
+    label: "Modellvergleichs-Tool"
+    skills: [python, llms, hugging-face, spacy, numpy-scikit-learn, dvc]
 
   - id: belege-app
     label: "Belege-App"
-    skills: [opencv, git]
+    skills: [opencv, computer-vision, xamarin, c]
 
   - id: genai-beratung
     label: "GenAI-Beratung"
-    skills: [python, llms, neo4j, azure, rest, scrum-kanban]
+    skills: [python, llms, generative-ai, prompt-engineering, neo4j, azure, rest]
 
   - id: website
     label: "diese Website"
-    skills: [javascript, git, ci-cd, docker, devcontainer, bash-linux]
+    skills: [javascript, scss, html5-css3, responsive-design]

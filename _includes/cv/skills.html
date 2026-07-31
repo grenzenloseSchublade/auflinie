@@ -24,8 +24,9 @@
     {% if skill_group.context %}
     <p class="cv-skill-group__context">{{ skill_group.context }}</p>
     {% endif %}
+    {% assign core_skills = skill_group.core | default: skill_group.skills %}
     <ul class="cv-skills__chips">
-      {% for skill in skill_group.skills %}
+      {% for skill in core_skills %}
       {% assign skill_name = skill.name | default: skill %}
       <li class="cv-skill-chip">
         {%- if page.skill_graph.enabled -%}
@@ -36,6 +37,20 @@
       </li>
       {% endfor %}
     </ul>
+    {% if skill_group.breadth and skill_group.breadth.size > 0 %}
+    <ul class="cv-skills__chips cv-skills__chips--breadth" aria-label="Ergänzende Kenntnisse in {{ skill_group.group }}">
+      {% for skill in skill_group.breadth %}
+      {% assign skill_name = skill.name | default: skill %}
+      <li class="cv-skill-chip cv-skill-chip--breadth">
+        {%- if page.skill_graph.enabled -%}
+        <button type="button" class="cv-skill-chip__button" data-skill="{{ skill_name | slugify }}" aria-pressed="false">{{ skill_name }}</button>
+        {%- else -%}
+        {{ skill_name }}
+        {%- endif -%}
+      </li>
+      {% endfor %}
+    </ul>
+    {% endif %}
   </div>
   {% endfor %}
 

@@ -186,48 +186,83 @@
 
 - section: "Technische Fähigkeiten"
   icon: "laptop-code"
-  # Themen-Gruppen mit Kontextzeile (Mockup-Review Juli 2026): eine Form für
-  # alle Skills, keine Rangordnung — das Können steckt in der Kontextzeile.
-  # Die Chips sind interaktiv (Klick zeigt Verbindungen, siehe
-  # _data/skill_graph.yml und docs/README-skill-feature.md).
+  # Themen-Gruppen mit Kontextzeile: pro Gruppe Kern-Skills (core) und dahinter
+  # die ergänzende Breite (breadth) — keine Level-Rangordnung, nur eine dezente
+  # visuelle Zweiteilung. Chips sind interaktiv (Klick zeigt Verbindungen über
+  # gemeinsame Projekte, siehe _data/skill_graph.yml, docs/README-skill-feature.md);
+  # generische Basis-Skills (git, docker …) sind dort bewusst kantenlos (foundations).
   skill_groups:
     - group: "Machine Learning & Data"
       context: "Entwicklung, Training und Deployment eigener Modelle — von Computer Vision bis GenAI"
-      skills:
+      core:
         - "Python"
         - "TensorFlow"
+        - "Computer Vision"
         - "LLMs"
+        - "Generative AI"
+        - "Prompt Engineering"
+        - "Neural Networks"
+        - "NLP"
         - "Hugging Face"
-        - "NumPy / Scikit-learn"
         - "OpenCV"
+      breadth:
+        - "NumPy / Scikit-learn"
         - "spaCy"
+        - "OCR / Tesseract"
+        - "Data Engineering"
         - "DVC"
+        - "Hyperparameter Tuning"
+        - "GPT-3"
     - group: "Web & APIs"
       context: "End-to-End: Frontends, Schnittstellen und Integration in Produktivumgebungen"
-      skills:
+      core:
         - "Vue"
+        - "TypeScript"
         - "JavaScript"
         - "FastAPI"
-        - "SpringBoot"
         - "REST"
         - "SQL"
         - "Neo4j"
+        - "SpringBoot"
         - "Keycloak"
+        - "Microservices"
+      breadth:
+        - "Vite"
+        - "Pinia"
+        - "SCSS"
+        - "HTML5 / CSS3"
+        - "Responsive Design"
+        - "Kotlin"
+        - "C#"
+        - ".NET"
+        - "Xamarin"
     - group: "Cloud"
       context: "KI-Lösungen in der Cloud entwickeln, trainieren und betreiben"
-      skills:
+      core:
         - "Azure"
         - "Remote Computing / GPU-Training"
+      breadth:
+        - "Cloud Computing Fundamentals"
     - group: "DevOps & Tooling"
       context: "Reproduzierbare Umgebungen und automatisierte Pipelines"
-      skills:
-        - "CI / CD"
+      core:
         - "Docker"
-        - "DevContainer"
         - "Git"
+        - "CI / CD"
+        - "GitHub Actions"
         - "Bash / Linux"
+        - "DevContainer"
+        - "Dagster"
+      breadth:
+        - "Docker-Compose"
+        - "GitLab CI/CD"
+        - "Shell-Scripts"
         - "TDD"
         - "Scrum / Kanban"
+        - "VS Code"
+        - "Pip"
+        - "Virtual Environment"
+        - "RabbitMQ / Message Queues"
 
 
 - section: "Sprachen"

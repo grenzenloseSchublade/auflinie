@@ -409,6 +409,23 @@ li.cv-skill-chip.is-related {
   border-color: rgba($link-color, 0.5);
 }
 
+// Ergänzende Breite: zweite Chip-Ebene unter den Kern-Chips. Rein visuell
+// abgesetzt (kein Wort-Label) — feiner Trenner oben + Outline-Chips (kein
+// Fond, gedämpfte Schrift). Bleiben voll klickbar; die Auswahl-Zustände
+// (is-selected/is-related, 0,2,1) gewinnen über diese Grund-Optik (0,1,1).
+.cv-skills__chips--breadth {
+  margin-top: 0.6rem;
+  padding-top: 0.6rem;
+  border-top: 1px dashed $surface-tint;
+}
+
+li.cv-skill-chip--breadth {
+  background: transparent;
+  border-color: rgb(255 255 255 / 12%);
+  color: rgb(255 255 255 / 62%);
+  padding: 0.24rem 0.52rem;
+}
+
 // Kontext-/Hinweiszeile über den Gruppen (aria-live): eigene Identität als
 // ANZEIGEFLÄCHE — DUNKLER als die Umgebung eingesenkt (Schwarz-Tint statt
 // $console-panel-bg: der Chip-Ton stellte die Anzeige auf dieselbe Ebene

@@ -46,6 +46,9 @@
     var data = parseData(dataTag);
     if (!data) { return; }
 
+    // Basis-Skills (generische Dev-Infra): bewusst ohne Projektkanten
+    var foundations = new Set(Array.isArray(data.foundations) ? data.foundations : []);
+
     // Skill-ID → Projekte (Pflichtfelder defensiv prüfen)
     var skillProjects = new Map();
     data.projects.forEach(function (project) {
@@ -80,7 +83,7 @@
     // (Formensprache der Gruppen-Titel), Projekte darunter mit ·-Trennern.
     // Aufbau per DOM-Knoten (kein innerHTML mit Datenwerten); aria-live
     // liest die Region weiterhin als einen zusammenhängenden Satz vor.
-    function renderContext(label, projects) {
+    function renderContext(label, projects, kind) {
       contextLine.textContent = '';
 
       var labelEl = document.createElement('span');
@@ -90,9 +93,13 @@
 
       var roleEl = document.createElement('span');
       roleEl.className = 'cv-skills__selection-rolle';
-      roleEl.textContent = projects.length
-        ? ' — gemeinsam im Einsatz bei'
-        : ' — noch keine Projektzuordnung hinterlegt.';
+      if (projects.length) {
+        roleEl.textContent = ' — gemeinsam im Einsatz bei';
+      } else if (kind === 'foundation') {
+        roleEl.textContent = ' — Basis-Werkzeug, quer durch fast alle Projekte im Einsatz.';
+      } else {
+        roleEl.textContent = ' — Teil des Werkzeugkastens, ohne feste Projektzuordnung.';
+      }
       contextLine.appendChild(roleEl);
 
       if (projects.length) {
@@ -108,10 +115,13 @@
 
     function applySelection(skillId) {
       var projects = skillProjects.get(skillId) || [];
+      var hasProjects = projects.length > 0;
       var related = new Set();
-      projects.forEach(function (project) {
-        project.skills.forEach(function (id) { related.add(id); });
-      });
+      if (hasProjects) {
+        projects.forEach(function (project) {
+          project.skills.forEach(function (id) { related.add(id); });
+        });
+      }
 
       var selectedLabel = '';
       buttons.forEach(function (btn) {
@@ -121,11 +131,13 @@
         if (isSelected) { selectedLabel = btn.textContent.trim(); }
         btn.setAttribute('aria-pressed', String(isSelected));
         chip.classList.toggle('is-selected', isSelected);
-        chip.classList.toggle('is-related', !isSelected && related.has(id));
+        chip.classList.toggle('is-related', hasProjects && !isSelected && related.has(id));
       });
-      container.classList.add('has-selection');
+      // Nur dimmen, wenn es echte Verwandtschaft gibt; Basis-/Einzel-Skills
+      // ohne Projektkanten lassen die übrigen Chips unberührt.
+      container.classList.toggle('has-selection', hasProjects);
 
-      renderContext(selectedLabel, projects);
+      renderContext(selectedLabel, projects, foundations.has(skillId) ? 'foundation' : 'plain');
       selected = skillId;
     }
 
