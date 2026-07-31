@@ -1,6 +1,6 @@
 ---
 title: "Über mich"
-excerpt: "Der Körper ist das System, auf dem alles andere läuft — was neben Bildschirm und Schreibtisch stattfindet."
+excerpt: "Arbeit nimmt viel Zeit ein, aber sie macht nicht den ganzen Menschen aus. Einige weitere Aspekte, die mich neben der Arbeit begeistern und beschäftigen."
 permalink: /about/
 layout: single
 author_profile: true
@@ -11,9 +11,9 @@ header:
   caption: "Abseits vom Schreibtisch"
 ---
 
-Ingenieur und Problemlöser — die technische Seite zeigt sich am besten in den Projekten selbst: in den [interaktiven Fraktalen]({{ site.baseurl }}/mandelbrot/) und in den Beiträgen des [Blogs]({{ site.baseurl }}/posts/). Was dabei trägt, ist die Verbindung von Theorie und Praxis: Für jedes Vorhaben eigne ich mir die Grundlagen Schritt für Schritt an und bleibe dran, bis das Ergebnis steht.
+Beruflich dreht sich bei mir vieles um Technik — am liebsten dort, wo aus einer Idee etwas Greifbares wird, wie bei den [interaktiven Fraktalen]({{ site.baseurl }}/mandelbrot/) oder im [Blog]({{ site.baseurl }}/posts/). In neue Themen tauche ich gern tief ein — und verliere mich auch mal darin.
 
-Diese Seite erzählt vom Rest — von dem, was neben Bildschirm und Schreibtisch stattfindet und die Arbeit dort erst möglich macht. Denn konzentriertes Arbeiten und klares Denken entstehen nicht am Rechner, sondern im Leben drumherum: in Bewegung, Erholung und der Aufmerksamkeit für den eigenen Körper.
+Auf dieser Seite geht es aber vor allem um das, was daneben passiert: ums Draußensein und in Bewegung bleiben, um Ernährung, Schlaf und Ruhe. Dinge, die ich einfach gerne tue.
 
 <div class="about-motto-wrap">
   <p class="about-motto">anima sana in corpore sano</p>
@@ -24,8 +24,6 @@ Diese Seite erzählt vom Rest — von dem, was neben Bildschirm und Schreibtisch
 {% include section-epigraph.html text="Man sollte alles so einfach wie möglich machen, aber nicht einfacher." author="Albert Einstein" %}
 
 Gesundheit ist kein Projekt mit Endtermin, sondern eine tägliche Praxis aus vielen kleinen Entscheidungen: frisch kochen statt bestellen, bewusst atmen statt durchhetzen, ausreichend schlafen statt noch eine Stunde Bildschirm. Meditation und Atemtechniken helfen, den Kopf zu sortieren — nicht als Ritual um seiner selbst willen, sondern als trainierbare Fähigkeit, Aufmerksamkeit zu lenken.
-
-Das Prinzip dahinter ist einfach: Der Körper ist das System, auf dem alles andere läuft. Wer es pflegt, bekommt Konzentration, Geduld und Energie zurück.
 
 ## Sport und Bewegung
 
@@ -47,7 +45,7 @@ Beides belohnt vor allem eines: Geduld. Fortschritt kommt in kleinen Schritten �
 
 {% include section-epigraph.html text="Alle Dinge sind Gift, und nichts ist ohne Gift; allein die Dosis macht, dass ein Ding kein Gift ist." author="Paracelsus" %}
 
-Die moderne Medizin ist beeindruckend, wo sie stark ist: in der Akutversorgung, der Diagnostik, der Chirurgie. Zugleich stößt sie dort an Grenzen, wo Gesundheit nicht repariert, sondern gelebt werden muss — bei chronischen Beschwerden, deren Ursachen in Ernährung, Bewegung, Stress und Schlaf liegen. Ein Rezept ist schneller ausgestellt als eine Lebensweise geändert; behandelt wird oft das Symptom, nicht das System.
+Die moderne Medizin ist beeindruckend, wo sie stark ist: in der Akutversorgung, der Diagnostik, der Chirurgie. Zugleich stößt sie dort an Grenzen, wo Gesundheit nicht repariert, sondern gelebt werden muss — bei chronischen Beschwerden, deren Ursachen in Ernährung, Bewegung, Stress und Schlaf liegen. Ein Rezept ist schneller ausgestellt als eine Lebensweise geändert — behandelt wird damit aber oft nur das Symptom. Und es fällt leichter, Verantwortung abzugeben, als sie dauerhaft selbst zu tragen.
 
 Daraus folgt keine Ablehnung der Schulmedizin, sondern eine Arbeitsteilung: kritisch nachfragen, Studienlage statt Schlagzeilen — und den Teil selbst übernehmen, den keine Praxis verschreiben kann: den eigenen Alltag.
 

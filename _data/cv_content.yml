@@ -8,7 +8,7 @@
         Ingenieur mit Schwerpunkt **Machine Learning** — an der Ruhr-Universität Bochum habe ich **Elektro- und Informationstechnik** (M.Sc., *Eingebettete Systeme*) studiert.
         Seit nunmehr vielen Jahren entwickle ich KI-Software von der ersten Idee bis in den produktiven Betrieb: das Problem mit den Menschen klären, die es haben, Prototypen bauen, Modelle entwickeln und optimieren, deployen.
         <br> <br>
-        Gearbeitet habe ich in Forschung wie Industrie, in Teams unterschiedlicher Größe; über die Jahre ist so das komplette **Full-Stack**-Handwerk dazugekommen — Frontend, Backend, DevOps und MLOps.
+        Gearbeitet habe ich in Forschung wie Industrie, in Teams unterschiedlicher Größe. Über die Jahre ist so das komplette **Full-Stack**-Handwerk dazugekommen — Frontend, Backend, DevOps und MLOps.
         Zwischen dem, was ein Modell auf dem Testset kann, und dem, was es im Alltag leistet, liegt der Teil der Arbeit, der mich interessiert.
 
 
@@ -57,8 +57,8 @@
             - "Anbindung einer Open-Source-Spracherkennung auf Basis eines Encoder-Decoder-Modells mit Attention-Mechanismen"
             - "Semantische Analyse und Strukturierung mit LLMs in branchenspezifische Datenformate"
             - "Konzeption und Implementierung von **FastAPI**-Schnittstellen zur systemübergreifenden Integration"
-            - "Entwicklung und Implementierung eines Datenbanksystems zur Speicherung von Anwendungsdaten zu Optimierungszwecken"
-            - "Erstellung einer Buildpipeline für die kontinuierliche und automatische Erstellung und Bereitstellung von Docker-Images"
+            - "Entwicklung und Implementierung eines Datenbanksystems zur Speicherung von Anwendungsdaten für spätere Optimierung"
+            - "Aufbau einer Buildpipeline für die kontinuierliche Bereitstellung von Docker-Images"
             - "Deployment und Erprobung im Pilotbetrieb mit dem Ziel, den Zeitaufwand für Dokumentationsarbeiten zu senken"
         # [FRONTEND]
         - text: "Konzeption und Implementierung einer responsiven Web-Anwendung für branchenspezifische Dokumentationsarbeiten"
@@ -96,7 +96,7 @@
 
         - text: "Entwicklung eines KI-gestützten Systems zur automatisierten Erkennung und Verarbeitung verschiedener Belegtypen"
           subitems:
-            - "Entwicklung und Optimierung der Lösung in Python mit spezialisierten <strong>Computer-Vision</strong>- und Deep-Learning-Algorithmen"
+            - "Entwicklung und Optimierung der Lösung in Python mit spezialisierten **Computer-Vision**- und Deep-Learning-Algorithmen"
             - "Robuste Verarbeitung schwieriger Vorlagen: Belege und Trainingsdaten mit Auflösungen unter 100 dpi, eingerissen oder verschmutzt"
             - "Entwicklung von Algorithmen zur präzisen Textlokalisation und -segmentierung im Dokumentlayout mit OpenCV"
             - "Entwicklung eigener Ansätze auf Basis von Deep Learning, die die Texterkennung (OCR) auf diesen Vorlagen deutlich verbesserten"
@@ -245,9 +245,9 @@
     - language: "Englisch"
       level: "Fließend"
     - language: "Russisch"
-      level: "Grundkenntnisse (A2) - lernend"
+      level: "Grundkenntnisse (A2)"
     - language: "Spanisch"
-      level: "Anfänger - lernend"
+      level: "Anfänger"
 
 # - section: "Zertifikate & Auszeichnungen"
 #   icon: "award"

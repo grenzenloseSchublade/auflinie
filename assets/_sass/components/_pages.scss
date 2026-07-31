@@ -60,13 +60,15 @@
 
 // „Neu hier?"-Banner auf der Blogseite: schlanke Panel-Zeile statt Notice-Box
 .guide-banner {
-  @include card-panel(2px);
+  background: transparent;
+  border: 1px dashed rgba($console-panel-border, 0.7);
+  border-radius: 8px;
 
   display: grid;
   grid-template-columns: auto 1fr;
   gap: 0.55rem 0.9rem;
   align-items: start;
-  padding: 0.85rem 1.1rem;
+  padding: 0.75rem 1.1rem;
   margin: 1.2rem 0 1rem;
 }
 

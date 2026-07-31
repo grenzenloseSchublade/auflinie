@@ -1,6 +1,6 @@
 ---
 title: "Lebenslauf"
-excerpt: "Elektrotechnik, eingebettete Systeme — und am Ende des Studiums kam Machine Learning dazu. Geblieben ist es seitdem."
+excerpt: "Von der Elektrotechnik über eingebettete Systeme zum Machine Learning."
 permalink: /cv/
 layout: single
 author_profile: true

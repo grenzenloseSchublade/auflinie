@@ -9,6 +9,8 @@
 
 // Beitragsliste (/posts/): Karten im Panel-Stil statt roher Linkliste
 .post-card-list {
+  @include section-break;
+
   .post-item {
     margin-bottom: 1.2rem;
   }

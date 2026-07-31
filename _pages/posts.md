@@ -24,7 +24,7 @@ show_date: false
 read_time: false
 ---
 
-{{ "Beiträge zu Technik, Projekten und dem, was mich gerade beschäftigt — dann, wenn es etwas zu sagen gibt." | markdownify }}
+{{ "Hier versammeln sich verschiedene Themen und verschiedene Sichtweisen / Blickwinkel darauf aus unterschiedlichen Bereichen." | markdownify }}
 
 {% include blog-notice.html %}
 
