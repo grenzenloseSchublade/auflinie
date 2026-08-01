@@ -15,34 +15,39 @@
 - section: "Berufserfahrung"
   icon: "briefcase"
   experiences:
-    - position: "Technischer Berater — Data & Analytics"
-      company: "Sopra Steria"
+    - position: "Senior Consultant — Data & Analytics"
+      company: "Sopra Steria SE"
       location: "Hamburg, Deutschland"
       period: "2025 - Heute"
       description: >-
-        Technische Beratung im Umfeld Data & Analytics, aktuell mit Schwerpunkt auf generativer KI (GenAI):
-        Ziele und Problemstellungen gemeinsam mit dem Kunden schärfen, die Architektur festlegen
-        und die Systeme anschließend selbst konzipieren und umsetzen.
+        Technische Beratung im Umfeld Data & Analytics mit Schwerpunkt auf generativer KI (GenAI),
+        in den Projekten als Software-Architekt und mit Lead-Verantwortung: Ziele und Problemstellungen
+        gemeinsam mit dem Kunden schärfen, die Architektur festlegen und die Systeme anschließend
+        selbst konzipieren und umsetzen.
       expandable: true
       responsibilities:
-        - text: "Technische Beratung von der Problemstellung bis zur Architekturentscheidung"
+        - text: "**Lead** für zwei bis drei Use Cases — von der Aufgabenverteilung bis zur eigenen Umsetzung"
           subitems:
-            - "Schärfung von Zielen und Problemstellungen gemeinsam mit dem Kunden"
-            - "Architekturentscheidungen für End-to-End-Systeme im KI-Umfeld"
-            - "Schnitt und Verteilung von Arbeitspaketen im Projektteam"
-        - text: "Selbstständige Konzeption und Umsetzung der Systeme — vom Prototyp bis in den produktiven Betrieb"
-        - text: "Verantwortung für einzelne Use Cases"
+            - "Fachliche Verantwortung von der Konzeption bis in den produktiven Betrieb"
+            - "Schnitt und Verteilung der Arbeitspakete im Team, dazu eigene Implementierung der Kernkomponenten"
+            - "Software-Architektur und Konzeption des Graphschemas (Datenmodell des Wissensgraphen)"
+            - "Datenverarbeitungspipeline mit LLMs und Anbindung von KI-Diensten (Azure AI / OpenAI) auf Azure"
+            - "Aufbau der vernetzten Wissensbasis als **Wissensgraph** (Neo4j)"
+        - text: "**Lead** für einen wiederverwendbaren Parser zur Strukturerkennung und -erhaltung — laufend, projektübergreifend"
           subitems:
-            - "Migration eines Use Cases in ein übergeordnetes System"
-            - "Fachliche Verantwortung für zwei daraus abgeleitete Use Cases"
-        - text: "Aufbau und Evaluation von Graphdatenbanken mit **Neo4j**"
+            - "Erkennt und erhält die Struktur heterogener Dokumentformate (etwa EU-Formex-XML) und wird über mehrere Use Cases hinweg eingesetzt"
+            - "Als eigenständiges Vorhaben angelegt, weil die Strukturerkennung in mehreren Projekten dasselbe Kernproblem ist"
+        - text: "Eigenständiges Projekt für eine **öffentliche Behörde** — Backend zur automatisierten Verarbeitung juristischer Inhalte im Formularwesen"
           subitems:
-            - "Modellierung von Prozessen und komplexen Sachverhalten als Graph"
-            - "Aufbau der Graphen für unterschiedliche Anwendungsfälle"
-            - "Evaluation der Graphen und iterative Verbesserung entlang der Ergebnisse"
+            - "Python-Pipeline, die Gesetzesdokumente strukturiert und semantisch im Wissensgraph verknüpft"
+            - "Orchestrierung der Verarbeitungsschritte mit **Dagster**"
+            - "Reproduzierbare Entwicklungsumgebung mit DevContainer"
+        - text: "Daneben weitere Aufgaben als Softwareingenieur im Projekt"
+          subitems:
+            - "Aufbau und Pflege der Continuous-Delivery-Strecke über mehrere Umgebungen"
 
     - position: "Softwareingenieur"
-      company: "opta data Innovationlab"
+      company: "opta data Innovation Lab GmbH"
       location: "Bochum, Deutschland"
       period: "2020 - 2025"
       description: >-
@@ -119,15 +124,15 @@
         # [FORSCHUNG / INFRASTRUKTUR]
         - text: "Training von Deep-Learning-Modellen auf Remote-Infrastruktur"
           subitems:
-            - "Training unterschiedlicher Deep-Learning-Modelle mittels **Remote Computing**"
+            - "Training unterschiedlicher Deep-Learning-Modelle mittels Remote Computing"
             - "Konfiguration der Hardware (GPUs) für das Training und die Optimierung von TensorFlow-Modellarchitekturen"
             - "Aufbereitung und Augmentation von Daten für das Training"
 
         # [DEV OPS]
         - text: "Etablierung moderner Entwicklungspraktiken und Automatisierungen"
           subitems:
-            - "Erstellung und Verteilung von Entwicklungsumgebungen mittels **DevContainer** und GitHub Codespaces"
-            - "Umsetzung von Test-Driven Development und Erstellung von **CI / CD Pipelines**"
+            - "Erstellung und Verteilung von Entwicklungsumgebungen mittels DevContainer und GitHub Codespaces"
+            - "Umsetzung von Test-Driven Development und Erstellung von CI / CD Pipelines"
             - "Implementierung von Buildpipelines mit GitHub Actions für die automatische Bereitstellung von Docker-Images"
             - "Einführung von **DVC** für die übergreifende Versionierung und Verwaltung von Daten und das Tracking von Experimenten"
 

@@ -57,7 +57,7 @@ projects:
 
   - id: genai-beratung
     label: "GenAI-Beratung"
-    skills: [python, llms, generative-ai, prompt-engineering, neo4j, azure, rest]
+    skills: [python, llms, generative-ai, prompt-engineering, neo4j, azure, dagster, rest]
 
   - id: website
     label: "diese Website"
