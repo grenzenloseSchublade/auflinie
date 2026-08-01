@@ -25,3 +25,6 @@ Thumbs.db
 design-reference/
 .well-known/
 node_modules/
+
+# Vertrauliche Arbeitsdokumente (Sopra-Standardprofil + Reviews) — nie ins PUBLIC-Repo
+Lebenslauf-soprasteria/
