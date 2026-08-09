@@ -587,6 +587,18 @@ body .page__hero--overlay {
   // der frühere 0-Reset hat ihn mit body-Spezifität überschrieben
 }
 
+// Flash-Schutz beim (Voll-)Laden: solange JS aktiv ist, greedy-navigation.js
+// aber noch nicht gemessen/kollabiert hat, Links + Burger unsichtbar halten —
+// sonst blitzt beim Voll-Reload kurz der ungekürzte Zustand (alle Links +
+// Burger) auf und die Links verschieben sich seitlich. visibility:hidden (nicht
+// display:none), damit greedy-nav die Breiten weiter messen kann. Ohne JS
+// (kein .js) normal sichtbar (Progressive Enhancement); nach der Messung setzt
+// das JS .greedy-nav--ready.
+html.js .greedy-nav:not(.greedy-nav--ready) .visible-links,
+html.js .greedy-nav:not(.greedy-nav--ready) .greedy-nav__toggle {
+    visibility: hidden;
+}
+
 // Aktive Seite in der Navigation: Cyan-subtle-Unterstreichung (Zustand,
 // keine Aufforderung — Voll-Cyan bleibt Interaktionen vorbehalten).
 // Hover bekommt eine Unterstreichung als Zweitindikator (gedimmtes Magenta

@@ -243,12 +243,19 @@
       });
     }
 
+    // Flash-Schutz: html.js hält die Links/Burger unsichtbar, bis hier die ERSTE
+    // Messung/Kollabierung durch ist -> beim (Voll-)Laden kein sichtbarer
+    // „alle Links -> kollabiert"-Reflow. Erst nach check() einblenden.
+    function reveal() { nav.classList.add('greedy-nav--ready'); }
+    // Sicherheitsnetz: nie dauerhaft versteckt (falls check() je scheitert).
+    window.addEventListener('load', reveal);
     if (logoImg && !(logoImg.complete && logoImg.naturalWidth !== 0)) {
-      logoImg.addEventListener('load', check, { once: true });
-      logoImg.addEventListener('error', check, { once: true });
+      logoImg.addEventListener('load', function () { check(); reveal(); }, { once: true });
+      logoImg.addEventListener('error', function () { check(); reveal(); }, { once: true });
     } else {
       // Inline-SVG-Logo (kein <img>): direkt messen
       check();
+      reveal();
     }
   }
 
