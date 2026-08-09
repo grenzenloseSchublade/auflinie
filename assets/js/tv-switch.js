@@ -83,4 +83,15 @@
   window.addEventListener('pageshow', function (e) {
     if (e.persisted) document.documentElement.classList.remove('vt-capture');
   });
+
+  // Für spa-nav.js (Same-Document-Swaps): dieselbe Dosierung wiederverwenden,
+  // damit der Kanalwechsel auch bei clientseitiger Navigation greift, nicht nur
+  // bei echten Reloads. crtAllowed hat einen Seiteneffekt (schreibt den
+  // Cooldown) — daher genau EIN Aufruf pro Navigationsentscheidung.
+  window.__tvSwitch = {
+    crtAllowed: crtAllowed,
+    drawerOpen: function () {
+      return !!document.querySelector('.greedy-nav .hidden-links:not(.hidden)');
+    }
+  };
 })();

@@ -155,6 +155,7 @@
 
   // ── Orchestrierung ──────────────────────────────────────────────────────────
   function navigate(href, push, restoreY) {
+    var fromPath = location.pathname;   // VOR pushState -> Herkunft für die CRT-Dosierung
     // Scroll des AUSGEHENDEN Eintrags sichern — nur vorwaerts, nie auf popstate,
     // sonst wird der ankommende Eintrag ueberschrieben.
     if (push) {
@@ -168,7 +169,7 @@
         document.title = doc.title;                                  // vor pushState -> korrektes Verlaufs-Label
         history.pushState({ spa: true, docId: DOC_ID, url: href, scrollY: 0 }, '', href);
       }
-      swap(doc, href, push).then(function () {
+      swap(doc, href, push, fromPath).then(function () {
         applyScroll(href, push ? 0 : restoreY);
       });
     });
@@ -217,7 +218,7 @@
   }
 
   // ── §6 Swap (+ View-Transition-Kuer) ────────────────────────────────────────
-  function swap(doc, href, push) {
+  function swap(doc, href, push, fromPath) {
     resetShellState();                                    // Drawer VOR der Transition schliessen
     var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -232,20 +233,40 @@
 
     var done;
     if (document.startViewTransition && !reduce) {
-      // Masthead-DOM wird beim Swap NICHT ersetzt -> er darf kein eigener
-      // Snapshot sein, sonst platziert der Browser dessen Bitmap um wenige
-      // Pixel versetzt (Schrift „springt"). Klasse nimmt ihm den
-      // view-transition-name NUR während des SPA-Swaps (Cross-Doc-CRT bleibt
-      // unberührt); der Header bleibt live/fix stehen, nur der Inhalt blendet.
-      document.documentElement.classList.add('spa-vt');
-      vtDepth++;
-      var vt = document.startViewTransition(mutate);      // Kuer; unter reduce/Firefox nie
-      // Zähler statt einfachem Toggle: bei schneller Doppel-Navigation bleibt
-      // die Klasse, solange IRGENDEINE SPA-Transition läuft (kein Race).
-      var clearVt = function () { if (--vtDepth <= 0) { vtDepth = 0; document.documentElement.classList.remove('spa-vt'); } };
+      // Kanalwechsel-Kür (type 'crt') NUR bei Vorwärts-Nav + Dosierung aus
+      // tv-switch.js (mobil, Scroll-Top, Bereichswechsel, Cooldown). Sonst
+      // dezenter Crossfade mit stehendem Header.
+      var toPath = '';
+      try { toPath = new URL(href, location.href).pathname; } catch (_) {}
+      var wantsCrt = !!(push && window.__tvSwitch &&
+        typeof window.__tvSwitch.crtAllowed === 'function' &&
+        window.__tvSwitch.crtAllowed(fromPath, toPath));
+
+      var vt = null, usedSpaVt = false;
+      if (wantsCrt) {
+        // Masthead NICHT aus dem VT nehmen (kein spa-vt): er behält seinen
+        // Snapshot (animation:none) und wird nicht vom Antenne-Effekt verzerrt —
+        // nur der Content-Root bekommt den Kanalwechsel. Minimaler Snapshot-
+        // Versatz wird vom Effekt überdeckt (nur mobil aktiv).
+        try { vt = document.startViewTransition({ update: mutate, types: ['crt'] }); }
+        catch (_) { vt = null; }   // object-Form nicht unterstützt -> unten wie non-crt
+      }
+      if (!vt) {
+        // Masthead-DOM wird beim Swap NICHT ersetzt -> per spa-vt aus dem VT
+        // nehmen, sonst platziert der Browser dessen Snapshot um wenige Pixel
+        // versetzt („Schrift springt"). Nur der Content crossfadet. Zähler
+        // gegen schnelle Doppel-Navigation (kein Race).
+        document.documentElement.classList.add('spa-vt');
+        vtDepth++;
+        usedSpaVt = true;
+        vt = document.startViewTransition(mutate);
+      }
+      var clearVt = function () {
+        if (usedSpaVt && --vtDepth <= 0) { vtDepth = 0; document.documentElement.classList.remove('spa-vt'); }
+      };
       if (vt.finished && vt.finished.then) vt.finished.then(clearVt, clearVt);
       else clearVt();
-      done = vt.updateCallbackDone.catch(function () {});
+      done = vt.updateCallbackDone ? vt.updateCallbackDone.catch(function () {}) : Promise.resolve();
     } else {
       mutate();
       done = Promise.resolve();
