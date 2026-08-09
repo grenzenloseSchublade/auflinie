@@ -45,20 +45,6 @@
     loadedScripts.add(s.src);
   });
 
-  // Cross-Origin-Abhängigkeiten (CDN-Skripte/-Styles, z.B. jsdelivr/MathJax,
-  // Fractal-CSS) der STARTseite. reconcilePageScripts kann Cross-Origin NICHT
-  // nachladen -> eine Zielseite mit einer NEUEN solchen Abhängigkeit wird voll
-  // navigiert statt kaputt geswappt (needsFullLoad).
-  var externalDeps = new Set();
-  Array.prototype.forEach.call(
-    document.querySelectorAll('script[src], link[rel="stylesheet"][href]'),
-    function (el) {
-      var a = el.tagName === 'SCRIPT' ? 'src' : 'href';
-      var u; try { u = new URL(el.getAttribute(a), location.href); } catch (_) { return; }
-      if (u.origin !== location.origin) externalDeps.add(u.href);
-    }
-  );
-
   // ── Pfad-Helfer + Wired-Praedikat ───────────────────────────────────────────
   function stripBase(pathname) {
     if (BASEURL && pathname.indexOf(BASEURL) === 0) {
@@ -210,15 +196,22 @@
     }).catch(function () { return null; });
   }
 
-  // ── Cross-Origin-Abhängigkeit der Zielseite, die wir NICHT nachladen können
-  //     (CDN-Skript/-Style, das die Startseite noch nicht hat) -> voll laden ──
+  // ── Zielseite mit einer Cross-Origin-Abhängigkeit (CDN-Skript/-Style, z.B.
+  //     MathJax/jsdelivr, Fractal-CSS)? reconcile lädt nur Same-Origin nach, und
+  //     solche Libs brauchen pro Seite eine Initialisierung (MathJax
+  //     typesetPromise u.a.), die ein reiner Content-Swap nicht leistet -> voll
+  //     navigieren. Greift AUTOMATISCH für jeden künftigen Beitrag mit Formeln
+  //     (keine Sonderliste, keine Pfad-Ausnahme). Bewusst simpel: JEDE
+  //     Cross-Origin-Abhängigkeit zählt, unabhängig davon, ob schon geladen —
+  //     "schon geladen" heißt bei MathJax NICHT "swap-sicher" (Re-Typeset fehlt).
+  //     Verifiziert: es gibt keine sitewide Cross-Origin-Ressource, normale
+  //     Seiten swappen weiter; preconnect/preload-Links zählen hier nicht.
   function needsFullLoad(doc) {
     var els = doc.querySelectorAll('script[src], link[rel="stylesheet"][href]');
     for (var i = 0; i < els.length; i++) {
       var el = els[i], a = el.tagName === 'SCRIPT' ? 'src' : 'href', u;
       try { u = new URL(el.getAttribute(a), location.href); } catch (_) { continue; }
-      if (u.origin === location.origin) continue;
-      if (!externalDeps.has(u.href)) return true;
+      if (u.origin !== location.origin) { return true; }
     }
     return false;
   }
