@@ -88,6 +88,40 @@
     navigate(url.href, true, 0);
   });
 
+  // ── §0b Prefetch bei Absicht: wired Ziele bei Hover/Touch/Fokus vorwaermen ──
+  // Rein additiv: holt die Ziel-HTML ueber denselben X-SPA-Nav-Pfad in den
+  // (SW-/HTTP-)Cache, sodass der spaetere Swap-fetch ein Cache-Treffer ist —
+  // macht den Wechsel auch in Firefox quasi-instant (dort kein speculationrules).
+  // Nutzt bewusst NICHT nav.token (kein Eingriff in die Swap-Staleness-Logik).
+  var prefetched = new Set();
+  function prefetchCandidate(target) {
+    var a = target && target.closest && target.closest('a[href]');
+    if (!a) return null;
+    if (a.target && a.target !== '_self') return null;
+    if (a.hasAttribute('download') || a.hasAttribute('data-no-swap')) return null;
+    if (a.getAttribute('rel') === 'external') return null;
+    var url;
+    try { url = new URL(a.href, location.href); } catch (_) { return null; }
+    if (url.origin !== location.origin) return null;
+    if (url.protocol !== 'http:' && url.protocol !== 'https:') return null;
+    if (!isWired(url.pathname)) return null;
+    if (url.href === location.href) return null;
+    return url.href;
+  }
+  function warm(target) {
+    if (document.visibilityState === 'hidden') return;
+    var href = prefetchCandidate(target);
+    if (!href || prefetched.has(href)) return;
+    var c = navigator.connection;                          // fehlt in Firefox -> uebersprungen
+    if (c && (c.saveData || /(^|-)2g$/.test(c.effectiveType || ''))) return;  // Datensparen respektieren
+    prefetched.add(href);
+    fetch(href, { headers: { 'X-SPA-Nav': '1' }, credentials: 'same-origin' })
+      .catch(function () { prefetched.delete(href); });    // Fehlschlag: erneuter Versuch erlaubt
+  }
+  document.addEventListener('pointerover', function (e) { warm(e.target); }, { passive: true });
+  document.addEventListener('focusin', function (e) { warm(e.target); });
+  document.addEventListener('touchstart', function (e) { warm(e.target); }, { passive: true });
+
   // ── §1 History-Aktivierung: NUR auf verdrahteter Einstiegsseite ─────────────
   if (isWired(location.pathname)) {
     if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
