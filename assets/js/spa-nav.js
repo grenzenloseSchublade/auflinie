@@ -57,7 +57,7 @@
   // (/posts/:title/) sind bewusst NICHT verdrahtet.
   function isWired(pathname) {
     var p = stripBase(pathname);
-    if (p === '/' || p === '/about/') return true;
+    if (p === '/' || p === '/about/' || p === '/cv/') return true;
     return /^\/posts\/(page\d+\/)?$/.test(p);
   }
 
