@@ -53,9 +53,13 @@ $glitch-variante: "aus" !default;
   @error "Unbekannte $glitch-variante: '#{$glitch-variante}' (erlaubt: aus, dezent, deutlich, schwimmen)";
 }
 
-// Drawer-Fall: Exit 200ms + 70ms Beat (NN/g: >40ms wahrnehmbar, <100ms
-// verschmilzt die Kette zu EINER Geste) — alle CRT-Starts verschieben sich
-$crt-drawer-offset: 270ms;
+// Drawer-Fall: Exit 200ms. Der CRT startet leicht ÜBERLAPPEND (statt mit
+// Totzeit-„Beat" danach) -> flüssiger Übergang statt abgehackt; der Drawer
+// fährt beim CRT-Start noch die letzten ms ein -> weiterhin „Drawer zuerst,
+// dann Animation" (Material-Choreografie: Folgebewegung überlappt die
+// ausklingende, keine Lücke). Feinjustierung: kleiner = mehr Überlappung,
+// 200ms = nahtlos anschließend, 270ms = alter Beat.
+$crt-drawer-offset: 180ms;
 
 // Cross-Document View Transitions (echte Voll-Navigationen, KEIN SPA-Swap):
 // erzeugt die Illusion, dass der Masthead über den Reload hinweg STEHEN bleibt
