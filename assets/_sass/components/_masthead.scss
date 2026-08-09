@@ -409,6 +409,16 @@ body.menu-open::before {
   pointer-events: auto; // Klick zum Schließen
 }
 
+// Beim Schließen: Dim SOFORT ausblenden (gleichzeitig mit dem Drawer-Slide),
+// obwohl menu-open für den Scroll-Lock bis Slide-Ende bleibt. So verschwinden
+// Dunkel und Drawer als EINE Bewegung — kein nachhängendes Dim nach dem Slide.
+// (JS: greedy-navigation.js setzt menu-closing in closeMenu, entfernt es am
+// Slide-Ende zusammen mit menu-open.) Höhere Spezifität (0,3,1) gewinnt.
+body.menu-open.menu-closing::before {
+  opacity: 0;
+  pointer-events: none;
+}
+
 // Responsive: Overlay passt sich an max-width: 75vw an
 @media (max-width: 240px) {
   body::before {

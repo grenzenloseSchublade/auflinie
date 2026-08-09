@@ -121,7 +121,7 @@
 
     function releaseMenuOpen() {
       cancelRelease();
-      document.body.classList.remove('menu-open');
+      document.body.classList.remove('menu-open', 'menu-closing');
     }
 
     function onSlideEnd(e) {
@@ -130,6 +130,7 @@
 
     function openMenu() {
       cancelRelease(); // erneutes Öffnen während des Slide-Outs abfangen
+      document.body.classList.remove('menu-closing'); // falls während des Schließens wieder geöffnet
       hlinks.classList.remove('hidden');
       btn.classList.add('close');
       document.body.classList.add('menu-open');
@@ -138,6 +139,10 @@
     function closeMenu() {
       hlinks.classList.add('hidden');
       btn.classList.remove('close');
+      // Dim SOFORT mit dem Slide ausblenden — menu-open bleibt für den Scroll-
+      // Lock bis Slide-Ende, aber menu-closing fadet den Overlay jetzt schon:
+      // Dunkel und Drawer verschwinden gemeinsam, kein nachhängendes Dim.
+      document.body.classList.add('menu-closing');
       cancelRelease();
       hlinks.addEventListener('transitionend', onSlideEnd);
       releaseTimer = setTimeout(releaseMenuOpen, 320); // Fallback (Slide: 240ms)
@@ -152,7 +157,7 @@
       hlinks.style.transition = 'none';
       hlinks.classList.add('hidden');
       btn.classList.remove('close');
-      document.body.classList.remove('menu-open');
+      document.body.classList.remove('menu-open', 'menu-closing');
       requestAnimationFrame(function() { hlinks.style.transition = ''; });
     }
 
@@ -175,8 +180,10 @@
     // (Firefox, Desktop >768px, reduced motion) wie früher schließen —
     // fire-and-forget parallel zur nativen Navigation.
     // Die matchMedia-Bedingung spiegelt exakt das @view-transition-Gate
-    // aus _view-transition.scss — beide müssen synchron bleiben.
-    var vtGate = window.matchMedia('(max-width: 768px) and (prefers-reduced-motion: no-preference)');
+    // aus _view-transition.scss — beide müssen synchron bleiben. Seit dem
+    // Un-Gaten auf alle Viewports (Cross-Doc-VT überall) ist die max-width-
+    // Beschränkung raus; nur noch reduced-motion gated.
+    var vtGate = window.matchMedia('(prefers-reduced-motion: no-preference)');
 
     hlinks.addEventListener('click', function(e) {
       if (e.target.tagName !== 'A' && !e.target.closest('a')) return;
@@ -194,7 +201,7 @@
       hlinks.style.transition = 'none';
       hlinks.classList.add('hidden');
       btn.classList.remove('close');
-      document.body.classList.remove('menu-open');
+      document.body.classList.remove('menu-open', 'menu-closing');
       requestAnimationFrame(function() { hlinks.style.transition = ''; });
     });
 
