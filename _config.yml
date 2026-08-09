@@ -142,6 +142,7 @@ defaults:
 # to override the default setting.
 exclude:
   - design-reference/ # Design-Referenzen, absichtlich nicht deployt (siehe design-reference/README.md)
+  - Lebenslauf-soprasteria/ # VERTRAULICH: Arbeitsdokumente, nie in den Build/Deploy (auch in .gitignore)
   - .sass-cache/
   - .jekyll-cache/
   - gemfiles/
