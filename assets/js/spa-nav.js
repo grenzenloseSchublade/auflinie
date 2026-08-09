@@ -265,23 +265,22 @@
       // exakt wie tv-switch.pageswap bei offenem Drawer.
       if (drawerOpen) document.documentElement.classList.add('vt-capture');
 
-      var vt = null, usedSpaVt = false;
-      if (types.length) {
-        // Masthead behält seinen Snapshot (KEIN spa-vt) — nur Content-Root und
-        // Drawer werden transitioniert (wie Full-Reload). Minimaler Masthead-
-        // Versatz vom Effekt überdeckt (nur mobil aktiv).
-        try { vt = document.startViewTransition({ update: mutate, types: types }); }
-        catch (_) { vt = null; }   // object-Form nicht unterstützt -> Fallback unten
-      }
-      if (!vt) {
-        // Ohne crt/drawer (Desktop/dosiert-aus) ODER object-Form fehlt: Masthead
-        // per spa-vt aus dem VT nehmen (kein Pixel-Versatz), nur Content
-        // crossfadet. Ein Drawer-Slide ist dann nicht möglich -> closeDrawer-
-        // Instant in mutate reicht. Zähler gegen schnelle Doppel-Navigation.
-        document.documentElement.classList.add('spa-vt');
-        vtDepth++;
-        usedSpaVt = true;
-        vt = document.startViewTransition(mutate);
+      // Masthead-Schutz: OHNE CRT überdeckt nichts den Snapshot-Versatz des
+      // fixierten Masthead -> per spa-vt aus dem VT nehmen (auch bei offenem
+      // Drawer! spa-vt nullt nur den Masthead-Namen; der nav-drawer-Slide bleibt).
+      // MIT CRT: KEIN spa-vt -> Masthead behält seinen Snapshot, der minimale
+      // Versatz wird vom Effekt überdeckt (identisch zum Full-Reload).
+      // Entscheidung VOR startViewTransition (spa-vt wirkt auf den Snapshot).
+      var usedSpaVt = !wantsCrt;
+      if (usedSpaVt) { document.documentElement.classList.add('spa-vt'); vtDepth++; }
+
+      var vt;
+      try {
+        vt = types.length
+          ? document.startViewTransition({ update: mutate, types: types })
+          : document.startViewTransition(mutate);
+      } catch (_) {
+        vt = document.startViewTransition(mutate);   // object-Form nicht unterstützt -> ohne Typen
       }
       var cleanup = function () {
         document.documentElement.classList.remove('vt-capture');
