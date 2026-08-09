@@ -16,11 +16,18 @@
  *   ohne Re-Dispatch übernommen.
  * - Die Auswahl-Optik lebt vollständig im CSS (Zustände: .has-selection am
  *   Container, .is-selected/.is-related am Chip).
+ *
+ * Persistent-Shell-Kontrakt (spa-nav.js, siehe README-spa-nav.md): mount auf
+ * spa:load (idempotent), teardown auf spa:unload. Der Container-Click ist
+ * element-scoped (stirbt mit dem DOM); die zwei DOKUMENTWEITEN Listener
+ * (keydown, auflinie:skill-select) hängen an einem AbortController und werden
+ * im Teardown gelöst — sonst leakten sie über Swaps.
  */
 (function () {
   'use strict';
 
   var SOURCE = 'chips';
+  var controller = null;   // dokumentweite Listener dieses Mounts
 
   function parseData(tag) {
     var data;
@@ -37,14 +44,21 @@
     return data;
   }
 
-  function init() {
-    var container = document.querySelector('.cv-skills');
-    var dataTag = document.querySelector('script[data-skill-graph-data]');
-    var contextLine = document.querySelector('[data-role="skill-context"]');
+  function mount(root) {
+    var scope = root || document;
+    var container = scope.querySelector('.cv-skills');
+    var dataTag = scope.querySelector('script[data-skill-graph-data]');
+    var contextLine = scope.querySelector('[data-role="skill-context"]');
     if (!container || !dataTag || !contextLine) { return; }
+    if (container.hasAttribute('data-skill-chips-init')) { return; }   // idempotent
+    container.setAttribute('data-skill-chips-init', '');
 
     var data = parseData(dataTag);
     if (!data) { return; }
+
+    if (controller) { controller.abort(); }
+    controller = new AbortController();
+    var signal = { signal: controller.signal };
 
     // Basis-Skills (generische Dev-Infra): bewusst ohne Projektkanten
     var foundations = new Set(Array.isArray(data.foundations) ? data.foundations : []);
@@ -158,20 +172,22 @@
       }));
     }
 
+    // Element-scoped (Container lebt in .initial-content) -> stirbt mit dem DOM.
     container.addEventListener('click', function (event) {
       var btn = event.target.closest('.cv-skill-chip__button');
       if (!btn) { return; }
       var skillId = btn.getAttribute('data-skill');
       if (selected === skillId) { clearSelection(); } else { applySelection(skillId); }
       dispatch();
-    });
+    }, signal);
 
+    // DOKUMENTWEIT -> an den AbortController (Teardown auf spa:unload).
     document.addEventListener('keydown', function (event) {
       if (event.key === 'Escape' && selected !== null) {
         clearSelection();
         dispatch();
       }
-    });
+    }, signal);
 
     // Lose Kopplung: Auswahl aus anderen Ansichten übernehmen (ohne Re-Dispatch)
     document.addEventListener('auflinie:skill-select', function (event) {
@@ -181,12 +197,16 @@
       } else if (event.detail.skill !== selected) {
         applySelection(event.detail.skill);
       }
-    });
+    }, signal);
   }
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
-  } else {
-    init();
-  }
+  function teardown() { if (controller) { controller.abort(); controller = null; } }
+
+  document.addEventListener('spa:load', function (e) { mount(e.detail && e.detail.root); });
+  document.addEventListener('spa:unload', teardown);
+  window.addEventListener('pageshow', function (e) { if (e.persisted) mount(document); });
+
+  function peFallback() { if (!window.__spaNavActive) mount(document); }
+  if (document.readyState === 'complete') peFallback();
+  else document.addEventListener('DOMContentLoaded', peFallback);
 })();

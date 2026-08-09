@@ -164,10 +164,11 @@
     this.sim = new window.SkillGraphSim(this.nodes, this.edges, w, h);
 
     // Resize: Positionen proportional skalieren, kein Reheat
-    var resizeTimer = null;
+    // resizeTimer an der Instanz (self), damit destroy() ihn löschen kann.
+    this.resizeTimer = null;
     this.observer = new ResizeObserver(function () {
-      clearTimeout(resizeTimer);
-      resizeTimer = setTimeout(function () {
+      clearTimeout(self.resizeTimer);
+      self.resizeTimer = setTimeout(function () {
         if (self.panel.hidden) { return; }
         var cw = self.wrap.clientWidth;
         var ch = self.wrap.clientHeight;
@@ -259,6 +260,18 @@
       cancelAnimationFrame(this.rafId);
       this.rafId = null;
     }
+  };
+
+  // Persistent-Shell-Teardown (spa:unload): alle dokumentweiten Ressourcen lösen.
+  // this.abort deckt die per {signal} gebundenen Listener ab (Toggle, Canvas-
+  // Pointer, document skill-select/visibilitychange/keydown, reduceMotion);
+  // Observer/rAF/Resize-Timer separat. Guards, falls der Konstruktor früh
+  // zurückkehrte (fehlende Elemente) oder build() nie lief.
+  SkillGraph.prototype.destroy = function () {
+    if (this.abort) { this.abort.abort(); }
+    this.stopLoop();
+    if (this.observer) { this.observer.disconnect(); this.observer = null; }
+    if (this.resizeTimer) { clearTimeout(this.resizeTimer); this.resizeTimer = null; }
   };
 
   SkillGraph.prototype.onVisibility = function () {
@@ -468,19 +481,32 @@
     }
   };
 
-  function initAll() {
+  // ── Persistent-Shell-Kontrakt (spa-nav.js, siehe README-spa-nav.md) ─────────
+  var instances = [];
+
+  function mountGraph(root) {
+    var scope = root || document;
     if (typeof window.SkillGraphSim === 'undefined') {
       console.warn('skill-graph: Engine skill-graph-sim.js fehlt — Panel bleibt inaktiv');
       return;
     }
-    document.querySelectorAll('[data-skill-graph]').forEach(function (root) {
-      new SkillGraph(root);
+    scope.querySelectorAll('[data-skill-graph]').forEach(function (el) {
+      if (el.hasAttribute('data-skill-graph-mounted')) { return; }   // idempotent
+      el.setAttribute('data-skill-graph-mounted', '');
+      instances.push(new SkillGraph(el));
     });
   }
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initAll);
-  } else {
-    initAll();
+  function teardownGraph() {
+    instances.forEach(function (g) { if (g && g.destroy) { g.destroy(); } });
+    instances = [];
   }
+
+  document.addEventListener('spa:load', function (e) { mountGraph(e.detail && e.detail.root); });
+  document.addEventListener('spa:unload', teardownGraph);
+  window.addEventListener('pageshow', function (e) { if (e.persisted) { mountGraph(document); } });
+
+  function graphPeFallback() { if (!window.__spaNavActive) { mountGraph(document); } }
+  if (document.readyState === 'complete') { graphPeFallback(); }
+  else { document.addEventListener('DOMContentLoaded', graphPeFallback); }
 })();
