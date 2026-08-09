@@ -452,13 +452,18 @@
   };
 
   SkillGraph.prototype.setSelection = function (skillId) {
+    // Skills, die KEIN Knoten sind (Basis-Skills ohne Projektkanten), kann der
+    // Graph nicht hervorheben — sie als "keine Auswahl" behandeln, sonst würden
+    // alle Knoten ausgegraut (und node.label unten liefe auf undefined).
+    var node = skillId === null ? null : this.nodeById(skillId);
+    if (skillId !== null && !node) { skillId = null; }
+
     this.selected = skillId;
     if (this.contextLine) {
       if (skillId === null) {
         // Platz bleibt reserviert (feste Höhe) — nur der Text wechselt
         this.contextLine.textContent = '';
       } else {
-        var node = this.nodes.find(function (n) { return n.id === skillId; });
         var projects = (this.skillProjects && this.skillProjects.get(skillId)) || [];
         this.contextLine.textContent = projects.length
           ? node.label + ' — gemeinsam im Einsatz bei: ' + projects.map(function (p) { return p.label; }).join(', ')
