@@ -7,6 +7,9 @@
 {% if page.toc %}
 <!-- Gumshoe ScrollSpy (standalone, kein jQuery) — nur auf Seiten mit TOC -->
 <script src="{{ '/assets/vendor/gumshoe.min.js' | relative_url }}" defer></script>
+<!-- TOC-Verhalten (Sticky-Mobile, ScrollSpy-Anbindung, Dropdown, Collapse) —
+     externalisiert aus toc-wrapper.html, an spa:load gebunden. NACH gumshoe. -->
+<script src="{{ '/assets/js/toc.js' | relative_url }}" defer></script>
 {% endif %}
 
 {% if site.search == true %}

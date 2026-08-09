@@ -34,6 +34,7 @@ const CACHE_URLS = [
   './assets/js/back-to-top.js',
   './assets/js/neon-orbit-toggle.js',
   './assets/js/spa-nav.js',
+  './assets/js/toc.js',
   './assets/js/blog-search.js',
   './assets/js/skill-chips.js',
   './assets/js/skill-graph-sim.js',
