@@ -57,7 +57,19 @@ $glitch-variante: "aus" !default;
 // verschmilzt die Kette zu EINER Geste) — alle CRT-Starts verschieben sich
 $crt-drawer-offset: 270ms;
 
-@media (max-width: 768px) and (prefers-reduced-motion: no-preference) {
+// Cross-Document View Transitions (echte Voll-Navigationen, KEIN SPA-Swap):
+// erzeugt die Illusion, dass der Masthead über den Reload hinweg STEHEN bleibt
+// — der Browser hält den alten masthead-Snapshot (view-transition-name unten,
+// animation:none = kein Fade/Morph), während der Content-Root crossfadet.
+// Greift auf ALLEN Viewports (früher nur mobil), damit auch Voll-Reload-Seiten
+// (z.B. /mandelbrot/, MathJax-Fallback, Wechsel wired<->non-wired) den
+// stehenden Header bekommen. NUR bei erlaubter Bewegung: der Browser skippt VT
+// bei prefers-reduced-motion NICHT automatisch (bewusst hier gegatet, WCAG).
+// Support: Chromium 126+ / Safari 18.2+; Firefox kann Cross-Doc-VT (noch) nicht
+// und ignoriert die Regel folgenlos -> dort normale Navigation. Der CRT-Effekt
+// (types crt/drawer) bleibt wie gehabt dosiert (tv-switch.js). Same-Document-
+// Swaps (spa-nav.js) laufen unabhängig davon.
+@media (prefers-reduced-motion: no-preference) {
   @view-transition {
     navigation: auto;
   }

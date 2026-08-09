@@ -32,6 +32,11 @@
   // und höchstens einmal pro Cooldown — der Effekt markiert Kapitel,
   // nicht jeden Klick (Nutzer-Entscheidung, siehe README-tv-umschalt.md)
   function crtAllowed(fromPath, toPath) {
+    // Der stehende Header (view-transition-name: masthead) wirkt jetzt auf ALLEN
+    // Viewports; der flashy CRT-Antenne-Effekt bleibt aber vorerst MOBIL (dort
+    // getunt). Desktop bekommt Header-Persist + dezenten UA-Crossfade. Volle
+    // CRT-auf-Desktop-Kür = bewusster, getunter Schritt mit Toggle (Task #10).
+    if (window.innerWidth > 768) return false;
     if (window.scrollY > 4) return false;
     if (!toPath || area(fromPath) === area(toPath)) return false;
     try {
