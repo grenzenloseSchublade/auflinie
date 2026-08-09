@@ -48,6 +48,9 @@
     {% comment %} Bewusst NICHT include_cached: der Aktiv-Marker hängt von page.url ab {% endcomment %}
     {% include masthead.html %}
 
+    {%- comment -%} Persistent-Shell-Navigation: Live-Region für Route-Ansagen (spa-nav.js) {%- endcomment -%}
+    <div id="spa-route-announcer" class="visually-hidden" role="status" aria-live="polite" aria-atomic="true"></div>
+
     <div class="initial-content">
       {{ content }}
       {% include after-content.html %}

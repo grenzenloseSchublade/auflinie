@@ -8,6 +8,13 @@
 (function() {
   'use strict';
 
+  // Persistent-Shell-Kontrakt (spa-nav.js): dokumentweite Listener dieses
+  // Mounts hängen an heroSignal und werden im Teardown zentral gelöst.
+  var HERO_SEL = '.page__hero--overlay[data-background-image]';
+  var heroController = null;
+  var heroSignal = null;
+  var bgPreloaded = false;
+
   var HERO_CRT_BOOT_KEY = 'auflinieHeroCrtBoot';
   var HERO_TUBE_BOOT_NAMES = ['heroTubeBootStark', 'heroTubeBootDezent'];
   /** Pause mit Vorhang/Filter vor `page__hero--crt-boot` (ms), 0,9 s — mit `--hero-tube-boot-dur` nicht verwechseln */
@@ -183,7 +190,8 @@
 
   function bindHomeHeroCrtPowerToggle() {
     var btn = document.getElementById('hero-crt-power');
-    if (!btn) return;
+    if (!btn || btn.hasAttribute('data-hero-crt-power-init')) return;
+    btn.setAttribute('data-hero-crt-power-init', '');
     btn.addEventListener('click', function() {
       var overlay = document.querySelector('.page__hero--overlay[data-background-image].loaded');
       if (!overlay || !overlay.querySelector('.page__hero-crt-layer')) return;
@@ -254,7 +262,7 @@
             overlay.classList.contains('loaded')) {
           startHeroCanvasNoise(overlay);
         }
-      });
+      }, heroSignal ? { signal: heroSignal } : false);
     }
 
     function tick(now) {
@@ -432,29 +440,56 @@
     }
   }
   
-  // Wenn das DOM geladen ist, Hintergrundbilder cachen
-  document.addEventListener('DOMContentLoaded', () => {
-    // Konfiguration aus dem HTML-Dokument aktualisieren
+  // ── Persistent-Shell-Kontrakt (spa-nav.js): Mount bei jedem spa:load ────────
+  function mountHero(root) {
+    var scope = root || document;
+    var heroes = scope.querySelectorAll(HERO_SEL);
+
     config.enableImageCaching = readEnableImageCaching();
     config.backgroundImage = document.documentElement.getAttribute('data-background-image');
-    
-    // Hero-Hintergrund setzen, außer explizit data-enable-image-caching="false"
-    if (config.enableImageCaching !== false) {
-      cacheBackgroundImages();
+
+    // Globales Hintergrundbild einmal vorwärmen (früher in cacheBackgroundImages)
+    if (!bgPreloaded && config.backgroundImage) {
+      bgPreloaded = true;
+      preloadImage(config.backgroundImage).catch(function() {});
     }
+
+    if (!heroes.length) return;
+
+    if (heroController) heroController.abort();          // Doppel-Mount absichern
+    heroController = new AbortController();
+    heroSignal = heroController.signal;
+
+    var toLoad = [];
+    Array.prototype.forEach.call(heroes, function(el) {
+      el._heroCrtNoiseVisibilityAttached = false;        // Re-Bind an den NEUEN Signal erlauben
+      if (el.classList.contains('loaded')) startHeroCanvasNoise(el);  // bfcache/Re-Mount: nur Rauschen an
+      else toLoad.push(el);
+    });
+    if (config.enableImageCaching !== false && toLoad.length) applyBackgroundImages(toLoad);
 
     bindHomeHeroCrtPowerToggle();
+  }
 
-    if (!window._auflinieHeroCrtPagehideBound) {
-      window._auflinieHeroCrtPagehideBound = true;
-      window.addEventListener('pagehide', function() {
-        document.querySelectorAll('.page__hero--overlay[data-background-image]').forEach(function(el) {
-          clearHeroCrtFlashTimeout(el);
-          stopHeroCanvasNoise(el);
-        });
-      });
-    }
-  });
+  function teardownHero() {
+    document.querySelectorAll(HERO_SEL).forEach(function(el) {
+      clearHeroCrtFlashTimeout(el);
+      stopHeroCanvasNoise(el);          // rAF-Noise-Loop stoppen
+      abortCrtBootFlow(el);             // Preboot/Boot-Timer + load-wait-Listener
+    });
+    if (heroController) { heroController.abort(); heroController = null; heroSignal = null; } // visibilitychange weg
+  }
+
+  // Kontrakt: mount bei jedem spa:load (initial + Swap-in), teardown bei spa:unload.
+  document.addEventListener('spa:load', function(e) { mountHero(e.detail && e.detail.root); });
+  document.addEventListener('spa:unload', teardownHero);
+  // bfcache-Restore refeuert kein spa:load -> Effekt selbst wieder anwerfen.
+  window.addEventListener('pageshow', function(e) { if (e.persisted) mountHero(document); });
+
+  // PE-Fallback (Fundament inaktiv): einmaliger Mount ohne Kontrakt.
+  function heroPeFallback() { if (!window.__spaNavActive) mountHero(document); }
+  if (document.readyState === 'complete') heroPeFallback();
+  else document.addEventListener('DOMContentLoaded', heroPeFallback);
   
   // Service Worker-Kommunikation für Bild-Caching
   if ('serviceWorker' in navigator && window.caches) {

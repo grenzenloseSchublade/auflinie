@@ -57,7 +57,19 @@ $glitch-variante: "aus" !default;
 // verschmilzt die Kette zu EINER Geste) — alle CRT-Starts verschieben sich
 $crt-drawer-offset: 270ms;
 
-@media (max-width: 768px) and (prefers-reduced-motion: no-preference) {
+// Cross-Document View Transitions (echte Voll-Navigationen, KEIN SPA-Swap):
+// erzeugt die Illusion, dass der Masthead über den Reload hinweg STEHEN bleibt
+// — der Browser hält den alten masthead-Snapshot (view-transition-name unten,
+// animation:none = kein Fade/Morph), während der Content-Root crossfadet.
+// Greift auf ALLEN Viewports (früher nur mobil), damit auch Voll-Reload-Seiten
+// (z.B. /mandelbrot/, MathJax-Fallback, Wechsel wired<->non-wired) den
+// stehenden Header bekommen. NUR bei erlaubter Bewegung: der Browser skippt VT
+// bei prefers-reduced-motion NICHT automatisch (bewusst hier gegatet, WCAG).
+// Support: Chromium 126+ / Safari 18.2+; Firefox kann Cross-Doc-VT (noch) nicht
+// und ignoriert die Regel folgenlos -> dort normale Navigation. Der CRT-Effekt
+// (types crt/drawer) bleibt wie gehabt dosiert (tv-switch.js). Same-Document-
+// Swaps (spa-nav.js) laufen unabhängig davon.
+@media (prefers-reduced-motion: no-preference) {
   @view-transition {
     navigation: auto;
   }
@@ -66,6 +78,16 @@ $crt-drawer-offset: 270ms;
 // --- Masthead: stehende Landmarke ---------------------------------------------
 .masthead {
   view-transition-name: masthead;
+}
+
+// Same-Document-SPA-Swap (spa-nav.js setzt html.spa-vt für die Dauer der
+// Transition): der Masthead-DOM wird dabei NICHT ersetzt und soll KEIN eigener
+// Snapshot sein — ein fixierter Element-Snapshot würde die Schrift um wenige
+// Pixel versetzen. Ohne Name bleibt der Live-Header fix stehen, nur der Root
+// (Inhalt) blendet über. Betrifft ausschließlich den SPA-Pfad; die
+// Cross-Document-CRT-Choreografie (ohne .spa-vt) behält den Masthead-Snapshot.
+html.spa-vt .masthead {
+  view-transition-name: none;
 }
 
 // Group MIT abschalten: die UA-Default-Animation (0.25s Geometrie-Morph)
@@ -982,5 +1004,21 @@ html.vt-capture body::before {
       transform: scaleY(1);
       filter: brightness(1);
     }
+  }
+}
+
+// --- reduced-motion: harte zweite Verteidigungslinie (spa-nav Phase 1) --------
+// spa-nav umgeht startViewTransition unter reduce bereits im JS. Dies ist der
+// CSS-Gürtel für JEDEN aktuellen/künftigen VT-Pfad, falls der JS-Gate je fällt.
+// (Cross-Doc-@view-transition ist ohnehin no-preference-gegatet -> hier No-Op,
+// rein defensiv, WCAG 2.3.3.)
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    // !important bewusst: harter Gürtel gegen jede (auch künftige) Animation
+    // auf den VT-Pseudo-Elementen unter reduzierter Bewegung (WCAG 2.3.3).
+    // stylelint-disable-next-line declaration-no-important
+    animation: none !important;
   }
 }
