@@ -68,6 +68,16 @@ $crt-drawer-offset: 270ms;
   view-transition-name: masthead;
 }
 
+// Same-Document-SPA-Swap (spa-nav.js setzt html.spa-vt für die Dauer der
+// Transition): der Masthead-DOM wird dabei NICHT ersetzt und soll KEIN eigener
+// Snapshot sein — ein fixierter Element-Snapshot würde die Schrift um wenige
+// Pixel versetzen. Ohne Name bleibt der Live-Header fix stehen, nur der Root
+// (Inhalt) blendet über. Betrifft ausschließlich den SPA-Pfad; die
+// Cross-Document-CRT-Choreografie (ohne .spa-vt) behält den Masthead-Snapshot.
+html.spa-vt .masthead {
+  view-transition-name: none;
+}
+
 // Group MIT abschalten: die UA-Default-Animation (0.25s Geometrie-Morph)
 // staucht sonst den Header bei minimal abweichender Geometrie.
 // Sichtbar bleibt der ALTE Snapshot (eingeschwungener Zustand = exakt das,
@@ -982,5 +992,21 @@ html.vt-capture body::before {
       transform: scaleY(1);
       filter: brightness(1);
     }
+  }
+}
+
+// --- reduced-motion: harte zweite Verteidigungslinie (spa-nav Phase 1) --------
+// spa-nav umgeht startViewTransition unter reduce bereits im JS. Dies ist der
+// CSS-Gürtel für JEDEN aktuellen/künftigen VT-Pfad, falls der JS-Gate je fällt.
+// (Cross-Doc-@view-transition ist ohnehin no-preference-gegatet -> hier No-Op,
+// rein defensiv, WCAG 2.3.3.)
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    // !important bewusst: harter Gürtel gegen jede (auch künftige) Animation
+    // auf den VT-Pseudo-Elementen unter reduzierter Bewegung (WCAG 2.3.3).
+    // stylelint-disable-next-line declaration-no-important
+    animation: none !important;
   }
 }

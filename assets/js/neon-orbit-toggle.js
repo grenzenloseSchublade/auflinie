@@ -31,6 +31,7 @@
       orbitStartTimeMs: 0,
     };
     stateByScope.set(scope, state);
+    activeScopes.add(scope);   // für teardownNeon (Timer stoppen), auch bei Tastaturnutzung
     return state;
   };
 
@@ -326,54 +327,67 @@
     state.clickTimer = null;
   };
 
-  const triggers = document.querySelectorAll(".neon-orbit-trigger");
-  if (!triggers.length) return;
+  // ── Persistent-Shell-Kontrakt (spa-nav.js) ─────────────────────────────────
+  // Aktive Scopes mitführen (WeakMap ist nicht iterierbar) -> Teardown kann Timer stoppen.
+  const activeScopes = new Set();
+  let neonController = null;
+  let paintObserver = null;
 
-  triggers.forEach((el) => {
-    el.addEventListener("click", (event) => {
+  function mountNeon(root) {
+    const scope = root || document;
+    const triggers = scope.querySelectorAll(".neon-orbit-trigger");
+    if (!triggers.length) return;
+
+    if (neonController) neonController.abort();
+    neonController = new AbortController();
+    const signal = neonController.signal;
+
+    const onActivate = (event) => {
       event.preventDefault();
-      const scope = getScope(event.currentTarget);
-      const state = getState(scope);
-      const target = scope.querySelector(".neon-umlaut");
+      const s = getScope(event.currentTarget);
+      const state = getState(s);
+      const target = s.querySelector(".neon-umlaut");
       if (!target) return;
       state.clickCount += 1;
-      if (state.clickTimer) {
-        window.clearTimeout(state.clickTimer);
-      }
-      state.clickTimer = window.setTimeout(
-        () => handleClicks(scope, state, target),
-        clickWindowMs
-      );
+      if (state.clickTimer) window.clearTimeout(state.clickTimer);
+      state.clickTimer = window.setTimeout(() => handleClicks(s, state, target), clickWindowMs);
+    };
+
+    triggers.forEach((el) => {
+      el.addEventListener("click", onActivate, { signal });
+      el.addEventListener("keydown", (ev) => {
+        if (ev.key !== "Enter" && ev.key !== " ") return;
+        onActivate(ev);
+      }, { signal });
     });
 
-    el.addEventListener("keydown", (event) => {
-      if (event.key !== "Enter" && event.key !== " ") return;
-      event.preventDefault();
-      const scope = getScope(event.currentTarget);
-      const state = getState(scope);
-      const target = scope.querySelector(".neon-umlaut");
-      if (!target) return;
-      state.clickCount += 1;
-      if (state.clickTimer) {
-        window.clearTimeout(state.clickTimer);
-      }
-      state.clickTimer = window.setTimeout(
-        () => handleClicks(scope, state, target),
-        clickWindowMs
-      );
-    });
-  });
-
-  // Dauer-Animationen (box-/text-shadow = Paint-teuer) pausieren, sobald der
-  // Schriftzug aus dem Viewport gescrollt ist — die Klasse wirkt per CSS nur,
-  // wenn keine Choreografie läuft (siehe _neon-base.scss), damit deren
-  // Timer-Zustandsmaschine nicht aus dem Tritt gerät
-  if ("IntersectionObserver" in window) {
-    const paintObserver = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        entry.target.classList.toggle("neon-paused", !entry.isIntersecting);
+    // Dauer-Animationen (box-/text-shadow = Paint-teuer) pausieren, sobald der
+    // Schriftzug aus dem Viewport gescrollt ist — die Klasse wirkt per CSS nur,
+    // wenn keine Choreografie läuft (siehe _neon-base.scss), damit deren
+    // Timer-Zustandsmaschine nicht aus dem Tritt gerät
+    if ("IntersectionObserver" in window) {
+      if (paintObserver) paintObserver.disconnect();
+      paintObserver = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          entry.target.classList.toggle("neon-paused", !entry.isIntersecting);
+        });
       });
-    });
-    document.querySelectorAll(".neon-name").forEach((el) => paintObserver.observe(el));
+      scope.querySelectorAll(".neon-name").forEach((el) => paintObserver.observe(el));
+    }
   }
+
+  function teardownNeon() {
+    if (neonController) { neonController.abort(); neonController = null; }   // Trigger-Listener weg
+    if (paintObserver) { paintObserver.disconnect(); paintObserver = null; } // Observer-Leak zu
+    activeScopes.forEach((s) => { const st = stateByScope.get(s); if (st) clearTimers(st); }); // Timer stoppen
+    activeScopes.clear();
+  }
+
+  document.addEventListener('spa:load', (e) => mountNeon(e.detail && e.detail.root));
+  document.addEventListener('spa:unload', teardownNeon);
+  window.addEventListener('pageshow', (e) => { if (e.persisted) mountNeon(document); });
+
+  function neonPeFallback() { if (!window.__spaNavActive) mountNeon(document); }
+  if (document.readyState === 'complete') neonPeFallback();
+  else document.addEventListener('DOMContentLoaded', neonPeFallback);
 })();

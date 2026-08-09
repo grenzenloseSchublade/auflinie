@@ -33,6 +33,7 @@ const CACHE_URLS = [
   './assets/js/author-follow.js',
   './assets/js/back-to-top.js',
   './assets/js/neon-orbit-toggle.js',
+  './assets/js/spa-nav.js',
   './assets/js/blog-search.js',
   './assets/js/skill-chips.js',
   './assets/js/skill-graph-sim.js',
@@ -116,7 +117,10 @@ self.addEventListener('fetch', event => {
   // umgeht auch den HTTP-Cache des Browsers. Veraltete Seiten aus dem
   // Laufzeit-Cache waren die Ursache der Update-Dauerschleife; der Cache
   // dient nur noch als Offline-Fallback (offline.html).
-  if (event.request.mode === 'navigate') {
+  // X-SPA-Nav: clientseitige Navigation (spa-nav.js) holt die Ziel-HTML per
+  // fetch — das ist KEINE 'navigate'-Anfrage, soll aber denselben cache-first-
+  // Pfad + Offline-Fallback nutzen wie eine echte Navigation.
+  if (event.request.mode === 'navigate' || event.request.headers.get('X-SPA-Nav')) {
     event.respondWith(handleNavigation(event.request));
     return;
   }
