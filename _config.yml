@@ -143,6 +143,8 @@ defaults:
 exclude:
   - design-reference/ # Design-Referenzen, absichtlich nicht deployt (siehe design-reference/README.md)
   - Lebenslauf-soprasteria/ # VERTRAULICH: Arbeitsdokumente, nie in den Build/Deploy (auch in .gitignore)
+  - tests/ # Playwright-Regressionstests (#6) — nicht deployen
+  - playwright.config.js
   - .sass-cache/
   - .jekyll-cache/
   - gemfiles/

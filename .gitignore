@@ -15,6 +15,11 @@ Thumbs.db
 .env.*
 !.env.example
 
+# Playwright-Testartefakte (Reports/Traces) — Tests selbst sind committet
+playwright-report/
+test-results/
+.playwright/
+
 # IDE- & Tooling-Dateien
 .idea/
 .vscode/
