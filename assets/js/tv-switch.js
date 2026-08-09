@@ -32,10 +32,14 @@
   // und höchstens einmal pro Cooldown — der Effekt markiert Kapitel,
   // nicht jeden Klick (Nutzer-Entscheidung, siehe README-tv-umschalt.md)
   function crtAllowed(fromPath, toPath) {
-    // Auf ALLEN Viewports (früher mobil-gegatet). Weiterhin DOSIERT: nur bei
-    // Ortswechsel (Bereichsgrenze), oben gescrollt, höchstens einmal pro
-    // Cooldown — markiert Kapitel, nicht jeden Klick. (Firefox kann kein
-    // Cross-Doc-VT; reduced-motion schaltet @view-transition ohnehin ab.)
+    // NUR mobil: der Kanalwechsel betrifft die GANZE Seite und wirkt nur
+    // stimmig, wenn das Hero-Bild den Viewport füllt (mobil). Auf Desktop (mehr
+    // Layout/Chrome) sähe der Ganzseiten-Effekt unruhig aus. Ihn auf Desktop
+    // NUR auf die Hero-Region zu scopen wäre ein eigener Schritt (Task #10).
+    // Weiterhin dosiert: Bereichswechsel + Scroll-Top + Cooldown (markiert
+    // Kapitel). Firefox kann kein Cross-Doc-VT; reduced-motion schaltet
+    // @view-transition ohnehin ab.
+    if (window.innerWidth > 768) return false;
     if (window.scrollY > 4) return false;
     if (!toPath || area(fromPath) === area(toPath)) return false;
     try {
