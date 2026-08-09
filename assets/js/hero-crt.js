@@ -440,6 +440,31 @@
     }
   }
   
+  // Einmaliger, dezenter Hinweis-Puls auf den CRT-Power-Button (~1.2s nach dem
+  // vollständigen Laden), macht den Retro/Lesemodus-Knopf entdeckbar. HART
+  // aktiviert — ignoriert reduced-motion (wie der CRT-Hero generell, siehe
+  // README_DEV); ein einzelner sanfter Puls führt gerade bewegungssensible
+  // Nutzer zum ruhigen Lesemodus. Nur einmal pro Session.
+  function schedulePowerHint() {
+    try { if (sessionStorage.getItem('auflinieHeroCrtPowerHinted') === '1') return; } catch (e) { /* private mode */ }
+    if (window._auflinieHeroCrtHintScheduled) return;
+    window._auflinieHeroCrtHintScheduled = true;
+    var fire = function () {
+      window.setTimeout(function () {
+        var btn = document.getElementById('hero-crt-power');
+        if (!btn) { window._auflinieHeroCrtHintScheduled = false; return; } // kein Button -> später erneut zulassen
+        btn.classList.add('hero-crt-power--hint');
+        btn.addEventListener('animationend', function onEnd() {
+          btn.classList.remove('hero-crt-power--hint');
+          btn.removeEventListener('animationend', onEnd);
+        });
+        try { sessionStorage.setItem('auflinieHeroCrtPowerHinted', '1'); } catch (e) { /* private mode */ }
+      }, 1200);
+    };
+    if (document.readyState === 'complete') fire();
+    else window.addEventListener('load', fire, { once: true });
+  }
+
   // ── Persistent-Shell-Kontrakt (spa-nav.js): Mount bei jedem spa:load ────────
   function mountHero(root) {
     var scope = root || document;
@@ -469,6 +494,7 @@
     if (config.enableImageCaching !== false && toLoad.length) applyBackgroundImages(toLoad);
 
     bindHomeHeroCrtPowerToggle();
+    schedulePowerHint();
   }
 
   function teardownHero() {

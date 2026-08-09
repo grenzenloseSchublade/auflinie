@@ -513,6 +513,28 @@
       .hero-crt-power__svg {
         display: block;
       }
+
+      // Einmaliger dezenter Hinweis-Puls (JS setzt .hero-crt-power--hint ~1.2s
+      // nach dem Laden, einmal pro Session) — macht Retro/Lesemodus entdeckbar.
+      // Runder, weicher Phosphor-Puls (radialer Bloom) statt eckigem box-shadow-
+      // Ring — liest sich als einladender Licht-Puls, nicht als Fokus-Rahmen, und
+      // passt zum CRT-Look. Eigener ::after-Layer -> stört die filter-basierten
+      // aria-pressed-Zustände nicht. HART aktiviert (ignoriert reduced-motion,
+      // wie der CRT-Hero generell).
+      &--hint {
+        position: relative;
+
+        &::after {
+          content: "";
+          position: absolute;
+          inset: -45%; // Bloom größer als der Button -> runde Blüte über die Ecken hinaus
+          border-radius: 50%;
+          background: radial-gradient(closest-side, rgb(90 200 120 / 55%), rgb(90 200 120 / 0%) 72%);
+          pointer-events: none;
+          z-index: -1; // hinter dem Power-Icon
+          animation: hero-crt-power-hint 1.4s ease-in-out;
+        }
+      }
     }
 
     // Wrapper für den Inhalt
@@ -702,4 +724,20 @@
   border-radius: 4px 0 0;
   line-height: 1.35;
   text-align: right;
+}
+
+// Hinweis-Puls für den CRT-Power-Button (Trigger: hero-crt.js schedulePowerHint,
+// Klasse .hero-crt-power--hint). Sanfter grüner box-shadow-Ring, auf und ab —
+// stört die filter-basierten aria-pressed-Zustände des Buttons nicht.
+@keyframes hero-crt-power-hint {
+  0%,
+  100% {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+
+  45% {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
