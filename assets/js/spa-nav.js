@@ -362,10 +362,11 @@
     announce(document.title);
   }
   function resetShellState() {
-    if (document.body.classList.contains('menu-open') &&
-        window.GreedyNav && typeof window.GreedyNav.close === 'function') {
-      try { window.GreedyNav.close(); } catch (_) {}
-    }
+    if (!document.body.classList.contains('menu-open') || !window.GreedyNav) return;
+    // Instant-Close bevorzugen: der Drawer muss VOR dem VT-Snapshot geschlossen
+    // sein, sonst klappt er während der Kanalwechsel-Animation ein (statt davor).
+    var closeFn = window.GreedyNav.closeInstant || window.GreedyNav.close;
+    if (typeof closeFn === 'function') { try { closeFn(); } catch (_) {} }
   }
 
   // ── §2 A11y: Fokus auf #main[role=main], NICHT auf das dekorative Hero-h1 ────
