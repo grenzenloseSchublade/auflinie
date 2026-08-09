@@ -11,10 +11,6 @@
  * Feature-detect per DOM (keine Liquid-Abhängigkeit mehr): das Collapse wird
  * nur verdrahtet, wenn der Toggle (.toc-toggle) vorhanden ist; die frühere
  * toc_id kommt aus dem gerenderten Toggle-id-Attribut.
- *
- * Zusätzlich (#8): jeder TOC-Link bekommt data-text = sein Text, damit CSS die
- * Fett-Breite reservieren kann (::after) — so springt der Zeilenumbruch nicht,
- * wenn die aktive Zeile fett wird.
  */
 (function () {
   'use strict';
@@ -48,16 +44,6 @@
     if (controller) { controller.abort(); }
     controller = new AbortController();
     var signal = { signal: controller.signal };
-
-    // Fett-Breite reservieren (#8): CSS ::after nutzt data-text.
-    originalToc.querySelectorAll('.toc__menu a').forEach(function (a) {
-      a.setAttribute('data-text', a.textContent.trim());
-    });
-    if (stickyDropdown) {
-      stickyDropdown.querySelectorAll('.toc__menu a').forEach(function (a) {
-        a.setAttribute('data-text', a.textContent.trim());
-      });
-    }
 
     var isDropdownOpen = false;
     var stickyVisible = false;

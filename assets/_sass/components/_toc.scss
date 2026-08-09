@@ -273,12 +273,13 @@
         color: $fg-subtle;
     }
 
-    // Scrollspy: aktiver Link selbst fett in dezentem Cyan (Nutzerwunsch —
-    // volles Cyan war zu krass)
+    // Scrollspy: aktiver Link in dezentem Cyan (volles Cyan war zu krass).
+    // BEWUSST NICHT fett: font-weight würde die Zeilenbreite ändern und lange
+    // Einträge (schmale TOC-Spalte) beim Aktivieren umbrechen lassen -> Höhen-
+    // Sprung der Liste. Aktiv-Indikator = Cyan-Text + Cyan-Rail (::before unten).
     .active > a {
         background-color: transparent;
         color: $link-color-active;
-        font-weight: 700;
     }
 }
 
@@ -379,12 +380,12 @@
     // ==========================================================================
     // ACTIVE STATE - Scrollspy (Gumshoe setzt .active auf das <li>,
     // das JS zusätzlich aria-current auf das <a>)
-    // Drei Kanäle: Text cyan + Bold + cyan Rail-Segment über der grauen Rail —
-    // kein Hintergrund, kein Layout-Jitter
+    // Zwei Kanäle: Text cyan + cyan Rail-Segment über der grauen Rail — KEIN
+    // Bold (das änderte die Zeilenbreite und ließe lange Einträge beim
+    // Aktivieren umbrechen -> Höhen-Sprung); kein Hintergrund, kein Layout-Jitter
     // ==========================================================================
     li.active > a {
         color: $link-color-active;
-        font-weight: 700;
         position: relative;
 
         &::before {
