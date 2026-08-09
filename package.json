@@ -9,6 +9,7 @@
   },
   "scripts": {
     "lint:css": "stylelint \"assets/_sass/**/*.scss\"",
-    "lint:css:fix": "stylelint --fix \"assets/_sass/**/*.scss\""
+    "lint:css:fix": "stylelint --fix \"assets/_sass/**/*.scss\"",
+    "test:e2e": "playwright test"
   }
 }

@@ -11,18 +11,28 @@ Fundament nicht heimlich brechen.
 
 ## Einrichten & ausführen
 
-```bash
-# 1) Playwright + Browser (einmalig, lädt eine Chromium-Binärdatei)
-npm install -D @playwright/test
-npx playwright install chromium
+### Im Devcontainer (empfohlen)
 
-# 2) Seite lokal servieren (baseurl = /auflinie)
+```bash
+# 1) einmalig: Playwright + Chromium + System-Libs (opt-in, nicht in post-create)
+bash .devcontainer/setup-e2e.sh
+
+# 2) Seite servieren (baseurl = /auflinie)
 bundle exec jekyll serve          # -> http://localhost:4000/auflinie/
 
-# 3) Tests laufen lassen (in einem zweiten Terminal)
-npx playwright test
+# 3) Tests (zweites Terminal)
+npm run test:e2e                  # oder: npx playwright test
+```
+
+### Lokal (ohne Devcontainer)
+
+```bash
+npm install --no-save @playwright/test   # ohne package.json/Lock zu ändern
+npx playwright install chromium
+bundle exec jekyll serve                 # -> http://localhost:4000/auflinie/
+npm run test:e2e
 #   anderes Setup/Port:
-BASE_URL=http://127.0.0.1:8080 npx playwright test
+BASE_URL=http://127.0.0.1:8080 npm run test:e2e
 ```
 
 ## Was geprüft wird

@@ -27,6 +27,9 @@ bundle install
 echo "Installing lint tooling (Stylelint)..."
 npm ci
 
+echo ""
+echo "Optional: SPA-E2E-Tests (#6) einrichten mit:  bash .devcontainer/setup-e2e.sh"
+echo ""
 echo "===================================="
 echo "Setup complete!"
 echo "   Ruby: $(ruby -v)"
