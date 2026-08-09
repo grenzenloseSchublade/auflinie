@@ -217,12 +217,29 @@
     return false;
   }
 
-  // ── §6 Swap (+ View-Transition-Kuer) ────────────────────────────────────────
+  // ── §6 Swap (+ View-Transition-Kür) ─────────────────────────────────────────
+  // Ziel: Animation/Verhalten IDENTISCH zum Full-Reload (Cross-Doc-VT). Daher
+  // dieselbe Choreografie: der offene Drawer bleibt für den ALTEN Snapshot
+  // erhalten (nav-drawer) und wird erst in mutate geschlossen -> ::view-
+  // transition-old(nav-drawer) slidet ihn raus; Typen crt/drawer + vt-capture
+  // exakt wie im pageswap/pagereveal-Pfad von tv-switch.js. Die gesamte CSS-
+  // Choreografie (inkl. $crt-drawer-offset: Drawer-Exit zuerst, dann CRT) ist
+  // gemeinsam und greift automatisch über die Typen/Namen.
   function swap(doc, href, push, fromPath) {
-    resetShellState();                                    // Drawer VOR der Transition schliessen
     var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var drawerOpen = !!(window.__tvSwitch &&
+      typeof window.__tvSwitch.drawerOpen === 'function' && window.__tvSwitch.drawerOpen());
+
+    // Drawer INSTANT (transition:none) schließen. Im VT-Pfad INNERHALB mutate,
+    // damit der NEUE Snapshot ihn geschlossen zeigt -> Slide-Out des alten.
+    function closeDrawerInstant() {
+      if (drawerOpen && window.GreedyNav && typeof window.GreedyNav.closeInstant === 'function') {
+        try { window.GreedyNav.closeInstant(); } catch (_) {}
+      }
+    }
 
     var mutate = function () {
+      closeDrawerInstant();       // vor updateBodyClass -> menu-open nicht als Runtime-Klasse bewahrt
       replaceContent(doc);        // spa:unload + innerHTML
       if (push) focusMain();      // Fokus SYNCHRON, nur vorwaerts, VOR reconcile
       document.title = doc.title;
@@ -233,41 +250,49 @@
 
     var done;
     if (document.startViewTransition && !reduce) {
-      // Kanalwechsel-Kür (type 'crt') NUR bei Vorwärts-Nav + Dosierung aus
-      // tv-switch.js (mobil, Scroll-Top, Bereichswechsel, Cooldown). Sonst
-      // dezenter Crossfade mit stehendem Header.
       var toPath = '';
       try { toPath = new URL(href, location.href).pathname; } catch (_) {}
+      // Dosierung wie Full-Reload (tv-switch.crtAllowed: mobil/Scroll-Top/
+      // Bereichswechsel/Cooldown; Seiteneffekt Cooldown -> genau EIN Aufruf).
       var wantsCrt = !!(push && window.__tvSwitch &&
         typeof window.__tvSwitch.crtAllowed === 'function' &&
         window.__tvSwitch.crtAllowed(fromPath, toPath));
 
+      var types = [];
+      if (wantsCrt) types.push('crt');
+      if (drawerOpen) types.push('drawer');
+      // vt-capture: Content-Overlay (body::before) aus dem Snapshot nehmen —
+      // exakt wie tv-switch.pageswap bei offenem Drawer.
+      if (drawerOpen) document.documentElement.classList.add('vt-capture');
+
       var vt = null, usedSpaVt = false;
-      if (wantsCrt) {
-        // Masthead NICHT aus dem VT nehmen (kein spa-vt): er behält seinen
-        // Snapshot (animation:none) und wird nicht vom Antenne-Effekt verzerrt —
-        // nur der Content-Root bekommt den Kanalwechsel. Minimaler Snapshot-
-        // Versatz wird vom Effekt überdeckt (nur mobil aktiv).
-        try { vt = document.startViewTransition({ update: mutate, types: ['crt'] }); }
-        catch (_) { vt = null; }   // object-Form nicht unterstützt -> unten wie non-crt
+      if (types.length) {
+        // Masthead behält seinen Snapshot (KEIN spa-vt) — nur Content-Root und
+        // Drawer werden transitioniert (wie Full-Reload). Minimaler Masthead-
+        // Versatz vom Effekt überdeckt (nur mobil aktiv).
+        try { vt = document.startViewTransition({ update: mutate, types: types }); }
+        catch (_) { vt = null; }   // object-Form nicht unterstützt -> Fallback unten
       }
       if (!vt) {
-        // Masthead-DOM wird beim Swap NICHT ersetzt -> per spa-vt aus dem VT
-        // nehmen, sonst platziert der Browser dessen Snapshot um wenige Pixel
-        // versetzt („Schrift springt"). Nur der Content crossfadet. Zähler
-        // gegen schnelle Doppel-Navigation (kein Race).
+        // Ohne crt/drawer (Desktop/dosiert-aus) ODER object-Form fehlt: Masthead
+        // per spa-vt aus dem VT nehmen (kein Pixel-Versatz), nur Content
+        // crossfadet. Ein Drawer-Slide ist dann nicht möglich -> closeDrawer-
+        // Instant in mutate reicht. Zähler gegen schnelle Doppel-Navigation.
         document.documentElement.classList.add('spa-vt');
         vtDepth++;
         usedSpaVt = true;
         vt = document.startViewTransition(mutate);
       }
-      var clearVt = function () {
+      var cleanup = function () {
+        document.documentElement.classList.remove('vt-capture');
         if (usedSpaVt && --vtDepth <= 0) { vtDepth = 0; document.documentElement.classList.remove('spa-vt'); }
       };
-      if (vt.finished && vt.finished.then) vt.finished.then(clearVt, clearVt);
-      else clearVt();
+      if (vt.finished && vt.finished.then) vt.finished.then(cleanup, cleanup);
+      else cleanup();
       done = vt.updateCallbackDone ? vt.updateCallbackDone.catch(function () {}) : Promise.resolve();
     } else {
+      // Kein VT (reduced-motion / kein Support): Drawer instant zu, sofort tauschen.
+      closeDrawerInstant();
       mutate();
       done = Promise.resolve();
     }
@@ -360,13 +385,6 @@
     var root = document.querySelector('.initial-content');
     dispatch('spa:load', { root: root, url: href, initial: false });
     announce(document.title);
-  }
-  function resetShellState() {
-    if (!document.body.classList.contains('menu-open') || !window.GreedyNav) return;
-    // Instant-Close bevorzugen: der Drawer muss VOR dem VT-Snapshot geschlossen
-    // sein, sonst klappt er während der Kanalwechsel-Animation ein (statt davor).
-    var closeFn = window.GreedyNav.closeInstant || window.GreedyNav.close;
-    if (typeof closeFn === 'function') { try { closeFn(); } catch (_) {} }
   }
 
   // ── §2 A11y: Fokus auf #main[role=main], NICHT auf das dekorative Hero-h1 ────
