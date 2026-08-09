@@ -45,6 +45,20 @@
     loadedScripts.add(s.src);
   });
 
+  // Cross-Origin-Abhängigkeiten (CDN-Skripte/-Styles, z.B. jsdelivr/MathJax,
+  // Fractal-CSS) der STARTseite. reconcilePageScripts kann Cross-Origin NICHT
+  // nachladen -> eine Zielseite mit einer NEUEN solchen Abhängigkeit wird voll
+  // navigiert statt kaputt geswappt (needsFullLoad).
+  var externalDeps = new Set();
+  Array.prototype.forEach.call(
+    document.querySelectorAll('script[src], link[rel="stylesheet"][href]'),
+    function (el) {
+      var a = el.tagName === 'SCRIPT' ? 'src' : 'href';
+      var u; try { u = new URL(el.getAttribute(a), location.href); } catch (_) { return; }
+      if (u.origin !== location.origin) externalDeps.add(u.href);
+    }
+  );
+
   // ── Pfad-Helfer + Wired-Praedikat ───────────────────────────────────────────
   function stripBase(pathname) {
     if (BASEURL && pathname.indexOf(BASEURL) === 0) {
@@ -58,7 +72,7 @@
   function isWired(pathname) {
     var p = stripBase(pathname);
     if (p === '/' || p === '/about/' || p === '/cv/') return true;
-    return /^\/posts\/(page\d+\/)?$/.test(p);
+    return /^\/posts\//.test(p);   // Übersicht, Pagination UND einzelne Beiträge
   }
 
   // ── §0 Link-Interception (delegiert am document, ueberlebt Swaps) ───────────
@@ -163,6 +177,7 @@
     fetchPage(href).then(function (doc) {
       if (doc === STALE) return;
       if (!doc) { location.href = href; return; }                    // harte Fallback-Leitplanke
+      if (needsFullLoad(doc)) { location.href = href; return; }       // neue CDN-Abhängigkeit -> voll navigieren
       if (push) {
         document.title = doc.title;                                  // vor pushState -> korrektes Verlaufs-Label
         history.pushState({ spa: true, docId: DOC_ID, url: href, scrollY: 0 }, '', href);
@@ -193,6 +208,19 @@
         return doc;
       });
     }).catch(function () { return null; });
+  }
+
+  // ── Cross-Origin-Abhängigkeit der Zielseite, die wir NICHT nachladen können
+  //     (CDN-Skript/-Style, das die Startseite noch nicht hat) -> voll laden ──
+  function needsFullLoad(doc) {
+    var els = doc.querySelectorAll('script[src], link[rel="stylesheet"][href]');
+    for (var i = 0; i < els.length; i++) {
+      var el = els[i], a = el.tagName === 'SCRIPT' ? 'src' : 'href', u;
+      try { u = new URL(el.getAttribute(a), location.href); } catch (_) { continue; }
+      if (u.origin === location.origin) continue;
+      if (!externalDeps.has(u.href)) return true;
+    }
+    return false;
   }
 
   // ── §6 Swap (+ View-Transition-Kuer) ────────────────────────────────────────
