@@ -13,7 +13,7 @@
 
   var KEY = 'tv-switch:state';
   var COOLDOWN_KEY = 'tv-switch:last-crt';
-  var COOLDOWN_MS = 8000;
+  var COOLDOWN_MS = 6000;
   var BASE = document.documentElement.getAttribute('data-baseurl') || '';
 
   function normalizePath(p) {
