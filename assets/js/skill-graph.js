@@ -448,6 +448,7 @@
     this.panning = true;
     this.panStartCentroid = this.centroid();
     this.panStartPan = { x: this.panX || 0, y: this.panY || 0 };
+    try { this.canvas.style.cursor = 'grabbing'; } catch (e) { /* noop */ }
   };
 
   // Pan begrenzen: mindestens PAD px der Knoten-Wolke bleiben je Seite sichtbar.
@@ -530,6 +531,7 @@
       this.dragMoved = false;
       this.pointerStart = pos;
       try { this.canvas.setPointerCapture(event.pointerId); } catch (e) { /* noop */ }
+      try { this.canvas.style.cursor = 'grabbing'; } catch (e) { /* noop */ }
     } else if (event.pointerType === 'mouse') {
       // Maus auf leere Fläche -> Pan (Desktop, kein Scroll-Konflikt).
       this.startPan();
@@ -539,6 +541,13 @@
 
   SkillGraph.prototype.onPointerMove = function (event) {
     if (this.pointers[event.pointerId]) { this.pointers[event.pointerId] = this.canvasPos(event); }
+
+    // Hover-Cursor (Maus): über einem Knoten -> Klick-Finger, sonst Greif-Hand.
+    if (!this.panning && this.dragId === null && event.pointerType === 'mouse') {
+      var hover = this.canvasPos(event);
+      var overNode = this.hitTest(hover.x - (this.panX || 0), hover.y - (this.panY || 0));
+      this.canvas.style.cursor = overNode !== null ? 'pointer' : 'grab';
+    }
 
     if (this.panning) {
       var c = this.centroid();
@@ -583,6 +592,7 @@
       } else {
         this.panning = false;
         try { this.canvas.style.touchAction = ''; } catch (e) { /* noop */ }  // Scroll wieder frei
+        try { this.canvas.style.cursor = 'grab'; } catch (e) { /* noop */ }
       }
       try { this.canvas.releasePointerCapture(event.pointerId); } catch (e) { /* noop */ }
       return;
@@ -596,6 +606,7 @@
     }
     // War es ein Drag: fx/fy bleiben gesetzt → der Knoten bleibt liegen.
     try { this.canvas.releasePointerCapture(event.pointerId); } catch (e) { /* noop */ }
+    try { this.canvas.style.cursor = 'grab'; } catch (e) { /* noop */ }
     this.dragId = null;
     this.dragMoved = false;
     this.pointerStart = null;
