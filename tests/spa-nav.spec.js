@@ -56,6 +56,46 @@ test.describe('Persistent-Shell-Navigation — Non-Breaking-Invarianten', () => 
     await expect(page).toHaveURL(new RegExp(`${BASE}/$`));
   });
 
+  test('Rapid-Nav: Single-Flight, kein Overlap, spa:load/unload balanciert', async ({ page }) => {
+    await gotoHome(page);
+
+    // Lifecycle-Zähler ab JETZT scharf schalten (initiales spa:load ist schon durch).
+    await page.evaluate(() => {
+      window.__spaLoads = [];
+      window.__spaUnloads = [];
+      document.addEventListener('spa:load', (e) => window.__spaLoads.push(e.detail && e.detail.url));
+      document.addEventListener('spa:unload', () => window.__spaUnloads.push(1));
+    });
+
+    // Zwei verdrahtete Ziele im SELBEN Tick anklicken -> maximale Überlappung
+    // (die zweite Navigation überholt die erste, bevor deren Fetch resolvt).
+    await page.evaluate(() => {
+      var a = document.querySelector('.greedy-nav a[href$="/about/"]');
+      var c = document.querySelector('.greedy-nav a[href$="/cv/"]');
+      if (a) a.click();
+      if (c) c.click();
+    });
+
+    // Endzustand = zuletzt geklicktes Ziel (CV), kein Voll-Reload (alles wired).
+    await expect(page).toHaveURL(new RegExp(`${BASE}/cv/?$`));
+    expect(await survivedSwap(page)).toBe(true);
+
+    await page.waitForTimeout(600); // etwaige pending-Drainage + finishSwap settlen lassen
+
+    const { loads, unloads, lastLoad } = await page.evaluate(() => ({
+      loads: window.__spaLoads.length,
+      unloads: window.__spaUnloads.length,
+      lastLoad: window.__spaLoads[window.__spaLoads.length - 1]
+    }));
+
+    // Jeder committete Swap = genau 1 unload + 1 load -> perfekt balanciert,
+    // egal ob nur CV oder About+CV committeten. Keine verwaisten Lifecycle-Events.
+    expect(loads).toBe(unloads);
+    expect(loads).toBeGreaterThanOrEqual(1);
+    // Das LETZTE spa:load gehört zum Endziel — kein stale finishSwap mit falscher URL.
+    expect(lastLoad).toMatch(new RegExp(`${BASE}/cv/?$`));
+  });
+
   test('ohne JS bleibt die Navigation nativ (Progressive Enhancement)', async ({ browser }) => {
     const ctx = await browser.newContext({ javaScriptEnabled: false });
     const page = await ctx.newPage();

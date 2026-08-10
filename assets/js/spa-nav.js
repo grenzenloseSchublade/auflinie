@@ -34,12 +34,24 @@
                ':' + Math.random().toString(36).slice(2);
 
   // ── Zustand ────────────────────────────────────────────────────────────────
+  // Eine Navigation ist eine stornierbare Transaktion mit einer Epoch (nav.token).
+  // Die Epoch besitzt Fetch UND Commit. Wird sie ueberholt, bricht der Fetch hart
+  // ab (currentAbort) und der Commit kommt nie — kein Zustand bleibt haengen.
   var nav = { token: 0 };
   var STALE = {};
   var announcer = null;
   var bfRestored = false;   // pageshow(persisted) -> naechsten popstate ueberspringen
   var bfPending = null;     // verzoegerter popstate-Swap (durch pageshow abbrechbar)
   var vtDepth = 0;          // laufende SPA-View-Transitions (Masthead-Snapshot-Gate)
+  // Single-Flight-Commit: es committet IMMER nur genau EINE Navigation ins DOM.
+  // Kommt waehrend eines laufenden Commits eine neue, wartet sie als 'pending'
+  // (juengste gewinnt) und laeuft, sobald der aktuelle Commit fertig ist. Dadurch
+  // koennen sich Swap-Ketten und View-Transitions NIE ueberlappen — Epoch-Race,
+  // VT-Skip-Ruckeln und vt-capture/spa-vt-Cleanup-Races sind strukturell
+  // ausgeschlossen statt per Guard geflickt.
+  var committing = false;
+  var pending = null;
+  var currentAbort = null;  // laufender Fetch; bei Ueberholung hart abgebrochen
   var loadedScripts = new Set();
   Array.prototype.forEach.call(document.querySelectorAll('script[src]'), function (s) {
     loadedScripts.add(s.src);
@@ -154,35 +166,61 @@
   });
 
   // ── Orchestrierung ──────────────────────────────────────────────────────────
+  // Transaktion: Epoch ziehen, ueberholten Fetch hart abbrechen, Ziel holen,
+  // dann committen (oder hinter einen laufenden Commit stellen).
   function navigate(href, push, restoreY) {
-    var fromPath = location.pathname;   // VOR pushState -> Herkunft für die CRT-Dosierung
-    // Scroll des AUSGEHENDEN Eintrags sichern — nur vorwaerts, nie auf popstate,
-    // sonst wird der ankommende Eintrag ueberschrieben.
-    if (push) {
-      try { history.replaceState(assign({}, history.state, { scrollY: window.scrollY }), ''); } catch (_) {}
-    }
-    fetchPage(href).then(function (doc) {
+    var my = ++nav.token;
+    // Laufenden, jetzt ueberholten Fetch WIRKLICH abbrechen (nicht nur verwerfen).
+    if (currentAbort) { try { currentAbort.abort(); } catch (_) {} }
+    var ac = ('AbortController' in window) ? new AbortController() : null;
+    currentAbort = ac;
+    fetchPage(href, my, ac && ac.signal).then(function (doc) {
+      if (my !== nav.token) return;                                  // waehrend Fetch ueberholt/abgebrochen
       if (doc === STALE) return;
       if (!doc) { location.href = href; return; }                    // harte Fallback-Leitplanke
       if (needsFullLoad(doc)) { location.href = href; return; }       // neue CDN-Abhängigkeit -> voll navigieren
-      if (push) {
-        document.title = doc.title;                                  // vor pushState -> korrektes Verlaufs-Label
-        history.pushState({ spa: true, docId: DOC_ID, url: href, scrollY: 0 }, '', href);
-      }
-      swap(doc, href, push, fromPath).then(function () {
-        applyScroll(href, push ? 0 : restoreY);
-      });
+      commitOrQueue({ my: my, doc: doc, href: href, push: push, restoreY: restoreY });
     });
   }
 
+  // Single-Flight: laeuft schon ein Commit, wird dies die juengste wartende
+  // Navigation (aeltere wartende werden bewusst verworfen — latest-wins, nur
+  // jetzt ohne jede Ueberlappung).
+  function commitOrQueue(job) {
+    if (committing) { pending = job; return; }
+    runCommit(job);
+  }
+
+  function runCommit(job) {
+    if (job.my !== nav.token) { pending = null; return; }            // schon wieder ueberholt
+    committing = true;
+    // fromPath JETZT (vor pushState) = die Seite, die wir tatsaechlich verlassen —
+    // korrekt fuer die CRT-Dosierung, auch wenn dieser Commit gewartet hat.
+    var fromPath = location.pathname;
+    if (job.push) {
+      // Ausgehenden Scroll sichern, DANN den neuen Eintrag pushen — atomar, damit
+      // Verlauf und Inhalt zusammenpassen (auch nach Wartezeit hinter Single-Flight).
+      try { history.replaceState(assign({}, history.state, { scrollY: window.scrollY }), ''); } catch (_) {}
+      document.title = job.doc.title;                               // korrektes Verlaufs-Label
+      try { history.pushState({ spa: true, docId: DOC_ID, url: job.href, scrollY: 0 }, '', job.href); } catch (_) {}
+    }
+    swap(job.doc, job.href, job.push, fromPath)
+      .then(function () { applyScroll(job.href, job.push ? 0 : job.restoreY); })
+      .catch(function () {})                                         // Swap-Kette resolvet immer; Guertel & Hosentraeger
+      .then(function () {
+        committing = false;
+        var p = pending; pending = null;
+        if (p) runCommit(p);                                        // juengste wartende jetzt fahren
+      });
+  }
+
   // ── §5 Fetch-Pfad (jeder Zweifel -> null -> voller Reload beim Caller) ───────
-  function fetchPage(href) {
-    var my = ++nav.token;
-    return fetch(href, {
-      headers: { 'X-SPA-Nav': '1' },
-      credentials: 'same-origin',
-      redirect: 'follow'
-    }).then(function (res) {
+  // Epoch (my) wird von navigate gezogen; ein abgebrochener Fetch (signal) wird
+  // von der Epoch-Pruefung im Caller ohnehin verworfen -> kein Fallback-Reload.
+  function fetchPage(href, my, signal) {
+    var opts = { headers: { 'X-SPA-Nav': '1' }, credentials: 'same-origin', redirect: 'follow' };
+    if (signal) opts.signal = signal;
+    return fetch(href, opts).then(function (res) {
       if (my !== nav.token) return STALE;
       if (res.redirected && new URL(res.url).origin !== location.origin) { location.href = res.url; return null; }
       if (!res.ok) return null;
@@ -225,6 +263,10 @@
   // exakt wie im pageswap/pagereveal-Pfad von tv-switch.js. Die gesamte CSS-
   // Choreografie (inkl. $crt-drawer-offset: Drawer-Exit zuerst, dann CRT) ist
   // gemeinsam und greift automatisch über die Typen/Namen.
+  // Kein Epoch-Guard im Tail noetig: Single-Flight (runCommit) stellt sicher,
+  // dass immer nur EIN swap laeuft — es gibt keinen ueberlappenden zweiten, der
+  // finishSwap/Cleanup ueberholen koennte. Die Balance spa:load<->spa:unload ist
+  // damit strukturell garantiert, nicht per Race-Guard erkauft.
   function swap(doc, href, push, fromPath) {
     var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     var drawerOpen = !!(window.__tvSwitch &&
