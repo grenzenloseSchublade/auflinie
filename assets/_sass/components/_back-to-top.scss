@@ -4,8 +4,11 @@
 .back-to-top {
   // Positionierung: mittig unten (Nutzerentscheidung — überdeckt zwar
   // punktuell Text, aber alles bleibt scrollbar)
+  --btt-base-bottom: 24px; // Grund-Abstand vom Viewport-Boden
+  --btt-footer-push: 0px;  // JS schiebt den Button STUFENLOS über den Footer
+  // (scroll-gekoppelt) -> kein harter 96px-Sprung mehr, er „reitet" hoch.
   position: fixed;
-  bottom: 24px;
+  bottom: calc(var(--btt-base-bottom) + var(--btt-footer-push));
   left: 50%;
   z-index: 999;
   
@@ -30,8 +33,9 @@
   pointer-events: none;
   transform: translateX(-50%) translateY(20px);
   
-  // Animationen (inkl. bottom: sanftes Ausweichen vor dem Footer)
-  transition: opacity 0.3s ease, transform 0.3s ease, box-shadow 0.2s ease, bottom 0.35s ease;
+  // Animationen: bottom wird NICHT transitioniert — es folgt scroll-gekoppelt
+  // stufenlos dem Footer (eine Transition würde nachlaufen/ruckeln).
+  transition: opacity 0.3s ease, transform 0.3s ease, box-shadow 0.2s ease;
   will-change: opacity, transform;
   
   // SVG-Icon
@@ -87,7 +91,8 @@
   @media (max-width: 767px) {
     width: 44px;
     height: 44px;
-    bottom: 20px;
+
+    --btt-base-bottom: 20px;
 
     // Bleibt mittig (left: 50% + translateX(-50%))
     
@@ -109,15 +114,5 @@
     &:active {
       transform: translateX(-50%);
     }
-  }
-}
-
-// Sobald der Footer sichtbar wird, rutscht der Button darüber
-.back-to-top--above-footer {
-  bottom: 120px;
-
-  // Mobil ist der Footer höher (132px, Nav bricht um) — gemessen 11px Überlappung
-  @media (max-width: 768px) {
-    bottom: 148px;
   }
 }

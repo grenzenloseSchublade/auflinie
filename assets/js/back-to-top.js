@@ -6,7 +6,7 @@
  */
 (function () {
   'use strict';
-  var SCROLL_THRESHOLD = 888, MIN_RATIO = 1.5, THROTTLE_MS = 16;
+  var SCROLL_THRESHOLD = 888, MIN_RATIO = 1.5, THROTTLE_MS = 16, FOOTER_GAP = 16;
   var controller = null;
 
   function throttle(fn, limit) {
@@ -30,7 +30,15 @@
       var vh = window.innerHeight, ph = document.documentElement.scrollHeight;
       btn.classList.toggle('visible', ph > vh * MIN_RATIO && window.scrollY > SCROLL_THRESHOLD);
       var footer = document.querySelector('.page__footer');
-      if (footer) btn.classList.toggle('back-to-top--above-footer', footer.getBoundingClientRect().top < vh);
+      if (footer) {
+        // Stufenlos an den Footer koppeln: sobald dessen Oberkante ins Bild
+        // kommt, „reitet" der Button FOOTER_GAP darüber hoch — scroll-gekoppelt,
+        // kein harter Schwellwert-Sprung. push=0, solange der Footer weit unten ist.
+        var footerTop = footer.getBoundingClientRect().top;
+        var base = parseFloat(getComputedStyle(btn).getPropertyValue('--btt-base-bottom')) || 24;
+        var push = Math.max(0, vh - footerTop + FOOTER_GAP - base);
+        btn.style.setProperty('--btt-footer-push', push + 'px');
+      }
     }
     var throttled = throttle(checkVisibility, THROTTLE_MS);
     window.addEventListener('scroll', throttled, { passive: true, signal: signal });
