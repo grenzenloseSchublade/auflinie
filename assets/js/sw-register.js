@@ -107,7 +107,9 @@
           const swPath = rootPath + 'service-worker.js';
           
           // Registriere den Service Worker mit dem Scope des Root-Verzeichnisses
-          navigator.serviceWorker.register(swPath, { scope: rootPath })
+          // updateViaCache: 'none' -> der SW-Skript-Fetch umgeht bei jedem
+          // Update-Check den HTTP-Cache; ein neuer Build wird zuverlässig erkannt.
+          navigator.serviceWorker.register(swPath, { scope: rootPath, updateViaCache: 'none' })
             .then(registration => {
               // Toast-Lücke: wählte der Nutzer früher "Später", wartet der neue
               // Worker weiter, aber updatefound feuert nicht erneut — daher
@@ -202,17 +204,30 @@
    */
   function wireSpaUpdateChecks() {
     if (!('serviceWorker' in navigator) || !config.enableServiceWorker) return;
-    var MIN_INTERVAL = 5 * 60 * 1000;   // höchstens alle 5 Minuten prüfen
+    var THROTTLE = 12 * 1000;   // nur gegen Doppel-Feuern; sonst so oft wie möglich
     var last = 0;
-    document.addEventListener('spa:load', function(e) {
-      if (e.detail && e.detail.initial) return;   // Erst-Load prüft bereits via register()
+
+    function checkForUpdate() {
+      // Ohne Controller (Erstbesuch) gibt es kein "Update" -> nichts zu tun.
+      if (!navigator.serviceWorker.controller) return;
       var now = Date.now();
-      if (now - last < MIN_INTERVAL) return;       // Rapid-Nav nicht spammen
+      if (now - last < THROTTLE) return;
       last = now;
-      navigator.serviceWorker.ready
-        .then(function(reg) { return reg.update(); })
-        .catch(function() {});
+      navigator.serviceWorker.ready.then(function (reg) {
+        // Wartet bereits ein neuer Worker (z.B. nach "Später")? -> erneut anbieten.
+        if (reg.waiting) { showUpdateToast(reg); }
+        // Frisch prüfen: service-worker.js wird cache-umgehend geholt -> ein neuer
+        // Build wird erkannt, installiert, wartet -> updatefound zeigt den Toast.
+        reg.update().catch(function () {});
+      }).catch(function () {});
+    }
+
+    // Hart: jede Navigation (auch Erst-Load), Rückkehr zum Tab und Fokus.
+    document.addEventListener('spa:load', checkForUpdate);
+    document.addEventListener('visibilitychange', function () {
+      if (document.visibilityState === 'visible') { checkForUpdate(); }
     });
+    window.addEventListener('focus', checkForUpdate);
   }
 
   // Service Worker registrieren
