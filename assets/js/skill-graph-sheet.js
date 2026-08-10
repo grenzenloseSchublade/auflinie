@@ -56,7 +56,12 @@
     this.observer.observe(this.panel, { attributes: true, attributeFilter: ['hidden'] });
 
     // Kapitel-Sichtbarkeit: steuert Floating-Button + TOC-Ausblendung (nur hier).
-    this.io = new IntersectionObserver(this.onIntersect.bind(this));
+    // rootMargin schrumpft das Sichtfenster auf ein zentrales Band -> „im Kapitel"
+    // gilt erst, wenn es WIRKLICH mittig steht, nicht schon wenn die Kante aus dem
+    // Nachbarabschnitt (Akademischer Werdegang) reinlugt.
+    this.io = new IntersectionObserver(this.onIntersect.bind(this), {
+      rootMargin: '-25% 0px -25% 0px'
+    });
     this.io.observe(this.section);
   }
 
