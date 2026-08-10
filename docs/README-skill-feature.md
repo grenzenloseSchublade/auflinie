@@ -10,7 +10,7 @@ Die Skill-Chips auf `/cv/` sind erkundbar:
 - **Stufe 1 — Klick-Hervorhebung (produktiv):** Klick auf einen Chip hebt alle
   Skills hervor, die über gemeinsame Projekte verbunden sind (Rest dimmt), und
   zeigt die Projekte in einer Kontextzeile. Zweiter Klick oder Escape löst.
-- **Stufe 2 — Graph-Panel (experimentell, „In Entwicklung"):** Zuschaltbare
+- **Stufe 2 — Graph-Panel (experimentell, „experimentell"):** Zuschaltbare
   Canvas-Ansicht mit Kräfte-Graph — Knoten = Skills, Kanten = gemeinsame
   Projekte (Kantendeckkraft = Gewicht). Klick auf Knoten wählt aus; die
   Auswahl ist mit der Chip-Liste synchronisiert.
