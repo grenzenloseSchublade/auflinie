@@ -441,6 +441,13 @@ li.cv-skill-chip--breadth {
   line-height: 1.5;
   color: $fg-muted;
 
+  // Immer sticky: die Auswahl-Konsole bleibt beim Scrollen durchs Kapitel oben
+  // sichtbar (unabhängig vom Graph). Opaker Grund + z-index, damit die Chips
+  // beim Pinnen nicht durchscheinen; Offset unter Masthead + sticky-TOC.
+  position: sticky;
+  top: calc(var(--masthead-height) + var(--sticky-toc-height) + 8px);
+  z-index: 6;
+
   // FESTE Höhe (3 Zeilen, mobil 4) + internes Scrollen: der Textwechsel
   // beim Skill-Klick darf das Layout unter keinen Umständen verschieben
   box-sizing: border-box;
@@ -448,7 +455,7 @@ li.cv-skill-chip--breadth {
   overflow-y: auto;
   margin: 0 0 1rem;
   padding: 0.4rem 0.8rem;
-  background: rgb(0 0 0 / 18%);
+  background: rgb(20 21 24 / 97%);
   border-radius: 6px;
   border-left: 2px solid $link-color-subtle;
   transition: border-color 0.2s ease;

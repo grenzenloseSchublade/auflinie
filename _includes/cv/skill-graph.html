@@ -7,10 +7,13 @@
 {% endcomment %}
 <div class="skill-graph" data-skill-graph>
   <div class="skill-graph__bar">
-    <button type="button" class="btn btn--outline skill-graph__toggle"
-            data-role="graph-toggle" aria-expanded="false">Graph anzeigen</button>
+    <button type="button" class="skill-graph__activate"
+            data-role="graph-activate" aria-pressed="false">Graph aktivieren</button>
     <span class="wip-badge">In Entwicklung</span>
   </div>
+  {%- comment -%} Stufe 2: floatender Öffner — nur im Graph-Modus + im Kapitel (CSS/JS) {%- endcomment -%}
+  <button type="button" class="skill-graph__floating"
+          data-role="graph-toggle" aria-expanded="false">Graph anzeigen</button>
   <div class="skill-graph__panel" data-role="graph-panel" hidden>
     <div class="skill-graph__head">
       <p class="skill-graph__note">Experimentelle Ansicht — die Liste oben ist vollständig und maßgeblich. Ein Klick hebt verbundene Skills hervor, Knoten lassen sich ziehen.</p>
