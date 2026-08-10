@@ -74,6 +74,18 @@
     this.activate.textContent = on ? 'Graph deaktivieren' : 'Graph aktivieren';
     if (!on && !this.panel.hidden) { this.toggle.click(); }   // Deaktivieren schließt offenen Graph
     this.syncHere();
+    // Beim Aktivieren taucht der Floating-Öffner unten auf — er geht leicht
+    // unter, daher kurz aufglimmen lassen (wenn er sichtbar wird, also im Kapitel).
+    if (on && this.inView) { this.hintFloating(); }
+  };
+
+  GraphMode.prototype.hintFloating = function () {
+    if (!window.matchMedia('(prefers-reduced-motion: no-preference)').matches) { return; }
+    var btn = this.toggle;
+    btn.classList.remove('is-hint');
+    void btn.offsetWidth;   // Reflow -> Animation startet auch bei erneutem Aktivieren neu
+    btn.classList.add('is-hint');
+    btn.addEventListener('animationend', function () { btn.classList.remove('is-hint'); }, { once: true });
   };
 
   GraphMode.prototype.onScroll = function () {

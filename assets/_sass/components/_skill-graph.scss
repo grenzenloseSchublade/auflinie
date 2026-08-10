@@ -238,6 +238,35 @@ body.graph-open .skill-graph__floating {
   display: none;
 }
 
+// Aufglimmen des Floating-Öffners, wenn er nach dem Aktivieren auftaucht — er
+// geht sonst leicht unter. Bewusst DEUTLICHER als der Aktivieren-Button:
+// stärkerer Cyan-Glow + leichter Scale-Puls, 3x. translateX(-50%) muss im
+// Keyframe erhalten bleiben (der Button ist fixed + zentriert).
+@keyframes graph-floating-glow {
+  0%,
+  100% {
+    box-shadow: 0 14px 34px -18px rgb(0 0 0 / 95%), 0 0 0 0 rgb(5 217 232 / 0%);
+    border-color: $link-color-subtle;
+    transform: translateX(-50%) scale(1);
+  }
+
+  50% {
+    box-shadow: 0 14px 34px -18px rgb(0 0 0 / 95%), 0 0 24px 5px rgb(5 217 232 / 60%);
+    border-color: $link-color;
+    transform: translateX(-50%) scale(1.06);
+  }
+}
+
+.skill-graph__floating.is-hint {
+  animation: graph-floating-glow 0.95s ease 3;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skill-graph__floating.is-hint {
+    animation: none;
+  }
+}
+
 // Im Kapitel + Modus: sticky TOC weicht (mehr Platz) — NUR hier, nicht global
 body.graph-here .toc-sticky-mobile {
   display: none;
