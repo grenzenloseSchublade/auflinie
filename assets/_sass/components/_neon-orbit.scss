@@ -4,26 +4,42 @@
 // Spiral-Start: Punkte starten von ihrer ECHTEN Position und spiralen zum Orbit
 // --neon-orbit-center-y verschiebt den Orbit vertikal (höher = Punkte weiter oben)
 @keyframes neonOrbitRampBefore {
+  // ECHTE Spirale: 0% steht in DERSELBEN Polar-Struktur wie 100%
+  // (translateY · rotate · translateX · rotate), damit der Browser Winkel UND
+  // Radius interpoliert (statt Matrix-LERP = gerader Slide). Startwinkel -180°
+  // liegt exakt auf der realen Punktposition: rotate(-180°)·translateX(|offset|)
+  // ergibt −offset (= translateX(offset) statisch), translateY 0. Von dort 1,5
+  // Umdrehungen nach außen (Radius 0.10em → 0.7em) bis 360° auf den Orbit.
+  // Die zwei rotate() sind an beiden Enden exakt negativ zueinander -> der Punkt
+  // bleibt aufrecht, nur die Position spiralt.
   0% {
-    // Start: ECHTE Position des Punktes (translateX aus CSS)
-    transform: translateX(var(--neon-orbit-start-offset-before, -0.10em));
+    transform: translateY(0)
+      rotate(-180deg)
+      translateX(calc(-1 * var(--neon-orbit-start-offset-before, -0.10em)))
+      rotate(180deg);
   }
 
   100% {
-    // Ende: Auf Orbit bei 360° (1 volle Umdrehung), vertikal verschoben
+    // Ende: Auf Orbit bei 360° (nahtloser Übergang in den Spin), vertikal verschoben
     transform: translateY(var(--neon-orbit-center-y, 0.29em))
       rotate(360deg) translateX(var(--neon-orbit-radius, 0.7em)) rotate(-360deg);
   }
 }
 
 @keyframes neonOrbitRampAfter {
+  // ECHTE Spirale (Prinzip wie RampBefore). Startwinkel 0° = reale Position
+  // (translateX(offset) rechts), translateY 0. Von dort 1,5 Umdrehungen nach
+  // außen (Radius 0.14em → 0.7em) bis 540° (180° versetzt zum before-Punkt),
+  // nahtlos in den Spin. rotate() an beiden Enden exakt negativ zueinander.
   0% {
-    // Start: ECHTE Position des Punktes (translateX aus CSS)
-    transform: translateX(var(--neon-orbit-start-offset-after, 0.14em));
+    transform: translateY(0)
+      rotate(0deg)
+      translateX(var(--neon-orbit-start-offset-after, 0.14em))
+      rotate(0deg);
   }
 
   100% {
-    // Ende: Auf Orbit bei 540° (180° versetzt + 1 Umdrehung), vertikal verschoben
+    // Ende: Auf Orbit bei 540° (nahtloser Übergang in den Spin), vertikal verschoben
     transform: translateY(var(--neon-orbit-center-y, 0.29em))
       rotate(540deg) translateX(var(--neon-orbit-radius, 0.7em)) rotate(-540deg);
   }
