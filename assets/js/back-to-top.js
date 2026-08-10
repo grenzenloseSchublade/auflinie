@@ -6,15 +6,8 @@
  */
 (function () {
   'use strict';
-  var SCROLL_THRESHOLD = 888, MIN_RATIO = 1.5, THROTTLE_MS = 16, FOOTER_GAP = 16;
+  var SCROLL_THRESHOLD = 888, MIN_RATIO = 1.5, FOOTER_GAP = 24;
   var controller = null;
-
-  function throttle(fn, limit) {
-    var inT = false;
-    return function () {
-      if (!inT) { fn.apply(this, arguments); inT = true; setTimeout(function () { inT = false; }, limit); }
-    };
-  }
 
   function mount(root) {
     var scope = root || document;
@@ -40,9 +33,17 @@
         btn.style.setProperty('--btt-footer-push', push + 'px');
       }
     }
-    var throttled = throttle(checkVisibility, THROTTLE_MS);
-    window.addEventListener('scroll', throttled, { passive: true, signal: signal });
-    window.addEventListener('resize', throttled, { passive: true, signal: signal });
+    // rAF-gekoppelt statt setTimeout-Throttle: pro Paint-Frame genau EIN Update
+    // -> ruckelfreies „Reiten" über dem Footer, auch bei schnellem Scrollen (der
+    // Button läuft so gar nicht erst in den Footer und springt dann raus).
+    var rafPending = false;
+    function onScrollResize() {
+      if (rafPending) return;
+      rafPending = true;
+      requestAnimationFrame(function () { rafPending = false; checkVisibility(); });
+    }
+    window.addEventListener('scroll', onScrollResize, { passive: true, signal: signal });
+    window.addEventListener('resize', onScrollResize, { passive: true, signal: signal });
     btn.addEventListener('click', function (e) {   // element-scoped -> stirbt mit dem DOM, kein signal nötig
       e.preventDefault();
       if ('scrollBehavior' in document.documentElement.style) window.scrollTo({ top: 0, behavior: 'smooth' });

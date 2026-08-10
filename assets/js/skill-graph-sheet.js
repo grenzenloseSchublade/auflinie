@@ -116,15 +116,22 @@
     // blieb wahr, bis das Kapitel ganz unten raus war. Jetzt verschwinden
     // Sheet/Floating/TOC beim Hoch- UND Runterscrollen präzise am Abschnitts-
     // wechsel. Kein Auto-Schließen — nur Sichtbarkeit (Zustand bleibt „offen").
-    var BIND = 0.35;
-    var inView = r.top < vh * (1 - BIND) && r.bottom > vh * BIND;
+    // Das Sheet ist 68vh (Oberkante bei ~32vh). „Akademische Ausbildung" steht
+    // im CV ÜBER den Fähigkeiten; würde das Sheet erst spät ausgeblendet, deckte
+    // es beim HOCHscrollen die Ausbildung. Daher die Ausblend-Lane auf die
+    // Sheet-Oberkante herunter (TOP_LINE ≈ 0.30): verschwindet, sobald die
+    // Kapitel-Oberkante dorthin steigt. BOT_LINE bindet die Unterkante fürs
+    // Runterscrollen.
+    var TOP_LINE = 0.30;
+    var BOT_LINE = 0.40;
+    var inView = r.top < vh * TOP_LINE && r.bottom > vh * BOT_LINE;
 
-    // Footer-Ride: der Floating-Öffner weicht dem Seiten-Footer aus (wie der
-    // Back-to-Top-Button), statt ihn zu überdecken. Basis-bottom 20px, GAP 16px.
+    // Footer-Ride wie Back-to-Top (rAF-gekoppelt über onScroll): weicht dem
+    // Seiten-Footer in sinnvollem Abstand aus, statt reinzulaufen. Base 20, GAP 24.
     var footer = document.querySelector('.page__footer');
     if (footer) {
       var ft = footer.getBoundingClientRect().top;
-      this.toggle.style.setProperty('--graph-float-push', Math.max(0, vh - ft + 16 - 20) + 'px');
+      this.toggle.style.setProperty('--graph-float-push', Math.max(0, vh - ft + 24 - 20) + 'px');
     }
 
     if (inView !== this.inView) {
