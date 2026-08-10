@@ -39,6 +39,7 @@ const CACHE_URLS = [
   './assets/js/skill-chips.js',
   './assets/js/skill-graph-sim.js',
   './assets/js/skill-graph.js',
+  './assets/js/skill-graph-sheet.js',
   './assets/js/fractal-panel.js',
   './assets/js/fractal-renderer.js',
   './assets/js/fractal-color-utils.js',
