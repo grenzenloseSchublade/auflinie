@@ -173,6 +173,31 @@
   }
 }
 
+// Einmaliges Aufglimmen (Discovery) — getriggert von skill-graph-sheet.js beim
+// ersten Erreichen des Kapitels, session-gated. Wie der Hero-Power-Button.
+@keyframes graph-activate-glow {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgb(5 217 232 / 0%);
+    border-color: $link-color-subtle;
+  }
+
+  50% {
+    box-shadow: 0 0 14px 2px rgb(5 217 232 / 45%);
+    border-color: $link-color;
+  }
+}
+
+.skill-graph__activate.is-hint {
+  animation: graph-activate-glow 1.1s ease 2;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skill-graph__activate.is-hint {
+    animation: none;
+  }
+}
+
 // Stufe 2: floatender Öffner (= der bestehende Toggle). Basis versteckt.
 .skill-graph__floating {
   @include mono-label($fs-label, 0.05em);

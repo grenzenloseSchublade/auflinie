@@ -4,7 +4,7 @@
  * Ändert den Graph-KERN (skill-graph.js) NICHT — nur Aktivierung & Darstellung.
  * Zwei Stufen:
  *   1) Statischer Button [data-role="graph-activate"] schaltet den Graph-Modus.
- *      Solange man IM Kapitel „Technische Fähigkeiten" ist (IntersectionObserver),
+ *      Solange man IM Kapitel „Technische Fähigkeiten" ist (präzise per Scroll),
  *      erscheint unten ein floatender Öffnen-Button und die sticky TOC-Leiste
  *      weicht (Klasse body.graph-here). Verlässt man das Kapitel, kehrt die TOC
  *      zurück und der Floating-Button verschwindet — der Modus bleibt aber an.
@@ -55,14 +55,15 @@
     this.observer = new MutationObserver(this.onHidden.bind(this));
     this.observer.observe(this.panel, { attributes: true, attributeFilter: ['hidden'] });
 
-    // Kapitel-Sichtbarkeit: steuert Floating-Button + TOC-Ausblendung (nur hier).
-    // rootMargin schrumpft das Sichtfenster auf ein zentrales Band -> „im Kapitel"
-    // gilt erst, wenn es WIRKLICH mittig steht, nicht schon wenn die Kante aus dem
-    // Nachbarabschnitt (Akademischer Werdegang) reinlugt.
-    this.io = new IntersectionObserver(this.onIntersect.bind(this), {
-      rootMargin: '-25% 0px -25% 0px'
-    });
-    this.io.observe(this.section);
+    // Kapitel-Sichtbarkeit präzise per Scroll: bindet Floating-Button, TOC-
+    // Ausblendung UND das offene Sheet exakt ans Kapitel (wie die sticky Konsole).
+    // Verlässt „Technische Fähigkeiten" den Lesebereich, verschwindet alles — kein
+    // Überstehen in den Nachbarabschnitt (Akademischer Werdegang).
+    this.rafPending = false;
+    var boundScroll = this.onScroll.bind(this);
+    window.addEventListener('scroll', boundScroll, { passive: true, signal: this.abort.signal });
+    window.addEventListener('resize', boundScroll, { passive: true, signal: this.abort.signal });
+    this.updateInView();
   }
 
   GraphMode.prototype.onActivate = function () { this.setMode(!this.mode); };
@@ -75,12 +76,38 @@
     this.syncHere();
   };
 
-  GraphMode.prototype.onIntersect = function (entries) {
-    this.inView = !!(entries[0] && entries[0].isIntersecting);
-    // Bewusst KEIN Auto-Schließen beim Kapitel-Verlassen: ein offener Graph
-    // bleibt offen (nur ✕/Esc/Deaktivieren schließt) — der Nutzer soll im
-    // Kapitel scrollen können, ohne dass es zuklappt.
-    this.syncHere();
+  GraphMode.prototype.onScroll = function () {
+    if (this.rafPending) { return; }
+    this.rafPending = true;
+    var self = this;
+    requestAnimationFrame(function () { self.rafPending = false; self.updateInView(); });
+  };
+
+  GraphMode.prototype.updateInView = function () {
+    var r = this.section.getBoundingClientRect();
+    var vh = window.innerHeight || document.documentElement.clientHeight || 800;
+    // „Im Kapitel": das Kapitel hat begonnen (top < vh) UND sein Ende steht noch
+    // unter der Bindungslinie (bottom > vh*BIND). So verschwinden Sheet/Floating/
+    // TOC genau, wenn der Nachbarabschnitt den unteren Bereich übernimmt. KEIN
+    // Auto-Schließen — nur Sichtbarkeit (der Zustand bleibt „offen").
+    var BIND = 0.4;
+    var inView = r.top < vh && r.bottom > vh * BIND;
+    if (inView !== this.inView) {
+      this.inView = inView;
+      this.syncHere();
+      if (inView) { this.maybeHint(); }
+    }
+  };
+
+  // Einmaliges Aufglimmen des „Graph aktivieren"-Buttons, damit er entdeckt wird
+  // (wie der Hero-Power-Button): session-gated, nur bei erlaubter Bewegung.
+  GraphMode.prototype.maybeHint = function () {
+    try { if (sessionStorage.getItem('graphActivateHinted')) { return; } } catch (e) { return; }
+    if (!window.matchMedia('(prefers-reduced-motion: no-preference)').matches) { return; }
+    try { sessionStorage.setItem('graphActivateHinted', '1'); } catch (e) { /* noop */ }
+    var btn = this.activate;
+    btn.classList.add('is-hint');
+    btn.addEventListener('animationend', function () { btn.classList.remove('is-hint'); }, { once: true });
   };
 
   GraphMode.prototype.syncHere = function () {
@@ -109,9 +136,8 @@
   };
 
   GraphMode.prototype.destroy = function () {
-    if (this.abort) { this.abort.abort(); }
+    if (this.abort) { this.abort.abort(); }   // deckt auch die Scroll/Resize-Listener
     if (this.observer) { this.observer.disconnect(); this.observer = null; }
-    if (this.io) { this.io.disconnect(); this.io = null; }
     document.body.classList.remove('graph-here', 'graph-open');
     if (this.closeBtn && this.closeBtn.parentNode) { this.closeBtn.parentNode.removeChild(this.closeBtn); }
   };
