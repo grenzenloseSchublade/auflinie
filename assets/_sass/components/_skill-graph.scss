@@ -277,7 +277,7 @@ body.graph-open p.skill-graph__context {
   border-radius: 8px;
   background: $console-panel-bg;
   color: $fg-muted;
-  font-size: 1rem;
+  font-size: $fs-base;
   cursor: pointer;
 
   @media (hover: hover) {
