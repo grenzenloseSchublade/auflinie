@@ -191,6 +191,9 @@
     }
     this.reduceMotion.addEventListener('change', this.startOrStill.bind(this), { signal: this.abort.signal });
     this.initialized = true;
+    // Vor dem Öffnen gewählten Chip nachziehen (sonst öffnet der Graph ohne
+    // Markierung, obwohl ein Skill aktiv ist).
+    if (this.pendingExternal != null) { this.setSelection(this.pendingExternal); }
   };
 
   SkillGraph.prototype.sizeCanvas = function () {
@@ -481,7 +484,11 @@
 
   SkillGraph.prototype.onExternalSelect = function (event) {
     if (!event.detail || event.detail.source === SOURCE) { return; }
-    if (event.detail.skill !== this.selected && this.initialized) {
+    // Auswahl IMMER merken — auch wenn der Graph noch nicht gebaut ist (lazy-init
+    // beim ersten Öffnen). Sonst bleibt ein VOR dem Öffnen gewählter Chip im
+    // Graphen unmarkiert; build() zieht this.pendingExternal dann nach.
+    this.pendingExternal = event.detail.skill;
+    if (this.initialized && event.detail.skill !== this.selected) {
       this.setSelection(event.detail.skill);
     }
   };
