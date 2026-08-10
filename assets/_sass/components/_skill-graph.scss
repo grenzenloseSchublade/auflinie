@@ -223,10 +223,12 @@
   }
 }
 
-// Im Graph-Modus UND im Kapitel: unten schwebend einblenden
+// Im Graph-Modus UND im Kapitel: unten schwebend einblenden. bottom als calc,
+// damit der Button dem Seiten-Footer ausweicht (Footer-Ride wie Back-to-Top,
+// --graph-float-push wird von skill-graph-sheet.js gesetzt).
 body.graph-here .skill-graph__floating {
   position: fixed;
-  bottom: 20px;
+  bottom: calc(20px + var(--graph-float-push, 0px));
   left: 50%;
   z-index: 900;
   display: inline-flex;
@@ -334,19 +336,21 @@ body.graph-open p.skill-graph__context {
 // beim ersten Öffnen auf Touch eingeblendet, blendet nach ~4.5s aus.
 .skill-graph__touch-hint {
   position: absolute;
-  bottom: 0.9rem;
+  top: 50%;
   left: 50%;
   z-index: 3;
-  transform: translateX(-50%);
-  padding: 0.3rem 0.7rem;
+  transform: translate(-50%, -50%);
+  max-width: 82%;
+  padding: 0.55rem 0.9rem;
   border: 1px solid $console-panel-border;
-  border-radius: 999px;
-  background: rgb(0 0 0 / 62%);
-  color: rgb(255 255 255 / 88%);
+  border-radius: 12px;
+  background: rgb(0 0 0 / 68%);
+  color: rgb(255 255 255 / 90%);
   font-family: $mono-font-stack;
   font-size: $fs-label;
+  line-height: 1.55;
   letter-spacing: 0.02em;
-  white-space: nowrap;
+  text-align: center;
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.4s ease;

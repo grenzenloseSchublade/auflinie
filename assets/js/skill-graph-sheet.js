@@ -54,7 +54,9 @@
     this.touchHint = document.createElement('div');
     this.touchHint.className = 'skill-graph__touch-hint';
     this.touchHint.setAttribute('aria-hidden', 'true');
-    this.touchHint.textContent = '↔ Zwei Finger verschieben die Ansicht';
+    this.touchHint.innerHTML =
+      '↔ Zwei Finger verschieben die Ansicht<br>' +
+      '● Knoten: ziehen ordnet um, tippen wählt aus';
     this.panel.appendChild(this.touchHint);
 
     this.activate.addEventListener('click', this.onActivate.bind(this), signal);
@@ -116,6 +118,15 @@
     // wechsel. Kein Auto-Schließen — nur Sichtbarkeit (Zustand bleibt „offen").
     var BIND = 0.35;
     var inView = r.top < vh * (1 - BIND) && r.bottom > vh * BIND;
+
+    // Footer-Ride: der Floating-Öffner weicht dem Seiten-Footer aus (wie der
+    // Back-to-Top-Button), statt ihn zu überdecken. Basis-bottom 20px, GAP 16px.
+    var footer = document.querySelector('.page__footer');
+    if (footer) {
+      var ft = footer.getBoundingClientRect().top;
+      this.toggle.style.setProperty('--graph-float-push', Math.max(0, vh - ft + 16 - 20) + 'px');
+    }
+
     if (inView !== this.inView) {
       this.inView = inView;
       this.syncHere();
