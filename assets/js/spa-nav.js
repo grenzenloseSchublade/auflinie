@@ -246,6 +246,13 @@
   //     Verifiziert: es gibt keine sitewide Cross-Origin-Ressource, normale
   //     Seiten swappen weiter; preconnect/preload-Links zählen hier nicht.
   function needsFullLoad(doc) {
+    // Interaktive Fraktal-Panels brauchen eine per-Seite-Initialisierung
+    // (fractal-panel.js initAll auf [data-fractal-panel]), die ein reiner
+    // Content-Swap nicht leistet. Die Vendor-Libs sind same-origin, würden von
+    // der Cross-Origin-Prüfung unten also NICHT erfasst -> wie bei MathJax voll
+    // navigieren. Heute latent (kein verdrahtetes Ziel rendert ein Panel),
+    // greift aber automatisch, falls künftig ein Beitrag eines einbettet.
+    if (doc.querySelector('[data-fractal-panel]')) return true;
     var els = doc.querySelectorAll('script[src], link[rel="stylesheet"][href]');
     for (var i = 0; i < els.length; i++) {
       var el = els[i], a = el.tagName === 'SCRIPT' ? 'src' : 'href', u;
