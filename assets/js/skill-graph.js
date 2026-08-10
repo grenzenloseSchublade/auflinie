@@ -59,6 +59,12 @@
     this.dragId = null;
     this.dragMoved = false;
     this.pointerStart = null;
+    // Pan (verschiebbares Fenster in den größeren Layout-Raum): Zwei-Finger
+    // (Touch) bzw. Maus-Drag auf leere Fläche. Knoten-Drag bleibt wie gehabt.
+    this.panX = 0;
+    this.panY = 0;
+    this.panning = false;
+    this.pointers = {};
     this.reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
     var signal = { signal: this.abort.signal };
@@ -152,16 +158,26 @@
       self.neighbors.get(t).add(s);
     });
 
-    // Deterministische Kreis-Startpositionen
+    // Größerer virtueller Layout-Raum: dieselbe Physik, aber mehr Platz, damit
+    // sich die Knoten verteilen statt am Rand zu stauen. Der Canvas ist ein
+    // verschiebbares Fenster (Pan) in diese Fläche.
     var w = this.wrap.clientWidth || 600;
     var h = this.wrap.clientHeight || 380;
-    var radius = Math.min(w, h) * 0.36;
+    this.canvasW = w;
+    this.canvasH = h;
+    this.spread = Math.max(1.4, Math.min(2.5, this.nodes.length / 6));
+    var vw = w * this.spread;
+    var vh = h * this.spread;
+    var radius = Math.min(vw, vh) * 0.36;
     this.nodes.forEach(function (node, i) {
       var angle = (i / self.nodes.length) * Math.PI * 2 - Math.PI / 2;
-      node.x = w / 2 + Math.cos(angle) * radius;
-      node.y = h / 2 + Math.sin(angle) * radius;
+      node.x = vw / 2 + Math.cos(angle) * radius;
+      node.y = vh / 2 + Math.sin(angle) * radius;
     });
-    this.sim = new window.SkillGraphSim(this.nodes, this.edges, w, h);
+    this.sim = new window.SkillGraphSim(this.nodes, this.edges, vw, vh);
+    // Pan so, dass die virtuelle Mitte im Canvas zentriert startet.
+    this.panX = (w - vw) / 2;
+    this.panY = (h - vh) / 2;
 
     // Resize: Positionen proportional skalieren, kein Reheat
     // resizeTimer an der Instanz (self), damit destroy() ihn löschen kann.
@@ -172,8 +188,15 @@
         if (self.panel.hidden) { return; }
         var cw = self.wrap.clientWidth;
         var ch = self.wrap.clientHeight;
-        if (cw && ch && (cw !== self.sim.width || ch !== self.sim.height)) {
-          self.sim.resize(cw, ch);
+        if (cw && ch && (cw !== self.canvasW || ch !== self.canvasH)) {
+          self.canvasW = cw;
+          self.canvasH = ch;
+          var nvw = cw * self.spread;
+          var nvh = ch * self.spread;
+          self.sim.resize(nvw, nvh);
+          self.panX = (cw - nvw) / 2;
+          self.panY = (ch - nvh) / 2;
+          self.clampPan();
           self.sizeCanvas();
           self.render();
         }
@@ -227,6 +250,9 @@
     var w = this.sim.width;
     var h = this.sim.height;
     var radius = Math.min(w, h) * 0.36;
+    // Ansicht wieder auf die virtuelle Mitte zentrieren (Pan zurücksetzen).
+    this.panX = ((this.canvasW || w) - w) / 2;
+    this.panY = ((this.canvasH || h) - h) / 2;
     var count = this.nodes.length || 1;
     this.nodes.forEach(function (node, i) {
       node.fx = null;
@@ -306,6 +332,10 @@
     ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     ctx.restore();
 
+    // Pan-Offset: Knoten/Kanten im verschobenen Fenster zeichnen.
+    ctx.save();
+    ctx.translate(this.panX || 0, this.panY || 0);
+
     // Kanten: Deckkraft nach Gewicht; bei Auswahl nur die Nachbarschaft betonen
     var self = this;
     this.edges.forEach(function (edge) {
@@ -363,7 +393,82 @@
       ctx.fillText(node.label, node.x, node.y - NODE_RADIUS - 5);
       ctx.restore();
     });
+
+    ctx.restore();            // Pan-Transform zurück -> Screen-Space
+    this.drawEdgeHints();     // Rand-Chevrons: "hier geht's weiter"
     void self;
+  };
+
+  // Liegen Knoten außerhalb des sichtbaren Fensters, deutet ein dezenter Pfeil
+  // "hier geht's weiter" an. Screen-Space (nach dem Pan-restore gezeichnet).
+  SkillGraph.prototype.drawEdgeHints = function () {
+    var ctx = this.ctx;
+    if (!ctx) { return; }
+    var w = this.canvasW || this.wrap.clientWidth;
+    var h = this.canvasH || this.wrap.clientHeight;
+    var px = this.panX || 0, py = this.panY || 0;
+    var m = 6;
+    var left = false, right = false, top = false, bottom = false;
+    this.nodes.forEach(function (n) {
+      var sx = n.x + px, sy = n.y + py;
+      if (sx < m) { left = true; }
+      if (sx > w - m) { right = true; }
+      if (sy < m) { top = true; }
+      if (sy > h - m) { bottom = true; }
+    });
+    if (!(left || right || top || bottom)) { return; }
+    var s = 6;
+    ctx.save();
+    ctx.fillStyle = 'rgba(' + CYAN + ', 0.8)';
+    function chevron(cx, cy, dx, dy) {
+      ctx.beginPath();
+      if (dx !== 0) {
+        ctx.moveTo(cx, cy - s); ctx.lineTo(cx + dx * s, cy); ctx.lineTo(cx, cy + s);
+      } else {
+        ctx.moveTo(cx - s, cy); ctx.lineTo(cx, cy + dy * s); ctx.lineTo(cx + s, cy);
+      }
+      ctx.closePath();
+      ctx.fill();
+    }
+    if (left) { chevron(10, h / 2, -1, 0); }
+    if (right) { chevron(w - 10, h / 2, 1, 0); }
+    if (top) { chevron(w / 2, 10, 0, -1); }
+    if (bottom) { chevron(w / 2, h - 10, 0, 1); }
+    ctx.restore();
+  };
+
+  SkillGraph.prototype.centroid = function () {
+    var ids = Object.keys(this.pointers), cx = 0, cy = 0, i;
+    for (i = 0; i < ids.length; i++) { cx += this.pointers[ids[i]].x; cy += this.pointers[ids[i]].y; }
+    var n = ids.length || 1;
+    return { x: cx / n, y: cy / n };
+  };
+
+  SkillGraph.prototype.startPan = function () {
+    this.panning = true;
+    this.panStartCentroid = this.centroid();
+    this.panStartPan = { x: this.panX || 0, y: this.panY || 0 };
+  };
+
+  // Pan begrenzen: mindestens PAD px der Knoten-Wolke bleiben je Seite sichtbar.
+  SkillGraph.prototype.clampPan = function () {
+    if (!this.nodes || !this.nodes.length) { return; }
+    var minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+    this.nodes.forEach(function (n) {
+      if (n.x < minX) { minX = n.x; }
+      if (n.x > maxX) { maxX = n.x; }
+      if (n.y < minY) { minY = n.y; }
+      if (n.y > maxY) { maxY = n.y; }
+    });
+    var w = this.canvasW || this.wrap.clientWidth;
+    var h = this.canvasH || this.wrap.clientHeight;
+    var pad = 60;
+    var minPanX = pad - maxX, maxPanX = (w - pad) - minX;
+    var minPanY = pad - maxY, maxPanY = (h - pad) - minY;
+    if (minPanX > maxPanX) { minPanX = maxPanX = (minPanX + maxPanX) / 2; }
+    if (minPanY > maxPanY) { minPanY = maxPanY = (minPanY + maxPanY) / 2; }
+    this.panX = Math.max(minPanX, Math.min(maxPanX, this.panX));
+    this.panY = Math.max(minPanY, Math.min(maxPanY, this.panY));
   };
 
   SkillGraph.prototype.canvasPos = function (event) {
@@ -405,16 +510,46 @@
 
   SkillGraph.prototype.onPointerDown = function (event) {
     if (!this.sim || this.panel.hidden) { return; }
-    var pos = this.canvasPos(event);
-    this.pointerStart = pos;
-    this.dragId = this.hitTest(pos.x, pos.y);
-    this.dragMoved = false;
-    if (this.dragId !== null) {
-      try { this.canvas.setPointerCapture(event.pointerId); } catch (e) { /* noop */ }
+    this.pointers[event.pointerId] = this.canvasPos(event);
+    var count = Object.keys(this.pointers).length;
+
+    if (count >= 2) {
+      // Zwei Finger -> Pan (Karten-Muster). Laufenden Knoten-Drag abbrechen und
+      // Touch dem Browser entziehen, solange gepannt wird.
+      this.dragId = null;
+      this.startPan();
+      try { this.canvas.style.touchAction = 'none'; } catch (e) { /* noop */ }
+      return;
     }
+
+    var pos = this.pointers[event.pointerId];
+    var hit = this.hitTest(pos.x - (this.panX || 0), pos.y - (this.panY || 0));
+    if (hit !== null) {
+      // Auf einem Knoten -> Knoten ziehen (wie bisher).
+      this.dragId = hit;
+      this.dragMoved = false;
+      this.pointerStart = pos;
+      try { this.canvas.setPointerCapture(event.pointerId); } catch (e) { /* noop */ }
+    } else if (event.pointerType === 'mouse') {
+      // Maus auf leere Fläche -> Pan (Desktop, kein Scroll-Konflikt).
+      this.startPan();
+    }
+    // Touch auf leere Fläche: nichts -> die Seite scrollt (touch-action: pan-y).
   };
 
   SkillGraph.prototype.onPointerMove = function (event) {
+    if (this.pointers[event.pointerId]) { this.pointers[event.pointerId] = this.canvasPos(event); }
+
+    if (this.panning) {
+      var c = this.centroid();
+      this.panX = this.panStartPan.x + (c.x - this.panStartCentroid.x);
+      this.panY = this.panStartPan.y + (c.y - this.panStartCentroid.y);
+      this.clampPan();
+      if (event.cancelable) { event.preventDefault(); }
+      this.render();
+      return;
+    }
+
     if (this.dragId === null || !this.pointerStart) { return; }
     var pos = this.canvasPos(event);
     if (!this.dragMoved) {
@@ -426,11 +561,11 @@
     if (event.cancelable) { event.preventDefault(); }
     var node = this.nodeById(this.dragId);
     if (!node) { return; }
-    // An den Cursor pinnen: die Sim hält fx/fy fest (siehe skill-graph-sim.js)
-    node.fx = pos.x;
-    node.fy = pos.y;
+    // In Layout-Koordinaten pinnen (Pan herausrechnen); die Sim hält fx/fy fest.
+    node.fx = pos.x - (this.panX || 0);
+    node.fy = pos.y - (this.panY || 0);
     if (this.reduceMotion.matches) {
-      node.x = pos.x; node.y = pos.y; node.vx = 0; node.vy = 0;
+      node.x = node.fx; node.y = node.fy; node.vx = 0; node.vy = 0;
       this.render();
     } else {
       this.sim.alpha = Math.max(this.sim.alpha, 0.35);
@@ -439,15 +574,27 @@
   };
 
   SkillGraph.prototype.onPointerUp = function (event) {
-    if (this.dragId === null) { this.pointerStart = null; return; }
-    if (!this.dragMoved) {
+    delete this.pointers[event.pointerId];
+    var remaining = Object.keys(this.pointers).length;
+
+    if (this.panning) {
+      if (remaining >= 2) {
+        this.startPan();   // noch >=2 Finger: Bezug neu setzen (kein Sprung)
+      } else {
+        this.panning = false;
+        try { this.canvas.style.touchAction = ''; } catch (e) { /* noop */ }  // Scroll wieder frei
+      }
+      try { this.canvas.releasePointerCapture(event.pointerId); } catch (e) { /* noop */ }
+      return;
+    }
+
+    if (this.dragId !== null && !this.dragMoved) {
       // Kein echtes Ziehen → als Klick behandeln (Auswahl togglen)
       var hit = this.dragId;
       this.setSelection(hit === this.selected ? null : hit);
       this.dispatch();
     }
-    // War es ein Drag: fx/fy bleiben gesetzt → der Knoten bleibt liegen
-    // (manuelles Entwirren; die übrigen Knoten haben sich darum entspannt).
+    // War es ein Drag: fx/fy bleiben gesetzt → der Knoten bleibt liegen.
     try { this.canvas.releasePointerCapture(event.pointerId); } catch (e) { /* noop */ }
     this.dragId = null;
     this.dragMoved = false;
