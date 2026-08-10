@@ -80,12 +80,40 @@
     this.toggle.setAttribute('aria-expanded', String(open));
     this.toggle.textContent = open ? 'Graph ausblenden' : 'Graph anzeigen';
     if (open) {
-      if (!this.initialized) { this.build(); }
-      this.sizeCanvas();
-      this.startOrStill();
+      // Erst im nächsten Frame bauen/sizen: dann hat der Präsentations-Wrapper
+      // body.graph-open gesetzt (Microtask VOR rAF) und der Wrap hat seine
+      // ECHTEN (Sheet-)Maße. Sonst würde bei Inline-Maßen gesized und der Canvas
+      // später gestreckt -> Klick-Koordinaten passen nicht (Hit-Test daneben,
+      // v.a. beim Wieder-Öffnen). syncLayout koppelt Canvas+Pan an die aktuelle
+      // Größe = einzige Wahrheit fürs Koordinatensystem.
+      var self = this;
+      requestAnimationFrame(function () {
+        if (self.panel.hidden) { return; }
+        if (!self.initialized) { self.build(); }
+        self.syncLayout();
+        self.startOrStill();
+      });
     } else {
       this.stopLoop();
     }
+  };
+
+  // Canvas-Bitmap + Pan/virtueller Raum IMMER an die aktuelle Wrap-Größe koppeln.
+  // Render und Hit-Test nutzen dieselben node.x/panX -> bleiben deckungsgleich,
+  // egal ob Erst-Öffnen, Wieder-Öffnen oder Viewport-Änderung.
+  SkillGraph.prototype.syncLayout = function () {
+    var cw = this.wrap.clientWidth, ch = this.wrap.clientHeight;
+    if (!cw || !ch) { return; }
+    if (this.sim && (cw !== this.canvasW || ch !== this.canvasH)) {
+      var vw = cw * this.spread, vh = ch * this.spread;
+      this.sim.resize(vw, vh);          // skaliert Knoten-Positionen proportional
+      this.panX = (cw - vw) / 2;
+      this.panY = (ch - vh) / 2;
+      this.clampPan();
+    }
+    this.canvasW = cw;
+    this.canvasH = ch;
+    this.sizeCanvas();
   };
 
   SkillGraph.prototype.build = function () {
@@ -186,21 +214,9 @@
       clearTimeout(self.resizeTimer);
       self.resizeTimer = setTimeout(function () {
         if (self.panel.hidden) { return; }
-        var cw = self.wrap.clientWidth;
-        var ch = self.wrap.clientHeight;
-        if (cw && ch && (cw !== self.canvasW || ch !== self.canvasH)) {
-          self.canvasW = cw;
-          self.canvasH = ch;
-          var nvw = cw * self.spread;
-          var nvh = ch * self.spread;
-          self.sim.resize(nvw, nvh);
-          self.panX = (cw - nvw) / 2;
-          self.panY = (ch - nvh) / 2;
-          self.clampPan();
-          self.sizeCanvas();
-          self.render();
-        }
-      }, 150);
+        self.syncLayout();   // Canvas+Pan an aktuelle Größe koppeln (kein Stale-Guard)
+        self.render();
+      }, 120);
     });
     this.observer.observe(this.wrap);
 
