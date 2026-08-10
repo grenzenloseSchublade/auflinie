@@ -161,7 +161,13 @@
      Drawer-Links ausgenommen: der Prerender startete sonst mitten im
      Drawer-Exit (moderate feuert ab Chrome 138 schon nach Scroll-Stopp)
      und stahl dem Compositor die CPU — der SW-Voll-Precache macht die
-     Drawer-Ziele ohnehin instant -->
+     Drawer-Ziele ohnehin instant.
+     Wired-Set (/, /about/, /cv/, /posts/*) komplett ausgenommen: diese Ziele
+     fängt spa-nav.js als SPA-Swap ab (preventDefault) -> ein Prerender würde
+     beim Klick verworfen (verschwendete Renderarbeit + Bandbreite). Für sie
+     übernehmen Prefetch-on-Intent + SW-Precache; MathJax-Posts (needsFullLoad
+     -> Voll-Reload) bleiben über den SW-Cache trotzdem schnell. Prerender
+     wirkt damit nur noch auf NICHT verdrahtete Ziele (Archive o.ä.). -->
 <script type="speculationrules">
 {
   "prerender": [{
@@ -171,6 +177,7 @@
       { "not": { "href_matches": "{{ site.baseurl }}/" } },
       { "not": { "href_matches": "{{ site.baseurl }}/about/*" } },
       { "not": { "href_matches": "{{ site.baseurl }}/cv/*" } },
+      { "not": { "href_matches": "{{ site.baseurl }}/posts/*" } },
       { "not": { "selector_matches": ".greedy-nav .hidden-links a" } }
     ]},
     "eagerness": "moderate"
