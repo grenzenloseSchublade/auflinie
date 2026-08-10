@@ -192,6 +192,30 @@
     }
   }
   
+  /**
+   * P3 — Freshness unter SPA-Swaps: Persistent-Shell-Navigationen sind fetch()-
+   * Aufrufe, KEINE Voll-Navigationen. Der Browser prüft dadurch seltener
+   * automatisch auf einen neuen Service Worker -> der "Neue Version"-Toast käme
+   * nach einem Deploy erst spät. Bei spa:load (gedrosselt, production-only)
+   * einen Update-Check anstoßen. Anderer Belang als der Nav-Lifecycle in
+   * spa-nav.js, daher bewusst hier und nicht dort.
+   */
+  function wireSpaUpdateChecks() {
+    if (!('serviceWorker' in navigator) || !config.enableServiceWorker) return;
+    var MIN_INTERVAL = 5 * 60 * 1000;   // höchstens alle 5 Minuten prüfen
+    var last = 0;
+    document.addEventListener('spa:load', function(e) {
+      if (e.detail && e.detail.initial) return;   // Erst-Load prüft bereits via register()
+      var now = Date.now();
+      if (now - last < MIN_INTERVAL) return;       // Rapid-Nav nicht spammen
+      last = now;
+      navigator.serviceWorker.ready
+        .then(function(reg) { return reg.update(); })
+        .catch(function() {});
+    });
+  }
+
   // Service Worker registrieren
   registerServiceWorker();
-})(); 
+  wireSpaUpdateChecks();
+})();
