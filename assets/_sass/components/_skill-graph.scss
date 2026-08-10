@@ -330,6 +330,32 @@ body.graph-open p.skill-graph__context {
   display: none;
 }
 
+// Touch-Onboarding-Pille „Zwei Finger verschieben" — von skill-graph-sheet.js
+// beim ersten Öffnen auf Touch eingeblendet, blendet nach ~4.5s aus.
+.skill-graph__touch-hint {
+  position: absolute;
+  bottom: 0.9rem;
+  left: 50%;
+  z-index: 3;
+  transform: translateX(-50%);
+  padding: 0.3rem 0.7rem;
+  border: 1px solid $console-panel-border;
+  border-radius: 999px;
+  background: rgb(0 0 0 / 62%);
+  color: rgb(255 255 255 / 88%);
+  font-family: $mono-font-stack;
+  font-size: $fs-label;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+}
+
+.skill-graph__touch-hint.is-show {
+  opacity: 1;
+}
+
 // Injizierter Schließen-Button — sitzt als Flex-Item in der Panel-Kopfzeile
 // (neben „Zurücksetzen", daher kein Überlappen), nur im offenen Sheet sichtbar.
 .skill-graph__sheet-close {

@@ -48,6 +48,15 @@
     (this.panel.querySelector('.skill-graph__head') || this.panel).appendChild(this.closeBtn);
     this.closeBtn.addEventListener('click', this.close.bind(this), signal);
 
+    // Touch-Onboarding: „Zwei Finger verschieben die Ansicht" — beim ersten
+    // Öffnen auf Touch-Geräten kurz eingeblendet, blendet nach ein paar Sekunden
+    // wieder aus (session-gated). Auf Desktop signalisiert der grab-Cursor.
+    this.touchHint = document.createElement('div');
+    this.touchHint.className = 'skill-graph__touch-hint';
+    this.touchHint.setAttribute('aria-hidden', 'true');
+    this.touchHint.textContent = '↔ Zwei Finger verschieben die Ansicht';
+    this.panel.appendChild(this.touchHint);
+
     this.activate.addEventListener('click', this.onActivate.bind(this), signal);
     document.addEventListener('keydown', this.onKeydown.bind(this), signal);
 
@@ -98,12 +107,15 @@
   GraphMode.prototype.updateInView = function () {
     var r = this.section.getBoundingClientRect();
     var vh = window.innerHeight || document.documentElement.clientHeight || 800;
-    // „Im Kapitel": das Kapitel hat begonnen (top < vh) UND sein Ende steht noch
-    // unter der Bindungslinie (bottom > vh*BIND). So verschwinden Sheet/Floating/
-    // TOC genau, wenn der Nachbarabschnitt den unteren Bereich übernimmt. KEIN
-    // Auto-Schließen — nur Sichtbarkeit (der Zustand bleibt „offen").
-    var BIND = 0.4;
-    var inView = r.top < vh && r.bottom > vh * BIND;
+    // „Im Kapitel" = das Skills-Kapitel überlappt ein zentrales Band
+    // [BIND, 1-BIND] des Viewports. BEIDE Ränder gebunden — sonst überschießt
+    // das Sheet beim Hochscrollen nach OBEN in die Ausbildung (die im CV ÜBER
+    // den Fähigkeiten steht): vorher war nur die Unterkante gebunden, `r.top<vh`
+    // blieb wahr, bis das Kapitel ganz unten raus war. Jetzt verschwinden
+    // Sheet/Floating/TOC beim Hoch- UND Runterscrollen präzise am Abschnitts-
+    // wechsel. Kein Auto-Schließen — nur Sichtbarkeit (Zustand bleibt „offen").
+    var BIND = 0.35;
+    var inView = r.top < vh * (1 - BIND) && r.bottom > vh * BIND;
     if (inView !== this.inView) {
       this.inView = inView;
       this.syncHere();
@@ -132,7 +144,18 @@
     if (open) {
       var self = this;
       requestAnimationFrame(function () { try { self.closeBtn.focus(); } catch (e) { /* noop */ } });
+      this.maybeTouchHint();
     }
+  };
+
+  // Touch-Hinweis einmal pro Session einblenden, dann nach ~4.5s ausblenden.
+  GraphMode.prototype.maybeTouchHint = function () {
+    if (!window.matchMedia('(hover: none)').matches) { return; }   // nur Touch-Geräte
+    try { if (sessionStorage.getItem('graphTouchHinted')) { return; } } catch (e) { return; }
+    try { sessionStorage.setItem('graphTouchHinted', '1'); } catch (e) { /* noop */ }
+    var hint = this.touchHint;
+    hint.classList.add('is-show');
+    this.touchHintTimer = setTimeout(function () { hint.classList.remove('is-show'); }, 4500);
   };
 
   // Schließen delegiert an den bestehenden Toggle -> skill-graph.js räumt sauber auf.
@@ -150,8 +173,10 @@
   GraphMode.prototype.destroy = function () {
     if (this.abort) { this.abort.abort(); }   // deckt auch die Scroll/Resize-Listener
     if (this.observer) { this.observer.disconnect(); this.observer = null; }
+    if (this.touchHintTimer) { clearTimeout(this.touchHintTimer); this.touchHintTimer = null; }
     document.body.classList.remove('graph-here', 'graph-open');
     if (this.closeBtn && this.closeBtn.parentNode) { this.closeBtn.parentNode.removeChild(this.closeBtn); }
+    if (this.touchHint && this.touchHint.parentNode) { this.touchHint.parentNode.removeChild(this.touchHint); }
   };
 
   // ── Persistent-Shell-Kontrakt (spa-nav.js, siehe README-spa-nav.md) ─────────
