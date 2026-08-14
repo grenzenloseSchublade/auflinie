@@ -2,8 +2,6 @@ name: Deploy Jekyll site to Pages
 
 on:
   push:
-    branches: ["main", "master", "test/**"]
-  pull_request:
     branches: ["main", "master"]
   workflow_dispatch:
 
@@ -54,6 +52,8 @@ jobs:
         run: bundle exec htmlproofer _site --disable-external --no-enforce-https --checks Links --swap-urls "^/auflinie/:/"
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v5
+        with:
+          retention-days: 1
 
   deploy:
     # Nur produktive Branches veröffentlichen (Test-Branches: Build ohne Deploy)
