@@ -163,7 +163,10 @@
 
       this.ctx.setTransform(1, 0, 0, 1, 0, 0);
       this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-      this.ctx.translate(-dxPixels, -dyPixels);
+      // Pan-Versatz in Pixeln des NEUEN Zooms: dxPixels ist im Basis-Bild
+      // gemessen und muss mit dem Zoom-Faktor mitskaliert werden, sonst ist
+      // die Vorschau bei jedem nicht-zentrierten Zoom versetzt.
+      this.ctx.translate(-dxPixels * scale, -dyPixels * scale);
       this.ctx.translate(this.canvas.width / 2, this.canvas.height / 2);
       this.ctx.scale(scale, scale);
       this.ctx.translate(-this.canvas.width / 2, -this.canvas.height / 2);
