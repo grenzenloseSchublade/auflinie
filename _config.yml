@@ -102,7 +102,9 @@ permalink: /posts/:title/
 pagination:
   enabled: true
   per_page: 6
-  permalink: /posts/page:num/
+  # Wird an den Permalink der paginierten Seite (/posts/) ANGEHÄNGT —
+  # ein /posts/-Präfix hier ergäbe /posts/posts/page2/.
+  permalink: /page:num/
 timezone: Europe/Berlin
 
 # Plugins

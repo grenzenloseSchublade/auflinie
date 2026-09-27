@@ -207,7 +207,9 @@
     "@type": "WebPage",
     "@id": "{{ page.url | absolute_url }}"
   },
-  "headline": "{{ page.title | default: site.title | escape }}",
+  {% comment %} seo_title zuerst; page.title kann Markup tragen (Startseiten-
+  Neon-Spans) — strip_html, sonst landet escapter HTML-Müll in der headline {% endcomment %}
+  "headline": "{{ page.seo_title | default: page.title | default: site.title | markdownify | strip_html | strip_newlines | escape }}",
   "description": "{{ page.excerpt | default: site.description | strip_html | strip_newlines | truncate: 160 | escape }}",
   {% if page.header.overlay_image or site.og_image %}
   "image": "{{ page.header.overlay_image | default: site.og_image | absolute_url }}",
