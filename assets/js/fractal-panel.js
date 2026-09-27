@@ -645,7 +645,13 @@
         if (view.canvas.width + 'x' + view.canvas.height !== before) changed = true;
       });
       if (changed || force) {
-        this.requestRender(null, { immediate: true, reason: 'resize' });
+        // Während eines laufenden Fenster-Resize feuert der ResizeObserver pro
+        // Frame — ein immediate-Render würde pro Tick maxWorkers Worker
+        // erzeugen und gleich wieder terminieren. Debouncen; nur der initiale
+        // force-Aufruf (Erst-Render) bleibt sofort.
+        this.requestRender(null, force
+          ? { immediate: true, reason: 'resize' }
+          : { debounce: 180, reason: 'resize' });
       }
     }
 
@@ -963,14 +969,18 @@
         if (event.code === 'Space') this.isSpacePanning = false;
       }, { signal: signal });
 
+      // Canvas-Resize übernimmt der ResizeObserver (deckt window-resize mit ab);
+      // hier nur die Mobile-Controls nachziehen — der frühere doppelte
+      // resizeAndRender-Aufruf pro resize-Event entfällt.
       window.addEventListener('resize', () => {
         this.updateMobileControls();
-        this.resizeAndRender();
       }, { signal: signal });
 
       if (typeof ResizeObserver !== 'undefined') {
         this.resizeObserver = new ResizeObserver(() => this.resizeAndRender());
         this.views.forEach((view) => this.resizeObserver.observe(view.frame));
+      } else {
+        window.addEventListener('resize', () => this.resizeAndRender(), { signal: signal });
       }
     }
 
