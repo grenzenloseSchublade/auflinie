@@ -393,6 +393,10 @@
       if (imageUrl) {
         preloadImage(imageUrl)
           .then(() => {
+            // Löst der Preload erst NACH einem SPA-Swap aus, ist das Element
+            // schon detacht — enhanceHeroCrtAfterLoad würde dann eine rAF-Loop
+            // (+ Boot-Timer) starten, die kein Teardown mehr erreicht.
+            if (!element.isConnected) return;
             // Overlay-Filter anwenden, falls vorhanden
             const overlayFilter = element.getAttribute('data-overlay-filter');
             const retroGrade = retroGradeFor(element);
