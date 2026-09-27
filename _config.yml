@@ -147,6 +147,8 @@ exclude:
   - Lebenslauf-soprasteria/ # VERTRAULICH: Arbeitsdokumente, nie in den Build/Deploy (auch in .gitignore)
   - tests/ # Playwright-Regressionstests (#6) — nicht deployen
   - playwright.config.js
+  - scripts/ # Lint-/Analyse-Werkzeuge, gehören nicht auf die Seite
+  - CONTRIBUTING.md
   - .sass-cache/
   - .jekyll-cache/
   - gemfiles/
