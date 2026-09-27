@@ -62,7 +62,8 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
-    needs: build
+    # lint gehört dazu: sonst deployt ein grüner Build trotz rotem Lint-Job
+    needs: [build, lint]
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
