@@ -26,6 +26,9 @@
   var MAGENTA = '255, 0, 255'; // nur für die aktive Auswahl (Interaktionszustand)
   var NODE_RADIUS = 6;
   var HIT_RADIUS = 16;
+  // Eine Quelle für render UND hitTest — sonst misst measureText die
+  // Label-Breite mit der falschen Schrift (Canvas-Default 10px sans-serif).
+  var LABEL_FONT = '11px "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace';
 
   function parseData(tag) {
     var data;
@@ -129,7 +132,10 @@
     // sie kantenlos herum und überfüllen die Fläche.
     var connected = new Set();
     data.projects.forEach(function (project) {
-      if (project && Array.isArray(project.skills)) {
+      // Derselbe Pflichtfeld-Filter wie in der Kanten-Schleife unten: Projekte
+      // ohne id/label fallen dort heraus — ihre Skills dürfen deshalb auch hier
+      // keine Knoten werden, sonst schweben sie kantenlos herum.
+      if (project && project.id && project.label && Array.isArray(project.skills)) {
         project.skills.forEach(function (id) { connected.add(id); });
       }
     });
@@ -377,7 +383,7 @@
       ctx.stroke();
     });
 
-    ctx.font = '11px "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace';
+    ctx.font = LABEL_FONT;
     ctx.textAlign = 'center';
     nodes.forEach(function (node) {
       var state = 'base';
@@ -512,6 +518,7 @@
     var ctx = this.ctx;
     var hit = null;
     var best = HIT_RADIUS * HIT_RADIUS;
+    if (ctx) { ctx.font = LABEL_FONT; }   // Trefferfläche mit der Render-Schrift messen
     this.nodes.forEach(function (node) {
       var dx = node.x - x;
       var dy = node.y - y;
