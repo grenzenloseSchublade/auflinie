@@ -1,34 +1,11 @@
 <!-- begin _includes/seo.html -->
 {%- assign title_separator = site.title_separator | default: '-' -%}
 
-{%- comment -%} 
-  Spezielle Behandlung für die Home-Seite:
-  Der Paginator kann die page-Variable überschreiben, daher prüfen wir
-  ob wir auf der Root-URL sind und verwenden dann das seo_title aus der index.html
-{%- endcomment -%}
-{%- assign is_home = false -%}
-{%- if page.url == '/' or page.url == '/index.html' -%}
-  {%- assign is_home = true -%}
-{%- endif -%}
-
-{%- comment -%} Für Home-Seite: Lade die Frontmatter der index.html {%- endcomment -%}
-{%- if is_home and site.data == nil -%}
-  {%- for p in site.pages -%}
-    {%- if p.url == '/' or p.url == '/index.html' -%}
-      {%- if p.seo_title -%}
-        {%- assign home_seo_title = p.seo_title -%}
-      {%- endif -%}
-    {%- endif -%}
-  {%- endfor -%}
-{%- endif -%}
-
 {%- assign page_title = page.title | default: site.title | replace: '|', '&#124;' -%}
 
-{%- comment -%} Verwende seo_title aus Frontmatter wenn vorhanden {%- endcomment -%}
-{%- if is_home and home_seo_title -%}
-  {%- assign seo_title = home_seo_title -%}
-  {%- assign page_title = home_seo_title -%}
-{%- elsif page.seo_title -%}
+{%- comment -%} Verwende seo_title aus Frontmatter wenn vorhanden
+  (deckt auch die Startseite ab — page.seo_title steht in index.html) {%- endcomment -%}
+{%- if page.seo_title -%}
   {%- assign seo_title = page.seo_title -%}
 {%- elsif page_title contains site.title -%}
   {%- assign seo_title = page_title | replace: '|', '&#124;' -%}
@@ -37,9 +14,7 @@
 {%- endif -%}
 
 {%- comment -%} Verwende seo_title für og:title wenn vorhanden, sonst strip_html {%- endcomment -%}
-{%- if is_home and home_seo_title -%}
-  {%- assign page_title = home_seo_title | escape_once -%}
-{%- elsif page.seo_title -%}
+{%- if page.seo_title -%}
   {%- assign page_title = page.seo_title | escape_once -%}
 {%- else -%}
   {%- assign page_title = page_title | markdownify | strip_html | strip_newlines | escape_once -%}
