@@ -1,6 +1,8 @@
 // Seiten-spezifische Styles und gemeinsame Helfer
 
-// Einheitliche Sprungmarken-Offsets für Anker/TOC
+// Einheitliche Sprungmarken-Offsets für Anker/TOC.
+// Aktuell nur von Drafts genutzt (kein veröffentlichtes Markup erzeugt die
+// Klasse) — bewusst behalten als Anker-Muster für künftige Beiträge.
 .section-anchor {
   display: block;
   height: 0;

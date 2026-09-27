@@ -317,7 +317,7 @@ body {
     display: block; // Überschreibt Theme's display:none
     position: fixed;
     inset: var(--masthead-height) 0 0 auto; // Beginnt unter dem Header
-    width: 180px; // Schmaler (vorher 280px)
+    width: $drawer-width; // Schmaler (vorher 280px)
     max-width: 75vw; // Volle Viewport-Höhe
     height: 100dvh; // Dynamic viewport height für Mobile
     margin: 0;
@@ -396,7 +396,7 @@ body .greedy-nav .hidden-links::after {
 body::before {
   content: "";
   position: fixed;
-  inset: var(--masthead-height) 180px 0 0; // Beginnt unter dem Header // Spart Menü-Bereich aus (Menü bleibt klickbar)
+  inset: var(--masthead-height) $drawer-width 0 0; // Beginnt unter dem Header // Spart Menü-Bereich (Drawer-Breite) aus, Menü bleibt klickbar
   background: rgb(0 0 0 / 60%);
   z-index: 998; // Unter Masthead (1000) und Drawer (999)
   opacity: 0;

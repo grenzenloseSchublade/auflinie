@@ -111,14 +111,7 @@ $sw-toast-z: 10020;
 
 // Primär-Rolle (getönt) — wie .btn--primary
 .sw-update-toast__primary {
-  background-color: rgba($link-color, 0.16);
-  border: 1px solid rgba($link-color, 0.5);
-  color: $link-color;
-
-  &:hover {
-    background-color: rgba($link-color, 0.26);
-    border-color: $link-color;
-  }
+  @include btn-role-primary;
 }
 
 // Sekundär: leiser Ghost

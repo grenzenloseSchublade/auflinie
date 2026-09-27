@@ -611,14 +611,6 @@
   }
 }
 
-// Optimierungen für High-DPI-Displays
-@media (min-resolution: 2dppx) {
-  .page__hero {
-    &--overlay {
-      background-size: cover;
-    }
-  }
-}
 
 // Print-Optimierungen
 @media print {

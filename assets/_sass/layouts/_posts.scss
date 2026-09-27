@@ -101,18 +101,11 @@
 
 // Vorheriger/Nächster Beitrag: Outline-Paar statt Theme-Grau
 .pagination--pager {
-  background-color: transparent;
-  border: 1px solid $link-color-subtle;
+  @include btn-role-outline;
+
   border-radius: 6px;
-  color: rgb(255 255 255 / 88%);
   font-size: $fs-body;
   transition: border-color 0.2s ease, background-color 0.2s ease;
-
-  &:hover {
-    border-color: $link-color;
-    background-color: rgba($link-color, 0.12);
-    color: #ffffff;
-  }
 
   &.disabled {
     display: none; // Ausblenden statt ausgrauen

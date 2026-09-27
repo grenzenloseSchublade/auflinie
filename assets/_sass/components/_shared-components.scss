@@ -60,6 +60,36 @@
 }
 
 // Mono-Chrome-Label (Mono + Uppercase + Letterspacing) — Größen pro Einsatzort
+// Button-Rollen (site-weit): Primär = getönt Cyan, Outline = Cyan-subtle-Rand.
+// Eine Stelle für Farbanpassungen — Maße/Padding bleiben beim Aufrufer.
+// Nutzer: _buttons.scss (.btn--primary/.btn--outline), _offline.scss
+// (Reload-Button), _sw-update-toast.scss (Primär), _posts.scss (Pager).
+@mixin btn-role-primary {
+  background-color: rgba($link-color, 0.16);
+  border: 1px solid rgba($link-color, 0.5);
+  color: $link-color;
+
+  &:hover,
+  &:focus {
+    background-color: rgba($link-color, 0.26);
+    border-color: $link-color;
+    color: $link-color;
+  }
+}
+
+@mixin btn-role-outline {
+  background-color: transparent;
+  border: 1px solid $link-color-subtle;
+  color: rgb(255 255 255 / 88%);
+
+  &:hover,
+  &:focus {
+    border-color: $link-color;
+    background-color: rgba($link-color, 0.12);
+    color: #ffffff;
+  }
+}
+
 // Hintergrund-Blur inkl. -webkit-Prefix (Safari < 18 braucht ihn noch) —
 // eine Stelle statt handgepflegter Prefix-Paare pro Komponente.
 @mixin backdrop-blur($px) {

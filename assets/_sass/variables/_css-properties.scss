@@ -9,17 +9,6 @@
   --masthead-height: 74px; // Mobile default (moderne Standards: 56-64px)
   --sticky-toc-height: 0px; // Wird via JS gesetzt wenn Mobile Sticky TOC sichtbar
   --anchor-offset: calc(var(--masthead-height) + var(--sticky-toc-height) + 20px);
-  --content-spacing: 0.8rem;
-
-  // ============================================
-  // Brand/Navigation Farben (Cyan/Magenta Farbschema)
-  // ============================================
-  --primary-color: #05d9e8; // Cyan - konsistent mit $link-color
-  --primary-color-rgb: 5, 217, 232; // Cyan RGB
-  --hover-bg-color-rgb: 0, 255, 255;
-  --hover-bg-opacity: 0.08;
-  --hover-indicator-height: 3px;
-  --hover-indicator-color: #05d9e8;
 
   // ============================================
   // Neon Text (.neon-glow)
