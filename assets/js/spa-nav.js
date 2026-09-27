@@ -135,6 +135,10 @@
   document.addEventListener('touchstart', function (e) { warm(e.target); }, { passive: true });
 
   // ── §1 History-Aktivierung: NUR auf verdrahteter Einstiegsseite ─────────────
+  // renderedUrl = Pfad+Search des Inhalts, der TATSÄCHLICH im DOM steht.
+  // Unterscheidet im popstate Same-Page-Traversal (nur Hash/Scroll) von echtem
+  // Seitenwechsel — native Anker-Sprünge ändern renderedUrl nicht.
+  var renderedUrl = location.pathname + location.search;
   if (isWired(location.pathname)) {
     if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
     try {
@@ -143,6 +147,36 @@
         scrollY: (history.state && history.state.scrollY) || 0
       }), '');
     } catch (_) {}
+
+    // Scroll-Position laufend in den aktuellen History-Eintrag sichern —
+    // scrollRestoration='manual' nimmt dem Browser das Restore ab, also müssen
+    // Reload, Back UND Forward aus history.state.scrollY bedient werden.
+    // Trailing-Throttle 500ms: bleibt weit unter Safaris replaceState-Limit
+    // (100 Aufrufe / 30 s) und erfasst die Endposition nach dem letzten Event.
+    var scrollSaveQueued = false;
+    window.addEventListener('scroll', function () {
+      if (scrollSaveQueued) return;
+      scrollSaveQueued = true;
+      setTimeout(function () {
+        scrollSaveQueued = false;
+        var s = history.state;
+        if (!s || !s.spa || s.docId !== DOC_ID || committing) return;
+        try { history.replaceState(assign({}, s, { scrollY: window.scrollY }), ''); } catch (_) {}
+      }, 500);
+    }, { passive: true });
+
+    // Native In-Page-Anker-Sprünge (§0 lässt sie durch) erzeugen einen neuen
+    // Same-Document-Eintrag OHNE State. Nachträglich stempeln, damit spätere
+    // Traversals zu diesem Eintrag den Scroll-only-Pfad im popstate nehmen
+    // statt am '!st.spa'-Gate vorbei ins Leere zu laufen.
+    window.addEventListener('hashchange', function () {
+      if (!isWired(location.pathname)) return;
+      try {
+        history.replaceState(assign({}, history.state, {
+          spa: true, docId: DOC_ID, url: location.href, scrollY: window.scrollY
+        }), '');
+      } catch (_) {}
+    });
   }
 
   // bfcache-Restore: DOM ist bereits korrekt -> folgenden popstate ueberspringen.
@@ -160,6 +194,13 @@
     if (st.docId !== DOC_ID) return;                                 // anderes Dokument -> Browser laedt korrekt
     if (!isWired(location.pathname)) return;                         // Sicherheitsnetz
     var y = st.scrollY || 0;
+    // Same-Page-Traversal (z.B. Back nach TOC-Anker-Klick): der Inhalt steht
+    // bereits im DOM — nur Scroll/Hash anwenden, KEIN Refetch + Content-Swap.
+    if (location.pathname + location.search === renderedUrl) {
+      if (bfPending) { clearTimeout(bfPending); bfPending = null; }
+      applyScroll(location.href, y);
+      return;
+    }
     if (bfPending) clearTimeout(bfPending);
     // 0-ms-Verzoegerung: ein direkt folgendes pageshow(persisted) kann abbrechen.
     bfPending = setTimeout(function () { bfPending = null; navigate(location.href, false, y); }, 0);
@@ -430,6 +471,7 @@
 
   // ── Abschluss: Lifecycle + Ansage (Fokus lief schon synchron in mutate) ─────
   function finishSwap(doc, href) {
+    renderedUrl = location.pathname + location.search;
     var root = document.querySelector('.initial-content');
     dispatch('spa:load', { root: root, url: href, initial: false });
     announce(document.title);
@@ -481,6 +523,13 @@
   // ── Initiales spa:load (nach DOMContentLoaded; alle defer-Module registriert) ─
   function fireInitial() {
     dispatch('spa:load', { root: document.querySelector('.initial-content'), url: location.href, initial: true });
+    // Reload/Traversal-Einstieg mitten im Artikel: scrollRestoration='manual'
+    // heißt, der Browser stellt NICHTS wieder her — aus dem (in §1 bewahrten)
+    // history.state.scrollY nachziehen. Hash-URLs macht der Browser selbst.
+    var st = history.state;
+    if (st && st.spa && st.docId === DOC_ID && st.scrollY && !location.hash) {
+      applyScroll(location.href, st.scrollY);
+    }
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', fireInitial);
   else fireInitial();
