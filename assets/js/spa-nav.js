@@ -69,12 +69,15 @@
     }
     return pathname;
   }
-  // Wired-Set: Home, About, CV sowie ALLES unter /posts/ (Uebersicht,
-  // Pagination UND einzelne Beitraege). Seiten mit eigener Init-Logik
-  // (Mandelbrot, MathJax-Beitraege) faengt needsFullLoad ab.
+  // Wired-Set: Home, About, CV, Mandelbrot sowie ALLES unter /posts/
+  // (Uebersicht, Pagination UND einzelne Beitraege). Mandelbrot und
+  // MathJax-Seiten sind seit Phase 2 swap-faehig: fractal-panel haengt am
+  // spaModule-Kontrakt, MathJax ist selbst gehostet und mathjax-typeset.js
+  // setzt neue Inhalte auf spa:load. Unbekannte Cross-Origin-Abhaengigkeiten
+  // faengt weiterhin needsFullLoad ab.
   function isWired(pathname) {
     var p = stripBase(pathname);
-    if (p === '/' || p === '/about/' || p === '/cv/') return true;
+    if (p === '/' || p === '/about/' || p === '/cv/' || p === '/mandelbrot/') return true;
     return /^\/posts\//.test(p);   // Übersicht, Pagination UND einzelne Beiträge
   }
 
@@ -289,24 +292,19 @@
     }).catch(function () { return null; });
   }
 
-  // ── Zielseite mit einer Cross-Origin-Abhängigkeit (CDN-Skript/-Style, z.B.
-  //     MathJax/jsdelivr, Fractal-CSS)? reconcile lädt nur Same-Origin nach, und
-  //     solche Libs brauchen pro Seite eine Initialisierung (MathJax
-  //     typesetPromise u.a.), die ein reiner Content-Swap nicht leistet -> voll
-  //     navigieren. Greift AUTOMATISCH für jeden künftigen Beitrag mit Formeln
-  //     (keine Sonderliste, keine Pfad-Ausnahme). Bewusst simpel: JEDE
-  //     Cross-Origin-Abhängigkeit zählt, unabhängig davon, ob schon geladen —
-  //     "schon geladen" heißt bei MathJax NICHT "swap-sicher" (Re-Typeset fehlt).
-  //     Verifiziert: es gibt keine sitewide Cross-Origin-Ressource, normale
-  //     Seiten swappen weiter; preconnect/preload-Links zählen hier nicht.
+  // ── Zielseite mit einer Cross-Origin-Abhängigkeit (CDN-Skript/-Style)?
+  //     reconcile lädt nur Same-Origin nach, und fremde Libs brauchen i.d.R.
+  //     eine per-Seite-Initialisierung, die ein reiner Content-Swap nicht
+  //     leistet -> voll navigieren. Seit Phase 2 nur noch Sicherheitsnetz für
+  //     KÜNFTIGE fremde Einbindungen: MathJax ist selbst gehostet (same-origin,
+  //     Re-Typeset über mathjax-typeset.js), Fraktal-Deps ebenso. Bewusst
+  //     simpel: JEDE Cross-Origin-Abhängigkeit zählt; preconnect/preload-Links
+  //     zählen nicht.
   function needsFullLoad(doc) {
-    // Interaktive Fraktal-Panels brauchen eine per-Seite-Initialisierung
-    // (fractal-panel.js initAll auf [data-fractal-panel]), die ein reiner
-    // Content-Swap nicht leistet. Die Vendor-Libs sind same-origin, würden von
-    // der Cross-Origin-Prüfung unten also NICHT erfasst -> wie bei MathJax voll
-    // navigieren. Heute latent (kein verdrahtetes Ziel rendert ein Panel),
-    // greift aber automatisch, falls künftig ein Beitrag eines einbettet.
-    if (doc.querySelector('[data-fractal-panel]')) return true;
+    // Fraktal-Panels sind seit Phase 2 swap-faehig: fractal-panel.js mountet
+    // idempotent auf spa:load (spaModule), die same-origin Vendor-Deps laedt
+    // der Script-/Stylesheet-Reconcile nach — das fruehere
+    // [data-fractal-panel]-Gate entfaellt.
     var els = doc.querySelectorAll('script[src], link[rel="stylesheet"][href]');
     for (var i = 0; i < els.length; i++) {
       var el = els[i], a = el.tagName === 'SCRIPT' ? 'src' : 'href', u;
@@ -391,6 +389,11 @@
       };
       if (vt.finished && vt.finished.then) vt.finished.then(cleanup, cleanup);
       else cleanup();
+      // Hidden Tab (Nutzer wechselt direkt nach dem Klick): der Browser bricht
+      // die Transition mit InvalidStateError ab — ready-Rejection schlucken,
+      // sonst landet sie als Uncaught in der Konsole. Der Swap selbst läuft
+      // über updateCallbackDone normal weiter.
+      if (vt.ready && vt.ready.catch) vt.ready.catch(function () {});
       done = vt.updateCallbackDone ? vt.updateCallbackDone.catch(function () {}) : Promise.resolve();
     } else {
       // Kein VT (reduced-motion / kein Support): Drawer instant zu, sofort tauschen.
