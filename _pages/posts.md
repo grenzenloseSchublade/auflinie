@@ -44,7 +44,9 @@ read_time: false
 
 <div class="entries-{{ site.entries_layout | default: 'list' }} post-card-list" id="blog-entries">
   {% for post in paginator.posts %}
-    <div class="post-item" data-search="{{ post.title | strip | downcase }} {{ post.excerpt | strip | downcase }}">
+    {%- comment -%} strip_html + escape: Markup fliegt aus dem Suchtext, und
+    ein gerades Anführungszeichen im Titel/Excerpt zerreißt das Attribut nicht {%- endcomment -%}
+    <div class="post-item" data-search="{{ post.title | strip_html | strip | downcase | escape }} {{ post.excerpt | strip_html | strip | downcase | escape }}">
       {% include archive-single.html %}
     </div>
   {% endfor %}

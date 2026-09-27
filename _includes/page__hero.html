@@ -1,4 +1,9 @@
-{% capture overlay_img_path %}{{ page.header.overlay_image | relative_url }}{% endcapture %}
+{% comment %} capture liefert ohne overlay_image einen Leerstring, und
+Leerstrings sind in Liquid truthy — der Guard muss auf dem Frontmatter-Feld
+selbst liegen, sonst rendert der Hero data-background-image="" + CRT-Markup. {% endcomment %}
+{% if page.header.overlay_image %}
+  {% capture overlay_img_path %}{{ page.header.overlay_image | relative_url }}{% endcapture %}
+{% endif %}
 
 {% if page.header.overlay_filter contains "gradient" %}
 {% capture overlay_filter %}{{ page.header.overlay_filter }}{% endcapture %}
