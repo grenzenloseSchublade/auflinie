@@ -6,6 +6,11 @@ $section-spacing: 2em; // Abstand zwischen Sektionen
 $element-spacing: 1em; // Standardabstand zwischen Elementen
 $small-spacing: 0.5em; // Kleiner Abstand
 
+// Breiten
+// Gemeinsame Content-Spalte für Fließtext und Startseiten-Sektionen.
+// 46rem hält die Zeilenlänge im lesbaren Bereich (Blocksatz, siehe _home.scss).
+$content-width: 46rem;
+
 // Effekte
 $hover-transform: translateY(-5px); // Transformation beim Hover
 $standard-transition: 0.3s ease; // Standard-Übergangseffekt

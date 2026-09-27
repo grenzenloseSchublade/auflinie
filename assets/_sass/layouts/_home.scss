@@ -6,7 +6,7 @@
 // steht im html-Tag). Auf schmalen Viewports bleibt zu wenig Zeilenbreite,
 // um Trennung auszugleichen — dort linksbündig.
 .home-intro {
-  max-width: 46rem;
+  max-width: $content-width;
   margin: 0 auto $section-spacing;
 
   p {
@@ -76,4 +76,19 @@
 .text-center {
   text-align: center;
   margin: $section-spacing 0;
+}
+
+// Einheitliche Content-Spalte auf der Splash-Startseite: das Theme-Splash-Layout
+// kennt keine .page-Verengung — ohne Kappung liefen Kachel, Beitrags-Grid und
+// Zwischenüberschrift auf volle Container-Breite ($max-width), der Intro-Text
+// aber nur auf $content-width. Scoped auf splash, damit Archiv-Seiten
+// (Single-Layout mit eigener Spalte) unberührt bleiben.
+.layout--splash {
+  .fractal-showcase,
+  .entries-grid,
+  .archive__subtitle,
+  .text-center {
+    max-width: $content-width;
+    margin-inline: auto;
+  }
 }
