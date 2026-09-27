@@ -225,6 +225,13 @@
     this.canvas.addEventListener('pointermove', this.onPointerMove.bind(this), canvasSignal);
     this.canvas.addEventListener('pointerup', this.onPointerUp.bind(this), canvasSignal);
     this.canvas.addEventListener('pointercancel', this.onPointerUp.bind(this), canvasSignal);
+    // touch-action wird beim Touch-KONTAKT ausgewertet — die Style-Umschaltung
+    // im pointerdown desselben Fingers (onPointerDown) greift erst für SPÄTERE
+    // Finger. Nicht-passiver touchstart-Handler entzieht Zwei-Finger-Gesten und
+    // Knoten-Treffer dem Browser-Scroll sofort; Ein-Finger-Touch auf leerer
+    // Fläche scrollt weiter (touch-action: pan-y bleibt wirksam).
+    this.canvas.addEventListener('touchstart', this.onTouchStart.bind(this),
+      { signal: this.abort.signal, passive: false });
     if (this.resetBtn) {
       this.resetBtn.addEventListener('click', this.reset.bind(this), canvasSignal);
     }
@@ -525,6 +532,18 @@
     return hit;
   };
 
+  SkillGraph.prototype.onTouchStart = function (event) {
+    if (!this.sim || this.panel.hidden) { return; }
+    if (event.touches.length >= 2) { event.preventDefault(); return; }
+    var t = event.touches[0];
+    var rect = this.canvas.getBoundingClientRect();
+    var hit = this.hitTest(
+      t.clientX - rect.left - (this.panX || 0),
+      t.clientY - rect.top - (this.panY || 0)
+    );
+    if (hit !== null) { event.preventDefault(); }
+  };
+
   SkillGraph.prototype.onPointerDown = function (event) {
     if (!this.sim || this.panel.hidden) { return; }
     this.pointers[event.pointerId] = this.canvasPos(event);
@@ -617,7 +636,9 @@
       return;
     }
 
-    if (this.dragId !== null && !this.dragMoved) {
+    // pointercancel ist KEIN Klick: der Browser hat die Geste übernommen
+    // (z.B. pan-y-Scroll) — nur Pointer-State aufräumen, Auswahl unangetastet.
+    if (this.dragId !== null && !this.dragMoved && event.type !== 'pointercancel') {
       // Kein echtes Ziehen → als Klick behandeln (Auswahl togglen)
       var hit = this.dragId;
       this.setSelection(hit === this.selected ? null : hit);
