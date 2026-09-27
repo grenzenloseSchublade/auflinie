@@ -23,7 +23,9 @@
         right: 0;
         z-index: 998; // Unter dem Masthead (1000)
         background: rgb(26 28 32 / 96%);
-        backdrop-filter: blur(6px);
+
+        @include backdrop-blur(6px);
+
         border-bottom: 1px solid $console-panel-border;
         box-shadow: 0 2px 8px rgb(0 0 0 / 30%);
         

@@ -9,7 +9,8 @@
   justify-content: center;
   padding: 1rem;
   background: rgb(10 14 18 / 55%);
-  backdrop-filter: blur(2px);
+
+  @include backdrop-blur(2px);
 
   // display: flex überschreibt sonst das UA-Stylesheet für [hidden] —
   // ohne diese Regel ist der Dialog nicht wegklickbar

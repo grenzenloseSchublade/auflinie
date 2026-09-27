@@ -134,7 +134,9 @@
   font-family: $fp-mono;
   font-variant-numeric: tabular-nums;
   font-weight: 500;
-  backdrop-filter: blur(4px);
+
+  @include backdrop-blur(4px);
+
   white-space: nowrap;
   width: 138px;
   text-align: center;

@@ -60,6 +60,13 @@
 }
 
 // Mono-Chrome-Label (Mono + Uppercase + Letterspacing) — Größen pro Einsatzort
+// Hintergrund-Blur inkl. -webkit-Prefix (Safari < 18 braucht ihn noch) —
+// eine Stelle statt handgepflegter Prefix-Paare pro Komponente.
+@mixin backdrop-blur($px) {
+  backdrop-filter: blur($px);
+  -webkit-backdrop-filter: blur($px);   // stylelint-disable-line property-no-vendor-prefix
+}
+
 @mixin mono-label($size: $fs-label, $tracking: 0.07em) {
   font-family: $mono-font-stack;
   font-size: $size;
