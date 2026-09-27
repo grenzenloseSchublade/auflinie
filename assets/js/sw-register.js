@@ -41,17 +41,12 @@
 
     document.body.appendChild(toast);
     
-    // Event-Listener
+    // Event-Listener — der Reload passiert im globalen controllerchange-
+    // Listener (wireControllerReload), damit ALLE offenen Tabs neu laden,
+    // nicht nur der, in dem geklickt wurde.
     document.getElementById('sw-update-reload').addEventListener('click', () => {
       const waiting = registration && registration.waiting;
       if (waiting) {
-        // Genau ein Reload, sobald der neue Worker übernommen hat
-        let reloaded = false;
-        navigator.serviceWorker.addEventListener('controllerchange', () => {
-          if (reloaded) return;
-          reloaded = true;
-          window.location.reload();
-        });
         waiting.postMessage({ type: 'SKIP_WAITING' });
       } else {
         window.location.reload();
@@ -230,7 +225,27 @@
     window.addEventListener('focus', checkForUpdate);
   }
 
+  /**
+   * Versions-Mix bei mehreren Tabs verhindern: der Update-Flow löscht beim
+   * Aktivieren die alten Caches (activate) und übernimmt alle Tabs
+   * (clients.claim) — ohne globalen Reload liefe jeder NICHT klickende Tab
+   * mit altem DOM gegen den neuen Cache. Erst-Claim beim Erstbesuch (vorher
+   * kein Controller) löst bewusst keinen Reload aus.
+   */
+  function wireControllerReload() {
+    if (!('serviceWorker' in navigator) || !config.enableServiceWorker) return;
+    let hadController = !!navigator.serviceWorker.controller;
+    let reloaded = false;
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      if (!hadController) { hadController = true; return; }
+      if (reloaded) return;
+      reloaded = true;
+      window.location.reload();
+    });
+  }
+
   // Service Worker registrieren
   registerServiceWorker();
   wireSpaUpdateChecks();
+  wireControllerReload();
 })();
