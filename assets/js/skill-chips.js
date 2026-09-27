@@ -29,21 +29,6 @@
   var SOURCE = 'chips';
   var controller = null;   // dokumentweite Listener dieses Mounts
 
-  function parseData(tag) {
-    var data;
-    try {
-      data = JSON.parse(tag.textContent);
-    } catch (e) {
-      console.warn('skill-chips: skill_graph-Daten nicht lesbar', e);
-      return null;
-    }
-    if (!data || data.version !== 1 || !Array.isArray(data.projects)) {
-      console.warn('skill-chips: unbekanntes skill_graph-Schema (erwartet version: 1)');
-      return null;
-    }
-    return data;
-  }
-
   function mount(root) {
     var scope = root || document;
     var container = scope.querySelector('.cv-skills');
@@ -53,7 +38,7 @@
     if (container.hasAttribute('data-skill-chips-init')) { return; }   // idempotent
     container.setAttribute('data-skill-chips-init', '');
 
-    var data = parseData(dataTag);
+    var data = window.SkillGraphData.parse(dataTag, 'skill-chips');
     if (!data) { return; }
 
     if (controller) { controller.abort(); }
@@ -63,19 +48,6 @@
     // Basis-Skills (generische Dev-Infra): bewusst ohne Projektkanten
     var foundations = new Set(Array.isArray(data.foundations) ? data.foundations : []);
 
-    // Skill-ID → Projekte (Pflichtfelder defensiv prüfen)
-    var skillProjects = new Map();
-    data.projects.forEach(function (project) {
-      if (!project || !project.id || !project.label || !Array.isArray(project.skills)) {
-        console.warn('skill-chips: Projekt ohne Pflichtfelder übersprungen', project);
-        return;
-      }
-      project.skills.forEach(function (skillId) {
-        if (!skillProjects.has(skillId)) { skillProjects.set(skillId, []); }
-        skillProjects.get(skillId).push(project);
-      });
-    });
-
     var buttons = Array.prototype.slice.call(
       container.querySelectorAll('.cv-skill-chip__button[data-skill]')
     );
@@ -83,12 +55,12 @@
       return btn.getAttribute('data-skill');
     }));
 
-    // Konsistenz-Warnung: Daten und Chips dürfen nicht auseinanderlaufen
-    skillProjects.forEach(function (_projects, skillId) {
-      if (!domSkills.has(skillId)) {
-        console.warn('skill-chips: skill_graph.yml referenziert unbekannten Skill "' + skillId + '"');
-      }
-    });
+    // Skill-ID → Projekte (gemeinsamer Aufbau, warnt bei fehlenden
+    // Pflichtfeldern und bei Skills, die keinen DOM-Chip haben)
+    var skillProjects = window.SkillGraphData.buildSkillProjects(data.projects, {
+      prefix: 'skill-chips',
+      knownIds: domSkills
+    }).map;
 
     var defaultText = contextLine.textContent;
     var selected = null;
@@ -202,11 +174,5 @@
 
   function teardown() { if (controller) { controller.abort(); controller = null; } }
 
-  document.addEventListener('spa:load', function (e) { mount(e.detail && e.detail.root); });
-  document.addEventListener('spa:unload', teardown);
-  window.addEventListener('pageshow', function (e) { if (e.persisted) mount(document); });
-
-  function peFallback() { if (!window.__spaNavActive) mount(document); }
-  if (document.readyState === 'complete') peFallback();
-  else document.addEventListener('DOMContentLoaded', peFallback);
+  window.spaModule({ mount: mount, teardown: teardown });
 })();

@@ -30,21 +30,6 @@
   // Label-Breite mit der falschen Schrift (Canvas-Default 10px sans-serif).
   var LABEL_FONT = '11px "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace';
 
-  function parseData(tag) {
-    var data;
-    try {
-      data = JSON.parse(tag.textContent);
-    } catch (e) {
-      console.warn('skill-graph: skill_graph-Daten nicht lesbar', e);
-      return null;
-    }
-    if (!data || data.version !== 1 || !Array.isArray(data.projects)) {
-      console.warn('skill-graph: unbekanntes skill_graph-Schema (erwartet version: 1)');
-      return null;
-    }
-    return data;
-  }
-
   function SkillGraph(root) {
     this.root = root;
     this.toggle = root.querySelector('[data-role="graph-toggle"]');
@@ -121,7 +106,7 @@
 
   SkillGraph.prototype.build = function () {
     var dataTag = document.querySelector('script[data-skill-graph-data]');
-    var data = dataTag && parseData(dataTag);
+    var data = dataTag && window.SkillGraphData.parse(dataTag, 'skill-graph');
     if (!data) { return; }
 
     var self = this;
@@ -132,9 +117,9 @@
     // sie kantenlos herum und überfüllen die Fläche.
     var connected = new Set();
     data.projects.forEach(function (project) {
-      // Derselbe Pflichtfeld-Filter wie in der Kanten-Schleife unten: Projekte
-      // ohne id/label fallen dort heraus — ihre Skills dürfen deshalb auch hier
-      // keine Knoten werden, sonst schweben sie kantenlos herum.
+      // Derselbe Pflichtfeld-Filter wie in SkillGraphData.buildSkillProjects:
+      // Projekte ohne id/label fallen dort heraus — ihre Skills dürfen deshalb
+      // auch hier keine Knoten werden, sonst schweben sie kantenlos herum.
       if (project && project.id && project.label && Array.isArray(project.skills)) {
         project.skills.forEach(function (id) { connected.add(id); });
       }
@@ -152,22 +137,16 @@
     });
 
     // Kanten: Skill-Paare mit gemeinsamen Projekten (Gewicht = Anzahl);
-    // Nachbarschaft + Projektlisten fürs Kontext-Panel gleich mitsammeln
+    // Skill→Projekte-Map über den gemeinsamen Helfer (warnt bei fehlenden
+    // Pflichtfeldern und unbekannten Skill-IDs)
+    var built = window.SkillGraphData.buildSkillProjects(data.projects, {
+      prefix: 'skill-graph',
+      knownIds: new Set(indexById.keys())
+    });
+    this.skillProjects = built.map;
     var edgeMap = new Map();
-    this.skillProjects = new Map();
-    data.projects.forEach(function (project) {
-      if (!project || !project.id || !project.label || !Array.isArray(project.skills)) { return; }
-      var ids = project.skills.filter(function (id) {
-        if (!indexById.has(id)) {
-          console.warn('skill-graph: skill_graph.yml referenziert unbekannten Skill "' + id + '"');
-          return false;
-        }
-        return true;
-      });
-      ids.forEach(function (id) {
-        if (!self.skillProjects.has(id)) { self.skillProjects.set(id, []); }
-        self.skillProjects.get(id).push(project);
-      });
+    built.projects.forEach(function (entry) {
+      var ids = entry.ids;
       for (var i = 0; i < ids.length; i++) {
         for (var j = i + 1; j < ids.length; j++) {
           var a = indexById.get(ids[i]);
@@ -202,12 +181,7 @@
     this.spread = Math.max(1.4, Math.min(2.5, this.nodes.length / 6));
     var vw = w * this.spread;
     var vh = h * this.spread;
-    var radius = Math.min(vw, vh) * 0.36;
-    this.nodes.forEach(function (node, i) {
-      var angle = (i / self.nodes.length) * Math.PI * 2 - Math.PI / 2;
-      node.x = vw / 2 + Math.cos(angle) * radius;
-      node.y = vh / 2 + Math.sin(angle) * radius;
-    });
+    this.seedLayout(vw, vh, false);
     this.sim = new window.SkillGraphSim(this.nodes, this.edges, vw, vh);
     // Pan so, dass die virtuelle Mitte im Canvas zentriert startet.
     this.panX = (w - vw) / 2;
@@ -272,26 +246,34 @@
     }
   };
 
+  // Deterministische Kreis-Startlage im virtuellen Layout-Raum (w×h).
+  // clearPins löst zusätzlich Drag-Fixierungen und nullt Geschwindigkeiten.
+  SkillGraph.prototype.seedLayout = function (w, h, clearPins) {
+    var count = this.nodes.length || 1;
+    var radius = Math.min(w, h) * 0.36;
+    this.nodes.forEach(function (node, i) {
+      if (clearPins) {
+        node.fx = null;
+        node.fy = null;
+        node.vx = 0;
+        node.vy = 0;
+      }
+      var angle = (i / count) * Math.PI * 2 - Math.PI / 2;
+      node.x = w / 2 + Math.cos(angle) * radius;
+      node.y = h / 2 + Math.sin(angle) * radius;
+    });
+  };
+
   // Layout zurücksetzen: Fixierungen lösen, Knoten auf die deterministische
   // Kreis-Startlage zurücksetzen, Sim neu aufheizen.
   SkillGraph.prototype.reset = function () {
     if (!this.sim) { return; }
     var w = this.sim.width;
     var h = this.sim.height;
-    var radius = Math.min(w, h) * 0.36;
     // Ansicht wieder auf die virtuelle Mitte zentrieren (Pan zurücksetzen).
     this.panX = ((this.canvasW || w) - w) / 2;
     this.panY = ((this.canvasH || h) - h) / 2;
-    var count = this.nodes.length || 1;
-    this.nodes.forEach(function (node, i) {
-      node.fx = null;
-      node.fy = null;
-      node.vx = 0;
-      node.vy = 0;
-      var angle = (i / count) * Math.PI * 2 - Math.PI / 2;
-      node.x = w / 2 + Math.cos(angle) * radius;
-      node.y = h / 2 + Math.sin(angle) * radius;
-    });
+    this.seedLayout(w, h, true);
     this.sim.alpha = 1;
     if (this.selected !== null) {
       this.setSelection(null);
@@ -719,11 +701,5 @@
     instances = [];
   }
 
-  document.addEventListener('spa:load', function (e) { mountGraph(e.detail && e.detail.root); });
-  document.addEventListener('spa:unload', teardownGraph);
-  window.addEventListener('pageshow', function (e) { if (e.persisted) { mountGraph(document); } });
-
-  function graphPeFallback() { if (!window.__spaNavActive) { mountGraph(document); } }
-  if (document.readyState === 'complete') { graphPeFallback(); }
-  else { document.addEventListener('DOMContentLoaded', graphPeFallback); }
+  window.spaModule({ mount: mountGraph, teardown: teardownGraph });
 })();

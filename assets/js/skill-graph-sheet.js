@@ -224,11 +224,5 @@
     instances = [];
   }
 
-  document.addEventListener('spa:load', function (e) { mount(e.detail && e.detail.root); });
-  document.addEventListener('spa:unload', teardown);
-  window.addEventListener('pageshow', function (e) { if (e.persisted) { mount(document); } });
-
-  function peFallback() { if (!window.__spaNavActive) { mount(document); } }
-  if (document.readyState === 'complete') { peFallback(); }
-  else { document.addEventListener('DOMContentLoaded', peFallback); }
+  window.spaModule({ mount: mount, teardown: teardown });
 })();

@@ -37,6 +37,7 @@ const CACHE_URLS = [
   './assets/js/toc.js',
   './assets/js/blog-search.js',
   './assets/js/skill-chips.js',
+  './assets/js/skill-graph-data.js',
   './assets/js/skill-graph-sim.js',
   './assets/js/skill-graph.js',
   './assets/js/skill-graph-sheet.js',

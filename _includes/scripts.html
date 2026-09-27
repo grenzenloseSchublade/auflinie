@@ -47,6 +47,8 @@
 
 {% if page.skill_graph.enabled or page.skill_graph.stage2 %}
 <!-- Interaktives Skill-Feature (CV): Flag im Front Matter, Muster blog_search -->
+<!-- Gemeinsame Helfer (Daten-Parsing, SPA-Mount-Kontrakt) VOR den Modulen -->
+<script src="{{ '/assets/js/skill-graph-data.js' | relative_url }}" defer></script>
 <script src="{{ '/assets/js/skill-chips.js' | relative_url }}" defer></script>
 {% endif %}
 
