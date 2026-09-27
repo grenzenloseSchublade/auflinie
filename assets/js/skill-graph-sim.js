@@ -133,11 +133,15 @@
   };
 
   SkillGraphSim.prototype.resize = function (width, height) {
-    var fx = width / this.width;
-    var fy = height / this.height;
+    var sx = width / this.width;
+    var sy = height / this.height;
     this.nodes.forEach(function (node) {
-      node.x *= fx;
-      node.y *= fy;
+      node.x *= sx;
+      node.y *= sy;
+      // Per Drag fixierte Knoten (fx/fy) mitskalieren — sonst springen sie
+      // beim nächsten Reheat auf die alte, unskalierte Position zurück.
+      if (node.fx != null) { node.fx *= sx; }
+      if (node.fy != null) { node.fy *= sy; }
     });
     this.width = width;
     this.height = height;
