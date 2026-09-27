@@ -44,6 +44,10 @@
     if (controller) { controller.abort(); }
     controller = new AbortController();
     var signal = { signal: controller.signal };
+    // Mount-Generation für den Gumshoe-Retry: nach Teardown (abort) darf die
+    // 50ms-Schleife keine verwaiste Instanz einer alten Generation erzeugen.
+    var mountSignal = controller.signal;
+    var gumshoeRetries = 0;
 
     var isDropdownOpen = false;
     var stickyVisible = false;
@@ -98,7 +102,9 @@
     }
 
     function initGumshoe() {
+      if (mountSignal.aborted) { return; }    // Seite/Mount schon abgeräumt
       if (typeof Gumshoe === 'undefined') {   // async geladen -> kurz warten
+        if (gumshoeRetries++ >= 100) { return; }   // ~5s: gumshoe.min.js lädt nicht — aufgeben statt endlos pollen
         window.setTimeout(initGumshoe, 50);
         return;
       }

@@ -5,8 +5,12 @@
 (function() {
   'use strict';
 
-  // Prüfen, ob der Benutzer wieder online ist
+  // Prüfen, ob der Benutzer wieder online ist. Guard: wurde die Offline-Seite
+  // per SPA-Swap durch anderen Inhalt ersetzt, lebt dieser Listener weiter —
+  // ohne DOM-Check würde er später eine beliebige gerade angezeigte Seite
+  // hart neu laden.
   window.addEventListener('online', function() {
+    if (!document.querySelector('.offline-page')) { return; }
     window.location.reload();
   });
 

@@ -94,7 +94,15 @@
 
     // Reiner In-Page-Anker zur AKTUELLEN Seite -> nativer Sprung (+ Fokus)
     if (url.pathname === location.pathname && url.search === location.search && url.hash) return;
-    if (url.href === location.href) { e.preventDefault(); return; }  // kein History-Duplikat
+    if (url.href === location.href) {
+      // Kein History-Duplikat — aber ein offener Drawer soll wie bei jeder
+      // Navigation zugehen, sonst bleibt der Klick ohne jedes Feedback.
+      e.preventDefault();
+      if (window.GreedyNav && typeof window.GreedyNav.close === 'function') {
+        try { window.GreedyNav.close(); } catch (_) {}
+      }
+      return;
+    }
 
     e.preventDefault();
     navigate(url.href, true, 0);
