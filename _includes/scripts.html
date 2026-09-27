@@ -29,6 +29,11 @@
 <!-- Service Worker (global) -->
 <script src="{{ '/assets/js/sw-register.js' | relative_url }}" defer></script>
 
+<!-- Persistent-Shell-Kontrakt (window.spaModule) — sitewide, VOR allen
+     Modulen, die sich am SPA-Lebenszyklus registrieren (Skill-Feature,
+     Fraktal-Panels) -->
+<script src="{{ '/assets/js/spa-module.js' | relative_url }}" defer></script>
+
 {% if page.header.overlay_image %}
 <!-- Hero-Hintergrund + CRT-Effekt: nur auf Seiten mit Overlay-Hero -->
 <script src="{{ '/assets/js/hero-crt.js' | relative_url }}" defer></script>
@@ -47,7 +52,7 @@
 
 {% if page.skill_graph.enabled or page.skill_graph.stage2 %}
 <!-- Interaktives Skill-Feature (CV): Flag im Front Matter, Muster blog_search -->
-<!-- Gemeinsame Helfer (Daten-Parsing, SPA-Mount-Kontrakt) VOR den Modulen -->
+<!-- Gemeinsamer Daten-Helfer VOR den Modulen -->
 <script src="{{ '/assets/js/skill-graph-data.js' | relative_url }}" defer></script>
 <script src="{{ '/assets/js/skill-chips.js' | relative_url }}" defer></script>
 {% endif %}
