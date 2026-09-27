@@ -23,6 +23,12 @@ DEFAULT_PROPS = ("font-size", "margin", "margin-top", "margin-bottom",
                  "line-height", "padding", "padding-top", "padding-bottom")
 
 
+def last_compound(sel: str) -> str:
+    """Letzter Compound-Bestandteil (nach dem letzten Kombinator)."""
+    parts = re.split(r"[\s>+~]+", sel.strip())
+    return parts[-1] if parts else sel
+
+
 def specificity(sel: str):
     ids = len(re.findall(r"#[\w-]+", sel))
     cls = len(re.findall(r"\.[\w-]+|\[[^\]]*\]|:(?!:)[\w-]+", sel))
@@ -50,9 +56,10 @@ def main() -> int:
         for i, m in enumerate(re.finditer(r"([^{}]+)\{([^}]*)\}", css)):
             for sel in m.group(1).split(","):
                 s = sel.strip()
-                # Regel muss das Muster enthalten UND darauf enden können
-                # (grobe Heuristik: Muster ist letzter Compound-Bestandteil)
-                if pattern not in s:
+                # Regel muss das Muster im LETZTEN Compound tragen — sonst
+                # zählen auch Regeln, die nur einen Vorfahren stylen
+                # (z.B. '.blog-notice__text a' beim Muster '.blog-notice__text').
+                if pattern not in last_compound(s):
                     continue
                 if "::" in s or ":hover" in s or ":focus" in s:
                     continue
@@ -63,9 +70,12 @@ def main() -> int:
                     prop, val = decl.split(":", 1)
                     prop = prop.strip()
                     if prop in props:
-                        key = (spec, i)
+                        val = val.strip()
+                        # !important schlägt jede Spezifität (höchste Kaskaden-Stufe)
+                        imp = 1 if "!important" in val else 0
+                        key = (imp, spec, i)
                         if prop not in winners or key >= winners[prop][0]:
-                            winners[prop] = (key, val.strip(), s)
+                            winners[prop] = (key, val, s)
         if not winners:
             print("  (keine matchenden Regeln)")
         for prop in props:
