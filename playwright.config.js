@@ -18,7 +18,9 @@ module.exports = defineConfig({
   reporter: 'list',
   use: {
     baseURL: process.env.BASE_URL || 'http://127.0.0.1:4000',
-    trace: 'on-first-retry',
+    // retain-on-failure statt on-first-retry: ohne konfigurierte retries
+    // (Default 0) entstünde bei Fehlschlägen sonst nie ein Trace
+    trace: 'retain-on-failure',
   },
   projects: [
     { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
