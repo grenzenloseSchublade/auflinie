@@ -994,7 +994,7 @@
     destroy() {
       this.abort.abort();
       if (this.resizeObserver) this.resizeObserver.disconnect();
-      this.views.forEach((view) => view.renderer.cancelActiveWorkers());
+      this.views.forEach((view) => view.renderer.dispose());
       if (this.colorTomSelect) this.colorTomSelect.destroy();
       if (this.presetTomSelect) this.presetTomSelect.destroy();
     }
