@@ -61,6 +61,13 @@
 
     this.activate.addEventListener('click', this.onActivate.bind(this), signal);
     document.addEventListener('keydown', this.onKeydown.bind(this), signal);
+    // Aktive Skill-Auswahl mitverfolgen (Event-Vertrag mit skill-graph/skill-chips):
+    // Esc-Staffelung — erstes Esc löst nur die Auswahl, zweites schließt das Sheet.
+    this.selectedSkill = null;
+    var self = this;
+    document.addEventListener('auflinie:skill-select', function (event) {
+      self.selectedSkill = (event.detail && event.detail.skill) || null;
+    }, signal);
 
     // Panel öffnet/schließt über [hidden] (skill-graph.js) — hier nur reagieren.
     this.observer = new MutationObserver(this.onHidden.bind(this));
@@ -185,7 +192,11 @@
   };
 
   GraphMode.prototype.onKeydown = function (e) {
-    if (e.key === 'Escape' && !this.panel.hidden) { this.close(); }
+    if (e.key !== 'Escape' || this.panel.hidden) { return; }
+    // Bei aktiver Auswahl übernehmen skill-graph/skill-chips dieses Esc und
+    // lösen nur die Auswahl — das Sheet schließt erst beim nächsten Esc.
+    if (this.selectedSkill != null) { return; }
+    this.close();
   };
 
   GraphMode.prototype.destroy = function () {
