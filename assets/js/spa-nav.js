@@ -65,8 +65,9 @@
     }
     return pathname;
   }
-  // NUR Home, About, Blog-Uebersicht + Pagination. Einzelne Beitraege
-  // (/posts/:title/) sind bewusst NICHT verdrahtet.
+  // Wired-Set: Home, About, CV sowie ALLES unter /posts/ (Uebersicht,
+  // Pagination UND einzelne Beitraege). Seiten mit eigener Init-Logik
+  // (Mandelbrot, MathJax-Beitraege) faengt needsFullLoad ab.
   function isWired(pathname) {
     var p = stripBase(pathname);
     if (p === '/' || p === '/about/' || p === '/cv/') return true;
