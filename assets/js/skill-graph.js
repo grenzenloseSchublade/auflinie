@@ -550,7 +550,10 @@
       try { this.canvas.style.cursor = 'grabbing'; } catch (e) { /* noop */ }
     } else if (event.pointerType === 'mouse') {
       // Maus auf leere Fläche -> Pan (Desktop, kein Scroll-Konflikt).
+      // Capture nötig: ohne sie erreicht ein pointerup außerhalb des Canvas
+      // onPointerUp nie und der Pan bliebe am Hover kleben (Touch captured implizit).
       this.startPan();
+      try { this.canvas.setPointerCapture(event.pointerId); } catch (e) { /* noop */ }
     }
     // Touch auf leere Fläche: nichts -> die Seite scrollt (touch-action: pan-y).
   };
