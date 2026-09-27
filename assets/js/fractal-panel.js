@@ -1005,9 +1005,16 @@
     }
   }
 
-  function initAll() {
-    const instances = [];
-    document.querySelectorAll('[data-fractal-panel]').forEach((rootElement) => {
+  // ── Persistent-Shell-Kontrakt (spa-nav.js, siehe README-spa-nav.md) ─────────
+  // mount idempotent (Mounted-Attribut), teardown fährt Worker, Observer und
+  // TomSelect-Instanzen über destroy() herunter — sonst rechneten verwaiste
+  // Panels nach einem Content-Swap weiter.
+  let instances = [];
+
+  function mount(root) {
+    const scope = root || document;
+    scope.querySelectorAll('[data-fractal-panel]').forEach((rootElement) => {
+      if (rootElement.hasAttribute('data-fractal-panel-mounted')) { return; }
       const variant = VARIANTS[rootElement.dataset.fractalPanel];
       if (!variant) {
         console.warn('fractal-panel: unbekannte Variante', rootElement.dataset.fractalPanel);
@@ -1017,14 +1024,26 @@
         console.warn('fractal-panel: Abhängigkeiten fehlen (fractal_panels-Flag im Front Matter gesetzt?)');
         return;
       }
+      rootElement.setAttribute('data-fractal-panel-mounted', '');
       instances.push(new FractalPanel(rootElement, variant));
     });
     window.FractalPanels = instances;
   }
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initAll);
+  function teardown() {
+    instances.forEach((panel) => { try { panel.destroy(); } catch (e) { /* noop */ } });
+    instances = [];
+    window.FractalPanels = instances;
+  }
+
+  if (typeof window.spaModule === 'function') {
+    window.spaModule({ mount: mount, teardown: teardown });
   } else {
-    initAll();
+    // Fallback ohne spa-module.js (sollte sitewide geladen sein): altes Verhalten
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', function () { mount(document); });
+    } else {
+      mount(document);
+    }
   }
 })();
