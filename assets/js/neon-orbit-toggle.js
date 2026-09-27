@@ -146,8 +146,8 @@
     const transform = getComputedStyle(el, pseudo).transform;
     if (!transform || transform === "none") return null;
     const values =
-      transform.match(/matrix3d\\(([^)]+)\\)/) ||
-      transform.match(/matrix\\(([^)]+)\\)/);
+      transform.match(/matrix3d\(([^)]+)\)/) ||
+      transform.match(/matrix\(([^)]+)\)/);
     if (!values) return null;
     const parts = values[1].split(",").map((v) => parseFloat(v.trim()));
     const [a, b] = parts;
