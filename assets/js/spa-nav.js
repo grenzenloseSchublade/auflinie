@@ -56,6 +56,10 @@
   Array.prototype.forEach.call(document.querySelectorAll('script[src]'), function (s) {
     loadedScripts.add(s.src);
   });
+  var loadedStyles = new Set();
+  Array.prototype.forEach.call(document.querySelectorAll('link[rel="stylesheet"][href]'), function (l) {
+    loadedStyles.add(l.href);
+  });
 
   // ── Pfad-Helfer + Wired-Praedikat ───────────────────────────────────────────
   function stripBase(pathname) {
@@ -395,6 +399,7 @@
       done = Promise.resolve();
     }
     return done
+      .then(function () { return reconcilePageStyles(doc); })
       .then(function () { return reconcilePageScripts(doc); })
       .then(function () { finishSwap(doc, href); });
   }
@@ -453,6 +458,33 @@
         a.setAttribute('aria-current', 'page');
       }
     }
+  }
+
+  // ── §2.3 Stylesheet-Reconcile: fehlende same-origin-Styles VOR den Skripten ─
+  // Seiten-Flags hängen CSS in den Head (z.B. nouislider/tom-select bei
+  // fractal_panels) — mergeHead kopiert keine Stylesheets, also hier additiv
+  // nachladen (nie entfernen: einmal geladene Styles schaden auf anderen
+  // Seiten nicht, ihre Selektoren matchen dort schlicht nichts).
+  function reconcilePageStyles(doc) {
+    var hrefs = [], nodes = doc.querySelectorAll('link[rel="stylesheet"][href]');
+    for (var i = 0; i < nodes.length; i++) {
+      var href;
+      try { href = new URL(nodes[i].getAttribute('href'), location.href); } catch (_) { continue; }
+      if (href.origin !== location.origin) continue;      // CDN-Styles NICHT hier laden
+      if (loadedStyles.has(href.href)) continue;
+      hrefs.push(href.href);
+    }
+    if (!hrefs.length) return Promise.resolve();
+    return Promise.all(hrefs.map(injectStyle));
+  }
+  function injectStyle(href) {
+    loadedStyles.add(href);
+    return new Promise(function (resolve) {
+      var l = document.createElement('link');
+      l.rel = 'stylesheet'; l.href = href;
+      l.onload = resolve; l.onerror = resolve;
+      document.head.appendChild(l);
+    });
   }
 
   // ── §2.4 Script-Reconcile: nur fehlende same-origin-Skripte injizieren ──────
