@@ -3,7 +3,7 @@
 // Reine Funktionen (nur Math) – identisches Verhalten in beiden Workern.
 
 // Vorberechnung von Farben für bessere Performance
-function precomputeColors(palette, maxIterations) {
+function precomputeColors(palette) {
     const colors = [];
     const steps = 1000; // Anzahl der vorberechneten Farben
 

@@ -43,6 +43,7 @@ const CACHE_URLS = [
   './assets/js/fractal-panel.js',
   './assets/js/fractal-renderer.js',
   './assets/js/fractal-color-utils.js',
+  './assets/js/fractal-worker-core.js',
   './assets/js/julia-worker.js',
   './assets/js/mandelbrot-worker.js',
   // Vendor (vormals CDN)
