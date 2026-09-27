@@ -48,6 +48,15 @@ const CACHE_URLS = [
   './assets/js/fractal-worker-core.js',
   './assets/js/julia-worker.js',
   './assets/js/mandelbrot-worker.js',
+  // MathJax (selbst gehostet; die vielen Font-Range-Dateien laufen über den
+  // Runtime-Cache-First-Pfad und sind nach erstem Gebrauch offline verfügbar)
+  './assets/js/mathjax-config.js',
+  './assets/js/mathjax-typeset.js',
+  './assets/vendor/mathjax/tex-chtml.js',
+  './assets/vendor/mathjax/input/tex/extensions/noerrors.js',
+  './assets/vendor/mathjax/ui/menu.js',
+  './assets/vendor/mathjax/a11y/assistive-mml.js',
+  './assets/vendor/mathjax-newcm-font/chtml.js',
   // Vendor (vormals CDN)
   './assets/vendor/nouislider.min.js',
   './assets/vendor/nouislider.min.css',

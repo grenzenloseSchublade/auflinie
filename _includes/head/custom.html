@@ -3,13 +3,15 @@
 <!-- Security Headers (nur die via meta unterstützten) -->
 <!-- Hinweis: X-Frame-Options, Permissions-Policy und frame-ancestors erfordern HTTP-Header -->
 <meta name="referrer" content="strict-origin-when-cross-origin">
+<!-- jsdelivr entfiel: MathJax ist seit dem Self-Host (assets/vendor/mathjax)
+     die letzte CDN-Quelle gewesen — alles läuft same-origin -->
 <meta http-equiv="Content-Security-Policy" content="
   default-src 'self';
-  script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net;
-  style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net;
+  script-src 'self' 'unsafe-inline';
+  style-src 'self' 'unsafe-inline';
   img-src 'self' data: https:;
-  font-src 'self' https://cdn.jsdelivr.net;
-  connect-src 'self' https://cdn.jsdelivr.net;
+  font-src 'self';
+  connect-src 'self';
   worker-src 'self' blob:;
   base-uri 'self';
   form-action 'self';
@@ -50,51 +52,13 @@
 {% endif %}
 
 {% if page.mathjax %}
-<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
-<script>
-  MathJax = {
-    tex: {
-      inlineMath: [['$', '$'], ['\\(', '\\)']],
-      displayMath: [['$$', '$$'], ['\\[', '\\]']],
-      processEscapes: true,
-      packages: { '[+]': ['noerrors'] }
-    },
-    options: {
-      skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
-      ignoreHtmlClass: 'tex2jax_ignore',
-      processHtmlClass: 'tex2jax_process',
-      menuOptions: {
-        settings: {
-          assistiveMml: true
-        }
-      }
-    },
-    loader: {
-      load: ['[tex]/noerrors']
-    },
-    startup: {
-      ready: function() {
-        // Unterdrücke die Warnung für veraltete mathvariant-Attribute
-        MathJax.startup.defaultReady();
-        
-        // Fehlerbehandlung für veraltete Attribute
-        if (MathJax._?.input?.mathml?.MathMLCompile?.prototype?.error) {
-          const originalCompileError = MathJax._.input.mathml.MathMLCompile.prototype.error;
-          MathJax._.input.mathml.MathMLCompile.prototype.error = function(node, message) {
-            if (message.match(/mathvariant='script'/)) {
-              return null; // Unterdrücke diese spezifische Warnung
-            }
-            return originalCompileError.call(this, node, message);
-          };
-        }
-      }
-    }
-  };
-</script>
-<script id="MathJax-script" async 
-        src="https://cdn.jsdelivr.net/npm/mathjax@4.1.0/tex-chtml.js"
-        integrity="sha384-eFoKTCK+YGO2m6R2Z5v7A6twgQ1+PfLq+elzUmXZzq5PMVnt5uwSR8L5rjlQoPJu"
-        crossorigin="anonymous"></script>
+<!-- MathJax 4.1.0, selbst gehostet (assets/vendor/mathjax + Font-Paket):
+     kein CDN, offline-fähig, vom SPA-Reconcile nachladbar. Reihenfolge
+     (defer bzw. Reconcile mit async=false): Config -> Kern -> Typeset-Hook.
+     Die Config liegt als Datei vor, weil spa-nav nur script[src] nachlädt. -->
+<script src="{{ '/assets/js/mathjax-config.js' | relative_url }}" defer></script>
+<script id="MathJax-script" defer src="{{ '/assets/vendor/mathjax/tex-chtml.js' | relative_url }}"></script>
+<script src="{{ '/assets/js/mathjax-typeset.js' | relative_url }}" defer></script>
 {% endif %}
 
 <!-- Favicon-Set für verschiedene Plattformen - Sokrates Line Art -->
