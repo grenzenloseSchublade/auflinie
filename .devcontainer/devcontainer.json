@@ -1,5 +1,5 @@
 {
-    "name": "Python 3.11 & Jekyll",
+    "name": "Jekyll & Node",
     "image": "mcr.microsoft.com/devcontainers/python:3.11",
     "features": {
         "ghcr.io/devcontainers/features/ruby:1": {
@@ -15,8 +15,7 @@
     "onCreateCommand": "sudo rm -f /etc/apt/sources.list.d/yarn.list /etc/apt/sources.list.d/*yarn* /etc/apt/trusted.gpg.d/yarn.gpg 2>/dev/null || true",
     "postCreateCommand": "bash -i .devcontainer/post-create.sh",
     "forwardPorts": [
-        4000,
-        8888
+        4000
     ],
     "mounts": [
         "source=claude-code-config-${devcontainerId},target=/home/vscode/.claude,type=volume"

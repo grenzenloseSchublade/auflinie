@@ -1,6 +1,6 @@
 # Entwicklungsumgebung für Fraktale Welten
 
-Diese Entwicklungsumgebung kombiniert Python 3.11 und Jekyll, um sowohl die Website-Entwicklung als auch die Generierung von Fraktal-Visualisierungen zu unterstützen.
+Diese Entwicklungsumgebung stellt Jekyll (Ruby) und Node-Tooling (Stylelint, Playwright) für die Website-Entwicklung bereit. Die Fraktal-Visualisierungen laufen als JavaScript direkt im Browser (`assets/js/fractal-*.js`).
 
 ## Einrichtung
 
@@ -13,14 +13,9 @@ Die Entwicklungsumgebung ist mit Visual Studio Code und Dev Containers konfiguri
 
 ## Enthaltene Komponenten
 
-Die Entwicklungsumgebung enthält:
-
-### Python-Umgebung
-
-- Python 3.11 mit wissenschaftlichen Bibliotheken (NumPy, Matplotlib, SciPy)
-- Jupyter Notebooks für interaktive Entwicklung
-- Bildverarbeitungsbibliotheken (Pillow)
-- Entwicklungswerkzeuge (pytest, black, flake8, pylint)
+- Ruby 3.4.8 + Bundler (Jekyll, Remote-Theme Minimal Mistakes)
+- Node LTS (Stylelint via `npm run lint:css`, Playwright-Tests in `tests/`)
+- Hilfsskripte: `scripts/fs-guardrail.sh`, `scripts/cascade-check.py`
 
 ## Jekyll / Hero
 
@@ -73,10 +68,4 @@ Das Projekt enthält mehrere interaktive Komponenten zur Visualisierung von Frak
 - Anpassung von Iterationen und Farbschemata
 - Speichern der generierten Bilder
 
-## Fraktal-Generatoren
-
-Das Projekt enthält mehrere Skripte zur Generierung von Fraktalen:
-
-### Hauptskript
-
-Das Hauptskript zur Generierung von Fraktalen ist in Python geschrieben und nutzt die oben genannten Bibliotheken, um komplexe Fraktalbilder zu erstellen und zu visualisieren.
+Beide Komponenten rendern über Web Worker (`mandelbrot-worker.js`, `julia-worker.js`) und `fractal-renderer.js`/`fractal-panel.js` — es gibt keine serverseitige Bild-Generierung.
