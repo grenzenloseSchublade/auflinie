@@ -40,8 +40,10 @@
     },
     startup: {
       ready: function () {
-        // Unterdrücke die Warnung für veraltete mathvariant-Attribute
-        MathJax.startup.defaultReady();
+        // WICHTIG (v4): defaultReady() liefert das Startup-Promise zurück —
+        // ohne return bleibt MathJax.startup.promise für immer pending und
+        // jeder typesetPromise-Aufruf (SPA-Hook!) hängt daran fest.
+        var readyPromise = MathJax.startup.defaultReady();
 
         // Fehlerbehandlung für veraltete Attribute
         if (MathJax._?.input?.mathml?.MathMLCompile?.prototype?.error) {
@@ -53,6 +55,8 @@
             return originalCompileError.call(this, node, message);
           };
         }
+
+        return readyPromise;
       }
     }
   };
