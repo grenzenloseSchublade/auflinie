@@ -794,6 +794,11 @@
       };
       bindCSlider(this.realSlider, this.realInput, 'realPart');
       bindCSlider(this.imagSlider, this.imagInput, 'imagPart');
+      // noUiSlider feuert 'update' synchron beim Binden und hat den initialen
+      // c-Parameter soeben aufs 0.01-Raster gerundet (0.27015 -> 0.27) — die
+      // exakten Startwerte nachziehen (Reihenfolge Slider -> exakter State,
+      // siehe setCParameter).
+      this.setCParameter(this.variant.initialC.realPart, this.variant.initialC.imagPart, { render: false });
     }
 
     initSelects() {
