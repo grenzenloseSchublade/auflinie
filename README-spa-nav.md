@@ -38,19 +38,20 @@ Ein voller Reload (statt Swap) tritt immer ein bei:
 
 ## Wired-Set: welche Seiten geswappt werden
 
-`isWired(pathname)` in `spa-nav.js` ist die einzige Allowlist. Aktuell (Phase 1):
+`isWired(pathname)` in `spa-nav.js` ist die einzige Allowlist. Aktuell (Phase 2):
 
 ```js
 function isWired(pathname) {
   var p = stripBase(pathname);           // baseurl "/auflinie" bereinigt
-  if (p === '/' || p === '/about/') return true;
-  return /^\/posts\/(page\d+\/)?$/.test(p);   // Blog-Übersicht + Pagination
+  if (p === '/' || p === '/about/' || p === '/cv/' || p === '/mandelbrot/') return true;
+  return /^\/posts\//.test(p);           // Übersicht, Pagination UND Einzelbeiträge
 }
 ```
 
-Interception nur, wenn **Herkunft UND Ziel** verdrahtet sind — das Verlassen
-einer nicht-verdrahteten Seite (CV, Mandelbrot, Einzelbeitrag) ist immer ein
-voller Reload und schützt deren Live-State.
+Interception nur, wenn **Herkunft UND Ziel** verdrahtet sind. Seiten mit
+unbekannten Cross-Origin-Abhängigkeiten fängt zusätzlich `needsFullLoad` ab
+(Sicherheitsnetz; MathJax und die Fraktal-Deps sind seit dem Self-Host
+same-origin und swappen).
 
 Eine Seite verdrahten heißt: ihren Pfad in `isWired` aufnehmen **und** alle
 ihre Seiten-Skripte an den Lifecycle-Kontrakt binden (unten). Reihenfolge nicht
@@ -156,9 +157,17 @@ umgebaut werden, bevor die Seite verdrahtet wird.
 ## Was `spa-nav.js` selbst erledigt
 
 - **Script-Reconcile:** injiziert beim Swap die **fehlenden, same-origin**
-  `<script src>` der Zielseite (`async=false`, Reihenfolge bleibt); jsdelivr
-  (MathJax etc.) wird per Origin-Filter **nicht** hier geladen — solche Seiten
-  bleiben Phase 2.
+  `<script src>` der Zielseite (`async=false`, Reihenfolge bleibt); fremde
+  Origins werden per Filter nicht geladen (Sicherheitsnetz `needsFullLoad`).
+- **Stylesheet-Reconcile:** fehlende same-origin `<link rel=stylesheet>` der
+  Zielseite werden VOR den Skripten additiv in den Head gehängt (nie
+  entfernt) — deckt die per Seiten-Flag eingebundenen Fraktal-CSS ab.
+- **MathJax:** selbst gehostet (`assets/vendor/mathjax*`); `mathjax-config.js`
+  (Datei statt Inline, damit der Reconcile sie überträgt) und
+  `mathjax-typeset.js` (setzt auf `spa:load` den neuen Inhalt per synchronem
+  `MathJax.typeset` + Retry-Muster; `typesetClear` auf `spa:unload`).
+  Achtung: die v4.1-Promise-Kette (`startup.promise`/`typesetPromise`) hängt
+  in diesem Setup dauerhaft — nicht darauf warten.
 - **`<head>`-Diff:** `title`, `meta[description]`, `canonical`, OG-/Twitter-Tags,
   komplette `application/ld+json`. Nie angefasst: CSP-Meta, Favicons,
   `speculationrules`, `pagereveal`-Setter.
@@ -196,9 +205,10 @@ umgebaut werden, bevor die Seite verdrahtet wird.
 2. **Inline-Init → externes `spa:load`-Modul** umbauen (siehe Falle oben).
 3. **Jedes Modul** auf den Kontrakt bringen: idempotenter `mount`, `teardown`
    für dokumentweite Ressourcen, `pageshow`-Remount, PE-Fallback.
-4. **jsdelivr-Abhängigkeiten** (MathJax, CDN-CSS): beim Swap gezielt nachziehen
-   und initialisieren (Reconcile lädt nur same-origin) — sonst Seite vorerst
-   nicht verdrahten.
+4. **Cross-Origin-Abhängigkeiten**: erst self-hosten (Muster `assets/vendor/`,
+   siehe MathJax) und die per-Seite-Initialisierung an `spa:load` binden —
+   sonst Seite vorerst nicht verdrahten (`needsFullLoad` erzwingt dann von
+   selbst den Voll-Reload).
 5. **Pfad in `isWired`** aufnehmen.
 6. **Im echten Browser testen** (headless hier nicht möglich): Swap hin/zurück,
    Interaktion nach Swap, kein Listener-Leak über N Swaps (`getEventListeners`/
@@ -206,10 +216,17 @@ umgebaut werden, bevor die Seite verdrahtet wird.
 
 ---
 
-## Bekannte Grenzen / Phase 2
+## Stand & bekannte Grenzen
 
-- Interaktive Seiten (CV: Skill-Graph/Chips + TOC; Mandelbrot: WebGL/Worker/
-  MathJax; Einzelbeiträge) sind noch **nicht** verdrahtet → voller Reload.
-- Same-Doc-CRT-Typen (`crt`/`drawer`) sind noch nicht auf den SPA-Pfad portiert
-  (nur Default-Crossfade als Kür).
-- Scroll-Restore sichert die ausgehende Position nur beim Vorwärts-Push.
+Phase 2 ist umgesetzt: CV (Skill-Graph/Chips/Sheet), Mandelbrot
+(Fraktal-Panels über `spaModule`, MathJax-Typeset-Hook) und alle
+`/posts/`-Seiten swappen. Der Persistent-Shell-Kontrakt liegt sitewide in
+`assets/js/spa-module.js`.
+
+- Same-Doc-CRT-Typen (`crt`/`drawer`) laufen auch auf dem SPA-Pfad
+  (tv-switch-Typen in `swap()`); Firefox bekommt den stillen Instant-Swap.
+- Scroll-Restore: Position wird laufend (trailing-throttled, 500 ms) in
+  `history.state.scrollY` gesichert — Back, Forward und Reload stellen sie
+  wieder her; Same-Page-Hash-Traversal swappt nicht, sondern scrollt nur.
+- Nicht verdrahtet bleibt nur, was `needsFullLoad` wegen fremder
+  Cross-Origin-Deps aussortiert (aktuell: nichts).
