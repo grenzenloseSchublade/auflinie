@@ -98,13 +98,13 @@
         }
         
         // Responsive Anpassung für kleinere Bildschirme
-        @media (max-width: 768px) {
+        @media (max-width: 767.98px) {
             font-size: 1.6em;
             margin-right: 1em; // Kleiner Abstand auch auf Mobile
         }
         
         // Tablet
-        @media (min-width: 769px) and (max-width: 1024px) {
+        @media (min-width: 768px) and (max-width: 1024px) {
             margin-right: 2em;
         }
     }
@@ -259,7 +259,7 @@ body .visible-links li.masthead__menu-item--featured {
   }
   
   // Tablet: etwas kleiner
-  @media (min-width: 769px) and (max-width: 1024px) {
+  @media (min-width: 768px) and (max-width: 1024px) {
     margin-right: 1em;
     
     &::after {
@@ -268,7 +268,7 @@ body .visible-links li.masthead__menu-item--featured {
   }
   
   // Mobile: proportional kleiner
-  @media (max-width: 768px) {
+  @media (max-width: 767.98px) {
     margin-right: 0.8em;
     
     &::after {
@@ -457,7 +457,7 @@ body .greedy-nav .hidden-links li {
   }
   
   // Mobile: nur Textfarbe ändern
-  @media (max-width: 767px) {
+  @media (max-width: 767.98px) {
     &:hover a,
     a:hover,
     a:focus {
