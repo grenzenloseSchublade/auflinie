@@ -16,7 +16,7 @@
     if (!box || box.hasAttribute('data-blog-notice-init')) return;
     box.setAttribute('data-blog-notice-init', '');
 
-    var key = 'blogNoticeDismissed:' + box.getAttribute('data-notice-id');
+    var key = 'auflinie:blog-notice-dismissed:' + box.getAttribute('data-notice-id');
     try { if (localStorage.getItem(key) === '1') { return; } } catch (e) { /* Storage gesperrt: einfach zeigen */ }
 
     var closeBtn = box.querySelector('#blog-notice-close');

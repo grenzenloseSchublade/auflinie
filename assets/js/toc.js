@@ -263,7 +263,9 @@
     var tocToggle = originalToc.querySelector('.toc-toggle');
     var tocContent = scope.querySelector('.toc__menu-wrapper');
     if (tocToggle && tocContent) {
-      var storageKey = tocToggle.id ? tocToggle.id.replace(/-toggle$/, '') + '-state' : 'toc-state';
+      // Projekt-Präfix auflinie: (geteilter github.io-Origin, STYLEGUIDE SEC-6)
+      var legacyKey = tocToggle.id ? tocToggle.id.replace(/-toggle$/, '') + '-state' : 'toc-state';
+      var storageKey = 'auflinie:' + legacyKey;
       var prefersReducedMotion = window.matchMedia
         ? window.matchMedia('(prefers-reduced-motion: reduce)').matches
         : false;
@@ -286,7 +288,20 @@
       };
 
       var storedState;
-      try { storedState = localStorage.getItem(storageKey); } catch (error) { storedState = null; }
+      try {
+        storedState = localStorage.getItem(storageKey);
+        // Einmalige Übernahme des Zustands unter dem alten Schlüssel ohne
+        // Präfix. Gelöscht wird nur ein Wert im eigenen Format, nie ein
+        // fremder Eintrag eines anderen Projekts auf demselben Origin.
+        if (storedState === null) {
+          var legacyState = localStorage.getItem(legacyKey);
+          if (legacyState === 'expanded' || legacyState === 'collapsed') {
+            storedState = legacyState;
+            localStorage.setItem(storageKey, legacyState);
+            localStorage.removeItem(legacyKey);
+          }
+        }
+      } catch (error) { storedState = null; }
 
       var isFullWidthToc = originalToc.getBoundingClientRect().width > 520;
       var defaultExpanded = !isFullWidthToc;

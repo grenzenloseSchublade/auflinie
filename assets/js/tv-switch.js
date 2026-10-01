@@ -11,8 +11,10 @@
 (function () {
   'use strict';
 
-  var KEY = 'tv-switch:state';
-  var COOLDOWN_KEY = 'tv-switch:last-crt';
+  // Projekt-Präfix auflinie: (geteilter github.io-Origin, STYLEGUIDE SEC-6).
+  // KEY muss identisch zu KEY in assets/js/head-early.js bleiben.
+  var KEY = 'auflinie:tv-switch:state';
+  var COOLDOWN_KEY = 'auflinie:tv-switch:last-crt';
   var COOLDOWN_MS = 6000;
   var BASE = document.documentElement.getAttribute('data-baseurl') || '';
 

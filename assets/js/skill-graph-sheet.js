@@ -159,9 +159,9 @@
   // Einmaliges Aufglimmen des „Graph aktivieren"-Buttons, damit er entdeckt wird
   // (wie der Hero-Power-Button): session-gated, nur bei erlaubter Bewegung.
   GraphMode.prototype.maybeHint = function () {
-    try { if (sessionStorage.getItem('graphActivateHinted')) { return; } } catch (e) { return; }
+    try { if (sessionStorage.getItem('auflinie:graph-activate-hinted')) { return; } } catch (e) { return; }
     if (!window.matchMedia('(prefers-reduced-motion: no-preference)').matches) { return; }
-    try { sessionStorage.setItem('graphActivateHinted', '1'); } catch (e) { /* noop */ }
+    try { sessionStorage.setItem('auflinie:graph-activate-hinted', '1'); } catch (e) { /* noop */ }
     var btn = this.activate;
     btn.classList.add('is-hint');
     btn.addEventListener('animationend', function () { btn.classList.remove('is-hint'); }, { once: true });
@@ -234,8 +234,8 @@
   // Touch-Hinweis einmal pro Session einblenden, dann nach ~4.5s ausblenden.
   GraphMode.prototype.maybeTouchHint = function () {
     if (!window.matchMedia('(hover: none)').matches) { return; }   // nur Touch-Geräte
-    try { if (sessionStorage.getItem('graphTouchHinted')) { return; } } catch (e) { return; }
-    try { sessionStorage.setItem('graphTouchHinted', '1'); } catch (e) { /* noop */ }
+    try { if (sessionStorage.getItem('auflinie:graph-touch-hinted')) { return; } } catch (e) { return; }
+    try { sessionStorage.setItem('auflinie:graph-touch-hinted', '1'); } catch (e) { /* noop */ }
     var hint = this.touchHint;
     hint.classList.add('is-show');
     this.touchHintTimer = setTimeout(function () { hint.classList.remove('is-show'); }, 4500);

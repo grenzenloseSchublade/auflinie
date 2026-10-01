@@ -14,7 +14,9 @@
   var root = document.documentElement;
   root.className = root.className.replace(/\bno-js\b/g, '') + ' js ';
 
-  var KEY = 'tv-switch:state';
+  // Projekt-Präfix: der github.io-Origin ist mit anderen Projekten geteilt.
+  // Muss identisch zu KEY in assets/js/tv-switch.js bleiben.
+  var KEY = 'auflinie:tv-switch:state';
   window.addEventListener('pagereveal', function (e) {
     if (!e.viewTransition) return;
     var raw;
