@@ -746,7 +746,7 @@ Ladereihenfolge in `assets/css/main.scss`: `variables` → MM-Skin → MM → `c
 ### 10.1 Sprachstand und Aufbau
 
 - **JS-1** [MUSS · Ist · CI-P1] Baseline ES2020 (Optional Chaining wird bereits genutzt). Klassische Skripte mit `defer`, keine ES-Module, kein Bundler. **Ausnahme:** `head-early.js` lädt parser-blockierend im `<head>` **ohne** `defer` oder `async`. Der `pagereveal`-Handoff muss vor dem ersten Render laufen. Nie auf `defer` oder `async` umstellen.
-- **JS-2** [MUSS · Soll · CI-P2] Neuer und angefasster Code nutzt `const`/`let`. Altdateien mit `var` werden in eigenen, rein mechanischen Commits migriert (Register R-14).
+- **JS-2** [MUSS · Soll · CI] Neuer und angefasster Code nutzt `const`/`let`. Altdateien mit `var` werden in eigenen, rein mechanischen Commits migriert (Register R-14). ESLint prüft `no-var` und `prefer-const` für `assets/js`. `greedy-navigation.js` und `fractal-panel.js` sind bis zu ihrer Migration per Override ausgenommen.
 - **JS-3** [MUSS · Soll · CI-P2] Jede Main-Thread-Datei ist eine IIFE mit `'use strict'` als erster Anweisung. Exporte nur über einen expliziten Namespace auf `window` oder `self` (Register R-15).
 - **JS-4** [MUSS · Soll · Review] Dateikopf `/** <datei>.js — Zweck`, dazu Zuständigkeit, Abhängigkeiten, Ladereihenfolge, Event-Verträge. Vorbilder: `spa-module.js`, `skill-graph-sheet.js`, `head-early.js`.
 - **JS-5** [SOLL · Soll · Review] Dateiklassen im Kopf benennen: Shell-Skript (einmal pro Dokument), Seiten-Modul (am Kontrakt), DOM-freier Kern oder Worker.
@@ -825,7 +825,7 @@ Owner-Lehren aus der TV-Umschalt-Architektur. Sie werden nicht wieder eingebaut.
 - **JS-15** [MUSS · Soll · Review] Benennung: camelCase, PascalCase für Klassen und Namespaces, `CONSTANT_CASE` für Modulkonstanten, Booleans mit `is`/`has`/`should`, Lebenszyklus `mount`/`teardown`, Instanzen `destroy`.
 - **JS-16** [SOLL · Soll · Review] Namensräume: Events `auflinie:<thema>` (Bestand `spa:*` bleibt), Storage-Keys `auflinie:<modul>:<zweck>`, interne Brücken `window.__auflinie*`. Bestehende Keys erst bei Berührung migrieren, sonst verlieren Besucher Zustände.
 - **JS-17** [MUSS · Soll · Review] Worker: dünner Wrapper plus Kern per `importScripts`, Messages `{ requestId, …params }` mit Echo, Ergebnisse als Transferables. Mehrzweck-Kanäle (Service Worker) als `{ type: 'SCREAMING_SNAKE', … }`.
-- **JS-18** [SOLL · Soll · Review] Logik, die zum zweiten Mal gebraucht wird, wandert in einen gemeinsamen Helfer. **[Soll]** Datei `assets/js/site-utils.js` mit Namespace `window.AuflinieUtils` (`rafThrottle`, `baseUrl`, `prefersReducedMotion`, `cssDurationMs`), in `_includes/scripts.html` als **erstes** Skript geladen, vor `toc.js` und `spa-module.js`. Gibt es heute noch nicht.
+- **JS-18** [SOLL · Soll · Review] Logik, die zum zweiten Mal gebraucht wird, wandert in einen gemeinsamen Helfer. **[Soll]** Datei `assets/js/site-utils.js` mit Namespace `window.AuflinieUtils` (`rafThrottle`, `baseUrl`, `prefersReducedMotion`, `cssDurationMs`), in `_includes/scripts.html` als **erstes** Skript geladen, vor `toc.js` und `spa-module.js`. Skripte aus dem `<head>` laufen davor und nutzen die Helfer nicht. **[Ist]** Die Datei existiert mit `prefersReducedMotion` und `rafThrottle` (Nutzer `toc.js`, `back-to-top.js`). `baseUrl` und `cssDurationMs` fehlen noch.
 - **JS-19** [MUSS · Soll · CI-P1] Formatierung: 2 Leerzeichen (auch in Workern), einfache Anführungszeichen, Semikolons, LF, kein Leerzeichen am Zeilenende. Einzeilige Guards ohne Klammern erlaubt.
 - **JS-20** [SOLL · Soll · Review] JSDoc mit `@param` und `@returns` für alles, was über einen Namespace exportiert wird. Nur TypeScript-kompatible JSDoc-Syntax.
 
@@ -1066,6 +1066,7 @@ Kein SemVer (eine Website hat keine öffentliche API). Ein `CHANGELOG.md` im For
 | Deploy nur bei grünem `build` **und** `lint` | `needs: [build, lint]` | alles oben |
 | Dependabot-Alerts, Versions-PR für Actions (monatlich) | GitHub, `.github/dependabot.yml` | SEC-7, SEC-7c |
 | `scripts/cascade-check.py` | manuell | TYP-4, TYP-6 |
+| ESLint (`npm run lint:js`, `eslint.config.mjs`) | CI `lint` | JS-2 (`no-var`, `prefer-const`), dazu `js/recommended` und `no-unsanitized` |
 | Playwright `tests/spa-nav.spec.js` | manuell, opt-in | SPA-Kontrakt (ein Test ist veraltet, Register R-25) |
 
 ### 16.2 Ausbau (priorisiert)
@@ -1087,7 +1088,7 @@ Kein SemVer (eine Website hat keine öffentliche API). Ein `CHANGELOG.md` im For
 | 2 | Token-Kontrast-Skript (Paare Vordergrund, Grund, Mindestwert, Alpha komponiert) | FARB-2, 6.4 |
 | 2 | Critical-CSS-Sync-Check (Inline-Block gegen Tokens, verbietet `html{font-size}`, `body{font-family}`, `body{color}`) | CRIT-1 |
 | 2 | Sass-Deprecation-Check ohne `--quiet-deps`, Fehler bei Ursprung in `assets/_sass` | SCSS-3 |
-| 2 | ESLint (aktuelle Hauptversion, Flat Config: `js/recommended`, `globals.browser`/`globals.worker`, `no-var`, `prefer-const`, `eqeqeq`, `no-console` mit warn/error, `no-restricted-properties` gegen `navigator.userAgent`, `eslint-plugin-no-unsanitized`) | JS-2, JS-3, JS-11, JS-14, SEC-1 |
+| 2 | ESLint (aktuelle Hauptversion, Flat Config: `js/recommended`, `globals.browser`/`globals.worker`, `eqeqeq`, `no-console` mit warn/error, `no-restricted-properties` gegen `navigator.userAgent`, `eslint-plugin-no-unsanitized`) | JS-2, JS-3, JS-11, JS-14, SEC-1 |
 | 2 | `exiftool`-Gate über `assets/images`, `sha384sum -c` für `assets/vendor` | SEC-10, SEC-8a |
 | 3 | `scripts/content-check.py`: Fence-Balance, Intro ohne Überschrift, Caption ≠ Titel, Sie-Formen, Semikolon in Excerpt und Intro, `<br`/`style=` in `_data`, `\d{4} - \d{4}`, gemischte Anführungszeichen, YAML-Folding-Falle, Quellenkommentare | 5, 7, 8, 12 |
 | 3 | Post-Build-Grep auf `_site`: „Sie“-Formen, englische Theme-Fallbacks („Skip to“), `<!--` aus eigenen Includes, `noindex` auf internen Seiten | TON-2, LIQ-5, SEC-12 |
@@ -1140,7 +1141,7 @@ Stand: Ist-Basis aus dem Kopf. Ein Eintrag verschwindet, sobald der Code die Reg
 | R-11 | MO-1 | `transition: 0.3s` in `_masthead.scss`, Theme-`$global-transition` | B-MO-01 | migrieren |
 | R-12 | SCSS-7 | camelCase-Keyframes in `_neon-base.scss`, `_neon-orbit.scss` | B-SCSS-19 | migrieren |
 | R-13 | SCSS-3 | Legacy-`if()` und globales `index()` in `_view-transition.scss`, Kommentar zu `quiet_deps` in `_config.yml` falsch | B-SCSS-01 | migrieren |
-| R-14 | JS-2 | `var` in 19 Dateien | B-JS-02 | mechanisch migrieren |
+| R-14 | JS-2 | `var` in `greedy-navigation.js` und `fractal-panel.js` (ESLint-Override, Welle 2) | B-JS-02 | mechanisch migrieren |
 | R-15 | JS-3 | `head-early.js` ohne `'use strict'` | B-JS-22 | migrieren |
 | R-16 | JS-4 | Kopf von `skill-graph-sim.js` („SkillGraphSim — …“) und `blog-notice.js` ohne Dateinamen | B-JS-23 | migrieren |
 | R-17 | SPA-6 | `spa-module.js` prüft `readyState === 'loading'` | B-JS-03 | migrieren |
@@ -1246,3 +1247,4 @@ Prozess und Doku:
 | Version | Änderung |
 |---|---|
 | 2026-10-01 | Erste Fassung. Kritik-Runde eingearbeitet: Status- und Durchsetzungsangaben je Regel, Register bekannter Abweichungen, Sicherheitsabschnitt integriert, Owner-Prozessregeln, Performance, Bilder, Links, Formulare, SEO, Druck, Browser-Matrix. |
+| 2026-10-01 | JS-2 per ESLint durchgesetzt (`no-var`, `prefer-const`), Register R-14 auf zwei Dateien verkleinert. JS-18: `site-utils.js` mit `prefersReducedMotion` und `rafThrottle` angelegt. |
