@@ -132,19 +132,98 @@
       btn.setAttribute('aria-expanded', open ? 'true' : 'false');
     }
 
-    function openMenu() {
+    // Hintergrund inert (STYLEGUIDE OVL-4/A11Y-2): Solange der Drawer offen
+    // ist, sind Inhalt, Footer und Skip-Links weder fokussierbar noch für
+    // Screenreader erreichbar. Ausgenommen: der Masthead (Drawer + Toggle
+    // liegen darin), Skripte und Live-Regionen (Ansagen sollen weiterlaufen).
+    // Gesetzt wird erst NACH dem Slide-In: inert erzwingt eine Style-
+    // Neuberechnung der ganzen Seite, die mitten in der Transform-Animation
+    // ruckeln könnte (gleiche Überlegung wie beim menu-open-Release).
+    // Beim pageswap (Drawer bleibt für den VT-Snapshot offen) bleibt alles
+    // unangetastet, inert ist unsichtbar. Aufgehoben wird an JEDER Stelle,
+    // die den Drawer schließt (close, instant, bfcache-Reset).
+    const masthead = nav.closest('.masthead');
+    let inerted = null;
+    let inertTimer = null;
+
+    function cancelInert() {
+      if (inertTimer) {
+        clearTimeout(inertTimer);
+        inertTimer = null;
+      }
+      hlinks.removeEventListener('transitionend', onOpenEnd);
+    }
+
+    function setBackgroundInert() {
+      cancelInert();
+      if (inerted || hlinks.classList.contains('hidden')) return;
+      inerted = Array.prototype.filter.call(document.body.children, function(el) {
+        return el !== masthead && !el.contains(nav) && el.tagName !== 'SCRIPT'
+          && !el.matches('[aria-live], [role="status"], [role="alert"]') && !el.inert;
+      });
+      inerted.forEach(function(el) { el.inert = true; });
+    }
+
+    function releaseBackground() {
+      cancelInert();
+      if (!inerted) return;
+      inerted.forEach(function(el) { el.inert = false; });
+      inerted = null;
+    }
+
+    function onOpenEnd(e) {
+      if (e.target === hlinks && e.propertyName === 'transform') setBackgroundInert();
+    }
+
+    // keyboard: per Enter/Leertaste geöffnet (click mit detail 0). Nur dann
+    // wandert der Fokus auf den ersten Drawer-Link. Bei Maus/Touch bleibt er
+    // am Toggle (Tab führt von dort direkt in den Drawer): auf Mobil färbt
+    // schon :focus die Drawer-Links magenta, ein programmatischer Fokus nach
+    // dem Antippen sähe aus wie ein hängender Hover.
+    function openMenu(keyboard) {
       cancelRelease(); // erneutes Öffnen während des Slide-Outs abfangen
       document.body.classList.remove('menu-closing'); // falls während des Schließens wieder geöffnet
       hlinks.classList.remove('hidden');
       btn.classList.add('close');
       setExpanded(true);
       document.body.classList.add('menu-open');
+      cancelInert();
+      hlinks.addEventListener('transitionend', onOpenEnd);
+      inertTimer = setTimeout(setBackgroundInert, 360); // Fallback (Slide: 300ms)
+      if (keyboard) focusFirstLink();
+    }
+
+    // Unter Reduced Motion macht der globale Kill-Switch aus „visibility 0s"
+    // eine Mini-Transition: der Drawer bleibt dann noch einige Frames
+    // visibility:hidden und nimmt keinen Fokus an. Dann nach deren Ende
+    // erneut (transitionend gefiltert, Timer als Rückfall), sofern der Fokus
+    // noch am Toggle steht.
+    function focusFirstLink() {
+      const first = hlinks.querySelector('a[href]');
+      if (!first) return;
+      first.focus({ preventScroll: true });
+      if (document.activeElement === first) return;
+      let timer = null;
+      function onVisible(e) {
+        if (e && (e.target !== hlinks || e.propertyName !== 'visibility')) return;
+        clearTimeout(timer);
+        hlinks.removeEventListener('transitionend', onVisible);
+        if (hlinks.classList.contains('hidden') || document.activeElement !== btn) return;
+        first.focus({ preventScroll: true });
+      }
+      hlinks.addEventListener('transitionend', onVisible);
+      timer = setTimeout(onVisible, 200);
     }
 
     function closeMenu() {
+      // Fokus im Drawer? Zurück zum Auslöser, bevor der Drawer unsichtbar
+      // wird — sonst fällt er auf <body> (A11Y-2).
+      const focusInside = hlinks.contains(document.activeElement);
+      releaseBackground();
       hlinks.classList.add('hidden');
       btn.classList.remove('close');
       setExpanded(false);
+      if (focusInside) btn.focus({ preventScroll: true });
       // Dim SOFORT mit dem Slide ausblenden — menu-open bleibt für den Scroll-
       // Lock bis Slide-Ende, aber menu-closing fadet den Overlay jetzt schon:
       // Dunkel und Drawer verschwinden gemeinsam, kein nachhängendes Dim.
@@ -160,6 +239,7 @@
     // Gleiche Technik wie der bfcache-pageshow-Reset (transition:none + rAF).
     function closeInstant() {
       cancelRelease();
+      releaseBackground(); // vor dem Swap: spa-nav fokussiert danach #main
       hlinks.style.transition = 'none';
       hlinks.classList.add('hidden');
       btn.classList.remove('close');
@@ -172,9 +252,9 @@
     // ohne die Klassen-Logik zu duplizieren
     window.GreedyNav = { close: closeMenu, closeInstant: closeInstant };
 
-    btn.addEventListener('click', function() {
+    btn.addEventListener('click', function(e) {
       if (hlinks.classList.contains('hidden')) {
-        openMenu();
+        openMenu(e.detail === 0);
       } else {
         closeMenu();
       }
@@ -205,6 +285,7 @@
     window.addEventListener('pageshow', function(e) {
       if (!e.persisted || hlinks.classList.contains('hidden')) return;
       cancelRelease();
+      releaseBackground();
       hlinks.style.transition = 'none';
       hlinks.classList.add('hidden');
       btn.classList.remove('close');
