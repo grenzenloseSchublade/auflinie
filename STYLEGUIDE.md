@@ -199,7 +199,7 @@ Regeln:
 - **FARB-5** [MUSS · Ist · CI] Niemals ein Token mit eingebautem Alpha in `rgba()` geben. Sass ersetzt den Alpha-Kanal, multipliziert ihn nicht (Beispiel: `rgba($console-panel-border, 0.7)` wird zu 70 % Weiß). Der Guardrail erkennt Alpha-Tokens auch über Aliase. Die einzige Fundstelle (`.guide-banner`) steht seit 1. 10. 2026 auf `$white-a70`, dem bisher gerenderten Wert.
 - **FARB-6** [MUSS · Ist · CI] Keine Ad-hoc-Abstufung `rgba($hover-color, 0.x)`. Benannte Abstufungen (`$magenta-aNN`) verwenden oder in `_colors.scss` neu anlegen (Owner-Regel vom 8. Juli 2026). Der Guardrail lässt dafür keinen Ausnahme-Marker zu.
 - **FARB-7** [MUSS · Soll · Review] Fokus- und Hover-Zustand nehmen Vorder- und Hintergrund nie aus demselben Token.
-- **FARB-8** [MUSS · Soll · CI-P1] Farb**literale** in der Notation `rgb(r g b / a%)`, Hex lang und klein, keine Farbnamen außer `transparent`, `currentColor`, `inherit`. Gilt auch für JS-Strings, Inline-Styles und das Critical-CSS. Sass-Funktionen auf Tokens (`rgba($link-color, 0.6)`) dürfen Dezimal-Alpha nutzen. In `assets/_sass` erfüllt und per `color-guardrail.sh` geprüft (Notation in `variables/`, Farbnamen überall). Offen bleiben Critical-CSS (R-6), der zweite Style-Block in `head/custom.html` (R-31) und Palettenwerte in JS (B-F19).
+- **FARB-8** [MUSS · Soll · CI-P1] Farb**literale** in der Notation `rgb(r g b / a%)`, Hex lang und klein, keine Farbnamen außer `transparent`, `currentColor`, `inherit`. Gilt auch für JS-Strings, Inline-Styles und das Critical-CSS. Sass-Funktionen auf Tokens (`rgba($link-color, 0.6)`) dürfen Dezimal-Alpha nutzen. In `assets/_sass` erfüllt und per `color-guardrail.sh` geprüft (Notation in `variables/`, Farbnamen überall). Offen bleiben der zweite Style-Block in `head/custom.html` (R-31) und Palettenwerte in JS (B-F19).
 - **FARB-9** [SOLL · Ist · CI] Gleicher Wert = Alias, nie zweites Literal (`$card-heading-color: $link-color`, `$selection-bg: $hover-color`, `$base00: $console-panel-bg`). Der Guardrail meldet textgleiche Literale in `_colors.scss`. Wertgleiche in anderer Schreibweise (`#ffffff` gegen `rgb(255 255 255)`) fallen nur im Review auf.
 - **FARB-10** [SOLL · Soll · Review] MM-Variablen, die die Palette beeinflussen, werden explizit gesetzt: `$primary-color`, `$background-color`, `$text-color`. Ist seit 1. 10. 2026: `$primary-color: $link-color` (Rollen-Token in `_colors.scss`, Abnehmerliste im Kommentar). Sichtbar davon nur der Fokus-Schein des Blog-Suchfelds (`input:focus`, jetzt Cyan statt Teal) und der Hover der Hamburger-Balken. Den setzt `components/_masthead.scss` selbst auf `$cyan-a75`, weil die Theme-Regel `mix(#000, $primary-color, 25 %)` die eigene Ruhe-Regel per Spezifität schlägt. Offen: `$background-color` und `$text-color` kommen weiter aus dem Skin.
 
@@ -328,26 +328,39 @@ Fraktal-Panel (px, viewport-fix wie `$fp-fs-*`): `$fp-space-1` 4 · `$fp-space-2
 
 ### 3.4 Breakpoints
 
-**[Soll]** Token-Set (Entscheidung, Bestand zu migrieren, Register R-9):
+**[Ist]** Token-Set in `variables/_layout.scss`, als Map `$breakpoints` für die Mixins in `abstracts/_breakpoints.scss`. Jeder Wert ist die erste Breite des größeren Bereichs. Die Theme-Variablen `$small`, `$medium`, `$medium-wide`, `$large` und `$x-large` zeigen auf dieselben Tokens, Theme und eigener Code teilen also eine Skala.
 
-| Token | Wert | Herkunft |
-|---|---|---|
-| `$bp-xs` | `480px` | Projekt |
-| `$small` | `600px` | Theme |
-| `$bp-content-narrow` | `640px` | Projekt (CV, Skill-Graph, `section-break`) |
-| `$medium` | `768px` | Theme |
-| `$medium-wide` | `900px` | Theme |
-| `$large` | `1024px` | Theme |
-| `$x-large` | `1280px` | Theme |
+| Token | Map-Schlüssel | Wert | Einsatz |
+|---|---|---|---|
+| `$bp-drawer` | `drawer` | `240px` (`$drawer-width / 0.75`, SP-4) | Overlay neben dem Drawer |
+| `$bp-xs` | `xs` | `480px` | Startseite, Fraktal-Steuerung |
+| `$bp-fp-columns` | `fp-columns` | `500px` | Fraktal-Hilfe, Spalten nebeneinander |
+| `$bp-toast` | `toast` | `576px` (vorher `36em`) | Update-Hinweis rechtsbündig |
+| `$bp-sm` | `sm` | `600px` (Theme `$small`) | Fraktal-Canvas |
+| `$bp-content` | `content` | `640px` | CV, Skill-Graph, `section-break` |
+| `$bp-md` | `md` | `768px` (Theme `$medium`) | mobil darunter, Desktop ab hier |
+| `$bp-md-wide` | `md-wide` | `900px` (Theme `$medium-wide`) | Fraktal-Steuerung |
+| `$bp-lg` | `lg` | `1024px` (Theme `$large`) | TOC als Seitenleiste, Autor-Links inline, Masthead-Tablet bis hier |
+| `$bp-xl` | `xl` | `1280px` (Theme `$x-large`) | Navigation (Neumessung) |
 
-- **BP-1** [MUSS · Soll · CI-P2] Bereiche sind halboffen. Desktop `min-width: $medium`, mobil `max-width: $medium - 0.02px` (`767.98px`). Nie `max-width: 768px` neben `min-width: 768px`.
-- **BP-2** [MUSS · Soll · Review] JS fragt Breakpoints nur per `matchMedia()` mit derselben Query wie das CSS ab, zentral als Konstante. Keine `innerWidth`-Vergleiche.
+```scss
+@use "abstracts/breakpoints" as *;
+
+.block {
+  @include down(md) { … }          // @media (max-width: 767.98px)
+  @include up(md) { … }            // @media (min-width: 768px)
+  @include between(md, lg) { … }   // @media (min-width: 768px) and (max-width: 1023.98px)
+}
+```
+
+- **BP-1** [MUSS · Ist · CI] Bereiche sind halboffen: `up(x)` ab dem Wert, `down(x)` bis Wert minus `0.02px`, `between(x, y)` dazwischen. Eigene `@media`-Zeilen mit Breite oder Zahl gibt es nur in `abstracts/_breakpoints.scss`, eine neue Grenze kommt zuerst als `$bp-…` in die Tabelle. Check: `scripts/bp-guardrail.sh` (sperrt auch das Theme-Mixin `breakpoint()` im eigenen Code und prüft die Queries im Critical-CSS).
+- **BP-2** [MUSS · Ist · CI] JS fragt Breiten nur über `window.AuflinieUtils.mq` ab (`downMd`, `downLg`, `downXl`, `MediaQueryList` aus `site-utils.js`), mit Fallback ohne Zahl, falls `site-utils.js` fehlt. Keine `innerWidth`-Vergleiche, kein eigenes `matchMedia()` mit Breite. Ausnahme von JS-8: Die Abfragen stehen als Literal in `site-utils.js`, weil eine Media-Query kein `var()` liest. Check: `scripts/bp-guardrail.sh` vergleicht sie mit den Tokens und meldet Breiten-Abfragen in anderen Skripten.
 - **BP-3** [MUSS · Soll · Review] Interaktion per Fähigkeit, Layout per Breite: Hover-Stile in `@media (hover: hover)`, Zielgrößen in `@media (pointer: coarse)`.
-- **BP-4** [SOLL · Soll · Review] Neue Regeln mobile-first. Bestehende `max-width`-Queries bei Berührung auf die kanonischen Grenzen ziehen, unter Beachtung von BP-6.
-- **BP-5** [MUSS · Ist · CI] Prefix-Notation (`min-width`/`max-width`), keine Range-Syntax, solange `.stylelintrc.json` das festlegt (`media-feature-range-notation: prefix`). Grund: Range-Syntax erst ab iOS Safari 16.4.
-- **BP-6** [MUSS · Ist · Review] Gate-Paare aus CSS und JS werden nur gemeinsam im selben Commit geändert. Heute: (a) View-Transition-Gate `@media (prefers-reduced-motion: no-preference) { @view-transition … }` in `_view-transition.scss` und `vtGate` in `greedy-navigation.js`. (b) Mobil-Gate für das CRT-Umschalten `innerWidth > 768` in `tv-switch.js` und die mobilen CRT-Queries im CSS. Eine Teilmigration auf `767.98px` entkoppelt die Paare.
+- **BP-4** [SOLL · Soll · Review] Neue Regeln mobile-first (`up()`). Der Bestand nutzt noch viel `down()`, er wird bei Berührung umgedreht, unter Beachtung von BP-6.
+- **BP-5** [MUSS · Ist · CI] Prefix-Notation (`min-width`/`max-width`), keine Range-Syntax, solange `.stylelintrc.json` das festlegt (`media-feature-range-notation: prefix`). Grund: Range-Syntax erst ab iOS Safari 16.4.
+- **BP-6** [MUSS · Ist · Review] Gate-Paare aus CSS und JS werden nur gemeinsam im selben Commit geändert. Heute: (a) View-Transition-Gate `@media (prefers-reduced-motion: no-preference) { @view-transition … }` in `_view-transition.scss` und `vtGate` in `greedy-navigation.js`. (b) Mobil-Gate für das CRT-Umschalten: `AuflinieUtils.mq.downMd` in `tv-switch.js` und `down(md)` beim Vollbild-Hero (`_hero.scss` und Critical-CSS in `_layouts/default.html`). Weitere Paare an derselben Grenze: Sticky-TOC (`toc.js` `downLg`, `_toc.scss` `down(lg)`), Zoom-Knöpfe im Fraktal-Panel (`fractal-panel.js` `downMd`, `fractal-panel/*.scss` `down(md)`).
 
-Einheit: Repo-SCSS und JS in px. Das Theme kompiliert seine eigenen Queries in em. **[Offen]** Vereinheitlichung (Owner).
+Einheit: Repo-SCSS und JS in px. Das Theme kompiliert seine eigenen Queries aus denselben Tokens in em (`48em` = `768px` bei 16 px Grundgröße). **[Offen]** Ob alle Queries in em laufen sollen, damit sie mit der Browser-Schriftgröße mitwachsen (Owner).
 
 ### 3.5 Ebenen (z-index)
 
@@ -751,7 +764,7 @@ Ladereihenfolge in `assets/css/main.scss` (= Kaskade): `abstracts/tokens` mit de
 | Schicht | Ordner | Inhalt |
 |---|---|---|
 | Settings | `variables/`, gebündelt in `abstracts/_tokens.scss` | Tokens, `:root`-Custom-Properties (`variables/_css-properties.scss`) |
-| Tools | `abstracts/_mixins.scss` | Mixins, Platzhalter, kein CSS-Output |
+| Tools | `abstracts/_mixins.scss`, `abstracts/_breakpoints.scss` | Mixins, Platzhalter, Breakpoint-Mixins (BP-1), kein CSS-Output |
 | Theme | `_theme-bridge.scss` | Minimal Mistakes per `@import`, einzige Ausnahme von SCSS-2 |
 | Base | `base/` | Elemente, globale A11y, Icons |
 | Components | `components/` | ein BEM-Block je Datei |
@@ -764,7 +777,8 @@ Jedes Partial lädt am Dateianfang, was es nutzt, und nur das:
 @use "sass:color";                 // Sass-Builtins zuerst, nur bei Bedarf
 @use "abstracts/tokens" as *;      // $link-color, $fs-body, $content-width …
 @use "abstracts/mixins" as *;      // card-panel, mono-label … (nur bei Bedarf)
-@use "theme-bridge" as mm;         // Theme-Werte: mm.$large, mm.$type-size-5 (nur bei Bedarf)
+@use "abstracts/breakpoints" as *; // up(md), down(md), between(md, lg) (nur bei Bedarf)
+@use "theme-bridge" as mm;         // Theme-Werte: mm.$sans-serif, mm.$type-size-5 (nur bei Bedarf)
 ```
 
 Ein neues Token kommt in die passende Datei unter `variables/` und ist danach über `abstracts/tokens` überall da. Ein Theme-Wert, den ein gleichnamiges Token überschreibt (heute `$sans-serif`, `$primary-color`), ist nur als Token erreichbar, nicht als `mm.$…`. Ein neues Partial mit CSS-Ausgabe bekommt ein `@use` in `_custom.scss` an der Stelle, an der es in der Kaskade stehen soll.
@@ -881,7 +895,7 @@ Owner-Lehren aus der TV-Umschalt-Architektur. Sie werden nicht wieder eingebaut.
 ### 10.4 Muster
 
 - **JS-7** [MUSS · Soll · Review] JS-Hooks über `data-role` relativ zur Modulwurzel. IDs nur für Singletons und Anker. Keine Styling-Klassen als Hooks.
-- **JS-8** [MUSS · Soll · Review] Werte, die CSS besitzt (Dauern, Höhen, Breakpoints, Farben), liest JS per `getComputedStyle(…).getPropertyValue('--token')`. Fallbacks gleichen dem Token, Kommentar `// Spiegel zu <datei>: --token`.
+- **JS-8** [MUSS · Soll · Review] Werte, die CSS besitzt (Dauern, Höhen, Breakpoints, Farben), liest JS per `getComputedStyle(…).getPropertyValue('--token')`. Fallbacks gleichen dem Token, Kommentar `// Spiegel zu <datei>: --token`. Ausnahme Breakpoints: `AuflinieUtils.mq` (BP-2).
 - **JS-9** [MUSS · Soll · Review] Keine Design-Farben im JS. DOM-Optik über Klassen, Canvas über CSS-Kanal-Tokens. Fraktal-Paletten sind Daten und ausgenommen.
 - **JS-10** [MUSS · Soll · Review] Fachliche Zahlen als `CONSTANT_CASE` mit Einheit (`_MS`, `_PX`) am Modulkopf.
 - **JS-11** [MUSS · Soll · CI-P2] Feature-Detection vor Plattform-APIs. Kein UA-Sniffing, Eingabeart über `matchMedia('(pointer: coarse)')`.
@@ -891,7 +905,7 @@ Owner-Lehren aus der TV-Umschalt-Architektur. Sie werden nicht wieder eingebaut.
 - **JS-15** [MUSS · Soll · Review] Benennung: camelCase, PascalCase für Klassen und Namespaces, `CONSTANT_CASE` für Modulkonstanten, Booleans mit `is`/`has`/`should`, Lebenszyklus `mount`/`teardown`, Instanzen `destroy`.
 - **JS-16** [SOLL · Soll · Review] Namensräume: Events `auflinie:<thema>` (Bestand `spa:*` bleibt), Storage-Keys `auflinie:<modul>:<zweck>`, interne Brücken `window.__auflinie*`. Bestehende Keys erst bei Berührung migrieren, sonst verlieren Besucher Zustände.
 - **JS-17** [MUSS · Soll · Review] Worker: dünner Wrapper plus Kern per `importScripts`, Messages `{ requestId, …params }` mit Echo, Ergebnisse als Transferables. Mehrzweck-Kanäle (Service Worker) als `{ type: 'SCREAMING_SNAKE', … }`.
-- **JS-18** [SOLL · Soll · Review] Logik, die zum zweiten Mal gebraucht wird, wandert in einen gemeinsamen Helfer. **[Soll]** Datei `assets/js/site-utils.js` mit Namespace `window.AuflinieUtils` (`rafThrottle`, `baseUrl`, `prefersReducedMotion`, `cssDurationMs`), in `_includes/scripts.html` als **erstes** Skript geladen, vor `toc.js` und `spa-module.js`. Skripte aus dem `<head>` laufen davor und nutzen die Helfer nicht. **[Ist]** Die Datei existiert mit `prefersReducedMotion` und `rafThrottle` (Nutzer `toc.js`, `back-to-top.js`). `baseUrl` und `cssDurationMs` fehlen noch.
+- **JS-18** [SOLL · Soll · Review] Logik, die zum zweiten Mal gebraucht wird, wandert in einen gemeinsamen Helfer. **[Soll]** Datei `assets/js/site-utils.js` mit Namespace `window.AuflinieUtils` (`rafThrottle`, `baseUrl`, `prefersReducedMotion`, `cssDurationMs`), in `_includes/scripts.html` als **erstes** Skript geladen, vor `toc.js` und `spa-module.js`. Skripte aus dem `<head>` laufen davor und nutzen die Helfer nicht. **[Ist]** Die Datei existiert mit `prefersReducedMotion`, `rafThrottle` (Nutzer `toc.js`, `back-to-top.js`) und `mq` (Breakpoints, BP-2, Nutzer `toc.js`, `tv-switch.js`, `greedy-navigation.js`, `fractal-panel.js`). `baseUrl` und `cssDurationMs` fehlen noch.
 - **JS-19** [MUSS · Soll · CI-P1] Formatierung: 2 Leerzeichen (auch in Workern), einfache Anführungszeichen, Semikolons, LF, kein Leerzeichen am Zeilenende. Einzeilige Guards ohne Klammern erlaubt.
 - **JS-20** [SOLL · Soll · Review] JSDoc mit `@param` und `@returns` für alles, was über einen Namespace exportiert wird. Nur TypeScript-kompatible JSDoc-Syntax.
 
@@ -1127,6 +1141,7 @@ Kein SemVer (eine Website hat keine öffentliche API). Ein `CHANGELOG.md` im For
 | `scripts/fs-guardrail.sh` | CI `lint` | TYP-1 |
 | `scripts/color-guardrail.sh` | CI `lint` | FARB-1, FARB-5, FARB-6, FARB-8 (SCSS), FARB-9 |
 | `scripts/scale-guardrail.sh` (Ratchet, Grenzwerte `scripts/scale-baseline.txt`) | CI `lint` | SP-1, RAD-1, Z-3, MO-1, MO-2: keine neuen Literale für Abstand, Radius, Schatten, z-index, Dauer, Kurve, kein neues `transition: all` |
+| `scripts/bp-guardrail.sh` | CI `lint` | BP-1, BP-2 (SCSS, JS, Critical-CSS) |
 | `scripts/security-guardrail.sh` | CI `lint` | SEC-4, SEC-5, SEC-7, SEC-8 |
 | `scripts/scss-format.py` | CI `lint` | SCSS-19 |
 | `jekyll build --strict_front_matter` | CI `build` | Front Matter |
@@ -1153,7 +1168,6 @@ Kein SemVer (eine Website hat keine öffentliche API). Ein `CHANGELOG.md` im For
 | 2 | Stylelint `scss/dollar-variable-pattern` kebab-case | SCSS-7 |
 | 2 | Stylelint `keyframes-name-pattern: ^[a-z][a-z0-9]*(-[a-z0-9]+)*$` (nach Umbenennung des Bestands) | SCSS-7 |
 | 2 | Workflow `node-version-file: .nvmrc`, `cache-version` aus `.ruby-version` | DOC-7 |
-| 2 | `scripts/bp-guardrail.sh` (`@media` mit Zahlen außerhalb `variables/`) | BP-1 |
 | 2 | Token-Kontrast-Skript (Paare Vordergrund, Grund, Mindestwert, Alpha komponiert) | FARB-2, 6.4 |
 | 2 | Critical-CSS-Sync-Check (Inline-Block gegen Tokens, verbietet `html{font-size}`, `body{font-family}`, `body{color}`) | CRIT-1 |
 | 2 | ESLint (aktuelle Hauptversion, Flat Config: `js/recommended`, `globals.browser`/`globals.worker`, `eqeqeq`, `no-console` mit warn/error, `no-restricted-properties` gegen `navigator.userAgent`, `eslint-plugin-no-unsanitized`) | JS-2, JS-3, JS-11, JS-14, SEC-1 |
@@ -1164,7 +1178,7 @@ Kein SemVer (eine Website hat keine öffentliche API). Ein `CHANGELOG.md` im For
 | 3 | `cascade-check.py` mit Element-Regeln und Inline-Blöcken als Konkurrenten, Erwartungswert-Modus | TYP-4, TYP-5 |
 | 3 | commitlint oder Regex-Hook in `.githooks/commit-msg` (`type-enum`, `scope-enum`, `subject-case` **aus**, wegen deutscher Substantive) | GIT-1, GIT-7, GIT-8 |
 | 4 | Playwright + `@axe-core/playwright` (`wcag2a/aa`, `wcag21aa`, `wcag22aa`) auf allen Routen, je mit `reducedMotion: reduce` und `forcedColors: active`, nur per `workflow_dispatch` | Abschnitt 6 |
-| 4 | Playwright-Invarianten: Grenz-Viewports 767/768/1023/1024, Lesemodus stoppt Endlos-Animationen. Seit 1. 10. umgesetzt in `tests/visual/invariants.spec.js`: Drawer (Escape, Fokus, `aria-expanded`, `inert`, mit und ohne Reduced Motion), Skill-Graph-Sheet (Escape, Light Dismiss, Fokus), kein unsichtbarer Fokus auf `/` und `/cv/` | 6.2, 6.3, KOMP-1 |
+| 4 | Playwright-Invarianten: Lesemodus stoppt Endlos-Animationen. Seit 1. 10. umgesetzt in `tests/visual/invariants.spec.js`: Grenz-Viewports 767/768 und 1023/1024 (CSS und `AuflinieUtils.mq` auf derselben Seite, BP-1, BP-2), Drawer (Escape, Fokus, `aria-expanded`, `inert`, mit und ohne Reduced Motion), Skill-Graph-Sheet (Escape, Light Dismiss, Fokus), kein unsichtbarer Fokus auf `/` und `/cv/` | 6.2, 6.3, KOMP-1 |
 | 4 | Lighthouse-Lauf per `workflow_dispatch` gegen PERF-1 und PERF-2 | 15.1 |
 
 Neue Guardrail-Skripte folgen dem Muster von `fs-guardrail.sh`: Marker in der Zeile darüber, Exit 1 bei Verstoß, Schritt im bestehenden Lint-Job (kein zusätzlicher Artefakt-Speicher, GIT-6).
@@ -1201,10 +1215,10 @@ Stand: Ist-Basis aus dem Kopf. Ein Eintrag verschwindet, sobald der Code die Reg
 | R-3 | FARB-2 | Nav-`:focus-visible` 1,49:1 | B-F01 | migrieren |
 | R-4 | FARB-3 | erledigt 1. 10.: die acht Stellen aus B-F04 (Footer-Zeile samt Links, `.page__meta`, CV-Ort, Skill-Kontext, Sprachniveau, TOC-Label, Fraktal-Hinweis, Offline-Hinweis) auf `$fg-subtle`, gemessen 5,44 bis 5,97:1 | B-F04 | – |
 | R-5 | CRIT-1, TYP-8, 1.4.4 | Critical-CSS: `html{font-size:16px}`, `body{color:#e8e6e3}`, `.site-title` `bold`. `body{font-family}` erledigt 1. 10. (TYP-13, B-T2) | B-T1 | Owner (Root-Größe), dann migrieren |
-| R-6 | FARB-8, CRIT-1 | Critical-CSS: `rgba(37,42,52,0.95)`, `backdrop-filter:blur(5px)` | B-F22 | migrieren |
+| R-6 | FARB-8, CRIT-1, BP-1 | erledigt 1. 10. 2026: Hero-Query im Critical-CSS auf `767.98px` wie `down(md)` in SCSS, geprüft von `bp-guardrail.sh`. `rgba(…)` und `blur(5px)` stehen nicht mehr im Block | B-F22 | – |
 | R-7 | FARB-1, SCSS-8 | erledigt 1. 10. 2026: `$fp-slider-handle` zeigt auf `$slider-connect-blue`, `$fp-accent-soft` auf `$cyan-a15`. Offen ist nur, ob das Blau `#4aa3ff` in die Palette gehört | B-F23 | Owner (Ton) |
 | R-8 | FARB-1 | erledigt 1. 10. 2026: alle Literale in `assets/_sass` außerhalb von `variables/` auf Stufen-Tokens, Effektwerte markiert (FARB-1), CI-Check `color-guardrail.sh` | B-F08, B-F10, B-SCSS-03, B-SCSS-04 | – |
-| R-9 | BP-1, BP-2, BP-6 | `max-width: 768px`-Queries, `tv-switch.js` `innerWidth > 768` | B-BP-01 | migrieren als Gate-Paar |
+| R-9 | BP-1, BP-2, BP-6 | erledigt 1. 10. 2026: alle Breiten-Queries über `up()`/`down()`/`between()`, JS über `AuflinieUtils.mq`, Gate-Paar CRT gemeinsam auf „unter 768 px“ | B-BP-01, B-BP-02, B-SCSS-05, B-SCSS-20 | – |
 | R-10 | Z-1 | Fixierte Overlays in `#main` (TOC, Back-to-Top, Skill-Graph, Blog-Notice) | B-LAY-05 | Owner (Mounting oder `$intro-transition`) |
 | R-11 | MO-1 | `transition: 0.3s` in `_masthead.scss`, Theme-`$global-transition` | B-MO-01 | migrieren |
 | R-12 | SCSS-7 | camelCase-Keyframes in `_neon-base.scss`, `_neon-orbit.scss` | B-SCSS-19 | migrieren |
@@ -1324,3 +1338,4 @@ Prozess und Doku:
 | 2026-10-01 | Schrift: TYP-13 (Ubuntu selbst gehostet, Schalter `text_font`) und PERF-5 neu, TYP-12, LIZ-2 und 9.1 nachgeführt, FARB-10 auf Ist für `$primary-color`, R-29 erledigt, R-5 ohne `font-family`. |
 | 2026-10-01 | Inhalte: TYPO-2 erlaubt „&“ als Stilelement in kurzen Labels (Owner), Token-Zeile `$about-motto-font-size` entfernt, R-35 (tote Kaskaden-Werte, B-T3) erledigt. Demo-Beitrag nach INH-4 depubliziert. |
 | 2026-10-01 | Skalen: `variables/_scales.scss` mit Abstands-, Radius-, Schatten-, Ebenen- und Motion-Tokens auf Ist (3.3, 3.5 bis 3.7), exakte Literale migriert, `skala-Ausnahme`-Marker (GOV-5) und Ratchet `scale-guardrail.sh` (16.1), Rest in R-35. |
+| 2026-10-01 | Breakpoints: Token-Set `$bp-*` mit den Mixins `up()`, `down()` und `between()`, JS über `AuflinieUtils.mq`, BP-1 und BP-2 auf Ist mit `bp-guardrail.sh`. Grenze überall halboffen, 768 px und 1024 px gehören jetzt zum größeren Bereich (Hero im Critical-CSS eingeschlossen). R-6 und R-9 erledigt. |
