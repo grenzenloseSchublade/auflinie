@@ -1,8 +1,9 @@
 // Automatisches Style-Guide-Review, Teil 4: Bedien-Invarianten aus
 // STYLEGUIDE.md 6.2 und 4.4 (A11Y-2, OVL-3, OVL-4, WCAG 2.4.3/2.4.7).
 // Prüft Verhalten, nicht Aussehen: Fokusführung, aria-expanded, inert,
-// Escape und Light Dismiss an Drawer und Skill-Graph-Sheet sowie, dass kein
-// unsichtbares Element den Tastaturfokus bekommt.
+// Escape und Light Dismiss an Drawer und Skill-Graph-Sheet, dass kein
+// unsichtbares Element den Tastaturfokus bekommt, und die Breakpoint-Grenzen
+// 767/768 und 1023/1024 (STYLEGUIDE 3.4).
 const { test, expect } = require('@playwright/test');
 
 const MOBIL = { width: 390, height: 844 };
@@ -131,6 +132,51 @@ test.describe('Kein unsichtbarer Fokus (WCAG 2.4.7)', () => {
       }
       expect(seen.size, 'Tab-Runde zu kurz, Test greift nicht').toBeGreaterThan(10);
       expect(invisible, invisible.join('\n')).toEqual([]);
+    });
+  }
+});
+
+// Grenzbreiten (BP-1, BP-2, BP-6): An jeder Grenze gilt genau eine Seite,
+// und JS (AuflinieUtils.mq) sieht dieselbe Seite wie das CSS. 767 und 1023
+// liegen darunter, 768 und 1024 gehören zum größeren Bereich.
+test.describe('Breakpoint-Grenzen (BP-1, BP-2, BP-6)', () => {
+  for (const { width, mobil } of [{ width: 767, mobil: true }, { width: 768, mobil: false }]) {
+    test.describe(`${width} px`, () => {
+      test.use({ viewport: { width, height: 1024 } });
+
+      test(`Hero, Masthead und CRT-Gate ${mobil ? 'mobil' : 'Desktop'}`, async ({ page }) => {
+        await page.goto('/auflinie/', { waitUntil: 'load' });
+        const s = await page.evaluate(() => {
+          const hero = document.querySelector('.page__hero--overlay');
+          return {
+            js: window.AuflinieUtils.mq.downMd.matches,
+            masthead: getComputedStyle(document.documentElement).getPropertyValue('--masthead-height').trim(),
+            cue: getComputedStyle(document.querySelector('.page__hero-scroll-cue')).display,
+            heroFillsViewport: hero.getBoundingClientRect().height > window.innerHeight * 0.8,
+          };
+        });
+        expect(s).toEqual({
+          js: mobil,
+          masthead: mobil ? '74px' : '88px',
+          cue: mobil ? 'block' : 'none',
+          heroFillsViewport: mobil,
+        });
+      });
+    });
+  }
+
+  for (const { width, unten } of [{ width: 1023, unten: true }, { width: 1024, unten: false }]) {
+    test.describe(`${width} px`, () => {
+      test.use({ viewport: { width, height: 768 } });
+
+      test(`Sticky-TOC ${unten ? 'aktiv' : 'aus'}`, async ({ page }) => {
+        await page.goto('/auflinie/cv/', { waitUntil: 'load' });
+        const s = await page.evaluate(() => ({
+          js: window.AuflinieUtils.mq.downLg.matches,
+          sticky: getComputedStyle(document.querySelector('.toc-sticky-mobile')).display,
+        }));
+        expect(s).toEqual({ js: unten, sticky: unten ? 'block' : 'none' });
+      });
     });
   }
 });

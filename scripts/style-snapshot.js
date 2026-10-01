@@ -17,7 +17,14 @@ const http = require('http');
 const { chromium } = require('@playwright/test');
 
 const PAGES = ['', 'about/', 'cv/', 'posts/', 'mandelbrot/', 'archiv/', '404.html', 'offline.html', 'styleguide/'];
-const VIEWPORTS = [{ width: 1280, height: 900 }, { width: 390, height: 844 }];
+// Standard: Desktop 1280 und mobil 390. Für Grenzfälle (Breakpoints) per
+// Umgebungsvariable erweiterbar, z. B. SNAP_VIEWPORTS=1280x900,390x844,768x1024.
+// Die Schlüssel im Ergebnis tragen die Breite, Snapshots mit verschiedenen
+// Listen lassen sich deshalb nur auf den gemeinsamen Breiten vergleichen.
+const VIEWPORTS = (process.env.SNAP_VIEWPORTS || '1280x900,390x844')
+  .split(',')
+  .map((v) => v.trim().split('x').map(Number))
+  .map(([width, height]) => ({ width, height }));
 const PROPS = [
   'display', 'position', 'top', 'right', 'bottom', 'left', 'z-index',
   'width', 'height', 'min-height', 'max-width',
