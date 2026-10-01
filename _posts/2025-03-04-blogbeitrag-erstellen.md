@@ -203,10 +203,10 @@ Ergebnis: [Externe Referenz](https://google.de){:target="_blank" rel="noopener n
 **Interne Links:**
 
 ```markdown
-{% raw %}[Interne Querverweise]({{ "/posts/erster-beitrag/" | relative_url }}){% endraw %}
+{% raw %}[Erstellung dieser Website]({{ "/posts/erstellung-dieser-website/" | relative_url }}){% endraw %}
 ```
 
-Ergebnis: [Interne Querverweise]({{ "/posts/erster-beitrag/" | relative_url }})
+Ergebnis: [Erstellung dieser Website]({{ "/posts/erstellung-dieser-website/" | relative_url }})
 
 ### Code-Integration
 

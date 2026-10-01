@@ -98,5 +98,5 @@ Zusammenfassung der Hauptpunkte und ein Ausblick auf weitere Themen.
 **Weiterführende Links:**
 
 - [Link zu verwandtem Thema](https://example.com)
-- [Interne Querverweise]({{ "/posts/erster-beitrag/" | relative_url }})
+- [Verwandter Beitrag auf dieser Website]({{ "/posts/erstellung-dieser-website/" | relative_url }})
 {% endraw %}
