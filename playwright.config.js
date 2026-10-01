@@ -22,8 +22,10 @@ module.exports = defineConfig({
   timeout: 60_000,
   expect: {
     timeout: 7_000,
-    // Kleine Toleranz gegen Antialiasing-Rauschen, echte Änderungen bleiben sichtbar
-    toHaveScreenshot: { maxDiffPixelRatio: 0.002, animations: 'disabled', caret: 'hide' },
+    // Absolute, sehr kleine Toleranz: im selben Container rendert Chromium
+    // deterministisch. Eine Prozent-Toleranz ließ bei großen Abschnitten
+    // kleine echte Änderungen (Strich, 1-px-Abstand) durchrutschen.
+    toHaveScreenshot: { maxDiffPixels: 8, animations: 'disabled', caret: 'hide' },
   },
   snapshotPathTemplate: '{testDir}/visual/__screenshots__/{projectName}/{arg}{ext}',
   fullyParallel: true,
