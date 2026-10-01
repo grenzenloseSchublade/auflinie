@@ -424,7 +424,7 @@ Die strukturierten Daten und YAML-Konfiguration in der `cv_content.yml` organisi
 
 **Asset-Management und Optimierung:**
 
-Das Asset-Management folgt dem Prinzip „selbst hosten statt CDN": Font Awesome liegt als per pyftsubset generiertes Subset (nur die tatsächlich genutzten Icons) in `assets/webfonts/`, die Bibliotheken der Fraktal-Panels (tom-select, nouislider, gumshoe) in `assets/vendor/`. Damit entfallen externe Abhängigkeiten und die Seite bleibt vollständig offline-fähig – einzige verbleibende externe Quelle ist MathJax. Bilder werden nicht über eine generische Pipeline skaliert, sondern einzeln von Hand optimiert (etwa `background.jpg` und das per Skript gerenderte `mandelbrot-preview.jpg`, jeweils als komprimiertes JPEG unter 250 KB).
+Das Asset-Management folgt dem Prinzip „selbst hosten statt CDN“: Font Awesome liegt als per pyftsubset generiertes Subset (nur die tatsächlich genutzten Icons) in `assets/webfonts/`, die Bibliotheken der Fraktal-Panels (tom-select, nouislider, gumshoe) in `assets/vendor/`. Damit entfallen externe Abhängigkeiten und die Seite bleibt vollständig offline-fähig – einzige verbleibende externe Quelle ist MathJax. Bilder werden nicht über eine generische Pipeline skaliert, sondern einzeln von Hand optimiert (etwa `background.jpg` und das per Skript gerenderte `mandelbrot-preview.jpg`, jeweils als komprimiertes JPEG unter 250 KB).
 
 **Performance-Optimierungen und Caching:**
 
@@ -442,7 +442,7 @@ const CACHE_URLS = [
 ];
 ```
 
-Die Registrierung übernimmt `assets/js/sw-register.js`: Sie ist per `data-enable-service-worker`-Attribut schaltbar und zeigt bei neuen Versionen einen Update-Toast statt eines blockierenden Dialogs – „Jetzt laden" aktiviert den wartenden Worker (`SKIP_WAITING`) und lädt erst nach dem `controllerchange` neu, damit kein Mischzustand aus altem DOM und neuem Cache entsteht. Frische kommt über den Cache-Versionsstempel: Jeder Build erzeugt einen neuen Cache-Namen, alte Caches werden beim Aktivieren aufgeräumt.
+Die Registrierung übernimmt `assets/js/sw-register.js`: Sie ist per `data-enable-service-worker`-Attribut schaltbar und zeigt bei neuen Versionen einen Update-Toast statt eines blockierenden Dialogs – „Jetzt laden“ aktiviert den wartenden Worker (`SKIP_WAITING`) und lädt erst nach dem `controllerchange` neu, damit kein Mischzustand aus altem DOM und neuem Cache entsteht. Frische kommt über den Cache-Versionsstempel: Jeder Build erzeugt einen neuen Cache-Namen, alte Caches werden beim Aktivieren aufgeräumt.
 
 **Build-Optimierungen:**
 ```yaml
