@@ -1,0 +1,12 @@
+# Erlaubt: Marker an der Definition nimmt die Variable überall aus
+guardrail: scale
+expect: 0
+file: assets/_sass/components/_footer.scss
+mode: append
+---
+// skala-Ausnahme: Testfall, lokaler Stapel (Z-2)
+$footer-fixture-ebene: 3;
+
+.footer-fixture {
+  z-index: $footer-fixture-ebene;
+}

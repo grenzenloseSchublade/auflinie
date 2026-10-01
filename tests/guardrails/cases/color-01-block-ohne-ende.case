@@ -1,0 +1,11 @@
+# [Block]-Marker ohne farb-Ausnahme-Ende versteckte das Hex-Literal darunter
+guardrail: color
+expect: 1
+grep: ungepaarter farb-Ausnahme-Block
+file: assets/_sass/components/_footer.scss
+mode: append
+---
+// farb-Ausnahme: [Block] absichtlich nicht geschlossen
+.footer-fixture {
+  color: #123456;
+}

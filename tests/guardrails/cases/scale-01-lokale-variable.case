@@ -1,0 +1,12 @@
+# Literal in einer lokalen Variablen zählt dort, wo margin sie liest
+guardrail: scale
+expect: 1
+grep: VERSTOSS spacing
+file: assets/_sass/components/_footer.scss
+mode: append
+---
+$footer-fixture-abstand: 13px;
+
+.footer-fixture {
+  margin: $footer-fixture-abstand;
+}

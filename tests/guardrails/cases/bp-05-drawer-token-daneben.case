@@ -1,0 +1,10 @@
+# 241px passt zu keinem Breakpoint (Include außerhalb des Critical-CSS)
+guardrail: bp
+expect: 1
+grep: 241px passt zu keinem
+file: _includes/fixture-drawer.html
+mode: create
+---
+<style>
+  @media (min-width:241px){.fixture{color:inherit}}
+</style>

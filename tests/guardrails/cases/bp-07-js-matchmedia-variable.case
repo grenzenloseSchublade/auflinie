@@ -1,0 +1,10 @@
+# matchMedia mit einer Variablen statt eines Literals
+guardrail: bp
+expect: 1
+grep: matchMedia\(query
+file: assets/js/fixture-bp.js
+mode: create
+---
+const query = '(min-width: 700px)';
+const mql = window.matchMedia(query);
+mql.addEventListener('change', () => {});

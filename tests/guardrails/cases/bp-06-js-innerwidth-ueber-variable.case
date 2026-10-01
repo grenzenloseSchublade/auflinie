@@ -1,0 +1,10 @@
+# innerWidth über eine Zwischenvariable mit einer Konstanten verglichen
+guardrail: bp
+expect: 1
+grep: fixture-bp.js:2: innerWidth
+file: assets/js/fixture-bp.js
+mode: create
+---
+const BP_MD = 768;
+const w = window.innerWidth;
+if (w < BP_MD) { document.body.classList.add('fixture'); }

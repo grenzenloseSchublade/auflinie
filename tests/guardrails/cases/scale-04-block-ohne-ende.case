@@ -1,0 +1,11 @@
+# [Block]-Marker ohne skala-Ausnahme-Ende nähme den Rest der Datei aus
+guardrail: scale
+expect: 1
+grep: ohne skala-Ausnahme-Ende
+file: assets/_sass/components/_footer.scss
+mode: append
+---
+// skala-Ausnahme: [Block] absichtlich nicht geschlossen
+.footer-fixture {
+  z-index: 5;
+}

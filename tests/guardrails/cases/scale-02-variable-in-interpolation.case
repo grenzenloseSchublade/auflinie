@@ -1,0 +1,12 @@
+# Lokale Variable in #{…} innerhalb von calc() zählt ebenfalls
+guardrail: scale
+expect: 1
+grep: VERSTOSS spacing
+file: assets/_sass/components/_footer.scss
+mode: append
+---
+$footer-fixture-luecke: 7px;
+
+.footer-fixture {
+  gap: calc(#{$footer-fixture-luecke} * 2);
+}

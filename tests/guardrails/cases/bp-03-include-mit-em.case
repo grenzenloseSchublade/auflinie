@@ -1,0 +1,10 @@
+# Media-Query mit rem in einem Include außerhalb des Critical-CSS
+guardrail: bp
+expect: 1
+grep: fixture-style.html
+file: _includes/fixture-style.html
+mode: create
+---
+<style>
+  @media (min-width: 40rem) { .fixture { color: inherit; } }
+</style>

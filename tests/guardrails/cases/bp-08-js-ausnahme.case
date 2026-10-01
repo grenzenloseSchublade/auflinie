@@ -1,0 +1,9 @@
+# Erlaubt: Viewport-Breite mit bp-Ausnahme-Marker (keine Layout-Weiche)
+guardrail: bp
+expect: 0
+file: assets/js/fixture-bp.js
+mode: create
+---
+// bp-Ausnahme: Testfall, Position eines Tooltips am rechten Rand
+const right = window.innerWidth - 16;
+export { right };

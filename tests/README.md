@@ -18,6 +18,14 @@ Drei Gruppen, alle mit Playwright:
 
 Alles läuft in der CI im Build-Job (Schritt „Style-Guide-Review“) und blockiert bei Fehlern den Deploy.
 
+Dazu, ohne Browser und ohne Node:
+
+- **`guardrails/`** – Negativtests der Guardrail-Skripte (`scripts/*-guardrail.sh`).
+  Jeder Fall in `guardrails/cases/*.case` baut einen absichtlichen Verstoß (oder einen
+  erlaubten Grenzfall) in eine Kopie des Repos und erwartet den passenden Exit-Code.
+  Aufbau einer Fall-Datei: Kopf von `guardrails/run.py`. Läuft im Lint-Job:
+  `python3 tests/guardrails/run.py`.
+
 ## Lokal ausführen
 
 Screenshots hängen von Schriften und Rendering ab. Deshalb immer im selben

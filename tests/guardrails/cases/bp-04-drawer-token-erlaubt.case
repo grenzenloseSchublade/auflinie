@@ -1,0 +1,10 @@
+# Erlaubt: 240px ist $bp-drawer = math.div($drawer-width, 0.75)
+guardrail: bp
+expect: 0
+file: _layouts/default.html
+mode: append
+---
+<style>
+  @media (min-width:240px){.fixture{color:inherit}}
+  @media (max-width:239.98px){.fixture{color:inherit}}
+</style>

@@ -1,0 +1,9 @@
+# Breakpoint-Token in em: kein px-Wert, Spiegel in JS und Critical-CSS nicht prüfbar
+guardrail: bp
+expect: 1
+grep: kein px-Wert
+file: assets/_sass/variables/_layout.scss
+mode: replace
+old: $bp-xs: 480px;
+---
+$bp-xs: 30em;

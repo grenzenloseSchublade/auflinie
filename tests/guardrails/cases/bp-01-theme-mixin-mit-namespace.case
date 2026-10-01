@@ -1,0 +1,12 @@
+# Theme-Mixin breakpoint() über den Namespace der Theme-Brücke
+guardrail: bp
+expect: 1
+grep: breakpoint
+file: assets/_sass/components/_toc.scss
+mode: append
+---
+.toc-fixture {
+  @include mm.breakpoint(mm.$medium) {
+    color: inherit;
+  }
+}

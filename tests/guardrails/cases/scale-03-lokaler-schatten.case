@@ -1,0 +1,12 @@
+# Schatten mit Zahlen in einer lokalen Variablen (Ratchet shadow steht auf 0)
+guardrail: scale
+expect: 1
+grep: VERSTOSS shadow
+file: assets/_sass/components/_footer.scss
+mode: append
+---
+$footer-fixture-schatten: 0 3px 9px $black-a30;
+
+.footer-fixture {
+  box-shadow: $footer-fixture-schatten;
+}

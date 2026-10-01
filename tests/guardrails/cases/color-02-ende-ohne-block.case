@@ -1,0 +1,8 @@
+# farb-Ausnahme-Ende ohne offenen Block
+guardrail: color
+expect: 1
+grep: ohne offenen \[Block\]
+file: assets/_sass/components/_footer.scss
+mode: append
+---
+// farb-Ausnahme-Ende

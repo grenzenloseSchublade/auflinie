@@ -48,6 +48,8 @@ jobs:
         run: bash scripts/security-guardrail.sh
       - name: SCSS-Format (Einrückung, Endleerzeichen)
         run: python3 scripts/scss-format.py
+      - name: Guardrail-Negativtests (absichtliche Verstöße müssen scheitern)
+        run: python3 tests/guardrails/run.py
 
   build:
     runs-on: ubuntu-latest

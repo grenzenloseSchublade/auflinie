@@ -1,0 +1,13 @@
+# @media über zwei Zeilen, Breite in em (erste Zeile ohne Zahl)
+guardrail: bp
+expect: 1
+grep: min-width: 48em
+file: assets/_sass/components/_footer.scss
+mode: append
+---
+@media screen and
+  (min-width: 48em) {
+  .footer-fixture {
+    color: inherit;
+  }
+}
