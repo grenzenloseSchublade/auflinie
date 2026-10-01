@@ -9,6 +9,11 @@
 // .section-anchor) sind deshalb raus — beides addiert sich sonst.
 html {
   scroll-padding-top: var(--anchor-offset, 96px);
+
+  // Weiches Scrollen bei Anker-Sprüngen. Bewusst unverändert übernommen
+  // (Scroll-Verhalten ist ein eigenes, offenes Owner-Thema). Bei
+  // prefers-reduced-motion schaltet base/_accessibility.scss es ab.
+  scroll-behavior: smooth;
 }
 
 // Aktuell nur von Drafts genutzt (kein veröffentlichtes Markup erzeugt die

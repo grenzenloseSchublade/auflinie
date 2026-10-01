@@ -28,54 +28,6 @@
 <link rel="apple-touch-icon" sizes="180x180" href="{{ site.baseurl }}/assets/images/apple-touch-icon.png">
 <meta name="theme-color" content="#1a1a1a">
 
-<!-- Anpassungen für Header-Elemente -->
-<style>
-  /* Verbesserte Lesbarkeit für Header-Unterschrift */
-  .page__hero--overlay .page__title,
-  .page__hero--overlay .page__lead {
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
-  }
-
-  /* 
-   * Hinweis: Die page__caption-Styles wurden entfernt und 
-   * alle Caption-Stile sind jetzt zentral in main.scss definiert 
-   */
-
-  /* Verhindert Flackern beim Laden der Seite */
-  html {
-    scroll-behavior: smooth;
-  }
-
-  /* Versteckt den Inhalt kurz beim Laden, um Sprünge zu vermeiden */
-  .page-loading {
-    opacity: 0;
-    transition: opacity 0.3s ease-in;
-  }
-
-  .page-loaded {
-    opacity: 1;
-  }
-
-  /* Taxonomie-Metadaten (Kategorien/Tags) sind sitewide deaktiviert */
-  .page__taxonomy,
-  .page__taxonomy-item,
-  .taxonomy__index,
-  .archive__item-excerpt .page__meta {
-    display: none !important;
-  }
-
-  /* Anmerkung: Die dynamischen Header-Stile wurden in masthead.html verschoben */
-
-  /* Stil für Anker-Ziele */
-  .anchor-target {
-    display: block;
-    position: relative;
-    top: -80px;
-    /* Anpassen je nach Header-Höhe */
-    visibility: hidden;
-  }
-</style>
-
 {% if site.background_image %}
 <link rel="preload" as="image" href="{{ site.background_image | relative_url }}">
 {% endif %}

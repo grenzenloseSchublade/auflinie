@@ -570,6 +570,13 @@
       text-shadow: 1px 1px 4px $black-a50;
     }
 
+    // Titel und Lead mit kräftigerem Schatten: sie stehen direkt auf dem
+    // Hero-Bild und brauchen mehr Abhebung als Meta-Zeile und Buttons
+    .page__title,
+    .page__lead {
+      text-shadow: 2px 2px 4px rgb(0 0 0 / 80%);
+    }
+
     // Meta-Zeile (Datum + Lesezeit) klar vom Lead-Text absetzen: die
     // Reset-Gruppe "body .page__meta { margin-top: 0 }" (_masthead.scss)
     // drückte sie sonst direkt an den Text — Spezifität hier (0,2,0)

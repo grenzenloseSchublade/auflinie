@@ -56,3 +56,14 @@
   letter-spacing: 0.03em;
   color: $fg-subtle;
 }
+
+// Taxonomie-Metadaten (Kategorien/Tags) sind sitewide abgeschaltet. Das
+// Markup entsteht heute nirgends, die Regel ist ein Sicherheitsnetz für
+// Theme-Includes. body-Präfix (0,1,1) schlägt die Theme-Regeln
+// .page__taxonomy-item und .taxonomy__index (je 0,1,0), kein !important nötig.
+body .page__taxonomy,
+body .page__taxonomy-item,
+body .taxonomy__index,
+body .archive__item-excerpt .page__meta {
+  display: none;
+}
