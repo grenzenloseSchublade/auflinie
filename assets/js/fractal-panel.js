@@ -79,6 +79,17 @@
     }
   }
 
+  // Zugänglicher Name eines noUiSlider-Griffs (STYLEGUIDE FORM-3, WCAG 2.5.3
+  // Label in Name): der sichtbare Text des Zeilen-Labels ohne Doppelpunkt.
+  // Das <label> selbst zeigt auf das Zahlenfeld daneben, der Griff
+  // (role="slider") bekäme sonst gar keinen Namen.
+  function sliderHandleAttributes(slider, fallback) {
+    const row = slider && slider.closest('.fractal-panel__control-row');
+    const label = row && row.querySelector('label');
+    const text = label ? label.textContent.trim().replace(/:\s*$/, '') : '';
+    return [{ 'aria-label': text || fallback }];
+  }
+
   function getTouchDistance(touches) {
     if (!touches || touches.length < 2) return 0;
     return Math.hypot(
@@ -747,7 +758,8 @@
         connect: [true, false],
         step: iterations.step,
         range: { min: iterations.min, max: iterations.max },
-        format: { to: (v) => Math.round(v), from: (v) => Number(v) }
+        format: { to: (v) => Math.round(v), from: (v) => Number(v) },
+        handleAttributes: sliderHandleAttributes(this.iterSlider, 'Iterationen')
       });
       this.iterSlider.noUiSlider.on('update', (values) => {
         this.state.maxIterations = parseInt(values[0], 10);
@@ -780,8 +792,14 @@
         range: { min: -2, max: 2 },
         format: { to: (v) => v.toFixed(2), from: (v) => Number(v) }
       };
-      noUiSlider.create(this.realSlider, Object.assign({ start: this.state.realPart }, cSliderOptions));
-      noUiSlider.create(this.imagSlider, Object.assign({ start: this.state.imagPart }, cSliderOptions));
+      noUiSlider.create(this.realSlider, Object.assign({
+        start: this.state.realPart,
+        handleAttributes: sliderHandleAttributes(this.realSlider, 'c (Real)')
+      }, cSliderOptions));
+      noUiSlider.create(this.imagSlider, Object.assign({
+        start: this.state.imagPart,
+        handleAttributes: sliderHandleAttributes(this.imagSlider, 'c (Imag)')
+      }, cSliderOptions));
 
       const bindCSlider = (slider, input, prop) => {
         slider.noUiSlider.on('update', (values) => {
