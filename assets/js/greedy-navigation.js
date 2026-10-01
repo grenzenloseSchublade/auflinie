@@ -200,24 +200,23 @@
 
     // Unter Reduced Motion macht der globale Kill-Switch aus „visibility 0s"
     // eine Mini-Transition: der Drawer bleibt dann noch einige Frames
-    // visibility:hidden und nimmt keinen Fokus an. Dann nach deren Ende
-    // erneut (transitionend gefiltert, Timer als Rückfall), sofern der Fokus
-    // noch am Toggle steht.
+    // visibility:hidden und nimmt keinen Fokus an. Deshalb pro Frame prüfen,
+    // bis er sichtbar ist (höchstens ~1 s), sofern der Fokus noch am Toggle
+    // steht. Vorher hingen transitionend und ein fester 200-ms-Timer am
+    // Timing und schlugen im Test sporadisch fehl.
     function focusFirstLink() {
       const first = hlinks.querySelector('a[href]');
       if (!first) return;
-      first.focus({ preventScroll: true });
-      if (document.activeElement === first) return;
-      let timer = null;
-      function onVisible(e) {
-        if (e && (e.target !== hlinks || e.propertyName !== 'visibility')) return;
-        clearTimeout(timer);
-        hlinks.removeEventListener('transitionend', onVisible);
-        if (hlinks.classList.contains('hidden') || document.activeElement !== btn) return;
+      let frames = 60;
+      (function tryFocus() {
+        if (hlinks.classList.contains('hidden')) return;
+        if (document.activeElement !== btn && document.activeElement !== document.body) return;
+        if (getComputedStyle(hlinks).visibility !== 'visible' && frames-- > 0) {
+          requestAnimationFrame(tryFocus);
+          return;
+        }
         first.focus({ preventScroll: true });
-      }
-      hlinks.addEventListener('transitionend', onVisible);
-      timer = setTimeout(onVisible, 200);
+      })();
     }
 
     function closeMenu() {

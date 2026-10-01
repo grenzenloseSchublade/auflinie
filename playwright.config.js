@@ -31,6 +31,9 @@ module.exports = defineConfig({
   snapshotPathTemplate: '{testDir}/visual/__screenshots__/{projectName}/{arg}{ext}',
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
+  // Ein Wiederholungslauf in der CI fängt seltene Timing-Ausreißer ab; der
+  // Bericht markiert solche Tests als „flaky“, sie bleiben also sichtbar.
+  retries: process.env.CI ? 1 : 0,
   reporter: process.env.CI ? [['list'], ['html', { open: 'never', outputFolder: 'playwright-report' }]] : 'list',
   use: {
     baseURL: process.env.BASE_URL || `http://127.0.0.1:${PORT}`,
