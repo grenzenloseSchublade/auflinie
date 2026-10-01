@@ -263,7 +263,7 @@ Semantische Aliase: `$toc-*`, `$cv-*` (zeigen auf `$fs-*` oder bewusst auf `1em`
 | Ebene | Kontext | Größe | Gewicht | Farbe | Abstand |
 |---|---|---|---|---|---|
 | H1 | Hero `.page__title` | `2.5em`, ab 768 px `3.5em` (Hero-em-System) | Theme | Weiß | Hero-Layout |
-| H2 | Markdown `.page__content > h2` | `$fs-heading` | `600` | Weiß 95 % | `section-break` oben, `margin-bottom: 1.2rem` |
+| H2 | Markdown `.page__content > h2` | `$fs-heading` | `600` | Weiß 95 % | `section-break` oben, `margin-bottom: $space-5` |
 | H3 | Markdown `.page__content > h3` | Theme `$h-size-3` (`1.125em`) | `600` | Weiß 92 % | Theme `2em 0 0.5em` |
 | H4 | Markdown | Theme `$h-size-4` (`1.0625em`) | Theme `bold` | Theme | Theme `2em 0 0.5em` |
 | Panel-H3 | Komponenten | `$fs-heading-sm` per `accent-header` | `600` | Weiß 95 % | Komponente |
@@ -308,7 +308,9 @@ Quelle `variables/_scales.scss` (Skala) und `variables/_layout.scss` (Breiten, A
 | `$space-4` | `1` | 16 | `$space-12` | `3` | 48 |
 | `$space-5` | `1.25` | 20 | `$space-16` | `4` | 64 |
 
-Fraktal-Panel (px, viewport-fix wie `$fp-fs-*`): `$fp-space-1` 4 · `$fp-space-2` 8 · `$fp-space-3` 12 · `$fp-space-4` 16 · `$fp-space-5` 20.
+Fraktal-Panel (px, viewport-fix wie `$fp-fs-*`, 2-px-Raster mit Halbschritten, Owner 1. 10. 2026): `$fp-space-0-5` 2 · `$fp-space-1` 4 · `$fp-space-1-5` 6 · `$fp-space-2` 8 · `$fp-space-2-5` 10 · `$fp-space-3` 12 · `$fp-space-3-5` 14 · `$fp-space-4` 16 · `$fp-space-5` 20.
+
+Rechnungen aus Tokens sind Skalenwerte, z. B. die TOC-Einrückung `$space-4 + n * $space-2` je Ebene.
 
 | Token | Wert | Rolle |
 |---|---|---|
@@ -316,13 +318,13 @@ Fraktal-Panel (px, viewport-fix wie `$fp-fs-*`): `$fp-space-1` 4 · `$fp-space-2
 | `$small-spacing` | `0.5em` | kleiner Abstand (Altbestand, em-Ausnahme bis zur Migration) |
 | `$content-width` | `46rem` | Content-Spalte (siehe TYP-10) |
 | `$drawer-width` | `180px` | Drawer-Breite und Overlay-Aussparung |
-| `section-break` | `3.2rem` / `2.4rem`, bis 640 px `2.4rem` / `1.8rem` | Kapitelgrenze (abgenommen, liegt neben dem Raster, Register R-35) |
+| `$space-section-break`, `-inner`, `-narrow`, `-inner-narrow` | `3.2rem` / `2.4rem`, bis 640 px `2.4rem` / `1.8rem` | Kapitelgrenze (`section-break`-Mixin), abgenommen, benannte Sonderwerte neben dem Raster |
 | `--masthead-height` | `74px`, ab 768 px `88px` | Laufzeit |
 | `--sticky-toc-height` | per JS | Laufzeit |
 | `--anchor-offset` | Masthead + Sticky-TOC + `20px` | Anker-Offset |
 
-- **SP-1** [SOLL · Soll · CI] Neue Abstände nur aus der Skala. Bestehende Werte bei Berührung migrieren. `scripts/scale-guardrail.sh` lässt die Zahl der Abstands-Literale außerhalb von `variables/` nicht steigen (Ratchet, Rest im Register R-35).
-- **SP-2** [MUSS · Soll · Review] Einheit nach Kontext: Content rem, Hero und TOC em, Fraktal-Panel px, Hairlines und Schatten px. Feste Chrome-Maße in px: `--masthead-height`, `$drawer-width` und davon abgeleitete Breakpoints (SP-4). `$section-spacing` und `$small-spacing` bleiben em, bis sie in der Skala aufgehen. Ein px-Literal wird nie still durch ein rem-Token ersetzt: Bei 16 px Grundschrift sieht beides gleich aus, bei größerer Browser-Schrift nicht.
+- **SP-1** [SOLL · Soll · CI] Neue Abstände nur aus der Skala. Bestehende Werte bei Berührung migrieren. `scripts/scale-guardrail.sh` lässt die Zahl der Abstands-Literale außerhalb von `variables/` nicht steigen (Ratchet, Rest im Register R-35). Ein Literal in einer lokalen Sass-Variablen (`$lokal: 13px`) zählt dort, wo es als Abstand landet.
+- **SP-2** [MUSS · Soll · Review] Einheit nach Kontext: Content rem, Hero, Masthead und TOC em (die em-Systeme tragen `skala-Ausnahme`-Marker), Fraktal-Panel px, Hairlines und Schatten px. Feste Chrome-Maße in px: `--masthead-height`, `$drawer-width` und davon abgeleitete Breakpoints (SP-4). `$section-spacing` und `$small-spacing` bleiben em, bis sie in der Skala aufgehen. Ein px-Literal wird nie still durch ein rem-Token ersetzt: Bei 16 px Grundschrift sieht beides gleich aus, bei größerer Browser-Schrift nicht.
 - **SP-3** [MUSS · Soll · Review] Komponenten-Geometrie (Radius, Full-Bleed) lebt in der Komponente. Layout-Dateien setzen nur Container-Padding und -Breite.
 - **SP-4** [MUSS · Soll · Review] Gekoppelte Werte werden abgeleitet oder per Custom Property gelesen, nicht als zweites Literal gepflegt (Beispiel: Drawer-Breakpoint = `$drawer-width / 0.75`).
 
@@ -353,8 +355,8 @@ Fraktal-Panel (px, viewport-fix wie `$fp-fs-*`): `$fp-space-1` 4 · `$fp-space-2
 }
 ```
 
-- **BP-1** [MUSS · Ist · CI] Bereiche sind halboffen: `up(x)` ab dem Wert, `down(x)` bis Wert minus `0.02px`, `between(x, y)` dazwischen. Eigene `@media`-Zeilen mit Breite oder Zahl gibt es nur in `abstracts/_breakpoints.scss`, eine neue Grenze kommt zuerst als `$bp-…` in die Tabelle. Check: `scripts/bp-guardrail.sh` (sperrt auch das Theme-Mixin `breakpoint()` im eigenen Code und prüft die Queries im Critical-CSS).
-- **BP-2** [MUSS · Ist · CI] JS fragt Breiten nur über `window.AuflinieUtils.mq` ab (`downMd`, `downLg`, `downXl`, `MediaQueryList` aus `site-utils.js`), mit Fallback ohne Zahl, falls `site-utils.js` fehlt. Keine `innerWidth`-Vergleiche, kein eigenes `matchMedia()` mit Breite. Ausnahme von JS-8: Die Abfragen stehen als Literal in `site-utils.js`, weil eine Media-Query kein `var()` liest. Check: `scripts/bp-guardrail.sh` vergleicht sie mit den Tokens und meldet Breiten-Abfragen in anderen Skripten.
+- **BP-1** [MUSS · Ist · CI] Bereiche sind halboffen: `up(x)` ab dem Wert, `down(x)` bis Wert minus `0.02px`, `between(x, y)` dazwischen. Eigene `@media`-Zeilen mit Breite oder Zahl gibt es nur in `abstracts/_breakpoints.scss`, eine neue Grenze kommt zuerst als `$bp-…` in die Tabelle. Check: `scripts/bp-guardrail.sh` (wertet auch berechnete Tokens wie `$bp-drawer` aus, liest `@media` über mehrere Zeilen, sperrt das Theme-Mixin `breakpoint()` im eigenen Code auch mit Namespace und prüft die Queries in allen Templates, vor allem im Critical-CSS).
+- **BP-2** [MUSS · Ist · CI] JS fragt Breiten nur über `window.AuflinieUtils.mq` ab (`downMd`, `downLg`, `downXl`, `MediaQueryList` aus `site-utils.js`), mit Fallback ohne Zahl, falls `site-utils.js` fehlt. Kein Lesen der Viewport-Breite (`innerWidth`, `documentElement.clientWidth`, `screen.width` …), kein eigenes `matchMedia()` mit Breite oder mit einem Argument, das kein Literal ist. Wer die Breite für etwas anderes als eine Layout-Weiche braucht, setzt `// bp-Ausnahme: <Grund>` darüber. Ausnahme von JS-8: Die Abfragen stehen als Literal in `site-utils.js`, weil eine Media-Query kein `var()` liest. Check: `scripts/bp-guardrail.sh` vergleicht sie mit den Tokens und meldet Breiten-Abfragen in anderen Skripten.
 - **BP-3** [MUSS · Soll · Review] Interaktion per Fähigkeit, Layout per Breite: Hover-Stile in `@media (hover: hover)`, Zielgrößen in `@media (pointer: coarse)`.
 - **BP-4** [SOLL · Soll · Review] Neue Regeln mobile-first (`up()`). Der Bestand nutzt noch viel `down()`, er wird bei Berührung umgedreht, unter Beachtung von BP-6.
 - **BP-5** [MUSS · Ist · CI] Prefix-Notation (`min-width`/`max-width`), keine Range-Syntax, solange `.stylelintrc.json` das festlegt (`media-feature-range-notation: prefix`). Grund: Range-Syntax erst ab iOS Safari 16.4.
@@ -385,7 +387,7 @@ Globale Ebenen als Tokens in `variables/_scales.scss`, aufsteigend. Werte und Re
 Die Theme-Animation `#main { animation: $intro-transition }` erzeugt einen Stacking-Kontext auf `#main`. Was darin fixiert ist (TOC, Back-to-Top, Skill-Graph-Knopf, Blog-Hinweis), konkurriert nicht mit den Ebenen außerhalb (Register R-10).
 
 - **Z-1** [MUSS · Soll · Review] Modale, Toasts und app-weite Floats werden am `<body>` gemountet (Vorbild `sw-register.js`), nie innerhalb von `#main`. **[Offen]** Alternative: `$intro-transition: none` vor dem Theme-Import beseitigt den Stacking-Kontext direkt, nimmt aber auch Masthead und Seite die Theme-Einblendung (sichtbare Änderung, Owner).
-- **Z-2** [MUSS · Ist · Review] Lokale Stapel 0 bis 10 nur in Containern mit `isolation: isolate` und mit Skalen-Kopfkommentar. Vorbild: Skala im Kopf von `components/_fractal-panel.scss`, `isolation: isolate` in `components/fractal-panel/_canvas.scss`. Nicht benannt sind heute noch der Hero-Stapel (`0` bis `25`, `100`, `101`) und die Vollbild-Ebenen des Fraktal-Panels (`200`, `250`, `300`), siehe R-35.
+- **Z-2** [MUSS · Ist · Review] Lokale Stapel 0 bis 10 nur in Containern mit `isolation: isolate` und mit Skalen-Kopfkommentar. Vorbild: Skala im Kopf von `components/_fractal-panel.scss`, `isolation: isolate` in `components/fractal-panel/_canvas.scss`. Die Werte stehen als benannte Variablen am Dateikopf (`$hero-z-*`, `$fp-z-*`, `$cv-z-*`, `$masthead-z-*`, `$graph-z-touch-hint`) unter einem `skala-Ausnahme`-Marker. Größer als 10 sind der Hero-Stapel (`15`, `25`, `100`, `101`) und die Vollbild-Ebenen des Fraktal-Panels (`200`, `250`, `300`), dort trägt die Reihenfolge, nicht der Wert.
 - **Z-3** [SOLL · Ist · CI] Globale Ebenen nur über die `$z-*`-Tokens. Einzelne Variablen statt Map mit `z()`-Funktion: Ein Tippfehler bricht so den Build ab, `map.get` lieferte still `null` und Sass ließe die Deklaration weg. Der Skalen-Guardrail zählt z-index-Literale (Ratchet).
 
 ### 3.6 Radien und Schatten
@@ -405,14 +407,29 @@ Quelle `variables/_scales.scss`.
 | `$shadow-1` | `0 1px 3px $black-a20` | knapp abgehoben |
 | `$shadow-2` | `0 4px 12px $black-a30` | schwebende Leisten, Menüs |
 | `$shadow-3` | `0 10px 30px $black-a40` | Toasts, Dialoge |
+| `$shadow-pressed` | `0 0 1px $black-a20` | gedrückt, liegt fast auf |
 | `$shadow-masthead` | `0 2px 10px $black-a30` | Masthead |
 | `$shadow-drawer` | `-4px 0 20px $black-a40` | Drawer, fällt nach links |
 | `$shadow-sheet` | `0 -20px 60px -30px $black` | Bottom-Sheet, fällt nach oben |
-| `$shadow-focus-ring` | `0 0 0 4px $magenta-a30` | Fokus-Hof um Buttons (Interaktions-Moment) |
+| `$shadow-sheet-float` | `0 -4px 24px $black-a50` | Erklärbox im Fraktal-Vollbild, fällt nach oben |
+| `$shadow-float` | `0 14px 34px -18px $black-a95` | schwebender Knopf, Schatten nur unter der Kante |
 
-Glows nur auf Farb-Tokens und nur in Interaktions-Momenten. Neon- und CRT-Glows sind Effektwerte (MO-4) und tragen Ausnahme-Marker.
+Ringe (ohne Blur) und Glows (nur Interaktions-Momente und Hinweise, nur auf Farb-Tokens) sind eigene Familien. Benannt wird nach Rolle, die Werte sind kalibriert und bleiben exakt:
 
-- **RAD-1** [SOLL · Soll · CI] Radien und Schatten nur aus diesen Tokens. Der Skalen-Guardrail lässt die Zahl der Literale nicht steigen (Rest im Register R-35).
+| Token | Wert | Einsatz |
+|---|---|---|
+| `$shadow-focus-ring` | `0 0 0 4px $magenta-a30` | Fokus-Hof um Buttons |
+| `$shadow-ring-focus-soft` | `0 0 0 4px $magenta-a20` | Fokus-Hof um Kontakt-Karten |
+| `$shadow-ring-cyan`, `-strong`, `-soft` | `0 0 0 3px` mit `$cyan-a30`, `-a40`, `-a15` | Fokus Back-to-Top, Tasten, Auswahlfeld |
+| `$shadow-ring-hairline`, `-inset` | `0 0 0 1px` | Haarlinie statt `border` (Archiv-Hover, Canvas-Rahmen) |
+| `$glow-dot`, `$glow-selected`, `$glow-focus`, `$glow-hover`, `$glow-open` | `0 0 6px` bis `0 0 15px` | Timeline-Punkt, ausgewählter Chip (Magenta), Regler-Fokus, Hover, aufgeklappt |
+| `$glow-halo` | drei Lagen 12/24/36 px | Back-to-Top im Hover |
+| `$glow-hint`, `$glow-hint-strong` | `0 0 14px 2px`, `0 0 24px 5px` | Aufglimmen des Skill-Graphen |
+| `$shadow-key-*`, `$glow-key*` | Kante `0 2px 0`, Licht `inset 0 1px 0`, Glimmen `0 0 8px` | Keycaps im Fraktal-Panel, kombiniert als Liste |
+
+Neon- und CRT-Glows sind Effektwerte (MO-4) und tragen Ausnahme-Marker.
+
+- **RAD-1** [SOLL · Ist · CI] Radien und Schatten nur aus diesen Tokens. Der Skalen-Guardrail lässt keine Literale zu (Grenzwert 0), auch nicht über lokale Variablen.
 
 ### 3.7 Motion
 
@@ -432,8 +449,8 @@ Quelle `variables/_scales.scss`. UI-Skala in ms (Bandbreite nach NN/g 100 bis 50
 
 Die CSS-Schlüsselwörter `ease`, `ease-out` und `linear` bleiben erlaubt.
 
-- **MO-1** [MUSS · Soll · CI] Kein `transition: all`, kein implizites `transition: 0.3s`. Properties explizit nennen, bevorzugt nur `transform` und `opacity`. Dazu wird Theme-`$global-transition` (`all 0.2s ease-in-out`) vor dem Theme-Import auf explizite Properties gesetzt, sonst erzeugt das Theme selbst `transition: all`. Der Skalen-Guardrail lässt keine neuen zu (Bestand R-11, R-35).
-- **MO-2** [MUSS · Soll · CI] Eine Zeiteinheit (ms) für neue Deklarationen, Dauern aus der Skala. Der Skalen-Guardrail zählt Zeit- und `cubic-bezier()`-Literale (Ratchet).
+- **MO-1** [MUSS · Soll · CI] Kein `transition: all`, kein implizites `transition: 0.3s`. Properties explizit nennen, bevorzugt nur `transform` und `opacity`. Dazu wird Theme-`$global-transition` (`all 0.2s ease-in-out`) vor dem Theme-Import auf explizite Properties gesetzt, sonst erzeugt das Theme selbst `transition: all`. Im eigenen SCSS gibt es keins mehr, der Skalen-Guardrail lässt keine neuen zu (Theme-Rest R-11).
+- **MO-2** [MUSS · Soll · CI] Eine Zeiteinheit (ms) für neue Deklarationen, Dauern aus der Skala. Der Skalen-Guardrail zählt Zeit- und `cubic-bezier()`-Literale (Grenzwert 0). Hinweis- und Ambient-Animationen über 500 ms (Scroll-Hinweis, Power-Puls, Aufglimmen, Lade-Puls) tragen einen `skala-Ausnahme`-Marker wie die Choreografien (MO-4).
 - **MO-3** [SOLL · Soll · Review] Einblenden verzögernd, Ausblenden beschleunigend und kürzer. Ausblenden mit Visibility-Delay (`visibility 0s linear <dauer>`).
 - **MO-4** [MUSS · Ist · Review] Choreografien stehen außerhalb der UI-Skala und behalten benannte lokale Variablen am Dateikopf: View Transition, CRT, Neon, Logo-Flackern **und der Drawer**. Ihre Literale tragen `skala-Ausnahme`-Marker statt UI-Tokens, damit ein gleicher Zahlenwert sie nicht an die UI-Skala koppelt. Die Drawer-Werte sind abgenommen und gekoppelt: VT-Exit `vt-drawer-exit` (`200ms`) und `$crt-drawer-offset` in `_view-transition.scss`, Slide `0.3s` / `0.24s` in `_masthead.scss`, Fallback-Timer in `greedy-navigation.js` (`320` nach dem Slide-Out, `360` für `inert` nach dem Slide-In). Sie werden nur gemeinsam geändert.
 - **MO-5** [SOLL · Soll · Review] CSS ist die Quelle für Dauern. JS liest Custom Properties über einen gemeinsamen Helfer (s- und ms-fähig, Vorbild `hero-crt.js` `readHeroCrtFlashDurationMs`, Ziel `cssDurationMs` in `site-utils.js`, siehe JS-18). Fallbacks gleichen dem Token exakt. Wird MUSS, sobald der Helfer existiert.
@@ -1140,9 +1157,10 @@ Kein SemVer (eine Website hat keine öffentliche API). Ein `CHANGELOG.md` im For
 |---|---|---|
 | Stylelint (`npm run lint:css`) | CI `lint` | SCSS-Regeln laut `.stylelintrc.json`, darunter SCSS-2 |
 | `scripts/fs-guardrail.sh` | CI `lint` | TYP-1 |
-| `scripts/color-guardrail.sh` | CI `lint` | FARB-1, FARB-5, FARB-6, FARB-8 (SCSS), FARB-9 |
-| `scripts/scale-guardrail.sh` (Ratchet, Grenzwerte `scripts/scale-baseline.txt`) | CI `lint` | SP-1, RAD-1, Z-3, MO-1, MO-2: keine neuen Literale für Abstand, Radius, Schatten, z-index, Dauer, Kurve, kein neues `transition: all` |
-| `scripts/bp-guardrail.sh` | CI `lint` | BP-1, BP-2 (SCSS, JS, Critical-CSS) |
+| `scripts/color-guardrail.sh` | CI `lint` | FARB-1, FARB-5, FARB-6, FARB-8 (SCSS), FARB-9, ungepaarte `[Block]`-Marker |
+| `scripts/scale-guardrail.sh` (Ratchet, Grenzwerte `scripts/scale-baseline.txt`) | CI `lint` | SP-1, RAD-1, Z-3, MO-1, MO-2: keine neuen Literale für Abstand, Radius, Schatten, z-index, Dauer, Kurve, auch nicht über lokale Sass-Variablen, kein neues `transition: all`, ungepaarte `[Block]`-Marker |
+| `scripts/bp-guardrail.sh` | CI `lint` | BP-1, BP-2, BP-5 (Tokens samt Rechnungen, SCSS, JS, Templates) |
+| `tests/guardrails/run.py` (Fälle in `tests/guardrails/cases/`) | CI `lint` | Negativtests: absichtliche Verstöße gegen Skalen-, Farb- und Breakpoint-Guardrail müssen scheitern, erlaubte Grenzfälle durchgehen |
 | `scripts/security-guardrail.sh` | CI `lint` | SEC-4, SEC-5, SEC-7, SEC-8 |
 | `scripts/scss-format.py` | CI `lint` | SCSS-19 |
 | `jekyll build --strict_front_matter` | CI `build` | Front Matter |
@@ -1188,7 +1206,7 @@ Neue Guardrail-Skripte folgen dem Muster von `fs-guardrail.sh`: Marker in der Ze
 
 Vor jedem Push:
 
-- **REV-1** `npm run lint:css`, `python3 scripts/scss-format.py`, `bash scripts/fs-guardrail.sh`, `bash scripts/color-guardrail.sh`, `bash scripts/scale-guardrail.sh` und `bash scripts/security-guardrail.sh` grün
+- **REV-1** `npm run lint:css`, `python3 scripts/scss-format.py`, `bash scripts/fs-guardrail.sh`, `bash scripts/color-guardrail.sh`, `bash scripts/scale-guardrail.sh`, `bash scripts/bp-guardrail.sh`, `bash scripts/security-guardrail.sh` und `python3 tests/guardrails/run.py` grün
 - **REV-2** Docker-Build mit `--strict_front_matter` grün (kein lokales Ruby, `--user` gesetzt), danach `python3 scripts/csp-check.py _site`
 - **REV-3** Nur Tokens, keine neuen Literale (Farbe, Größe, Abstand, Breakpoint, z-index, Dauer)
 - **REV-4** Kontrast in allen Zuständen geprüft, gegen den echten Grund
@@ -1221,7 +1239,7 @@ Stand: Ist-Basis aus dem Kopf. Ein Eintrag verschwindet, sobald der Code die Reg
 | R-8 | FARB-1 | erledigt 1. 10. 2026: alle Literale in `assets/_sass` außerhalb von `variables/` auf Stufen-Tokens, Effektwerte markiert (FARB-1), CI-Check `color-guardrail.sh` | B-F08, B-F10, B-SCSS-03, B-SCSS-04 | – |
 | R-9 | BP-1, BP-2, BP-6 | erledigt 1. 10. 2026: alle Breiten-Queries über `up()`/`down()`/`between()`, JS über `AuflinieUtils.mq`, Gate-Paar CRT gemeinsam auf „unter 768 px“ | B-BP-01, B-BP-02, B-SCSS-05, B-SCSS-20 | – |
 | R-10 | Z-1 | Fixierte Overlays in `#main` (TOC, Back-to-Top, Skill-Graph, Blog-Notice) | B-LAY-05 | Owner (Mounting oder `$intro-transition`) |
-| R-11 | MO-1 | `transition: 0.3s` in `_masthead.scss`, Theme-`$global-transition` | B-MO-01 | migrieren |
+| R-11 | MO-1 | Theme-`$global-transition` (`all 0.2s ease-in-out`). `transition: 0.3s` in `_masthead.scss` erledigt 1. 10. 2026 | B-MO-01 | migrieren (eigener Durchgang, ändert Theme-CSS an vielen Stellen) |
 | R-12 | SCSS-7 | camelCase-Keyframes in `_neon-base.scss`, `_neon-orbit.scss` | B-SCSS-19 | migrieren |
 | R-13 | SCSS-3 | erledigt 1. 10. 2026: `@if`-Block und `list.index()` in `_view-transition.scss`, `quiet_deps`-Kommentar korrigiert, CI-Check `sass-deprecation-check.sh` | B-SCSS-01 | – |
 | R-14 | JS-2 | `var` in `greedy-navigation.js` und `fractal-panel.js` (ESLint-Override, Welle 2) | B-JS-02 | mechanisch migrieren |
@@ -1244,7 +1262,7 @@ Stand: Ist-Basis aus dem Kopf. Ein Eintrag verschwindet, sobald der Code die Reg
 | R-32 | OVL-4, A11Y-2 | Drawer: modal (Scrim, Scroll-Sperre, `inert`), aber ohne `role="dialog"` und `aria-modal`. Fokus wandert nur beim Öffnen per Tastatur hinein, weil mobil `:focus` die Links magenta färbt | B-A11Y-05 | Owner |
 | R-33 | 2.5.7 | Fraktal-Pan nur per Ziehen (rechte Maustaste, Leertaste), Zwei-Finger-Geste oder Pfeiltasten am fokussierten Canvas. Für Zeiger fehlt eine Alternative ohne Ziehen | B-A11Y-09 | Owner (sichtbare Pan-Buttons?) |
 | R-34 | SCSS-4 | Seit der `@use`-Migration erweitert das Theme-`@extend` (`.comment__date { @extend .page__meta }`) nur noch Theme-Regeln. Die 9 eigenen `.page__meta`-Regeln gelten nicht für `.comment__date`. Kommentare sind aus, das Element kommt auf keiner Seite vor | – | Owner-Freigabe 1. 10. 2026, beim Einschalten von Kommentaren nachziehen |
-| R-35 | SP-1, RAD-1, Z-2, MO-1, MO-2 | Literale außerhalb der Skalen, Stand 1. 10. 2026: 237 Abstände, 18 Radien, 34 Schatten, 22 z-index, 19 Dauern, 1 Kurve, 7× `transition: all` oder implizit (Liste: `python3 scripts/scale-literals.py --report`, Grenzwerte `scripts/scale-baseline.txt`). Dazu `section-break` neben dem Raster | B-SP-01, B-Z-01, B-MO-01, B-RAD-01, B-SH-01 | Stufe B (Zuordnung zum nächsten Token, sichtbar), Owner-Freigabe |
+| R-35 | SP-1, SP-2 | Stufe B erledigt 1. 10. 2026 (Owner-Freigabe): Radien, Schatten, z-index, Dauern, Kurven und `transition: all` auf 0. Übrig sind 25 em-Abstände außerhalb der markierten em-Systeme in `_pages.scss`, `_offline.scss`, `_content-accents.scss`, `_footer.scss`, `_archive.scss`, `_author.scss`, `_buttons.scss` und `_home.scss` (Liste: `python3 scripts/scale-literals.py --report`) | B-SP-01, B-Z-01, B-MO-01, B-RAD-01, B-SH-01 | bei Berührung auf rem-Tokens (Größe hängt heute an der Schrift des Elements, also je Stelle prüfen) |
 | R-50 | SCSS-10 | Minimal Mistakes 4.28.1 setzt `.page__content :first-child { margin-top: 0 }` (PR #5103, gemeint war nur das erste Inhaltselement neben der TOC). Die Regel trifft jedes erste Kind in der Tiefe. Gegenmittel mit Spiegelwerten in `theme-overrides/_first-child.scss` (sieben Stellen, dazu zwei Browser-Standards), H2-Probe in `assets/css/styleguide.scss`. Wer einen gespiegelten Wert ändert, zieht ihn dort nach | – | upstream melden, Datei entfernen, sobald das Theme die Regel auf direkte Kinder begrenzt |
 | R-51 | 3.1.2 (6.1) | Minimal Mistakes 4.28.1 schreibt englische `aria-label` fest ins Markup. Deutsch überschrieben: `skip-links.html` („Sprunglinks“ aus `ui-text.yml`), `post_pagination.html` („Beitragsnavigation“), Masthead („Hauptnavigation“). Offen: `paginator-v2.html` („Pagination“), erscheint erst ab dem siebten Beitrag (`per_page: 6`) | – | Owner: beim ersten Blättern überschreiben oder upstream `ui-text`-Keys anregen |
 
@@ -1344,3 +1362,4 @@ Prozess und Doku:
 | 2026-10-01 | Breakpoints: Token-Set `$bp-*` mit den Mixins `up()`, `down()` und `between()`, JS über `AuflinieUtils.mq`, BP-1 und BP-2 auf Ist mit `bp-guardrail.sh`. Grenze überall halboffen, 768 px und 1024 px gehören jetzt zum größeren Bereich (Hero im Critical-CSS eingeschlossen). R-6 und R-9 erledigt. |
 | 2026-10-01 | Abhängigkeiten: SEC-8d neu (Vendor-Updates nur bei relevanten Fixes, Prüfung über `tests/vendor.spec.js`), MathJax auf 4.1.3, Gems per `bundle update`. |
 | 2026-10-01 | Theme: Minimal Mistakes 4.28.1 (Commit gepinnt), SEO-3 um `og:image:alt` ergänzt, R-50 (Abstand erstes Kind) und R-51 (englische Landmark-Namen) neu. |
+| 2026-10-01 | Skalen Stufe B: Literale auf die Skalen gerundet (höchstens 4 px), Fraktal-Halbschritte, Ring- und Glow-Familie, lokale Ebenen benannt, Guardrails zählen lokale Variablen und prüfen Block-Marker, Templates und berechnete Breakpoints, Negativtests `tests/guardrails/`, R-35 auf em-Rest. |
