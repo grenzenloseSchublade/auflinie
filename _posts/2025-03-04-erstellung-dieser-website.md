@@ -403,7 +403,7 @@ Strukturierte Daten liegen als YAML in `_data/`. Die `cv_content.yml` gliedert d
 
 **Asset-Management und Optimierung:**
 
-Das Asset-Management folgt dem Prinzip „selbst hosten statt CDN“: Font Awesome liegt als per pyftsubset generiertes Subset (nur die tatsächlich genutzten Icons) in `assets/webfonts/`, die Bibliotheken der Fraktal-Panels (tom-select, nouislider, gumshoe) in `assets/vendor/`. Auch MathJax (Version 4.1.0) liegt inzwischen selbst gehostet in `assets/vendor/mathjax/` und lädt nur auf Seiten mit `mathjax: true`. Damit gibt es keine externen Abhängigkeiten mehr, und die Seite ist vollständig offline-fähig. Bilder werden nicht über eine generische Pipeline skaliert, sondern einzeln von Hand optimiert (etwa `background.jpg` und das per Skript gerenderte `mandelbrot-preview.jpg`, jeweils als komprimiertes JPEG unter 250 KB).
+Das Asset-Management folgt dem Prinzip „selbst hosten statt CDN“: Font Awesome liegt als per pyftsubset generiertes Subset (nur die tatsächlich genutzten Icons) in `assets/webfonts/`, die Bibliotheken der Fraktal-Panels (tom-select, nouislider, gumshoe) in `assets/vendor/`. Auch MathJax (Version 4.1.3) liegt inzwischen selbst gehostet in `assets/vendor/mathjax/` und lädt nur auf Seiten mit `mathjax: true`. Damit gibt es keine externen Abhängigkeiten mehr, und die Seite ist vollständig offline-fähig. Bilder werden nicht über eine generische Pipeline skaliert, sondern einzeln von Hand optimiert (etwa `background.jpg` und das per Skript gerenderte `mandelbrot-preview.jpg`, jeweils als komprimiertes JPEG unter 250 KB).
 
 **Performance-Optimierungen und Caching:**
 

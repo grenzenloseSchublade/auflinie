@@ -145,7 +145,7 @@ kramdown:
 
 # MathJax specific settings (MathJax 4)
 head_scripts:
-  - https://cdn.jsdelivr.net/npm/mathjax@4.1.0/tex-chtml.js
+  - https://cdn.jsdelivr.net/npm/mathjax@4.1.3/tex-chtml.js
 ```
 
 ### 2. _includes/head/custom.html
@@ -170,7 +170,7 @@ head_scripts:
     loader: { load: ['[tex]/noerrors'] }
   };
 </script>
-<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@4.1.0/tex-chtml.js"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@4.1.3/tex-chtml.js"></script>
 {% endif %}
 ```
 
@@ -204,7 +204,7 @@ Wenn mathematische Formeln nicht korrekt angezeigt werden:
 
 2. Überprüfen Sie die folgenden Punkte:
    - `mathjax: true` ist im Frontmatter der Seite gesetzt
-   - Die MathJax-Version in `_includes/head/custom.html` ist korrekt (4.1.0 empfohlen)
+   - Die MathJax-Version in `_includes/head/custom.html` ist korrekt (4.1.3 empfohlen)
    - Die LaTeX-Syntax verwendet `$$` für Display-Math und `$` für Inline-Math
    - Der Browser-Cache wurde geleert
 
@@ -462,10 +462,10 @@ Leitgedanke: Wissen soll weitergegeben und weiterverwendet werden. Deshalb ist d
 Diese Bestandteile behalten ihre eigenen Lizenzen:
 
 - [Minimal Mistakes](https://github.com/mmistakes/minimal-mistakes) (Theme, per `remote_theme`; überschriebene Includes in `_includes/` und `_layouts/` basieren darauf) – MIT, © Michael Rose
-- MathJax (`assets/vendor/mathjax`, `assets/vendor/mathjax-newcm-font`) – Apache 2.0
-- Tom Select (`assets/vendor/tom-select.*`) – Apache 2.0
-- noUiSlider (`assets/vendor/nouislider.*`) – MIT
-- Gumshoe (`assets/vendor/gumshoe.min.js`) – MIT, © Chris Ferdinandi
+- MathJax 4.1.3 mit Schrift NewCM 4.1.3 (`assets/vendor/mathjax`, `assets/vendor/mathjax-newcm-font`, npm `mathjax` und `@mathjax/mathjax-newcm-font`) – Apache 2.0
+- Tom Select 2.4.1 (`assets/vendor/tom-select.*`) – Apache 2.0
+- noUiSlider 15.7.1 (`assets/vendor/nouislider.*`) – MIT
+- Gumshoe 5.1.2 (`assets/vendor/gumshoe.min.js`) – MIT, © Chris Ferdinandi
 - Font Awesome Free (Subset in `assets/webfonts/`) – Fonts SIL OFL 1.1, Icons CC BY 4.0
 - Ubuntu Font Family 0.869 (Textschrift, Subset `assets/webfonts/ubuntu-latin-*.woff2`, umbenannt in „Ubuntu derivative auflinie“) – [Ubuntu Font Licence 1.0](assets/webfonts/UBUNTU-FONT-LICENCE.txt), © Canonical Ltd. Ubuntu und Canonical sind Marken von Canonical Ltd. Erzeugt mit `scripts/ubuntu-font-subset.py`
 
