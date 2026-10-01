@@ -16,6 +16,14 @@ html {
   scroll-behavior: smooth;
 }
 
+// Box-Modell auch für Pseudo-Elemente: das Theme setzt nur * auf
+// border-box, ::before/::after blieben sonst content-box. Darauf rechnen
+// u. a. die Zeitstrahl-Punkte in components/_cv.scss.
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
 // Textfarbe des Fließtexts. Typografie und Farbe des body gehören nach SCSS,
 // nicht ins Critical-CSS (STYLEGUIDE CRIT-1).
 body {

@@ -7,38 +7,28 @@
     
     <!-- Critical CSS: Layout-Stabilisatoren für den ersten Viewport -->
     <style>
-      {% comment %} Regeln (STYLEGUIDE CRIT-1): Der Block steht NACH dem main.css-Link
-      und gewinnt deshalb jeden Gleichstand. Er enthält nur Werte, die 1:1 in
-      assets/_sass/ existieren (Quelle steht jeweils im Kommentar), setzt
-      keine Schriftfamilie und keine Textfarbe auf body und nutzt Farben in
-      der Notation von FARB-8. Wer einen gespiegelten Wert in SCSS ändert,
-      zieht ihn hier nach. Einzige bewusste Überstimmung: html font-size
-      100 % = Browser-Einstellung der Besuchenden (Standard 16 px) statt der
-      Theme-Rampe 18/20/22 px (Owner-Entscheidung 1.10.2026). {% endcomment %}
-      *,*::before,*::after{box-sizing:border-box}
+      {% comment %} Regeln (STYLEGUIDE CRIT-1, CRIT-2): Der Block steht NACH dem
+      main.css-Link und gewinnt deshalb jeden Gleichstand. Er hält nur
+      Layout-Stabilisatoren (Masthead-Höhe, Hero-Mindesthöhe), jeder Wert
+      existiert 1:1 in assets/_sass/ (Quelle im Kommentar). Keine
+      Schriftfamilie, keine Textfarbe, keine Farbe ohne Token-Spiegel. Wer
+      einen gespiegelten Wert in SCSS ändert, zieht ihn hier nach.
+      Bewusste Überstimmung: html font-size 100 % = Browser-Einstellung der
+      Besuchenden (Standard 16 px) statt der Theme-Rampe 18/20/22 px
+      (Owner-Entscheidung 1.10.2026). {% endcomment %}
       html{font-size:100%;-webkit-text-size-adjust:100%}
       /* --masthead-height wie variables/_css-properties.scss, sonst springt der Inhalt (CLS) */
       :root{--masthead-height:74px}
       @media (min-width:768px){:root{--masthead-height:88px}}
-      /* background = Theme-$background-color (Skin dark) */
+      /* padding-top wie html body in components/_masthead.scss, background = Theme-$background-color (Skin dark).
+         font-family: eigener Stack, Vereinheitlichung mit $sans-serif wartet auf Owner-Entscheidung (B-T2) */
       body{margin:0;padding-top:var(--masthead-height);background:#252a34;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif}
-
-      /* Masthead: Grund ($masthead-bg) und Blur (backdrop-blur) setzt components/_masthead.scss */
+      /* wie body .masthead in components/_masthead.scss */
       .masthead{position:fixed;top:0;left:0;right:0;height:var(--masthead-height);z-index:1000}
-      .masthead__inner-wrap{display:flex;align-items:center;height:100%;padding:0 1em 0 0.4em}
-      .greedy-nav{display:flex;align-items:center;height:100%}
-      /* 1.8em = $site-title-font-size, 600 und #ffffff wie components/_masthead.scss */
-      .site-title{font-size:1.8em;font-weight:600;color:#ffffff;text-decoration:none}
-      .visible-links{display:flex;list-style:none;margin:0;padding:0}
-      .visible-links a{display:block;padding:0.5em 0.75em;color:#ffffff;text-decoration:none}
-
-      /* Hero: Mindesthöhen wie components/_hero.scss. Offene Abweichung: die Mobil-Query
+      /* Hero-Mindesthöhe wie components/_hero.scss. Offene Abweichung: die Mobil-Query
          greift hier bis einschließlich 768px, in SCSS bis 767.98px (Register R-6) */
       .page__hero--overlay{position:relative;display:flex;flex-direction:column;justify-content:flex-start;padding-top:8em;min-height:clamp(410px,42vh,520px);background-size:cover;background-position:center}
       @media (max-width:768px){.page__hero--overlay{min-height:calc(100svh - var(--masthead-height));padding-top:18vh}}
-      /* z-index: Wrapper unter Preboot-/Boot-::after (z15 in main.css), damit der Vorhang auch über der Schrift liegt */
-      .page__hero--overlay .wrapper{position:relative;z-index:3;padding:2em 1em}
-      .page__title{font-size:2em;color:#ffffff;margin:0}
     </style>
   </head>
 

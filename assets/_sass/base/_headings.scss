@@ -30,6 +30,15 @@
   font-weight: 600;
 }
 
+// Seitentitel (H1). Ohne Hero (404, Style-Guide) gilt diese Regel, im Hero
+// überstimmt components/_hero.scss Größe und Schatten mit (0,2,0).
+// 2em gehört zum Hero-H1-em-System (TYP-2).
+.page__title {
+  margin: 0;
+  font-size: 2em;
+  color: $white;
+}
+
 // Archiv-Zwischenüberschriften (Jahre, „Neueste Beiträge"): Chrome-Label-Stil
 .archive__subtitle {
   @include mono-label($fs-label-lg, 0.08em);

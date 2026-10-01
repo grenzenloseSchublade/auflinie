@@ -554,11 +554,14 @@
       // farb-Ausnahme-Ende
     }
 
-    // Wrapper für den Inhalt
+    // Wrapper für den Inhalt. Die Höhe des Titels im Hero ergibt sich aus
+    // dem padding-top des Overlays (8em bzw. 18vh mobil) plus 2em hier.
+    // z-index: unter Preboot-/Boot-::after (z15), damit der Vorhang auch
+    // über der Schrift liegt.
     .wrapper {
       position: relative;
       z-index: 3;
-      padding-top: 100px;
+      padding: 2em 1em;
     }
     
     // Titel-Stile
@@ -622,14 +625,10 @@
 @media (min-width: 768px) {
   .page__hero {
     &--overlay {
-      padding: 6em 0;
-      
+      padding-bottom: 6em;
+
       .page__title {
         font-size: 3.5em;
-      }
-      
-      .wrapper {
-        padding-top: 120px;
       }
     }
   }
