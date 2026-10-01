@@ -39,6 +39,7 @@ const CACHE_URLS = [
   './offline.html',
   // Styles/Skripte
   './assets/css/main.css',
+  './assets/js/site-utils.js',
   './assets/js/offline.js',
   './assets/js/greedy-navigation.js',
   './assets/js/hero-crt.js',

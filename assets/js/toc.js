@@ -11,6 +11,9 @@
  * Feature-detect per DOM (keine Liquid-Abhängigkeit mehr): das Collapse wird
  * nur verdrahtet, wenn der Toggle (.toc-toggle) vorhanden ist; die frühere
  * toc_id kommt aus dem gerenderten Toggle-id-Attribut.
+ *
+ * Braucht gumshoe.min.js und site-utils.js (window.AuflinieUtils), beide
+ * vorher geladen (_includes/scripts.html).
  */
 (function () {
   'use strict';
@@ -145,17 +148,10 @@
       stickyToc.style.setProperty('--toc-progress', progress.toFixed(4));
     }
 
-    let scrollTicking = false;
-    window.addEventListener('scroll', function () {
-      if (!scrollTicking) {
-        window.requestAnimationFrame(function () {
-          updateStickyVisibility();
-          updateReadingProgress();
-          scrollTicking = false;
-        });
-        scrollTicking = true;
-      }
-    }, { passive: true, signal: controller.signal });
+    window.addEventListener('scroll', window.AuflinieUtils.rafThrottle(function () {
+      updateStickyVisibility();
+      updateReadingProgress();
+    }), { passive: true, signal: controller.signal });
 
     updateStickyVisibility();
     initGumshoe();
@@ -266,9 +262,7 @@
       // Projekt-Präfix auflinie: (geteilter github.io-Origin, STYLEGUIDE SEC-6)
       const legacyKey = tocToggle.id ? tocToggle.id.replace(/-toggle$/, '') + '-state' : 'toc-state';
       const storageKey = 'auflinie:' + legacyKey;
-      const prefersReducedMotion = window.matchMedia
-        ? window.matchMedia('(prefers-reduced-motion: reduce)').matches
-        : false;
+      const prefersReducedMotion = window.AuflinieUtils.prefersReducedMotion();
       let resizeRaf = null;
 
       const updateMaxHeight = function () {

@@ -3,6 +3,7 @@
  * window scroll/resize sind dokumentweit -> MÜSSEN im Teardown gelöst werden
  * (via AbortController), sonst zeigt der Listener nach einem Swap auf ein
  * entferntes .back-to-top und stapelt sich pro Besuch.
+ * Braucht site-utils.js (window.AuflinieUtils), dort zuerst geladen.
  */
 (function () {
   'use strict';
@@ -36,19 +37,14 @@
     // rAF-gekoppelt statt setTimeout-Throttle: pro Paint-Frame genau EIN Update
     // -> ruckelfreies „Reiten" über dem Footer, auch bei schnellem Scrollen (der
     // Button läuft so gar nicht erst in den Footer und springt dann raus).
-    let rafPending = false;
-    function onScrollResize() {
-      if (rafPending) return;
-      rafPending = true;
-      requestAnimationFrame(function () { rafPending = false; checkVisibility(); });
-    }
+    const onScrollResize = window.AuflinieUtils.rafThrottle(checkVisibility);
     window.addEventListener('scroll', onScrollResize, { passive: true, signal: signal });
     window.addEventListener('resize', onScrollResize, { passive: true, signal: signal });
     btn.addEventListener('click', function (e) {   // element-scoped -> stirbt mit dem DOM, kein signal nötig
       e.preventDefault();
       // Reduced Motion: springen statt gleiten (STYLEGUIDE BEW-4). Live
       // abgefragt, damit ein Umschalten der Systemeinstellung sofort wirkt.
-      const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const reduce = window.AuflinieUtils.prefersReducedMotion();
       if ('scrollBehavior' in document.documentElement.style) window.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' });
       else window.scrollTo(0, 0);
     });
