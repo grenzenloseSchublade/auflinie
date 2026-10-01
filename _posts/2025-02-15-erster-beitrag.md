@@ -22,7 +22,7 @@ Dies ist ein erster Blogbeitrag zu Testzwecken mit Jekyll und dem Minimal Mistak
 
 ## Überschrift 2
 
-Hier können Sie normalen Text schreiben und alle Markdown-Funktionen nutzen:
+Hier lässt sich normaler Text schreiben, alle Markdown-Funktionen sind nutzbar:
 
 - Aufzählungen
 - mit mehreren
@@ -47,6 +47,6 @@ def hello_world():
 
 ### Bilder einfügen
 
-Sie können auch Bilder einfügen:
+Auch Bilder lassen sich einfügen:
 
 ![Beispielbild]({{ "/assets/images/WebSite_Logo_3.png" | relative_url }}){: width="300px" height="auto"}

@@ -29,7 +29,7 @@ excerpt: "Eine systematische Darstellung der technischen Grundlagen und methodis
 
 Im Folgenden wird die technische Infrastruktur und methodischen Ansätze, die der Erstellung strukturierter Blogbeiträge auf dieser Website zugrunde liegen, analysiert und beschrieben. Zusätzlich wird die Erstellung von Blogbeiträgen selbst erklärt. Es wird ein Leitfaden für die Erstellung von Blogbeiträgen auf dieser Website bereitgestellt und erleichtert so den Einstieg.
 
-Wenn Sie sich bereits mit dieser Thematik auskennen, können Sie direkt das <a href="{{ "assets/downloads/post-template.md" | relative_url }}" download="post-template.md" style="text-decoration: underline;">Template <i class="fas fa-download" style="margin-left: 0.35em;"></i></a> herunterladen und mit der Erstellung von Inhalten beginnen. Dieses Template enthält alle notwendigen Informationen und Strukturen, um einen Blogbeitrag zu erstellen.
+Wer sich mit dieser Thematik bereits auskennt, kann direkt das <a href="{{ "assets/downloads/post-template.md" | relative_url }}" download="post-template.md" style="text-decoration: underline;">Template <i class="fas fa-download" style="margin-left: 0.35em;"></i></a> herunterladen und mit der Erstellung von Inhalten beginnen. Dieses Template enthält alle notwendigen Informationen und Strukturen, um einen Blogbeitrag zu erstellen.
 
 ## Technische Systemarchitektur
 
@@ -104,7 +104,7 @@ Die wichtigsten Parameter sind:
 ### Inhaltlicher Aufbau
 
 Der Markdown-Inhalt definiert die inhaltliche Gliederung des Blogbeitrags, wie die Überschriften, Absätze, Listen und andere Elemente. Dabei wird dem klassischem Markdown Stil gefolgt.
-Mit Markdown können grundlegende Formatierungen wie Überschriften, Listen, Fett- und Kursivschrift, Zitate und Code-Blöcke erstellt werden.  Überschriften werden durch ein oder mehrere Hash-Symbole (#) am Anfang einer Zeile definiert, wobei die Anzahl der Rauten die Hierarchie bestimmt. Für ungeordnete Listen verwenden Sie Bindestriche (-), Sterne (*) oder Pluszeichen (+), während geordnete Listen durch Zahlen gefolgt von einem Punkt erstellt werden. Fettgedruckter Text wird mit zwei Sternchen (**) oder Unterstrichen (__) umschlossen, kursiver Text mit einem einzelnen Sternchen (`*`) oder Unterstrich (_). Code-Blöcke werden durch drei umgekehrte Anführungszeichen (```) eingeleitet und abgeschlossen, wobei die Programmiersprache optional angegeben werden kann.
+Mit Markdown können grundlegende Formatierungen wie Überschriften, Listen, Fett- und Kursivschrift, Zitate und Code-Blöcke erstellt werden.  Überschriften werden durch ein oder mehrere Hash-Symbole (#) am Anfang einer Zeile definiert, wobei die Anzahl der Rauten die Hierarchie bestimmt. Für ungeordnete Listen dienen Bindestriche (-), Sterne (*) oder Pluszeichen (+), während geordnete Listen durch Zahlen gefolgt von einem Punkt erstellt werden. Fettgedruckter Text wird mit zwei Sternchen (**) oder Unterstrichen (__) umschlossen, kursiver Text mit einem einzelnen Sternchen (`*`) oder Unterstrich (_). Code-Blöcke werden durch drei umgekehrte Anführungszeichen (```) eingeleitet und abgeschlossen, wobei die Programmiersprache optional angegeben werden kann.
 
 [In diesem Abschnitt](#exkurs-wie-verwende-ich-markdown) werden wichtige Markdown-Elemente exemplarisch aufgeführt, außerdem sind sie zusätzlich im Template enthalten.
 
