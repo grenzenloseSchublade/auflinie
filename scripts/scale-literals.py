@@ -19,9 +19,17 @@ Kategorien (je Kategorie eine Zahl im Ratchet):
   easing         cubic-bezier() und steps() in transition* und animation*
   transition-all transition mit all oder ohne Eigenschaft (MO-1, je Deklaration)
 
+Lokale Sass-Variablen: Eine Variable außerhalb von variables/, die selbst
+ein Literal trägt ($lokal: 13px), zählt dort, wo eine der Deklarationen oben
+sie liest (margin: $lokal), wie das Literal selbst. Ein Literal wird durch
+einen eigenen Namen also nicht unsichtbar. Benannte lokale Skalen (Z-2,
+MO-4) tragen deshalb einen Marker an der Definition.
+
 Ausnahmen: `// skala-Ausnahme: <Grund>` in der Zeile direkt über der
-Deklaration, oder als Block `// skala-Ausnahme: [Block] <Grund>` …
-`// skala-Ausnahme-Ende`. Markierte Literale zählen nicht.
+Deklaration oder Variablen-Definition, oder als Block
+`// skala-Ausnahme: [Block] <Grund>` … `// skala-Ausnahme-Ende`. Markierte
+Literale zählen nicht. Ein Block ohne Ende (oder ein Ende ohne Block) ist
+ein Fehler, sonst nähme er still den Rest der Datei aus.
 
 Nutzung:
   python3 scripts/scale-literals.py --check scripts/scale-baseline.txt
@@ -94,6 +102,8 @@ def strip(text):
             i = j
             continue
         if text.startswith("#{", i):
+            # Klammern neutralisieren, Inhalt behalten: calc(#{$lokal}) liest
+            # die Variable, ihr Literal zählt mit.
             depth = 0
             j = i
             while j < n:
@@ -104,7 +114,7 @@ def strip(text):
                     if depth == 0:
                         break
                 j += 1
-            out.append(" " * (j + 1 - i))
+            out.append("  " + text[i + 2:j] + " ")
             i = j + 1
             continue
         out.append(c)
@@ -147,22 +157,92 @@ def statements(code):
             line += 1
 
 
-def marked_lines(raw_lines):
-    """Zeilennummern, für die ein skala-Ausnahme-Marker gilt."""
+def marked_lines(raw_lines, errors=None):
+    """Zeilennummern, für die ein skala-Ausnahme-Marker gilt.
+
+    Ungepaarte Block-Marker landen als (Zeile, Text) in `errors`.
+    """
     marked = set()
-    block = False
+    block = 0
     for idx, ln in enumerate(raw_lines, start=1):
         if MARK in ln and "[Block]" in ln:
-            block = True
+            if block and errors is not None:
+                errors.append((idx, f"neuer [Block] vor dem skala-Ausnahme-Ende des Blocks aus Zeile {block}"))
+            block = idx
             continue
         if "skala-Ausnahme-Ende" in ln:
-            block = False
+            if not block and errors is not None:
+                errors.append((idx, "skala-Ausnahme-Ende ohne offenen [Block]"))
+            block = 0
             continue
         if block:
             marked.add(idx)
         if MARK in ln and ln.strip().startswith("//"):
             marked.add(idx + 1)
+    if block and errors is not None:
+        errors.append((block, "[Block] ohne skala-Ausnahme-Ende, nähme den Rest der Datei aus"))
     return marked
+
+
+def block_errors():
+    """Ungepaarte Block-Marker in allen Dateien außerhalb von variables/."""
+    out = []
+    for path in sass_files():
+        errs = []
+        marked_lines(path.read_text(encoding="utf-8").split("\n"), errs)
+        out += [f"{path.relative_to(ROOT)}:{line}: {msg}" for line, msg in errs]
+    return out
+
+
+def sass_files():
+    return sorted(p for p in SASS.rglob("*.scss") if "variables" not in p.relative_to(SASS).parts)
+
+
+VAR_DEF = re.compile(r"^\$([a-zA-Z0-9_-]+)\s*:\s*(.*?)\s*(?:!default|!global)?\s*$", re.S)
+VAR_REF = re.compile(r"(?<![\w-])(?:[a-zA-Z_][a-zA-Z0-9_-]*\.)?\$([a-zA-Z0-9_-]+)")
+_LOCAL = {}
+
+
+def local_vars():
+    """Definitionen außerhalb von variables/: Name -> [(Datei, Zeile, Wert, markiert)]."""
+    if not _LOCAL:
+        for path in sass_files():
+            raw = path.read_text(encoding="utf-8")
+            marked = marked_lines(raw.split("\n"))
+            rel = str(path.relative_to(ROOT))
+            for line, text, end in statements(strip(raw)):
+                m = VAR_DEF.match(text) if end == ";" else None
+                if m:
+                    _LOCAL.setdefault(m.group(1), []).append(
+                        (rel, line, " ".join(m.group(2).split()), line in marked))
+    return _LOCAL
+
+
+def resolve(name, rel, line, seen=()):
+    """Lokale Definition von $name als (Wert, Fundort, markiert), sonst None.
+
+    Gleiche Datei zuerst (letzte Definition vor der Zeile, sonst die erste),
+    danach eine Definition in einer anderen Datei außerhalb von variables/
+    (Module, die per @use geladen werden). Unmarkierte lokale Variablen im
+    Wert werden mit aufgelöst, markierte gelten wie Tokens. Markiert ist das
+    Ergebnis, wenn die Definition selbst einen Marker trägt.
+    """
+    cands = local_vars().get(name)
+    if not cands or name in seen:
+        return None
+    same = [c for c in cands if c[0] == rel]
+    if same:
+        before = [c for c in same if c[1] <= line]
+        d = before[-1] if before else same[0]
+    else:
+        d = cands[0]
+    value, marked = d[2], d[3]
+    for ref in sorted(set(VAR_REF.findall(value)), key=len, reverse=True):
+        r = resolve(ref, d[0], d[1], seen + (name,))
+        if r and not r[2]:  # markierte Definitionen gelten wie Tokens
+            value = re.sub(r"(?:\b[a-zA-Z_][a-zA-Z0-9_-]*\.)?\$" + re.escape(ref) + r"(?![\w-])",
+                           lambda _m, v=r[0]: "(" + v + ")", value)
+    return value, f"{d[0].replace('assets/_sass/', '')}:{d[1]}", marked
 
 
 def nonzero(num):
@@ -183,10 +263,16 @@ def scan_file(path):
             args = [a.strip() for a in m.group(2).split(",")]
             if len(args) >= 2:
                 val = args[1].split(":")[-1].strip()
+                mk = line in marked
+                for ref in sorted(set(VAR_REF.findall(val))):
+                    r = resolve(ref, rel, line)
+                    if r:
+                        val += " " + r[0]
+                        mk = mk or r[2]
                 for nm in NUM.finditer(val):
                     if nonzero(nm.group(1)):
                         yield dict(cat="radius", file=rel, line=line, prop="card-panel($radius)",
-                                   value=nm.group(0), decl=text, marked=line in marked)
+                                   value=nm.group(0), decl=text, marked=mk)
             continue
         m = re.match(r"^([a-z][a-z-]*)\s*:\s*(.*)$", text, re.S)
         if not m:
@@ -195,38 +281,53 @@ def scan_file(path):
         value = re.sub(r"\s*!important$", "", value)
         mk = line in marked
         base = dict(file=rel, line=line, prop=prop, decl=value, marked=mk)
-        if SPACING_PROP.match(prop):
-            for nm in NUM.finditer(value):
-                if nm.group(2) in ("px", "rem", "em") and nonzero(nm.group(1)):
-                    yield dict(base, cat="spacing", value=nm.group(0))
-                elif nm.group(2) and nonzero(nm.group(1)):
-                    yield dict(base, cat="spacing-relativ", value=nm.group(0))
-        elif RADIUS_PROP.match(prop):
-            for nm in NUM.finditer(value):
-                if nonzero(nm.group(1)):
-                    yield dict(base, cat="radius", value=nm.group(0))
-        elif prop == "box-shadow":
-            if any(nonzero(nm.group(1)) for nm in NUM.finditer(value)):
-                yield dict(base, cat="shadow", value=value)
-        elif prop == "z-index":
-            if NUM.search(value):
-                yield dict(base, cat="z-index", value=value)
-        elif MOTION_PROP.match(prop):
-            for tm in TIME.finditer(value):
-                if nonzero(tm.group(1)):
-                    yield dict(base, cat="duration", value=tm.group(0))
-            for em in re.finditer(r"(cubic-bezier|steps)\([^)]*\)", value):
-                yield dict(base, cat="easing", value=re.sub(r"\s+", " ", em.group(0)))
-            if prop == "transition":
-                parts = [p.strip() for p in re.split(r",(?![^(]*\))", value)]
-                for p in parts:
-                    first = p.split()[0] if p.split() else ""
-                    if first == "all" or TIME.match(first) or first.startswith("$"):
-                        yield dict(base, cat="transition-all", value=p)
+        if SPACING_PROP.match(prop) or RADIUS_PROP.match(prop) or prop in ("box-shadow", "z-index") \
+                or MOTION_PROP.match(prop):
+            for ref in sorted(set(VAR_REF.findall(value))):
+                r = resolve(ref, rel, line)
+                if r:
+                    yield from scan_value(dict(base, marked=mk or r[2], decl=f"${ref} = {r[0]} ({r[1]})"),
+                                          prop, r[0], via=f"${ref}")
+        yield from scan_value(base, prop, value)
+
+
+def scan_value(base, prop, value, via=None):
+    """Treffer in einem Deklarationswert. `via`: Wert stammt aus einer lokalen Variablen."""
+    def tag(v):
+        return f"{via} = {v}" if via else v
+
+    if SPACING_PROP.match(prop):
+        for nm in NUM.finditer(value):
+            if nm.group(2) in ("px", "rem", "em") and nonzero(nm.group(1)):
+                yield dict(base, cat="spacing", value=tag(nm.group(0)))
+            elif nm.group(2) and nonzero(nm.group(1)):
+                yield dict(base, cat="spacing-relativ", value=tag(nm.group(0)))
+    elif RADIUS_PROP.match(prop):
+        for nm in NUM.finditer(value):
+            if nonzero(nm.group(1)):
+                yield dict(base, cat="radius", value=tag(nm.group(0)))
+    elif prop == "box-shadow":
+        if any(nonzero(nm.group(1)) for nm in NUM.finditer(value)):
+            yield dict(base, cat="shadow", value=tag(value))
+    elif prop == "z-index":
+        if NUM.search(value):
+            yield dict(base, cat="z-index", value=tag(value))
+    elif MOTION_PROP.match(prop):
+        for tm in TIME.finditer(value):
+            if nonzero(tm.group(1)):
+                yield dict(base, cat="duration", value=tag(tm.group(0)))
+        for em in re.finditer(r"(cubic-bezier|steps)\([^)]*\)", value):
+            yield dict(base, cat="easing", value=tag(re.sub(r"\s+", " ", em.group(0))))
+        if prop == "transition" and not via:
+            parts = [p.strip() for p in re.split(r",(?![^(]*\))", value)]
+            for p in parts:
+                first = p.split()[0] if p.split() else ""
+                if first == "all" or TIME.match(first) or first.startswith("$"):
+                    yield dict(base, cat="transition-all", value=p)
 
 
 def scan():
-    files = sorted(p for p in SASS.rglob("*.scss") if "variables" not in p.relative_to(SASS).parts)
+    files = sass_files()
     hits = []
     for f in files:
         hits.extend(scan_file(f))
@@ -318,6 +419,14 @@ def main(argv):
             return 0
         fail = False
         lower = []
+        errs = block_errors()
+        if errs:
+            fail = True
+            print("VERSTOSS: ungepaarter skala-Ausnahme-Block:")
+            for e in errs:
+                print("  " + e)
+            print("Fix: jeden '// skala-Ausnahme: [Block] <Grund>' mit '// skala-Ausnahme-Ende' schließen.")
+            print()
         for k in CATEGORIES:
             limit = base.get(k)
             if limit is None:

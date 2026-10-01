@@ -4,7 +4,9 @@
 # Zählt Zahlenliterale, die eine Skala aus assets/_sass/variables/_scales.scss
 # ersetzen soll, außerhalb von assets/_sass/variables/: Abstände (margin,
 # padding, gap), border-radius, box-shadow, z-index, Dauern und Kurven in
-# transition/animation sowie transition ohne konkrete Eigenschaft.
+# transition/animation sowie transition ohne konkrete Eigenschaft. Lokale
+# Sass-Variablen außerhalb von variables/ ($lokal: 13px) zählen dort, wo
+# eine dieser Deklarationen sie liest, wie das Literal selbst.
 # Grenzwerte je Kategorie stehen in scripts/scale-baseline.txt. Die CI
 # scheitert, sobald eine Zahl STEIGT. Sinkt eine Zahl, meldet das Skript es
 # als Hinweis: dann mit --update den Grenzwert senken und mitcommitten.
@@ -14,6 +16,8 @@
 #   // skala-Ausnahme: <Grund>
 # oder für zusammenhängende Effekt-Abschnitte (Choreografien nach MO-4):
 #   // skala-Ausnahme: [Block] <Grund>  …  // skala-Ausnahme-Ende
+# Ein Block ohne Ende (oder ein Ende ohne Block) ist ein Verstoß. Ein Marker
+# über einer Variablen-Definition nimmt jede Stelle aus, die sie liest.
 #
 # Nutzung: scripts/scale-guardrail.sh            (Exit 0 = sauber, 1 = Verstoß)
 #          scripts/scale-guardrail.sh --update   (Grenzwerte nur nach unten)

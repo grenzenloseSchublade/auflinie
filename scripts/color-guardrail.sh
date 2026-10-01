@@ -26,6 +26,9 @@
 #                                     wenn sie über mehrere Zeilen läuft.
 #   // farb-Ausnahme: [Block] <Grund>  … // farb-Ausnahme-Ende
 #                                     für zusammenhängende Effekt-Abschnitte.
+#                                     Ein Block ohne Ende (oder ein Ende
+#                                     ohne Block) ist ein Verstoß, sonst
+#                                     nähme er still den Rest der Datei aus.
 # Beide Formen enthalten „farb-Ausnahme:“ und erscheinen so im Register-Grep
 # aus STYLEGUIDE GOV-5.
 #
@@ -59,8 +62,14 @@ V=$(awk '
   function flush(   i, s, code, hit) {
     inblock = 0
     for (i = 1; i <= n; i++) {
-      if (L[i] ~ /farb-Ausnahme: *\[Block\]/) { inblock = 1; continue }
-      if (L[i] ~ /farb-Ausnahme-Ende/)  { inblock = 0; continue }
+      if (L[i] ~ /farb-Ausnahme: *\[Block\]/) {
+        if (inblock) print "FARB-BLOCK " file ":" i ": neuer [Block] vor dem farb-Ausnahme-Ende des Blocks aus Zeile " inblock
+        inblock = i; continue
+      }
+      if (L[i] ~ /farb-Ausnahme-Ende/) {
+        if (!inblock) print "FARB-BLOCK " file ":" i ": farb-Ausnahme-Ende ohne offenen [Block]"
+        inblock = 0; continue
+      }
       code = strip(L[i])
       if (code ~ /rgba?\([ \t]*\$hover-color[ \t]*,/) {
         print "FARB-6 " file ":" i ": " trim(L[i]); continue
@@ -77,6 +86,7 @@ V=$(awk '
       if (s > 1 && L[s - 1] ~ /farb-Ausnahme/) continue
       print "FARB-1 " file ":" i ": " trim(L[i])
     }
+    if (inblock) print "FARB-BLOCK " file ":" inblock ": [Block] ohne farb-Ausnahme-Ende, nähme den Rest der Datei aus"
   }
   FNR == 1 && NR > 1 { flush(); n = 0 }
   FNR == 1 { file = FILENAME }
@@ -97,6 +107,12 @@ if [ -n "$V" ]; then
     echo "VERSTOSS (FARB-6) — Ad-hoc-Abstufung rgba(\$hover-color, …):"
     printf '%s\n' "$V" | sed -n 's/^FARB-6 /  /p'
     echo "Fix: benannte Stufe \$magenta-aNN aus $SASS_DIR/variables/_colors.scss nehmen."
+    echo
+  fi
+  if printf '%s\n' "$V" | grep -q '^FARB-BLOCK '; then
+    echo "VERSTOSS — ungepaarter farb-Ausnahme-Block:"
+    printf '%s\n' "$V" | sed -n 's/^FARB-BLOCK /  /p'
+    echo "Fix: jeden '// farb-Ausnahme: [Block] <Grund>' mit '// farb-Ausnahme-Ende' schließen."
     echo
   fi
   FAIL=1
