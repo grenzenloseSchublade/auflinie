@@ -38,6 +38,8 @@ jobs:
         run: npm run lint:js
       - name: Schriftgrößen-Guardrail (Token-Skala)
         run: bash scripts/fs-guardrail.sh
+      - name: Farb-Guardrail
+        run: bash scripts/color-guardrail.sh
       - name: Security-Guardrail (Quellcode)
         run: bash scripts/security-guardrail.sh
 
