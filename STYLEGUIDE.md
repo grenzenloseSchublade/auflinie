@@ -368,7 +368,7 @@ Globale Ebenen: Masthead `1000`, Drawer-Dimmer `body::before` `998`, Offline-Hin
 - **MO-1** [MUSS · Soll · CI-P1] Kein `transition: all`, kein implizites `transition: 0.3s`. Properties explizit nennen, bevorzugt nur `transform` und `opacity`. Dazu wird Theme-`$global-transition` (`all 0.2s ease-in-out`) vor dem Theme-Import auf explizite Properties gesetzt, sonst erzeugt das Theme selbst `transition: all`.
 - **MO-2** [MUSS · Soll · Review] Eine Zeiteinheit (ms) für neue Deklarationen.
 - **MO-3** [SOLL · Soll · Review] Einblenden verzögernd, Ausblenden beschleunigend und kürzer. Ausblenden mit Visibility-Delay (`visibility 0s linear <dauer>`).
-- **MO-4** [MUSS · Ist · Review] Choreografien stehen außerhalb der UI-Skala und behalten benannte lokale Variablen am Dateikopf: View Transition, CRT, Neon, Logo-Flackern **und der Drawer**. Die Drawer-Werte sind abgenommen und gekoppelt: VT-Exit `vt-drawer-exit` (`200ms`) und `$crt-drawer-offset` in `_view-transition.scss`, Slide `0.3s` / `0.24s` in `_masthead.scss`, Fallback-Timer in `greedy-navigation.js` (`320`). Sie werden nur gemeinsam geändert.
+- **MO-4** [MUSS · Ist · Review] Choreografien stehen außerhalb der UI-Skala und behalten benannte lokale Variablen am Dateikopf: View Transition, CRT, Neon, Logo-Flackern **und der Drawer**. Die Drawer-Werte sind abgenommen und gekoppelt: VT-Exit `vt-drawer-exit` (`200ms`) und `$crt-drawer-offset` in `_view-transition.scss`, Slide `0.3s` / `0.24s` in `_masthead.scss`, Fallback-Timer in `greedy-navigation.js` (`320` nach dem Slide-Out, `360` für `inert` nach dem Slide-In). Sie werden nur gemeinsam geändert.
 - **MO-5** [SOLL · Soll · Review] CSS ist die Quelle für Dauern. JS liest Custom Properties über einen gemeinsamen Helfer (s- und ms-fähig, Vorbild `hero-crt.js` `readHeroCrtFlashDurationMs`, Ziel `cssDurationMs` in `site-utils.js`, siehe JS-18). Fallbacks gleichen dem Token exakt. Wird MUSS, sobald der Helfer existiert.
 - **MO-6** [MUSS · Soll · Review] `transitionend` und `animationend` filtern auf `target` und `propertyName` bzw. `animationName`.
 - **MO-7** [SOLL · Soll · Review] Hover-Lift höchstens zwei Stufen (Buttons `-2px`, Karten `-3px`).
@@ -428,7 +428,7 @@ Betrifft Blog-Suche, Fraktal-Selects und -Slider (noUiSlider), Tom-Select.
 
 - **FORM-1** [MUSS · Soll · Review] Jedes Feld hat ein sichtbares `<label>` oder ein programmatisch verknüpftes Label. Placeholder ersetzt kein Label.
 - **FORM-2** [MUSS · Soll · Review] Ergebnisse und Statuswechsel (Trefferzahl der Suche, Berechnung läuft) werden über eine Live-Region angesagt (WCAG 4.1.3).
-- **FORM-3** [MUSS · Soll · Review] Slider und Vendor-Widgets sind benannt (noUiSlider `handleAttributes`) und per Tastatur bedienbar.
+- **FORM-3** [MUSS · Ist · Review] Slider und Vendor-Widgets sind benannt (noUiSlider `handleAttributes`) und per Tastatur bedienbar. Umsetzung: `fractal-panel.js` (`sliderHandleAttributes`) übernimmt den sichtbaren Text des Zeilen-Labels ohne Doppelpunkt als `aria-label` des Griffs (2.5.3). Das `<label>` selbst gehört zum Zahlenfeld daneben.
 - **FORM-4** [SOLL · Soll · Review] Fehl- und Hinweistexte sagen, was zu tun ist, nicht was schiefging (Beispiel 7.4).
 - **FORM-5** [MUSS · Soll · Review] Dropdowns (Tom-Select, TOC) erfüllen WCAG 1.4.13: Inhalt per Escape schließbar, mit der Maus erreichbar, bleibt sichtbar, bis er verlassen wird.
 
@@ -439,7 +439,7 @@ Anlass: Im Skill-Graphen rutschte die Seite beim Wischen über den Graphen weg (
 - **OVL-1** [MUSS · Ist · Review] **Gestenhoheit.** Eine Fläche, die wie ein eigenes Objekt aussieht (Canvas, Karte, Sheet, Dialog), besitzt ihre Gesten. Wischen, Mausrad und Ziehen werden nie unbemerkt an die Seite dahinter durchgereicht. Umsetzung: `touch-action: none` auf der Fläche, nicht-passive `wheel`- und `touchstart`-Handler, `overscroll-behavior: contain` bei scrollbaren Overlays. Ausnahme: Inline im Lesefluss eingebettete Flächen dürfen Ein-Finger-Wischen an die Seite geben (sonst Scroll-Falle), dann aber konsistent.
 - **OVL-2** [MUSS · Ist · Review] **Gleiche Geste, gleiche Wirkung.** Mausrad über einem Fraktal-Canvas zoomt, über dem Skill-Graphen verschiebt es (der Graph hat keinen Zoom). Ein Finger auf leerer Fläche verschiebt die Ansicht, auf einem Objekt zieht er das Objekt. Zwei Finger verschieben bzw. zoomen. Neue Flächen übernehmen dieses Muster.
 - **OVL-3** [MUSS · Ist · Review] **Light Dismiss.** Jedes Overlay, das keine zwingende Entscheidung verlangt (Sheet, Drawer, Dropdown, Hinweis-Dialog, Tooltip), schließt per Escape, per Klick oder Tippen außerhalb (Scrim bzw. Umgebung) und per sichtbarem ✕ bzw. Auslöser. Kein Light Dismiss nur dort, wo dabei Eingaben verloren gingen. Esc ist gestaffelt: erst Auswahl lösen, dann schließen (Skill-Graph).
-- **OVL-4** [MUSS · Ist · Review] **Modal heißt vollständig modal:** Scrim, Scroll-Sperre ohne Layout-Sprung (`html { overflow: hidden; scrollbar-gutter: stable }`), Hintergrund `inert`, `role="dialog"` mit `aria-modal="true"` und zugänglichem Namen, Fokus beim Öffnen hinein und beim Schließen zurück zum Auslöser (A11Y-2). Das Overlay liegt in einer eigenen Ebene direkt unter `<body>`, nicht im Stacking-Kontext von `#main` (sonst überdecken es Footer und Masthead). Vorlage: `assets/js/skill-graph-sheet.js` (`enterModal`, `leaveModal`).
+- **OVL-4** [MUSS · Ist · Review] **Modal heißt vollständig modal:** Scrim, Scroll-Sperre ohne Layout-Sprung (`html { overflow: hidden; scrollbar-gutter: stable }`), Hintergrund `inert`, `role="dialog"` mit `aria-modal="true"` und zugänglichem Namen, Fokus beim Öffnen hinein und beim Schließen zurück zum Auslöser (A11Y-2). Das Overlay liegt in einer eigenen Ebene direkt unter `<body>`, nicht im Stacking-Kontext von `#main` (sonst überdecken es Footer und Masthead). Vorlage: `assets/js/skill-graph-sheet.js` (`enterModal`, `leaveModal`). Der Drawer setzt seit 1. 10. den Hintergrund `inert` (`greedy-navigation.js`: alle `body`-Kinder außer Masthead, Skripten und Live-Regionen). Gesetzt wird erst nach dem Slide-In, aufgehoben an jeder Schließ-Stelle, beim pageswap bleibt alles unangetastet. Semantisch bleibt er eine Disclosure-Navigation ohne `role="dialog"` (Register R-32).
 - **OVL-5** [SOLL · Ist · Review] Non-modale Overlays (Toasts, Hinweise) sperren nichts und stehlen nicht den Fokus. Deckt ein Overlay den größten Teil des Viewports, wird es modal gebaut (OVL-4).
 
 ---
@@ -488,7 +488,7 @@ Anlass: Im Skill-Graphen rutschte die Seite beim Wischen über den Graphen weg (
 
 - **SG-1** [MUSS · Ist · CI] **Im Repo, nie veröffentlicht (Owner, 1. 10. 2026).** Die Styleguide-Ansicht `_pages/styleguide.html` (Stylesheet `assets/css/styleguide.scss`) trägt `published: false`. Gebaut wird sie nur mit `jekyll build --unpublished` (lokal `jekyll serve --unpublished`, CI: `_site_review`). Ein CI-Gate bricht ab, wenn sie im deployten `_site` auftaucht.
 - **SG-2** [MUSS · Ist · CI] Die Ansicht zeigt echte Komponenten mit echtem Markup und echten Klassen aus `main.css`, Tokens kommen aus den Sass-Variablen. Jede neue Komponente und jedes neue Farb- oder Schriftgrößen-Token wird dort eingetragen, mit `data-sg-section` und, falls interaktiv, `data-sg-states`.
-- **SG-3** [MUSS · Ist · CI] Automatisches Review (`tests/visual/`, Playwright im Container `mcr.microsoft.com/playwright`, Version wie `@playwright/test`): Screenshot-Vergleich jedes Abschnitts und jedes Zustands, Kontrast jeder Textprobe gegen ihren Grund (`data-sg-min`, Ausnahmen mit Regel-ID), axe-core WCAG 2.2 AA auf den echten Seiten mit Baseline `tests/visual/a11y-known.json` (nur neue Verstöße brechen ab). Gewollte visuelle Änderung: `npm run test:visual:update` im Container, neue Bilder mitcommitten. Die Baseline der bekannten a11y-Befunde darf nur schrumpfen.
+- **SG-3** [MUSS · Ist · CI] Automatisches Review (`tests/visual/`, Playwright im Container `mcr.microsoft.com/playwright`, Version wie `@playwright/test`): Screenshot-Vergleich jedes Abschnitts und jedes Zustands, Kontrast jeder Textprobe gegen ihren Grund (`data-sg-min`, Ausnahmen mit Regel-ID), axe-core WCAG 2.2 AA auf den echten Seiten mit Baseline `tests/visual/a11y-known.json` (nur neue Verstöße brechen ab, seit 1. 10. leer), Bedien-Invarianten in `invariants.spec.js` (A11Y-2, OVL-3, OVL-4, kein unsichtbarer Fokus). Gewollte visuelle Änderung: `npm run test:visual:update` im Container, neue Bilder mitcommitten. Die Baseline der bekannten a11y-Befunde darf nur schrumpfen.
 
 ---
 
@@ -528,7 +528,7 @@ Ziel: **WCAG 2.2 AA** als freiwillige Selbstverpflichtung. Rechtsrahmen: Das B
 ### 6.2 Muster
 
 - **A11Y-1** [MUSS · Soll · Review] Toggle-Buttons: entweder festes Label plus `aria-pressed`/`aria-expanded` oder wechselndes Aktions-Label ohne State-Attribut. Nie beides.
-- **A11Y-2** [MUSS · Soll · CI-P4] Disclosure, Dropdown, Drawer, Sheet folgen einem Muster: Button mit `aria-expanded` und `aria-controls`, Escape schließt und gibt den Fokus an den Auslöser zurück, beim Öffnen wandert der Fokus hinein. Mit Scrim oder Scroll-Sperre wird der Hintergrund `inert`.
+- **A11Y-2** [MUSS · Soll · CI] Disclosure, Dropdown, Drawer, Sheet folgen einem Muster: Button mit `aria-expanded` und `aria-controls`, Escape schließt und gibt den Fokus an den Auslöser zurück, beim Öffnen wandert der Fokus hinein. Mit Scrim oder Scroll-Sperre wird der Hintergrund `inert`. Drawer und Skill-Graph-Sheet erfüllen das Muster, `tests/visual/invariants.spec.js` prüft beide. Der Drawer setzt den Fokus nur beim Öffnen per Tastatur (`click` mit `detail === 0`) auf den ersten Link. Bei Maus und Touch bleibt er am Toggle, weil mobil schon `:focus` die Drawer-Links magenta färbt (Register R-32).
 - **A11Y-3** [MUSS · Soll · Review] Dekorative Icons (`<i class="fa…">`, SVG, Glyphen ▲▼✕) tragen `aria-hidden="true"`, Inline-SVG zusätzlich `focusable="false"`.
 - **A11Y-4** [MUSS · Soll · Review] Für versteckten Text nur `.visually-hidden`.
 - **A11Y-5** [MUSS · Ist · CI-P4] SPA-Navigation verhält sich wie ein Seitenwechsel: Fokus auf `#main`, `document.title`, `aria-current`, Ansage über `#spa-route-announcer` (umgesetzt in `spa-nav.js`).
@@ -1096,7 +1096,7 @@ Kein SemVer (eine Website hat keine öffentliche API). Ein `CHANGELOG.md` im For
 | 3 | `cascade-check.py` mit Element-Regeln und Inline-Blöcken als Konkurrenten, Erwartungswert-Modus | TYP-4, TYP-5 |
 | 3 | commitlint oder Regex-Hook in `.githooks/commit-msg` (`type-enum`, `scope-enum`, `subject-case` **aus**, wegen deutscher Substantive) | GIT-1, GIT-7, GIT-8 |
 | 4 | Playwright + `@axe-core/playwright` (`wcag2a/aa`, `wcag21aa`, `wcag22aa`) auf allen Routen, je mit `reducedMotion: reduce` und `forcedColors: active`, nur per `workflow_dispatch` | Abschnitt 6 |
-| 4 | Playwright-Invarianten: Grenz-Viewports 767/768/1023/1024, kein unsichtbarer Fokus, Drawer-Escape, Lesemodus stoppt Endlos-Animationen | 6.2, 6.3, KOMP-1 |
+| 4 | Playwright-Invarianten: Grenz-Viewports 767/768/1023/1024, Lesemodus stoppt Endlos-Animationen. Seit 1. 10. umgesetzt in `tests/visual/invariants.spec.js`: Drawer (Escape, Fokus, `aria-expanded`, `inert`, mit und ohne Reduced Motion), Skill-Graph-Sheet (Escape, Light Dismiss, Fokus), kein unsichtbarer Fokus auf `/` und `/cv/` | 6.2, 6.3, KOMP-1 |
 | 4 | Lighthouse-Lauf per `workflow_dispatch` gegen PERF-1 und PERF-2 | 15.1 |
 
 Neue Guardrail-Skripte folgen dem Muster von `fs-guardrail.sh`: Marker in der Zeile darüber, Exit 1 bei Verstoß, Schritt im bestehenden Lint-Job (kein zusätzlicher Artefakt-Speicher, GIT-6).
@@ -1131,7 +1131,7 @@ Stand: Ist-Basis aus dem Kopf. Ein Eintrag verschwindet, sobald der Code die Reg
 | R-1 | FARB-2 | `$link-color-active` als Text, 3,91:1 | B-F02 | Owner (6.4) |
 | R-2 | FARB-2, FARB-4 | Nav-Hover auf Cyan-Grund 3,68:1 (`$hover-color-text`) | B-F05 | Owner-Ausnahme (KOMP-3) |
 | R-3 | FARB-2 | Nav-`:focus-visible` 1,49:1 | B-F01 | migrieren |
-| R-4 | FARB-3 | Labels in 40 bis 45 % Weiß, u. a. `.page__meta` in `base/_headings.scss` | B-F04 | migrieren |
+| R-4 | FARB-3 | erledigt 1. 10.: die acht Stellen aus B-F04 (Footer-Zeile samt Links, `.page__meta`, CV-Ort, Skill-Kontext, Sprachniveau, TOC-Label, Fraktal-Hinweis, Offline-Hinweis) auf `$fg-subtle`, gemessen 5,44 bis 5,97:1 | B-F04 | – |
 | R-5 | CRIT-1, TYP-8, 1.4.4 | Critical-CSS: `html{font-size:16px}`, `body{color:#e8e6e3; font-family:…}`, `.site-title` `bold` | B-T1, B-T2 | Owner (Root-Größe), dann migrieren |
 | R-6 | FARB-8, CRIT-1 | Critical-CSS: `rgba(37,42,52,0.95)`, `backdrop-filter:blur(5px)` | B-F22 | migrieren |
 | R-7 | FARB-1, SCSS-8 | erledigt 1. 10. 2026: `$fp-slider-handle` zeigt auf `$slider-connect-blue`, `$fp-accent-soft` auf `$cyan-a15`. Offen ist nur, ob das Blau `#4aa3ff` in die Palette gehört | B-F23 | Owner (Ton) |
@@ -1159,6 +1159,8 @@ Stand: Ist-Basis aus dem Kopf. Ein Eintrag verschwindet, sobald der Code die Reg
 | R-29 | FARB-10 | Theme-Teal `#00adb5` in Fokus-Glow und Pagination | B-F25 | migrieren |
 | R-30 | TYPO-2, SEO-1 | `title_separator` fehlt, Theme-Default „-“ im `<title>` | B-HTML-30 | migrieren |
 | R-31 | CRIT-3, FARB-8, SCSS-12 | zweiter `<style>`-Block in `_includes/head/custom.html` (`rgba(0, 0, 0, 0.8)`, `!important`, globales `scroll-behavior: smooth`, tote Regeln) | B-HTML-13 | nach SCSS migrieren |
+| R-32 | OVL-4, A11Y-2 | Drawer: modal (Scrim, Scroll-Sperre, `inert`), aber ohne `role="dialog"` und `aria-modal`. Fokus wandert nur beim Öffnen per Tastatur hinein, weil mobil `:focus` die Links magenta färbt | B-A11Y-05 | Owner |
+| R-33 | 2.5.7 | Fraktal-Pan nur per Ziehen (rechte Maustaste, Leertaste), Zwei-Finger-Geste oder Pfeiltasten am fokussierten Canvas. Für Zeiger fehlt eine Alternative ohne Ziehen | B-A11Y-09 | Owner (sichtbare Pan-Buttons?) |
 
 ---
 
