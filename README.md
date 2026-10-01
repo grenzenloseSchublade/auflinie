@@ -444,3 +444,27 @@ Das ausklappbare TOC erkennt automatisch, ob die Seite ein dunkles oder helles F
 ### Speicherung des Zustands
 
 Der Zustand des ausklappbaren TOC (ausgeklappt oder eingeklappt) wird im `localStorage` des Browsers gespeichert, sodass er beim nächsten Besuch der Seite wiederhergestellt wird.
+
+## Lizenz
+
+Leitgedanke: Wissen soll weitergegeben und weiterverwendet werden. Deshalb ist das Repository so offen wie möglich lizenziert, mit wenigen begründeten Ausnahmen.
+
+| Bestandteil | Lizenz |
+|---|---|
+| **Code**: JavaScript (`assets/js/`), SCSS (`assets/_sass/`), Liquid/HTML-Templates (`_includes/`, `_layouts/`), Skripte (`scripts/`, `tests/`), Konfiguration | [MIT](LICENSE) |
+| **Wissens-Texte**: Blogbeiträge (`_posts/`), Fraktal-Erklärungen (`_data/mandelbrot.yml`, `_pages/mandelbrot.md`, `_includes/fractal/explanation-*.html`), `assets/downloads/` | [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/deed.de) – Weiterverwendung erlaubt, mit Nennung „Hans Müller, auflinie“ und Link |
+| **Persönliches**: Lebenslauf und Profil (`_pages/cv.md`, `_pages/about.md`, `_data/cv_content.yml`, `_data/skill_graph.yml`), Startseiten-Texte (`index.html`) | Alle Rechte vorbehalten |
+| **Bilder und Marke**: Logo und Favicons (`assets/images/Logo.svg`, `WebSite_Logo_3.png`, `favicon*`, `apple-touch-icon.png`), `mandelbrot-preview.jpg` | Alle Rechte vorbehalten |
+| **`assets/images/background.jpg`** | Adobe-Stock-Lizenz, darf nicht weitergegeben oder weiterverwendet werden |
+
+### Komponenten Dritter
+
+Diese Bestandteile behalten ihre eigenen Lizenzen:
+
+- [Minimal Mistakes](https://github.com/mmistakes/minimal-mistakes) (Theme, per `remote_theme`; überschriebene Includes in `_includes/` und `_layouts/` basieren darauf) – MIT, © Michael Rose
+- MathJax (`assets/vendor/mathjax`, `assets/vendor/mathjax-newcm-font`) – Apache 2.0
+- Tom Select (`assets/vendor/tom-select.*`) – Apache 2.0
+- noUiSlider (`assets/vendor/nouislider.*`) – MIT
+- Gumshoe (`assets/vendor/gumshoe.min.js`) – MIT, © Chris Ferdinandi
+- Font Awesome Free (Subset in `assets/webfonts/`) – Fonts SIL OFL 1.1, Icons CC BY 4.0
+
