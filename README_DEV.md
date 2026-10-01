@@ -1,6 +1,6 @@
 # Entwicklungsumgebung für Fraktale Welten
 
-Diese Entwicklungsumgebung stellt Jekyll (Ruby) und Node-Tooling (Stylelint, Playwright) für die Website-Entwicklung bereit. Die Fraktal-Visualisierungen laufen als JavaScript direkt im Browser (`assets/js/fractal-*.js`).
+Diese Entwicklungsumgebung stellt Jekyll (Ruby) und Node-Tooling (Stylelint, ESLint, Playwright) für die Website-Entwicklung bereit. Die Fraktal-Visualisierungen laufen als JavaScript direkt im Browser (`assets/js/fractal-*.js`).
 
 ## Einrichtung
 
@@ -15,6 +15,7 @@ Die Entwicklungsumgebung ist mit Visual Studio Code und Dev Containers konfiguri
 
 - Ruby 3.4.8 + Bundler (Jekyll, Remote-Theme Minimal Mistakes)
 - Node LTS (Stylelint via `npm run lint:css`, Playwright-Tests in `tests/`)
+- ESLint via `npm run lint:js` prüft `assets/js/` und `tests/` auf undefinierte Namen, toten Code und `innerHTML` mit Daten (Regeln und Ausnahmen in `eslint.config.mjs`, läuft auch im CI-Lint-Job).
 - Hilfsskripte: `scripts/fs-guardrail.sh`, `scripts/cascade-check.py`
 
 ## Jekyll / Hero

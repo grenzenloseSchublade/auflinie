@@ -414,6 +414,10 @@
     var next = doc.querySelector('.initial-content');
     if (!current || !next) return;
     dispatch('spa:unload', { root: current });            // Teardown, solange altes DOM lebt
+    // Same-Origin-HTML der eigenen Site (fetch nur same-origin, inert per
+    // DOMParser geparst), Vertrauensstufe wie ein Voll-Reload. Skripte führt
+    // innerHTML nicht aus, die lädt reconcilePageScripts gezielt nach.
+    // eslint-disable-next-line no-unsanitized/property -- eigenes Same-Origin-Markup, siehe oben
     current.innerHTML = next.innerHTML;
   }
 

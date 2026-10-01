@@ -5,6 +5,7 @@
 // Koordinaten mit konstantem c. Vorher lebte die Schleife als Kopie in beiden
 // Workern und war bereits auseinandergedriftet (NaN-Härtung nur bei Julia).
 // Läuft im Worker-Scope via importScripts (nach fractal-color-utils.js).
+/* exported runFractalChunkJob */
 
 /**
  * Kompletter Chunk-Job: Parameter härten, rechnen, Ergebnis mit

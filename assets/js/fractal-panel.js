@@ -959,6 +959,7 @@
           const isOpen = explanationBox.classList.toggle('is-visible');
           explanationToggle.classList.toggle('is-active', isOpen);
           explanationToggle.setAttribute('aria-expanded', String(isOpen));
+          // eslint-disable-next-line no-unsanitized/property -- feste Strings, keine Daten
           explanationToggle.innerHTML = isOpen
             ? 'Erklärung ausblenden <span class="toggle-icon">▲</span>'
             : 'Erklärung anzeigen <span class="toggle-icon">▼</span>';

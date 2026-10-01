@@ -1,6 +1,7 @@
 // Gemeinsame Farb-Utilities für die Fraktal-Worker (Mandelbrot & Julia).
 // Wird in den Workern via importScripts('fractal-color-utils.js') geladen.
 // Reine Funktionen (nur Math) – identisches Verhalten in beiden Workern.
+/* exported precomputeColors */
 
 // Vorberechnung von Farben für bessere Performance
 function precomputeColors(palette) {
