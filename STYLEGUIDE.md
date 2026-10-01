@@ -200,7 +200,7 @@ Regeln:
 - **FARB-7** [MUSS · Soll · Review] Fokus- und Hover-Zustand nehmen Vorder- und Hintergrund nie aus demselben Token.
 - **FARB-8** [MUSS · Soll · CI-P1] Farb**literale** in der Notation `rgb(r g b / a%)`, Hex lang und klein, keine Farbnamen außer `transparent`, `currentColor`, `inherit`. Gilt auch für JS-Strings, Inline-Styles und das Critical-CSS. Sass-Funktionen auf Tokens (`rgba($link-color, 0.6)`) dürfen Dezimal-Alpha nutzen. In `assets/_sass` erfüllt und per `color-guardrail.sh` geprüft (Notation in `variables/`, Farbnamen überall). Offen bleiben Critical-CSS (R-6), der zweite Style-Block in `head/custom.html` (R-31) und Palettenwerte in JS (B-F19).
 - **FARB-9** [SOLL · Ist · CI] Gleicher Wert = Alias, nie zweites Literal (`$card-heading-color: $link-color`, `$selection-bg: $hover-color`, `$base00: $console-panel-bg`). Der Guardrail meldet textgleiche Literale in `_colors.scss`. Wertgleiche in anderer Schreibweise (`#ffffff` gegen `rgb(255 255 255)`) fallen nur im Review auf.
-- **FARB-10** [SOLL · Soll · Review] MM-Variablen, die die Palette beeinflussen, werden explizit gesetzt: `$primary-color` (heute leckt Theme-Teal `#00adb5` in Fokus-Glow und Pagination), `$background-color`, `$text-color`.
+- **FARB-10** [SOLL · Soll · Review] MM-Variablen, die die Palette beeinflussen, werden explizit gesetzt: `$primary-color`, `$background-color`, `$text-color`. Ist seit 1. 10. 2026: `$primary-color: $link-color` (Rollen-Token in `_colors.scss`, Abnehmerliste im Kommentar). Sichtbar davon nur der Fokus-Schein des Blog-Suchfelds (`input:focus`, jetzt Cyan statt Teal) und der Hover der Hamburger-Balken. Den setzt `components/_masthead.scss` selbst auf `$cyan-a75`, weil die Theme-Regel `mix(#000, $primary-color, 25 %)` die eigene Ruhe-Regel per Spezifität schlägt. Offen: `$background-color` und `$text-color` kommen weiter aus dem Skin.
 
 **[Ist seit 1. 10. 2026]** Alpha-Stufen als Primitive. Jede Stufe heißt `$<familie>-aNN` (NN = Deckkraft in Prozent) und ist aus der **deckenden** Grundfarbe abgeleitet (FARB-5). Die Stufen bilden genau die Werte ab, die bei der Migration im Einsatz waren. Die Migration war optisch neutral, das gebaute CSS ist bytegleich. Eine neue Stufe kommt nur dazu, wenn keine vorhandene passt.
 
@@ -251,11 +251,12 @@ Weitere bestehende Tokens:
 | `$about-motto-font-size` | `clamp(1.35rem, 3vw, 1.9rem)` | Motto auf „Über mich“ | fluide Ausnahme, heute wirkungslos (Audit B-T3) |
 | `$cv-group-title-font-size`, `$cv-chip-font-size` | `1em` | Skill-Gruppen, Chips | em-Ausnahme (TYP-2) |
 | `$medium-weight` | `600` | Gewicht für Titel | Name passt nicht zum Wert, Soll: `$fw-semibold` |
+| `$sans-serif` | `"Ubuntu derivative auflinie"`, Ersatzschrift, `$system-font-stack` | Fließtext, Überschriften, Navigation | Familie, Schalter `$text-font` (TYP-13) |
 | `$mono-font-stack` | System-Mono-Stack | Mono | Familie |
 
 Fraktal-Panel (px, bewusst viewport-fix): `$fp-fs-2xs` 10 · `$fp-fs-xs` 11 · `$fp-fs-sm` 12 · `$fp-fs-md` 13 · `$fp-fs-lg` 14 · `$fp-fs-xl` 16 · `$fp-fs-icon` 20.
 
-Semantische Aliase: `$toc-*`, `$cv-*` (zeigen auf `$fs-*` oder bewusst auf `1em`). Familien: Sans = Theme-`$sans-serif` (Soll: als eigenes Token setzen), Mono = `$mono-font-stack`.
+Semantische Aliase: `$toc-*`, `$cv-*` (zeigen auf `$fs-*` oder bewusst auf `1em`). Familien: Sans = `$sans-serif` (eigenes Token in `variables/_typography.scss`, TYP-13), Mono = `$mono-font-stack`.
 
 Überschriften-Matrix (Ist, Quelle `base/_headings.scss`, `components/_hero.scss`, Theme):
 
@@ -274,6 +275,7 @@ Webfonts:
 | Datei | Zweck | Laden |
 |---|---|---|
 | `assets/webfonts/fa-solid-900-subset.woff2`, `fa-regular-400-subset.woff2`, `fa-brands-400-subset.woff2` | Font-Awesome-Icons, auf genutzte Glyphen reduziert | sitewide über `base/_icons.scss` |
+| `assets/webfonts/ubuntu-latin-wght.woff2` (28 KB), `ubuntu-latin-italic-wght.woff2` (30 KB) | Textschrift Ubuntu 0.869, variabel 400–700, Latin-Subset | aufrecht sitewide mit Preload, kursiv bei Bedarf, über `base/_fonts.scss` (TYP-13) |
 | `assets/vendor/mathjax-newcm-font/chtml/` | MathJax-Formeln | nur auf Seiten mit `mathjax: true` |
 
 Regeln:
@@ -289,9 +291,10 @@ Regeln:
 - **TYP-9** [SOLL · Soll · Review] Ziffern in Mono-Daten mit `font-variant-numeric: tabular-nums`.
 - **TYP-10** [SOLL · Offen · Review] Fließtextspalte höchstens 75 Zeichen. `$content-width: 46rem` sind 736 px, das ergibt bei 16 bis 18 px Sans geschätzt 80 bis 90 Zeichen. Vor einer Festlegung wird gemessen. Danach wird entweder das Token (zum Beispiel in `ch`) oder die Regel angepasst. Blocksatz nur mit `hyphens: auto`, `lang` und linksbündig bis 480 px Breite (Home-Intro, Owner-Entscheidung).
 - **TYP-11** [SOLL · Soll · Review] Überschriftengröße und -gewicht fallen monoton mit der Ebene.
-- **TYP-12** [MUSS · Ist · Review] Einzige Webfonts sind die drei Font-Awesome-Subsets und die MathJax-NewCM-Fonts. Text läuft in System-Stacks. Ein neues Icon heißt: Icon-Klassen im gebauten `_site` inventarisieren, Subset mit `pyftsubset` neu erzeugen, Liste im Kopf von `base/_icons.scss` nachziehen, alles in einem Commit.
+- **TYP-12** [MUSS · Ist · Review] Einzige Webfonts sind die drei Font-Awesome-Subsets, die MathJax-NewCM-Fonts und die Textschrift (TYP-13). Ein neues Icon heißt: Icon-Klassen im gebauten `_site` inventarisieren, Subset mit `pyftsubset` neu erzeugen, Liste im Kopf von `base/_icons.scss` nachziehen, alles in einem Commit.
+- **TYP-13** [MUSS · Ist · Review] Eine Textschrift für Fließtext, Überschriften und Navigation: Ubuntu, selbst gehostet (Owner-Entscheidung 1. 10. 2026). Sie kommt nur über `$sans-serif`, kein Partial und nicht das Critical-CSS setzt eine eigene Sans-Familie. Die Konsolenschrift `$mono-font-stack` bleibt davon unberührt. Schalter `text_font` in `_config.yml`: `ubuntu` (Standard) oder `system` (Systemschrift, dann weder `@font-face` noch Preload noch Precache). Dateien: zwei variable WOFF2 (aufrecht, kursiv), Gewichtsachse 400–700 deckt die genutzten Gewichte 400, 500, 600 und 700 exakt ab, Latin-Subset mit deutschen Zeichen, `font-display: swap`. Bis zum Laden steht eine metrisch angepasste Ersatzschrift (Arial bzw. Liberation Sans mit `size-adjust` und `ascent-override`). Quelle ist das Ubuntu-Paket `fonts-ubuntu` 0.869 von Canonical, erzeugt mit `scripts/ubuntu-font-subset.py` (gepinnte SHA-256). Weil ein Subset nach Ubuntu Font Licence 1.0 (2c) eine abgeleitete Fassung ist, heißt die Familie „Ubuntu derivative auflinie“. Lizenz liegt als `assets/webfonts/UBUNTU-FONT-LICENCE.txt` neben den Dateien. Neue Zeichen außerhalb des Subsets fallen auf die Systemschrift zurück. Wer sie braucht, erweitert `UNICODES` im Skript und `unicode-range` in `base/_fonts.scss` gemeinsam. Nach einem Wechsel des Schalters werden die Vergleichsbilder neu erzeugt.
 
-**[Soll]** Gewichts-Tokens `$fw-regular` / `$fw-medium` / `$fw-semibold` / `$fw-bold` (`$medium-weight` wird zu `$fw-semibold` und entfällt). Zeilenhöhen `$lh-none` `1` · `$lh-tight` `1.2` · `$lh-snug` `1.35` · `$lh-body` `1.6`. Laufweiten `$tracking-meta` `0.03em` · `$tracking-label` `0.06em` · `$tracking-label-wide` `0.08em`. `$monospace: $mono-font-stack` vor dem Theme-Import. Ein einziger Sans-Stack, auch im Critical-CSS.
+**[Soll]** Gewichts-Tokens `$fw-regular` / `$fw-medium` / `$fw-semibold` / `$fw-bold` (`$medium-weight` wird zu `$fw-semibold` und entfällt). Zeilenhöhen `$lh-none` `1` · `$lh-tight` `1.2` · `$lh-snug` `1.35` · `$lh-body` `1.6`. Laufweiten `$tracking-meta` `0.03em` · `$tracking-label` `0.06em` · `$tracking-label-wide` `0.08em`. `$monospace: $mono-font-stack` vor dem Theme-Import. (Ein einziger Sans-Stack, auch im Critical-CSS: erledigt mit TYP-13.)
 
 ### 3.3 Abstände und Layout
 
@@ -693,7 +696,7 @@ Werkzeuge: Dart Sass (sass-embedded, über jekyll-sass-converter auf die 1.x-Rei
 
 ### 9.1 Struktur
 
-Ladereihenfolge in `assets/css/main.scss` (= Kaskade): `variables/css-properties` (`:root`) → `theme-bridge` (MM-Skin `dark`, dann MM) → `custom`. Schichten (ITCSS-artig), ab Base in `_custom.scss`:
+Ladereihenfolge in `assets/css/main.scss` (= Kaskade): `abstracts/tokens` mit dem Schalter `$text-font` aus `_config.yml` (kein CSS, TYP-13) → `variables/css-properties` (`:root`) → `theme-bridge` (MM-Skin `dark`, dann MM) → `custom`. Schichten (ITCSS-artig), ab Base in `_custom.scss`:
 
 | Schicht | Ordner | Inhalt |
 |---|---|---|
@@ -711,10 +714,10 @@ Jedes Partial lädt am Dateianfang, was es nutzt, und nur das:
 @use "sass:color";                 // Sass-Builtins zuerst, nur bei Bedarf
 @use "abstracts/tokens" as *;      // $link-color, $fs-body, $content-width …
 @use "abstracts/mixins" as *;      // card-panel, mono-label … (nur bei Bedarf)
-@use "theme-bridge" as mm;         // Theme-Werte: mm.$large, mm.$sans-serif (nur bei Bedarf)
+@use "theme-bridge" as mm;         // Theme-Werte: mm.$large, mm.$type-size-5 (nur bei Bedarf)
 ```
 
-Ein neues Token kommt in die passende Datei unter `variables/` und ist danach über `abstracts/tokens` überall da. Ein neues Partial mit CSS-Ausgabe bekommt ein `@use` in `_custom.scss` an der Stelle, an der es in der Kaskade stehen soll.
+Ein neues Token kommt in die passende Datei unter `variables/` und ist danach über `abstracts/tokens` überall da. Ein Theme-Wert, den ein gleichnamiges Token überschreibt (heute `$sans-serif`, `$primary-color`), ist nur als Token erreichbar, nicht als `mm.$…`. Ein neues Partial mit CSS-Ausgabe bekommt ein `@use` in `_custom.scss` an der Stelle, an der es in der Kaskade stehen soll.
 
 - **SCSS-1** [MUSS · Soll · Review] Dateien `_kebab-case.scss`, Dateiname = Blockname. Große Komponenten in einen Unterordner mit Sammeldatei, deren Kopf die Reihenfolge als Kaskaden-Vertrag dokumentiert (Vorbild `fractal-panel/`).
 - **SCSS-2** [MUSS · Ist · CI] Kein `@import` außer in der Theme-Brücke. Sass-Builtins nur über Module (`@use "sass:list"`, `"sass:color"`, `"sass:math"`, `"sass:map"`). Keine globalen Funktionen (`index`, `map-get`, `lighten` …), kein Legacy-`if()`, stattdessen `@if`/`@else`. Check: Stylelint (`at-rule-disallowed-list`, `scss/no-global-function-names`), das Legacy-`if()` fängt SCSS-3.
@@ -974,7 +977,7 @@ Dokumentation (Diátaxis):
 ### 13.1 Lizenzen und Fremdcode
 
 - **LIZ-1** [MUSS · Soll · Review] Fremdcode trägt im Dateikopf Herkunft und Lizenz (Beispiel `greedy-navigation.js`: basiert auf lukejacksonn/GreedyNav, Lizenz nachtragen). Vendor-Dateien behalten ihren Lizenzkopf.
-- **LIZ-2** [MUSS · Soll · Review] `THIRD-PARTY-NOTICES.md` (zu bauen) listet Theme, Vendor-Bibliotheken (MathJax, noUiSlider, Tom Select, Gumshoe) und Fonts (Font Awesome Free, NewCM) mit Lizenz.
+- **LIZ-2** [MUSS · Soll · Review] `THIRD-PARTY-NOTICES.md` (zu bauen) listet Theme, Vendor-Bibliotheken (MathJax, noUiSlider, Tom Select, Gumshoe) und Fonts (Font Awesome Free, NewCM, Ubuntu mit Ubuntu Font Licence 1.0) mit Lizenz. Bis dahin stehen sie im README-Abschnitt „Komponenten Dritter“.
 - **[Offen]** Lizenz für das öffentliche Repo selbst (`LICENSE` fehlt).
 
 ---
@@ -1046,6 +1049,7 @@ Kein SemVer (eine Website hat keine öffentliche API). Ein `CHANGELOG.md` im For
 - **PERF-2** [SOLL · Offen · CI-P4] Budgets (komprimiert übertragen, Vorschlag, Messbasis im Audit): eigenes JS pro Seite höchstens 50 KB ohne Fraktal-Module und MathJax, `main.css` höchstens 50 KB, Hero-Bild höchstens 150 KB, Critical-CSS höchstens 14 KB (erstes TCP-Fenster).
 - **PERF-3** [MUSS · Ist · Review] Das Critical-CSS enthält nur, was für den ersten Viewport ohne Layout-Sprung nötig ist (CRIT-1, CRIT-2).
 - **PERF-4** [MUSS · Ist · Review] Prerender per Speculation Rules nur für Seiten außerhalb des Wired-Sets (SEO-5). Kein Prerender für Drawer-Links.
+- **PERF-5** [MUSS · Ist · Review] Textschrift (TYP-13): höchstens 35 KB je Datei (WOFF2, heute 28 KB aufrecht und 30 KB kursiv), nur die aufrechte Datei per Preload, und der Schrifttausch erzeugt keinen messbaren Layoutsprung (CLS unter 0,01). Gemessen 1. 10. 2026 im Playwright-Container mit 1,5 s verzögerter Schrift auf `/`, `/about/`, `/cv/`, `/posts/` und einem Beitrag, Desktop und mobil: höchstens 0,0003 mit Ersatzschrift (0,0007 ohne).
 
 ### 15.2 Browser und Geräte
 
@@ -1145,7 +1149,7 @@ Stand: Ist-Basis aus dem Kopf. Ein Eintrag verschwindet, sobald der Code die Reg
 | R-2 | FARB-2, FARB-4 | Nav-Hover auf Cyan-Grund 3,68:1 (`$hover-color-text`) | B-F05 | Owner-Ausnahme (KOMP-3) |
 | R-3 | FARB-2 | Nav-`:focus-visible` 1,49:1 | B-F01 | migrieren |
 | R-4 | FARB-3 | erledigt 1. 10.: die acht Stellen aus B-F04 (Footer-Zeile samt Links, `.page__meta`, CV-Ort, Skill-Kontext, Sprachniveau, TOC-Label, Fraktal-Hinweis, Offline-Hinweis) auf `$fg-subtle`, gemessen 5,44 bis 5,97:1 | B-F04 | – |
-| R-5 | CRIT-1, TYP-8, 1.4.4 | Critical-CSS: `html{font-size:16px}`, `body{color:#e8e6e3; font-family:…}`, `.site-title` `bold` | B-T1, B-T2 | Owner (Root-Größe), dann migrieren |
+| R-5 | CRIT-1, TYP-8, 1.4.4 | Critical-CSS: `html{font-size:16px}`, `body{color:#e8e6e3}`, `.site-title` `bold`. `body{font-family}` erledigt 1. 10. (TYP-13, B-T2) | B-T1 | Owner (Root-Größe), dann migrieren |
 | R-6 | FARB-8, CRIT-1 | Critical-CSS: `rgba(37,42,52,0.95)`, `backdrop-filter:blur(5px)` | B-F22 | migrieren |
 | R-7 | FARB-1, SCSS-8 | erledigt 1. 10. 2026: `$fp-slider-handle` zeigt auf `$slider-connect-blue`, `$fp-accent-soft` auf `$cyan-a15`. Offen ist nur, ob das Blau `#4aa3ff` in die Palette gehört | B-F23 | Owner (Ton) |
 | R-8 | FARB-1 | erledigt 1. 10. 2026: alle Literale in `assets/_sass` außerhalb von `variables/` auf Stufen-Tokens, Effektwerte markiert (FARB-1), CI-Check `color-guardrail.sh` | B-F08, B-F10, B-SCSS-03, B-SCSS-04 | – |
@@ -1169,7 +1173,7 @@ Stand: Ist-Basis aus dem Kopf. Ein Eintrag verschwindet, sobald der Code die Reg
 | R-26 | GLOS-1 | erledigt: „Reset“/„Preset“ bleiben, „Reset“ überall | B-A11Y-07 | – |
 | R-27 | 1.4.4 | px-Schriften im Fraktal-Panel, `html{font-size:16px}` | B-T1 | Owner |
 | R-28 | LIZ-1, LIZ-2 | keine `LICENSE`, keine Fremdcode-Liste | B-D25 | Owner |
-| R-29 | FARB-10 | Theme-Teal `#00adb5` in Fokus-Glow und Pagination | B-F25 | migrieren |
+| R-29 | FARB-10 | erledigt 1. 10. 2026: `$primary-color: $link-color`, im gebauten CSS kein `#00adb5` mehr, Hamburger-Hover eigen (`$cyan-a75`) | B-F25 | – |
 | R-31 | CRIT-3, FARB-8, SCSS-12 | zweiter `<style>`-Block in `_includes/head/custom.html` (`rgba(0, 0, 0, 0.8)`, `!important`, globales `scroll-behavior: smooth`, tote Regeln) | B-HTML-13 | nach SCSS migrieren |
 | R-32 | OVL-4, A11Y-2 | Drawer: modal (Scrim, Scroll-Sperre, `inert`), aber ohne `role="dialog"` und `aria-modal`. Fokus wandert nur beim Öffnen per Tastatur hinein, weil mobil `:focus` die Links magenta färbt | B-A11Y-05 | Owner |
 | R-33 | 2.5.7 | Fraktal-Pan nur per Ziehen (rechte Maustaste, Leertaste), Zwei-Finger-Geste oder Pfeiltasten am fokussierten Canvas. Für Zeiger fehlt eine Alternative ohne Ziehen | B-A11Y-09 | Owner (sichtbare Pan-Buttons?) |
@@ -1265,3 +1269,4 @@ Prozess und Doku:
 | 2026-10-01 | JS-2 per ESLint durchgesetzt (`no-var`, `prefer-const`), Register R-14 auf zwei Dateien verkleinert. JS-18: `site-utils.js` mit `prefersReducedMotion` und `rafThrottle` angelegt. |
 | 2026-10-01 | Texte: Gedankenstrich „ – “ und „2025 – Heute“ (groß) als Owner-Entscheidungen in TYPO-2 übernommen. SEITE-1 und FM-3 auf Ist (Beiträge und Vorlage ohne Einleitungs-Überschrift, Vorlage ohne verschachtelten Kommentar), Home-Intro ohne Semikolon (7.2), R-22 erledigt. |
 | 2026-10-01 | SCSS: `@use`-Modulbaum mit Theme-Brücke als Hausregel (SCSS-4 Ist), SCSS-2, SCSS-3 und SCSS-19 auf Ist mit CI-Checks, Struktur 9.1 und Mixin-Quelle auf `abstracts/`, R-13 erledigt, R-34 (`.comment__date`) neu. |
+| 2026-10-01 | Schrift: TYP-13 (Ubuntu selbst gehostet, Schalter `text_font`) und PERF-5 neu, TYP-12, LIZ-2 und 9.1 nachgeführt, FARB-10 auf Ist für `$primary-color`, R-29 erledigt, R-5 ohne `font-family`. |
