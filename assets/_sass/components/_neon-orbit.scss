@@ -115,7 +115,7 @@
       scale(var(--neon-orbit-explosion-scale, 50));
     opacity: 1;
     background: $white;
-    box-shadow: 
+    box-shadow:
       0 0 80px $white,
       0 0 180px $white-a95,
       0 0 350px $white-a85,
@@ -179,7 +179,7 @@
       scale(var(--neon-orbit-explosion-scale, 50));
     opacity: 1;
     background: $white;
-    box-shadow: 
+    box-shadow:
       0 0 80px $white,
       0 0 180px $white-a95,
       0 0 350px $white-a85,
@@ -300,7 +300,7 @@
   }
 
   100% {
-    transform: translateX(var(--neon-orbit-start-offset-before, -0.10em)) 
+    transform: translateX(var(--neon-orbit-start-offset-before, -0.10em))
       scale(1) rotate(1440deg);
     opacity: 1;
   }
@@ -348,7 +348,7 @@
   }
 
   100% {
-    transform: translateX(var(--neon-orbit-start-offset-after, 0.14em)) 
+    transform: translateX(var(--neon-orbit-start-offset-after, 0.14em))
       scale(1) rotate(-1440deg);
     opacity: 1;
   }

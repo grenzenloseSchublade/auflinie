@@ -4,11 +4,11 @@
 %section-base {
   margin-bottom: 2rem;
   width: 100%;
-  
+
   h2 {
     margin-top: 0;
     padding-bottom: 0.5rem;
-    
+
     i {
       margin-right: 0.5rem;
     }
@@ -18,7 +18,7 @@
 // Gemeinsame Hover-Effekte
 @mixin hover-effect($transform-value: -5px) {
   transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
-  
+
   &:hover {
     transform: translateY($transform-value);
     box-shadow: 0 4px 8px $black-a20;

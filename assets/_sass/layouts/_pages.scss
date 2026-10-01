@@ -2,37 +2,37 @@
 
 // Benutzerdefinierte Klasse für volle Breite auf allen Geräten
 .full-width-page {
-    .page {
-        width: 100%;
-        padding-right: 0;
-        padding-left: 0;
+  .page {
+    width: 100%;
+    padding-right: 0;
+    padding-left: 0;
+  }
+
+  #main {
+    max-width: 100%;
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .page__inner-wrap {
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  @media (max-width: 768px) {
+    .page__content {
+      margin-left: 0;
+      margin-right: 0;
+      padding-left: 0;
+      padding-right: 0;
     }
 
-    #main {
-        max-width: 100%;
-        padding-left: 0;
-        padding-right: 0;
+    .fractal-panel {
+      border-radius: 0;
+      margin-left: 0;
+      margin-right: 0;
     }
-
-    .page__inner-wrap {
-        margin-left: 0;
-        margin-right: 0;
-    }
-
-    @media (max-width: 768px) {
-        .page__content {
-            margin-left: 0;
-            margin-right: 0;
-            padding-left: 0;
-            padding-right: 0;
-        }
-
-        .fractal-panel {
-            border-radius: 0;
-            margin-left: 0;
-            margin-right: 0;
-        }
-    }
+  }
 }
 
 // 404-Seite. Größe und Abstand der Formelzeile (1em, 0 0 1.3em) setzt die

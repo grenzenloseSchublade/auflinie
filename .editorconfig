@@ -1,0 +1,28 @@
+# Format-Grundregeln für Editoren (STYLEGUIDE.md SCSS-19, JS-19)
+# https://editorconfig.org
+# Für assets/_sass prüft scripts/format-guardrail.sh dieselben Regeln in der CI.
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+indent_style = space
+indent_size = 2
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+# Zwei Leerzeichen am Zeilenende sind in Markdown ein Zeilenumbruch
+[*.md]
+trim_trailing_whitespace = false
+
+[*.py]
+indent_size = 4
+
+# Fremdcode unverändert lassen: SRI-Hashes hängen am exakten Inhalt
+[assets/vendor/**]
+charset = unset
+end_of_line = unset
+indent_style = unset
+indent_size = unset
+insert_final_newline = unset
+trim_trailing_whitespace = unset

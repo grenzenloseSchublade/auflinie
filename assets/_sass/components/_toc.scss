@@ -12,138 +12,138 @@
 // Nur für Viewports ohne rechtsseitig floatendes Sidebar-TOC (< $large).
 // =============================================================================
 .toc-sticky-mobile {
-    // Versteckt auf Desktop (Sidebar-TOC floatet rechts)
-    display: none;
-    
-    @media (max-width: $large - 1) {
-        display: block;
-        position: fixed;
-        top: var(--masthead-height);
-        left: 0;
-        right: 0;
-        z-index: 998; // Unter dem Masthead (1000)
-        background: $console-panel-bg-a96;
+  // Versteckt auf Desktop (Sidebar-TOC floatet rechts)
+  display: none;
 
-        @include backdrop-blur(6px);
+  @media (max-width: $large - 1) {
+    display: block;
+    position: fixed;
+    top: var(--masthead-height);
+    left: 0;
+    right: 0;
+    z-index: 998; // Unter dem Masthead (1000)
+    background: $console-panel-bg-a96;
 
-        border-bottom: 1px solid $console-panel-border;
-        box-shadow: 0 2px 8px $black-a30;
-        
-        // Slide Animation
-        transform: translateY(-100%);
-        opacity: 0;
-        visibility: hidden;
-        transition: transform 0.3s ease-out, opacity 0.3s ease-out, visibility 0s linear 0.3s;
-        
-        &.is-visible {
-            transform: translateY(0);
-            opacity: 1;
-            visibility: visible;
-            transition: transform 0.3s ease-out, opacity 0.3s ease-out, visibility 0s linear 0s;
-        }
+    @include backdrop-blur(6px);
+
+    border-bottom: 1px solid $console-panel-border;
+    box-shadow: 0 2px 8px $black-a30;
+
+    // Slide Animation
+    transform: translateY(-100%);
+    opacity: 0;
+    visibility: hidden;
+    transition: transform 0.3s ease-out, opacity 0.3s ease-out, visibility 0s linear 0.3s;
+
+    &.is-visible {
+      transform: translateY(0);
+      opacity: 1;
+      visibility: visible;
+      transition: transform 0.3s ease-out, opacity 0.3s ease-out, visibility 0s linear 0s;
     }
+  }
 }
 
 .toc-sticky-mobile__toggle {
-    position: relative; // Bezugsrahmen für die Fortschrittslinie
-    width: 100%;
-    display: flex;
-    align-items: center;
-    gap: 0.6rem;
-    padding: 0.6rem 1rem;
-    min-height: 48px; // Touch Target
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    font-family: $sans-serif-narrow;
-    color: $text-color;
-    text-align: left;
+  position: relative; // Bezugsrahmen für die Fortschrittslinie
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.6rem 1rem;
+  min-height: 48px; // Touch Target
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-family: $sans-serif-narrow;
+  color: $text-color;
+  text-align: left;
 
-    // Kein Akzent-Balken mehr — schlichtes Mono-Label (Rail-Design)
-    &:active {
-        background: $magenta-a08;
-    }
+  // Kein Akzent-Balken mehr — schlichtes Mono-Label (Rail-Design)
+  &:active {
+    background: $magenta-a08;
+  }
 
-    &:focus-visible {
-        outline: 2px solid $hover-color;
-        outline-offset: -2px;
-    }
+  &:focus-visible {
+    outline: 2px solid $hover-color;
+    outline-offset: -2px;
+  }
 }
 
 .toc-sticky-mobile__label {
-    flex-shrink: 0;
-    font-family: $mono-font-stack;
-    font-size: $toc-sticky-label-font-size;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: $fg-subtle; // FARB-3 (vorher 45 %, 4,44:1)
+  flex-shrink: 0;
+  font-family: $mono-font-stack;
+  font-size: $toc-sticky-label-font-size;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: $fg-subtle; // FARB-3 (vorher 45 %, 4,44:1)
 }
 
 .toc-sticky-mobile__current {
-    flex: 1;
-    min-width: 0; // Erlaubt text-overflow (CSS-Ellipsis statt JS-Truncation)
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    font-size: $fs-body-lg;
-    font-weight: 500;
+  flex: 1;
+  min-width: 0; // Erlaubt text-overflow (CSS-Ellipsis statt JS-Truncation)
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: $fs-body-lg;
+  font-weight: 500;
 
-    // Gleiche Aktiv-Sprache wie das Sidebar-TOC (dezentes Cyan) —
-    // klares Weiß fiel aus dem Muster
-    color: $link-color-active;
-    
-    // Slide Animation Setup
-    display: inline-block;
-    transition: transform 0.15s ease-out, opacity 0.15s ease-out;
-    
-    // Slide out (nach oben verschwinden)
-    &.is-sliding-out {
-        transform: translateY(-100%);
-        opacity: 0;
-    }
-    
-    // Slide in (von unten erscheinen)
-    &.is-sliding-in {
-        animation: slideInFromBottom 0.2s ease-out;
-    }
+  // Gleiche Aktiv-Sprache wie das Sidebar-TOC (dezentes Cyan) —
+  // klares Weiß fiel aus dem Muster
+  color: $link-color-active;
+
+  // Slide Animation Setup
+  display: inline-block;
+  transition: transform 0.15s ease-out, opacity 0.15s ease-out;
+
+  // Slide out (nach oben verschwinden)
+  &.is-sliding-out {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+
+  // Slide in (von unten erscheinen)
+  &.is-sliding-in {
+    animation: slideInFromBottom 0.2s ease-out;
+  }
 }
 
 @keyframes slideInFromBottom {
-    from {
-        transform: translateY(100%);
-        opacity: 0;
-    }
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
 
-    to {
-        transform: translateY(0);
-        opacity: 1;
-    }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 
 .toc-sticky-mobile__arrow {
-    flex-shrink: 0;
-    font-size: 0.8em;
-    color: $fg-subtle;
-    transition: transform 0.25s ease;
-    
-    .is-open & {
-        transform: rotate(180deg);
-    }
+  flex-shrink: 0;
+  font-size: 0.8em;
+  color: $fg-subtle;
+  transition: transform 0.25s ease;
+
+  .is-open & {
+    transform: rotate(180deg);
+  }
 }
 
 // Lesefortschritt: 2px-Linie am Unterrand der Leiste (JS setzt --toc-progress);
 // sitzt im Toggle, damit sie bei geöffnetem Dropdown an der Leiste bleibt
 .toc-sticky-mobile__progress {
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    height: 2px;
-    pointer-events: none;
-    transform-origin: 0 50%;
-    transform: scaleX(var(--toc-progress, 0));
-    background: linear-gradient(90deg, $cyan-a80, $cyan-a40);
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 2px;
+  pointer-events: none;
+  transform-origin: 0 50%;
+  transform: scaleX(var(--toc-progress, 0));
+  background: linear-gradient(90deg, $cyan-a80, $cyan-a40);
 }
 
 // Dropdown-Container
@@ -153,86 +153,86 @@
 // Offen: inherit statt visible, damit die (per visibility versteckte)
 // Sticky-Leiste ihr Dropdown nie sichtbar „durchreicht“.
 .toc-sticky-mobile__dropdown {
-    max-height: 0;
-    overflow: hidden;
-    visibility: hidden;
-    background: $console-panel-bg-a98;
-    border-top: 1px solid $console-panel-border;
-    transition: max-height 0.3s ease-out, visibility 0s linear 0.3s;
-    
-    .is-open & {
-        max-height: 55vh;
-        overflow-y: auto;
-        visibility: inherit;
-        transition-delay: 0s;
-    }
+  max-height: 0;
+  overflow: hidden;
+  visibility: hidden;
+  background: $console-panel-bg-a98;
+  border-top: 1px solid $console-panel-border;
+  transition: max-height 0.3s ease-out, visibility 0s linear 0.3s;
+
+  .is-open & {
+    max-height: 55vh;
+    overflow-y: auto;
+    visibility: inherit;
+    transition-delay: 0s;
+  }
 }
 
 // TOC-Menü im Dropdown: erbt Rail, gedämpfte Einträge, Magenta-Hover und
 // Cyan-Aktiv aus den geteilten .toc__menu-Regeln — hier nur Layout
 // (Innenabstand fürs Dropdown, größere Touch-Ziele)
 .toc-sticky-mobile__menu {
-    margin: 0.5rem 1rem;
-    width: auto;
-    font-size: $type-size-5;
+  margin: 0.5rem 1rem;
+  width: auto;
+  font-size: $type-size-5;
 
-    a {
-        padding: 0.75rem 1.25rem;
-        min-height: 44px;
-    }
+  a {
+    padding: 0.75rem 1.25rem;
+    min-height: 44px;
+  }
 
-    li ul > li a {
-        padding-left: 2rem;
-    }
+  li ul > li a {
+    padding-left: 2rem;
+  }
 
-    li ul li ul a {
-        padding-left: 2.75rem;
-    }
+  li ul li ul a {
+    padding-left: 2.75rem;
+  }
 }
 
 // Custom Scrollbar für Dropdown
 // stylelint-disable-next-line no-duplicate-selectors -- thematisch getrennter Scrollbar-Abschnitt
 .toc-sticky-mobile__dropdown {
-    &::-webkit-scrollbar {
-        width: 6px;
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: $black-a10;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: $link-color-subtle;
+    border-radius: 3px;
+
+    &:hover {
+      background: $link-color-rail;
     }
-    
-    &::-webkit-scrollbar-track {
-        background: $black-a10;
-    }
-    
-    &::-webkit-scrollbar-thumb {
-        background: $link-color-subtle;
-        border-radius: 3px;
-        
-        &:hover {
-            background: $link-color-rail;
-        }
-    }
+  }
 }
 
 // Overlay
 .toc-sticky-overlay {
-    display: none;
-    
-    @media (max-width: $large - 1) {
-        display: block;
-        position: fixed;
-        inset: calc(var(--masthead-height) + 48px) 0 0;
-        background: $black-a50;
-        z-index: 997;
-        opacity: 0;
-        visibility: hidden;
-        pointer-events: none; // Klicks durchlassen wenn unsichtbar
-        transition: opacity 0.25s ease, visibility 0s linear 0.25s;
-        
-        &.is-visible {
-            opacity: 1;
-            visibility: visible;
-            pointer-events: auto; // Klicks abfangen wenn sichtbar
-            transition: opacity 0.25s ease, visibility 0s linear 0s;
-        }
+  display: none;
+
+  @media (max-width: $large - 1) {
+    display: block;
+    position: fixed;
+    inset: calc(var(--masthead-height) + 48px) 0 0;
+    background: $black-a50;
+    z-index: 997;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none; // Klicks durchlassen wenn unsichtbar
+    transition: opacity 0.25s ease, visibility 0s linear 0.25s;
+
+    &.is-visible {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto; // Klicks abfangen wenn sichtbar
+      transition: opacity 0.25s ease, visibility 0s linear 0s;
     }
+  }
 }
 
 // =============================================================================
@@ -242,228 +242,228 @@
 // eine durchlaufende dezente Rail, aktives Segment + Text cyan,
 // Hover magenta (Interaktion), keine Trenner, kein Bold.
 .toc {
-    font-family: $sans-serif-narrow;
-    color: $text-color;
+  font-family: $sans-serif-narrow;
+  color: $text-color;
 
-    // Theme-Basisregel (Panel mit Rahmen/Schatten) explizit zurücksetzen —
-    // Weglassen reicht nicht, die Theme-Deklarationen scheinen sonst durch
-    background-color: transparent;
-    border: none;
+  // Theme-Basisregel (Panel mit Rahmen/Schatten) explizit zurücksetzen —
+  // Weglassen reicht nicht, die Theme-Deklarationen scheinen sonst durch
+  background-color: transparent;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  overflow: visible;
+
+  // Kopf: schlichtes gedimmtes Mono-Label, kein Balken, keine Fläche
+  .nav__title {
+    color: $fg-subtle;
+    font-family: $mono-font-stack;
+    font-size: $toc-title-font-size;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    background: none; // Theme setzt hier Voll-Teal
+    border-bottom: none;
     border-radius: 0;
-    box-shadow: none;
-    overflow: visible;
+    padding: 0.4em 0;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
 
-    // Kopf: schlichtes gedimmtes Mono-Label, kein Balken, keine Fläche
-    .nav__title {
-        color: $fg-subtle;
-        font-family: $mono-font-stack;
-        font-size: $toc-title-font-size;
-        text-transform: uppercase;
-        letter-spacing: 0.08em;
-        background: none; // Theme setzt hier Voll-Teal
-        border-bottom: none;
-        border-radius: 0;
-        padding: 0.4em 0;
-        font-weight: 600;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-
-        i {
-            color: $fg-subtle;
-            font-size: 0.85em;
-        }
+    i {
+      color: $fg-subtle;
+      font-size: 0.85em;
     }
+  }
 
-    // Theme-Regel ".toc .active a" (heller, fast weißer Hintergrund +
-    // dunkler Text) neutralisieren — sie trifft als Descendant-Regel auch
-    // alle Unterlinks eines aktiven Kapitels
-    .active a {
-        background-color: transparent;
-        color: $fg-subtle;
-    }
+  // Theme-Regel ".toc .active a" (heller, fast weißer Hintergrund +
+  // dunkler Text) neutralisieren — sie trifft als Descendant-Regel auch
+  // alle Unterlinks eines aktiven Kapitels
+  .active a {
+    background-color: transparent;
+    color: $fg-subtle;
+  }
 
-    // Scrollspy: aktiver Link in dezentem Cyan (volles Cyan war zu krass).
-    // BEWUSST NICHT fett: font-weight würde die Zeilenbreite ändern und lange
-    // Einträge (schmale TOC-Spalte) beim Aktivieren umbrechen lassen -> Höhen-
-    // Sprung der Liste. Aktiv-Indikator = Cyan-Text + Cyan-Rail (::before unten).
-    .active > a {
-        background-color: transparent;
-        color: $link-color-active;
-    }
+  // Scrollspy: aktiver Link in dezentem Cyan (volles Cyan war zu krass).
+  // BEWUSST NICHT fett: font-weight würde die Zeilenbreite ändern und lange
+  // Einträge (schmale TOC-Spalte) beim Aktivieren umbrechen lassen -> Höhen-
+  // Sprung der Liste. Aktiv-Indikator = Cyan-Text + Cyan-Rail (::before unten).
+  .active > a {
+    background-color: transparent;
+    color: $link-color-active;
+  }
 }
 
 // =============================================================================
 // TOC-MENÜ - Mobile-First mit Touch-optimierten Targets
 // =============================================================================
 .toc__menu {
-    margin: 0;
-    padding: 0;
-    width: 100%;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  list-style: none;
+
+  // fs-Ausnahme: TOC-em-Hierarchie (0.92em -> 0.9375em -> 0.875em) —
+  // relative Staffelung pro Ebene, bewusst außerhalb der Token-Skala
+  font-size: 0.92em;
+
+  // Durchgehende Rail: EINE dezente Linie vor allen Einträgen; das
+  // aktive Segment (li.active > a::before) legt sich cyan darüber
+  border-left: 2px solid $white-a12;
+
+  // Browser-Default "ul ul { list-style: circle }" schlägt die Vererbung —
+  // ohne das ragen abgeschnittene Kreis-Marker in den linken Rand (Dropdown)
+  ul {
     list-style: none;
+  }
 
-    // fs-Ausnahme: TOC-em-Hierarchie (0.92em -> 0.9375em -> 0.875em) —
-    // relative Staffelung pro Ebene, bewusst außerhalb der Token-Skala
-    font-size: 0.92em;
+  a {
+    padding: 0.45rem 1rem;
+    min-height: 36px;
+    color: $fg-subtle;
+    font-weight: 400;
+    line-height: 1.4;
+    text-decoration: none; // Hover-Fall: siehe Zusatzregel am Dateiende
+    transition: color $standard-transition;
 
-    // Durchgehende Rail: EINE dezente Linie vor allen Einträgen; das
-    // aktive Segment (li.active > a::before) legt sich cyan darüber
-    border-left: 2px solid $white-a12;
+    // Flexbox für vertikale Zentrierung
+    display: flex;
+    align-items: center;
 
-    // Browser-Default "ul ul { list-style: circle }" schlägt die Vererbung —
-    // ohne das ragen abgeschnittene Kreis-Marker in den linken Rand (Dropdown)
-    ul {
-        list-style: none;
+    // Hover = Interaktion ⇒ Magenta-Text (AA-Token, siehe _colors.scss)
+    &:hover {
+      color: $hover-color-text;
     }
 
-    a {
-        padding: 0.45rem 1rem;
-        min-height: 36px;
-        color: $fg-subtle;
-        font-weight: 400;
-        line-height: 1.4;
-        text-decoration: none; // Hover-Fall: siehe Zusatzregel am Dateiende
-        transition: color $standard-transition;
-
-        // Flexbox für vertikale Zentrierung
-        display: flex;
-        align-items: center;
-
-        // Hover = Interaktion ⇒ Magenta-Text (AA-Token, siehe _colors.scss)
-        &:hover {
-            color: $hover-color-text;
-        }
-
-        // Touch-Feedback für Mobile
-        &:active {
-            color: $hover-color-text;
-        }
-
-        &:focus-visible {
-            outline: 2px solid $hover-color;
-            outline-offset: -2px; // Innen, damit es im Container bleibt
-        }
-
-        // Touch: größere Ziele nur dort, wo grob gezeigt wird
-        @media (pointer: coarse) {
-            padding: 0.7rem 1rem;
-            min-height: 44px;
-        }
+    // Touch-Feedback für Mobile
+    &:active {
+      color: $hover-color-text;
     }
 
-    // Verschachtelte Listen: Einrückung nur über padding — die eine Rail
-    // links trägt die Hierarchie, keine zusätzlichen Linien
-    li ul {
-        margin: 0;
-        padding-left: 0;
+    &:focus-visible {
+      outline: 2px solid $hover-color;
+      outline-offset: -2px; // Innen, damit es im Container bleibt
     }
 
-    li ul a {
-        font-size: 0.9375em; // 15px - etwas kleiner für Hierarchie
+    // Touch: größere Ziele nur dort, wo grob gezeigt wird
+    @media (pointer: coarse) {
+      padding: 0.7rem 1rem;
+      min-height: 44px;
     }
+  }
 
-    li ul > li a {
-        padding-left: 1.75rem;
+  // Verschachtelte Listen: Einrückung nur über padding — die eine Rail
+  // links trägt die Hierarchie, keine zusätzlichen Linien
+  li ul {
+    margin: 0;
+    padding-left: 0;
+  }
+
+  li ul a {
+    font-size: 0.9375em; // 15px - etwas kleiner für Hierarchie
+  }
+
+  li ul > li a {
+    padding-left: 1.75rem;
+  }
+
+  // stylelint-disable-next-line selector-max-compound-selectors -- tiefe TOC-Verschachtelung (Ebene 3), bewusst
+  li ul li ul > li a {
+    padding-left: 2.25rem;
+    font-size: 0.875em; // 14px für tiefere Ebenen
+  }
+
+  // stylelint-disable-next-line selector-max-compound-selectors -- TOC-Ebenen 4-6
+  li ul li ul li ul > li a {
+    padding-left: 2.75rem;
+  }
+
+  // stylelint-disable-next-line selector-max-compound-selectors -- TOC-Ebenen 4-6
+  li ul li ul li ul li ul > li a {
+    padding-left: 3.25rem;
+  }
+
+  // stylelint-disable-next-line selector-max-compound-selectors -- TOC-Ebenen 4-6
+  li ul li ul li ul li ul li ul > li a {
+    padding-left: 3.75rem;
+  }
+
+  // ==========================================================================
+  // ACTIVE STATE - Scrollspy (Gumshoe setzt .active auf das <li>,
+  // das JS zusätzlich aria-current auf das <a>)
+  // Zwei Kanäle: Text cyan + cyan Rail-Segment über der grauen Rail — KEIN
+  // Bold (das änderte die Zeilenbreite und ließe lange Einträge beim
+  // Aktivieren umbrechen -> Höhen-Sprung); kein Hintergrund, kein Layout-Jitter
+  // ==========================================================================
+  li.active > a {
+    color: $link-color-active;
+    position: relative;
+
+    &::before {
+      content: '';
+      position: absolute;
+      left: -2px; // deckt die Container-Rail exakt ab
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: $link-color-rail;
     }
-
-    // stylelint-disable-next-line selector-max-compound-selectors -- tiefe TOC-Verschachtelung (Ebene 3), bewusst
-    li ul li ul > li a {
-        padding-left: 2.25rem;
-        font-size: 0.875em; // 14px für tiefere Ebenen
-    }
-
-    // stylelint-disable-next-line selector-max-compound-selectors -- TOC-Ebenen 4-6
-    li ul li ul li ul > li a {
-        padding-left: 2.75rem;
-    }
-
-    // stylelint-disable-next-line selector-max-compound-selectors -- TOC-Ebenen 4-6
-    li ul li ul li ul li ul > li a {
-        padding-left: 3.25rem;
-    }
-
-    // stylelint-disable-next-line selector-max-compound-selectors -- TOC-Ebenen 4-6
-    li ul li ul li ul li ul li ul > li a {
-        padding-left: 3.75rem;
-    }
-
-    // ==========================================================================
-    // ACTIVE STATE - Scrollspy (Gumshoe setzt .active auf das <li>,
-    // das JS zusätzlich aria-current auf das <a>)
-    // Zwei Kanäle: Text cyan + cyan Rail-Segment über der grauen Rail — KEIN
-    // Bold (das änderte die Zeilenbreite und ließe lange Einträge beim
-    // Aktivieren umbrechen -> Höhen-Sprung); kein Hintergrund, kein Layout-Jitter
-    // ==========================================================================
-    li.active > a {
-        color: $link-color-active;
-        position: relative;
-
-        &::before {
-            content: '';
-            position: absolute;
-            left: -2px; // deckt die Container-Rail exakt ab
-            top: 0;
-            bottom: 0;
-            width: 2px;
-            background: $link-color-rail;
-        }
-    }
+  }
 }
 
 // =============================================================================
 // AUSKLAPPBARES TOC (Toggle-Button)
 // =============================================================================
 .toc-toggle {
-    width: 100%;
-    background: none;
-    border: none;
-    padding: 0;
-    margin: 0;
-    text-align: left;
-    cursor: pointer;
-    outline: none;
-    display: block;
-    box-sizing: border-box;
-    
-    // Touch-Feedback (Interaktion ⇒ Magenta)
-    &:active .nav__title {
-        background: $magenta-a08;
-    }
+  width: 100%;
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  text-align: left;
+  cursor: pointer;
+  outline: none;
+  display: block;
+  box-sizing: border-box;
+
+  // Touch-Feedback (Interaktion ⇒ Magenta)
+  &:active .nav__title {
+    background: $magenta-a08;
+  }
 }
 
 .toc-toggle .nav__title {
-    margin: 0;
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    width: 100%;
-    box-sizing: border-box;
-    gap: 0.5rem;
+  margin: 0;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  width: 100%;
+  box-sizing: border-box;
+  gap: 0.5rem;
 }
 
 .toc-toggle .toc-toggle-icon {
-    margin-left: auto;
-    color: $fg-subtle;
+  margin-left: auto;
+  color: $fg-subtle;
 }
 
 .toc-toggle-icon {
-    transition: transform $standard-transition;
-    display: inline-block;
-    font-size: 0.875em;
-    flex-shrink: 0;
+  transition: transform $standard-transition;
+  display: inline-block;
+  font-size: 0.875em;
+  flex-shrink: 0;
 }
 
 .toc-toggle[aria-expanded="false"] .toc-toggle-icon {
-    transform: rotate(180deg);
+  transform: rotate(180deg);
 }
 
 .toc__menu-wrapper {
-    overflow: hidden;
-    width: 100%;
-    display: block;
-    max-height: 9999px;
-    opacity: 1;
-    transition: max-height $standard-transition, opacity $standard-transition;
+  overflow: hidden;
+  width: 100%;
+  display: block;
+  max-height: 9999px;
+  opacity: 1;
+  transition: max-height $standard-transition, opacity $standard-transition;
 }
 
 // Eingeklappt zusätzlich visibility: hidden — sonst bleiben die Links
@@ -472,15 +472,15 @@
 // Aufklappen erbt der Wrapper wieder (kein explizites visible, das eine
 // versteckte Umgebung überstimmen würde) und schaltet sofort um.
 .toc__menu-wrapper.is-collapsed {
-    max-height: 0;
-    opacity: 0;
-    visibility: hidden;
-    transition: max-height $standard-transition, opacity $standard-transition, visibility 0s linear 0.3s;
+  max-height: 0;
+  opacity: 0;
+  visibility: hidden;
+  transition: max-height $standard-transition, opacity $standard-transition, visibility 0s linear 0.3s;
 }
 
 .toc-toggle:focus-visible .nav__title {
-    outline: 2px solid $hover-color;
-    outline-offset: -2px;
+  outline: 2px solid $hover-color;
+  outline-offset: -2px;
 }
 
 // =============================================================================
@@ -488,69 +488,69 @@
 // Kompaktere Darstellung für Sidebar-Sticky-Modus
 // =============================================================================
 @media (min-width: $large) {
-    .toc {
-        .nav__title {
-            // Größe kommt zentral aus $toc-title-font-size
-            padding: 0.3em 0;
-            min-height: 32px;
-        }
+  .toc {
+    .nav__title {
+      // Größe kommt zentral aus $toc-title-font-size
+      padding: 0.3em 0;
+      min-height: 32px;
     }
-    
-    .toc__menu {
-        font-size: $fs-body; // 0.875→0.9 (R, Token-Skala) // 14px - kompakter auf Desktop
-        
-        a {
-            padding: 0.375rem 0.75rem; // 6px 12px
-            min-height: 32px; // Kleinere Targets OK mit Maus
-        }
-        
-        li ul a {
-            font-size: 0.8125em; // 13px
-        }
-        
-        // stylelint-disable-next-line selector-max-compound-selectors -- tiefe TOC-Verschachtelung (Ebene 3), bewusst
+  }
+
+  .toc__menu {
+    font-size: $fs-body; // 0.875→0.9 (R, Token-Skala) // 14px - kompakter auf Desktop
+
+    a {
+      padding: 0.375rem 0.75rem; // 6px 12px
+      min-height: 32px; // Kleinere Targets OK mit Maus
+    }
+
+    li ul a {
+      font-size: 0.8125em; // 13px
+    }
+
+    // stylelint-disable-next-line selector-max-compound-selectors -- tiefe TOC-Verschachtelung (Ebene 3), bewusst
     li ul li ul > li a {
-            font-size: 0.8125em;
-        }
+      font-size: 0.8125em;
     }
+  }
 }
 
 // =============================================================================
 // WIDE LAYOUT ANPASSUNGEN
 // =============================================================================
 .wide .toc {
-    .nav__title {
-        // Größe kommt zentral aus $toc-title-font-size
-        padding: 0.4em 0;
-    }
+  .nav__title {
+    // Größe kommt zentral aus $toc-title-font-size
+    padding: 0.4em 0;
+  }
 }
 
 .wide .toc__menu {
-    font-size: $fs-body; // 0.875→0.9 (R, Token-Skala)
+  font-size: $fs-body; // 0.875→0.9 (R, Token-Skala)
 
-    a {
-        padding: 0.375rem 0.75rem;
-    }
+  a {
+    padding: 0.375rem 0.75rem;
+  }
 }
 
 // Mobile: Wide-Layout braucht größere Touch-Targets
 @media (max-width: $large - 1) {
-    .wide .toc {
-        .nav__title {
-            // Größe kommt zentral aus $toc-title-font-size
-            padding: 0.6em 0;
-            min-height: 44px;
-        }
+  .wide .toc {
+    .nav__title {
+      // Größe kommt zentral aus $toc-title-font-size
+      padding: 0.6em 0;
+      min-height: 44px;
     }
-    
-    .wide .toc__menu {
-        font-size: $type-size-5;
-        
-        a {
-            padding: 0.75rem 1rem;
-            min-height: 44px;
-        }
+  }
+
+  .wide .toc__menu {
+    font-size: $type-size-5;
+
+    a {
+      padding: 0.75rem 1rem;
+      min-height: 44px;
     }
+  }
 }
 
 // =============================================================================
@@ -558,42 +558,42 @@
 // =============================================================================
 // TOC nach unten versetzen, damit der feste Header nicht überlappt
 .sidebar__right.sticky {
-    top: calc(var(--masthead-height) + 16px);
+  top: calc(var(--masthead-height) + 16px);
 }
 
 // Maximale Höhe für scrollbare TOC-Liste
 .sidebar__right.sticky .toc__menu {
-    max-height: calc(100vh - var(--masthead-height) - 6em);
-    overflow-y: auto;
-    
-    // Custom Scrollbar für Desktop
-    &::-webkit-scrollbar {
-        width: 6px;
+  max-height: calc(100vh - var(--masthead-height) - 6em);
+  overflow-y: auto;
+
+  // Custom Scrollbar für Desktop
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: $black-a10;
+    border-radius: 3px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: $link-color-subtle;
+    border-radius: 3px;
+
+    &:hover {
+      background: $link-color-rail;
     }
-    
-    &::-webkit-scrollbar-track {
-        background: $black-a10;
-        border-radius: 3px;
-    }
-    
-    &::-webkit-scrollbar-thumb {
-        background: $link-color-subtle;
-        border-radius: 3px;
-        
-        &:hover {
-            background: $link-color-rail;
-        }
-    }
+  }
 }
 
 // Author-Sidebar (linke Seite) nach unten versetzen wie TOC
 .sidebar.sticky {
-    top: calc(var(--masthead-height) + 16px);
+  top: calc(var(--masthead-height) + 16px);
 }
 
 // Avatar in der Sidebar - Transparenz beibehalten
 .author__avatar img {
-    background: transparent;
+  background: transparent;
 }
 
 // Zentrale Label-Größe für ALLE TOC-Varianten (rem = immun gegen die
@@ -609,5 +609,5 @@
 // !important schlagen: gleiche Spezifität, später geladen — gilt für das
 // Sidebar-TOC UND das Mobile-Dropdown (beide liegen im page__content)
 .page__content .toc__menu a:hover {
-    text-decoration: none;
+  text-decoration: none;
 }

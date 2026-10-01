@@ -1,6 +1,6 @@
-/* 
+/*
  * Hero-Komponente Styles
- * 
+ *
  * Diese Datei enthält Stile für die Hero-Komponente, insbesondere
  * für das Hintergrundbild und dessen Caching-Optimierungen.
  */
@@ -10,14 +10,14 @@
   position: relative;
   margin-bottom: 2em;
   clear: both;
-  
+
   // Bild-Stile
   &-image {
     width: 100%;
     height: auto;
     -ms-interpolation-mode: bicubic;
   }
-  
+
   // Overlay-Variante
   &--overlay {
     position: relative;
@@ -55,7 +55,7 @@
 
     // Eigenen Stacking-Kontext, damit Hintergrund / CRT / Text vorhersehbar liegen
     isolation: isolate;
-    
+
     // Optimiertes Laden des Hintergrundbildes
     &[data-background-image] {
       // Muss mit `HERO_TUBE_BOOT_DURATION_MS` / `HERO_CRT_MODE_FLASH_MS` in hero-crt.js übereinstimmen
@@ -64,7 +64,7 @@
 
       // Anfangs kein Hintergrundbild, wird durch JS gesetzt
       background-image: none;
-      
+
       // Platzhalter-Hintergrund während des Ladens
       &::before {
         content: "";
@@ -73,7 +73,7 @@
         background-color: $black-a30;
         z-index: 0;
       }
-      
+
       // Fade-In-Animation, wenn das Bild geladen ist
       &.loaded {
         &::before {
@@ -193,7 +193,7 @@
       image-rendering: pixelated;
       transition: opacity 0.28s ease-out;
     }
-    
+
     // CRT-Raster: eigenes DOM-Element (kein ::after am Hero — Theme-Clearfix)
     // Intensität: data-crt-intensity="dezent" | "stark"
     // Zusätzlich: feine RGB-/Phosphor-Anmutung + Mini-Punkt-Raster (sehr niedrige Deckkraft, augenschonend)
@@ -563,7 +563,7 @@
       z-index: 3;
       padding: 2em 1em;
     }
-    
+
     // Titel-Stile
     .page__title,
     .page__meta,
@@ -587,14 +587,14 @@
     .page__meta {
       margin-top: 1.1rem;
     }
-    
+
     // Titel-Größe
     // fs-Ausnahme: Hero-em-System (2.5/3/3.5em, eigene 768px-MQ) — bewusst
     // relativ zur Basis statt Token-Skala, abgenommener Bestand
     .page__title {
       font-size: 2.5em;
     }
-    
+
     // Lead-Text (52rem statt Theme-768px: bricht auf großen Schirmen
     // nicht mehr zu früh um)
     .page__lead {
@@ -602,15 +602,15 @@
       margin: 0;
       text-align: left;
     }
-    
+
     // Buttons
     .btn {
       display: inline-block;
       margin: 0.5em 0.5em 1.5em 0;
-      
+
       &--light-outline {
         border: 1px solid $white;
-        
+
         &:hover {
           background-color: $white-a20;
         }
@@ -664,11 +664,11 @@
       .page__hero-crt-power-wrap {
         display: none;
       }
-      
+
       &::before {
         background-color: transparent;
       }
-      
+
       .page__title,
       .page__meta,
       .page__lead,

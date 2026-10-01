@@ -11,13 +11,13 @@ html {
 
 // Textauswahl-Farben
 ::selection {
-    background: $selection-bg;
-    color: $selection-text;
+  background: $selection-bg;
+  color: $selection-text;
 }
 
 ::-moz-selection {
-    background: $selection-bg;
-    color: $selection-text;
+  background: $selection-bg;
+  color: $selection-text;
 }
 
 // ============================================
@@ -31,45 +31,45 @@ html {
 // gesamten Baum überstimmen — ohne !important prinzipiell unmöglich.
 /* stylelint-disable declaration-no-important -- globaler Reduced-Motion-Kill-Switch */
 @media (prefers-reduced-motion: reduce) {
-    // Deaktiviere Animationen global, ABER mit Ausnahme des Neon-Schriftzugs:
-    // Basis-Glow/-Flicker/-Puls laufen BEWUSST permanent — auch bei
-    // reduced-motion (Designentscheidung, Juli 2026 vom Nutzer bestätigt);
-    // nur die Orbit-Choreografie ist zusätzlich nutzerinitiiert
-    // CRT-Hero (Roll, Tube-Preboot/Boot, Scanlines …): von der Drossel ausnehmen — Abschaltung nur per Lesemodus (Power), s. _hero.scss
-    *:not(.neon-umlaut, .neon-glow, .neon-name, .neon-orbit-trigger, .page__hero-crt-roll, .page__hero-crt-layer, .page__hero-grain, .page__hero-crt-noise, .page__hero--overlay),
-    *:not(.neon-umlaut, .neon-glow, .neon-name, .neon-orbit-trigger, .page__hero-crt-roll, .page__hero-crt-layer)::before,
-    *:not(.neon-umlaut, .neon-glow, .neon-name, .neon-orbit-trigger, .page__hero-crt-layer, .page__hero--overlay, .page__hero-crt-media)::after {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
-        scroll-behavior: auto !important;
-    }
+  // Deaktiviere Animationen global, ABER mit Ausnahme des Neon-Schriftzugs:
+  // Basis-Glow/-Flicker/-Puls laufen BEWUSST permanent — auch bei
+  // reduced-motion (Designentscheidung, Juli 2026 vom Nutzer bestätigt);
+  // nur die Orbit-Choreografie ist zusätzlich nutzerinitiiert
+  // CRT-Hero (Roll, Tube-Preboot/Boot, Scanlines …): von der Drossel ausnehmen — Abschaltung nur per Lesemodus (Power), s. _hero.scss
+  *:not(.neon-umlaut, .neon-glow, .neon-name, .neon-orbit-trigger, .page__hero-crt-roll, .page__hero-crt-layer, .page__hero-grain, .page__hero-crt-noise, .page__hero--overlay),
+  *:not(.neon-umlaut, .neon-glow, .neon-name, .neon-orbit-trigger, .page__hero-crt-roll, .page__hero-crt-layer)::before,
+  *:not(.neon-umlaut, .neon-glow, .neon-name, .neon-orbit-trigger, .page__hero-crt-layer, .page__hero--overlay, .page__hero-crt-media)::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 
-    // WICHTIG: Neon-Orbit-Animation bleibt IMMER aktiv (Startseiten-Feature)
-    // Diese Animation ist essenziell für die Darstellung und wird nicht deaktiviert
+  // WICHTIG: Neon-Orbit-Animation bleibt IMMER aktiv (Startseiten-Feature)
+  // Diese Animation ist essenziell für die Darstellung und wird nicht deaktiviert
 
-    // Hover-Transformationen deaktivieren (außer Neon-Elemente)
-    .archive__item,
-    .contact-card,
-    .fractal-showcase,
-    .btn {
-        transform: none !important;
-        transition: none !important;
-    }
+  // Hover-Transformationen deaktivieren (außer Neon-Elemente)
+  .archive__item,
+  .contact-card,
+  .fractal-showcase,
+  .btn {
+    transform: none !important;
+    transition: none !important;
+  }
 
-    // Masthead Transitions deaktivieren (aber nicht die Neon-Animation)
-    .masthead,
-    .greedy-nav__toggle,
-    .navicon,
-    .navicon::before,
-    .navicon::after {
-        transition: none !important;
-    }
+  // Masthead Transitions deaktivieren (aber nicht die Neon-Animation)
+  .masthead,
+  .greedy-nav__toggle,
+  .navicon,
+  .navicon::before,
+  .navicon::after {
+    transition: none !important;
+  }
 
-    // TOC Collapse deaktivieren
-    .toc__menu-wrapper {
-        transition: none !important;
-    }
+  // TOC Collapse deaktivieren
+  .toc__menu-wrapper {
+    transition: none !important;
+  }
 }
 /* stylelint-enable declaration-no-important */
 
@@ -80,38 +80,38 @@ html {
 
 // Globaler Focus-Style für alle interaktiven Elemente
 :focus-visible {
-    outline: 2px solid $hover-color;
-    outline-offset: 2px;
+  outline: 2px solid $hover-color;
+  outline-offset: 2px;
 }
 
 // Entferne den Standard-Fokus-Ring für Maus-Klicks
 :focus:not(:focus-visible) {
-    outline: none;
+  outline: none;
 }
 
 // Spezifische Focus-Styles für Buttons
 button:focus-visible,
 .btn:focus-visible,
 .zoom-button:focus-visible {
-    outline: 2px solid $hover-color;
-    outline-offset: 2px;
-    box-shadow: 0 0 0 4px $magenta-a30;
+  outline: 2px solid $hover-color;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px $magenta-a30;
 }
 
 // Focus-Styles für Links
 a:focus-visible {
-    outline: 2px solid $hover-color;
-    outline-offset: 2px;
-    text-decoration: underline;
+  outline: 2px solid $hover-color;
+  outline-offset: 2px;
+  text-decoration: underline;
 }
 
 // Focus-Styles für Formular-Elemente
 input:focus-visible,
 select:focus-visible,
 textarea:focus-visible {
-    outline: 2px solid $hover-color;
-    outline-offset: 2px;
-    border-color: $hover-color;
+  outline: 2px solid $hover-color;
+  outline-offset: 2px;
+  border-color: $hover-color;
 }
 
 // Focus-Styles für Navigation (der Fokus-HINTERGRUND liegt am Ende von
@@ -119,13 +119,13 @@ textarea:focus-visible {
 // gewinnt er ohne !important per Spezifität + spätester Position)
 .greedy-nav a:focus-visible,
 .masthead__menu-item a:focus-visible {
-    outline: 2px solid $hover-color;
-    outline-offset: 2px;
+  outline: 2px solid $hover-color;
+  outline-offset: 2px;
 }
 
 // Focus-Styles für Kontakt-Karten
 .contact-card:focus-visible {
-    outline: 2px solid $hover-color;
-    outline-offset: 4px;
-    box-shadow: 0 0 0 4px $magenta-a20;
+  outline: 2px solid $hover-color;
+  outline-offset: 4px;
+  box-shadow: 0 0 0 4px $magenta-a20;
 }

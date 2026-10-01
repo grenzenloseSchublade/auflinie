@@ -2,29 +2,29 @@
 
 // Kategorie-Buttons
 .category-buttons {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5em;
-    margin-bottom: $section-spacing;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5em;
+  margin-bottom: $section-spacing;
 }
 
 // Kategorie-Filter Buttons
 
 // Anpassungen für Standard-Buttons
 .btn {
-    // Hier können spezifische Anpassungen für die Standard-Buttons hinzugefügt werden
-    // Die Grundstile werden aus dem Theme übernommen
-    transition: all 0.3s ease;
-    
-    &:hover {
-        color: $hover-color;
-        transform: translateY(-2px);
-        box-shadow: 0 5px 15px $black-a30;
-    }
-    
-    &:active {
-        transform: translateY(1px);
-    }
+  // Hier können spezifische Anpassungen für die Standard-Buttons hinzugefügt werden
+  // Die Grundstile werden aus dem Theme übernommen
+  transition: all 0.3s ease;
+
+  &:hover {
+    color: $hover-color;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px $black-a30;
+  }
+
+  &:active {
+    transform: translateY(1px);
+  }
 }
 
 // =============================================================================
@@ -35,24 +35,24 @@
 // Keycap   = exklusiv Fraktal-Panels (components/_fractal-panel.scss)
 
 .btn.btn--primary {
-    @include btn-role-primary;
+  @include btn-role-primary;
 }
 
 // Hero-Action-Buttons: schlicht weiß gerahmt — passt zum CRT-Bild
 // (Cyan-Umrandung entfiel auf Nutzerwunsch, Juli 2026)
 .page__hero--overlay .btn--light-outline {
-    border: 1px solid $white-a45;
-    background-color: $ink-a35;
-    color: $white;
+  border: 1px solid $white-a45;
+  background-color: $ink-a35;
+  color: $white;
 
-    &:hover {
-        border-color: $white-a85;
-        background-color: $white-a08;
-        color: $white;
-    }
+  &:hover {
+    border-color: $white-a85;
+    background-color: $white-a08;
+    color: $white;
+  }
 }
 
 // Sekundär-/Outline-Rolle (site-weit): Cyan-subtle-Border, transparent
 .btn.btn--outline {
-    @include btn-role-outline;
+  @include btn-role-outline;
 }
