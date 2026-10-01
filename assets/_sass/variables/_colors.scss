@@ -1,29 +1,32 @@
 // Farbvariablen für das gesamte Projekt
-// Diese Datei enthält alle Farbdefinitionen, die im Projekt verwendet werden
+// Diese Datei enthält alle Farbdefinitionen, die im Projekt verwendet werden.
 
-// Basis-Farben
+// Aufbau (STYLEGUIDE Abschnitt 3, Regeln FARB-1, FARB-5, FARB-6, FARB-9):
+//  1. Grundfarben: deckende Töne, die einzigen Farbliterale der Site.
+//  2. Alpha-Stufen: $<familie>-aNN = Grundfarbe mit NN % Deckkraft, immer
+//     aus der DECKENDEN Grundfarbe abgeleitet (nie rgba() auf ein Token mit
+//     Alpha, FARB-5). Die Stufen bilden genau die Werte ab, die heute
+//     verwendet werden (Migration 1. 10. 2026, optisch neutral). Neue Stufe
+//     nur anlegen, wenn keine vorhandene passt.
+//  3. Rollen-Tokens: semantische Namen, die auf Grundfarben oder Stufen
+//     zeigen. Gleicher Wert = Alias, nie ein zweites Literal (FARB-9).
+// Komponenten schreiben keine Literale (scripts/color-guardrail.sh prüft das).
+
+// =============================================================================
+// 1. Grundfarben
+// =============================================================================
 $white: #ffffff; // Einheitliches Weiß für alle Verwendungen
+$black: #000000;
 
-// Primäre Farbpalette (Cyan, Magenta, Grün)
+// Primäre Farbpalette (Cyan, Magenta)
 $link-color: #05d9e8; // Cyan - Linkfarbe
-$link-color-subtle: rgb(5 217 232 / 40%); // Dezentes Cyan - für subtile Akzente (Trennlinien, Hamburger)
-// Aktiv-Zustände im TOC. Bewusst kräftiger als $link-color-subtle: 40% fällt als
-// TEXTfarbe durch WCAG AA (4,5:1). Das subtle-Token bleibt Flächen und Linien.
-// Gemessen auf dem echten Seitengrund #252a34 (Body im Critical CSS):
-// 60% = 3,91:1 (durchgefallen, frühere 4,52 waren gegen #1a1a1a gerechnet),
-// 70% = 4,80:1, 75% = 5,30:1. Seit 1.10.2026 75% (Style-Guide-Audit,
-// Nutzer-Freigabe). Nicht ohne Kontrastrechnung senken. Text und Rail liegen
-// bewusst auf demselben Wert, bleiben aber getrennte Tokens.
-$link-color-active: rgba($link-color, 0.75); // Aktiver TOC-Eintrag (Text) - 5,30:1 auf #252a34
-$link-color-rail: rgba($link-color, 0.75); // Aktives Rail-Segment (Fläche) - 5,30:1 auf #252a34
 $hover-color: #ff00ff; // Magenta - Hover-Effekt Farbe
-$hover-color-subtle: rgb(255 29 206 / 60%); // Dezentes Magenta - für subtile Akzente (Trennlinien, Hamburger)
 // Magenta als TEXTfarbe (Hover/Active von Links). Deckender Ton desselben Hot
 // Magenta wie $hover-color-subtle: die 60 % Deckkraft des subtle-Tokens mischen
 // den dunklen Grund ein und ergaben nur 2,26:1. #ff2fd2 ist der dunkelste Ton
 // dieser Farbe, der WCAG AA (4,5:1) auf dem Masthead-Grund #252a34 schafft
-// (4,51:1, Seite 5,46:1). Nur auf Flächen ohne zusätzliche Tönung einsetzen:
-// auf 10 % Cyan fällt er auf 3,68:1 (deshalb kein Cyan-Hover-Grund mehr).
+// (4,51:1, Seite 5,46:1). Auf dem 10-%-Cyan-Hover-Grund der Navigation fällt
+// er auf 3,68:1, das ist die dokumentierte Owner-Ausnahme (KOMP-3, R-2).
 // Nutzer-Entscheidung 1.10.2026: „der dunkelste Ton".
 $hover-color-text: #ff2fd2; // Magenta-Text 4,51:1 auf #252a34
 // Electric Pink rgba(255, 0, 153, 0.6)
@@ -31,46 +34,198 @@ $hover-color-text: #ff2fd2; // Magenta-Text 4,51:1 auf #252a34
 // Neon Fuchsia rgba(255, 0, 128, 0.6)
 $background-dark: #1a1a1a; // Dunkler Hintergrund
 
-// Überschriften
-$card-heading-color: #05d9e8; // Überschriftenfarbe für Karten
-
-// Textfarben
-$selection-bg: #ff00ff; // Hintergrundfarbe für markierten Text
-$selection-text: #000000; // Textfarbe für markierten Text
-
-// Overlay-Farben (für konsistente Hintergrund-Transparenzen)
-
-// Hinweis: .contact-type, .contact-value, .contact-icon Styles 
-// wurden nach components/_about.scss verschoben
-
 // Konsolen-Designsprache (geteilt von Fraktal-Panels, CV und About)
 $console-heading: #eacfb4; // Warmes Beige für Panel-/Sektionstitel
 $console-panel-bg: #1a1c20; // Panel-Grundton (eine Stufe heller als Seitengrund)
 $console-panel-bg-hover: #20242a;
-$console-panel-border: rgb(255 255 255 / 8%);
+
+// Tinte: kühles Fast-Schwarz für halbtransparente Leisten (Footer,
+// Hero-Caption, Blog-Hinweis, Hero-Buttons)
+$ink: #0a0e12;
+
+// Neutrale Graustufen (Zahl = HSL-Helligkeit in %). Heute nur im
+// Fraktal-Panel, CV und Offline-Seite. Nahe Nachbarn (87/88) zusammenzulegen
+// wäre eine sichtbare Änderung und braucht eine Owner-Entscheidung.
+$gray-12: #1e1e1e;
+$gray-16: #2a2a2a;
+$gray-20: #333333;
+$gray-27: #444444;
+$gray-33: #555555;
+$gray-53: #888888;
+$gray-63: #a0a0a0;
+$gray-67: #aaaaaa;
+$gray-87: #dddddd;
+$gray-88: #e0e0e0;
+$gray-93: #eeeeee;
+
+// Einzeltöne mit fester Rolle
+$cyan-pale: #d1f7ff; // helles Cyan für Titel im Fraktal-Erklärtext
+$red-pale: #ffd1d1; // Fehlertext auf dunklem Canvas-Overlay
+$slider-connect-blue: #4aa3ff; // Verlaufsende der Slider-Füllung (kein Palettenton, Audit B-F23)
+$slider-track-bg: #111318; // Slider-Schiene
+$slider-handle-bg: #1f2228; // Slider-Griff
+$control-bg: #202329; // Fraktal-Toolbar-Button
+$control-bg-hover: #262a31;
+$drawer-bg: #0f0f14; // Nav-Drawer, voll deckend (siehe _masthead.scss)
+$crt-screen-bg: #10141a; // Röhren-Schwarz der CRT-Seitenwechsel
+
+// =============================================================================
+// 2. Alpha-Stufen (Primitive)
+// =============================================================================
+// Cyan aus $link-color
+$cyan-a00: rgba($link-color, 0); // Verlaufs-/Glow-Ende, bewusst Cyan statt Schwarz
+$cyan-a08: rgba($link-color, 0.08);
+$cyan-a10: rgba($link-color, 0.1); // Nav-Hover-Grund (Owner: bleibt, KOMP-3)
+$cyan-a12: rgba($link-color, 0.12);
+$cyan-a15: rgba($link-color, 0.15);
+$cyan-a16: rgba($link-color, 0.16);
+$cyan-a20: rgba($link-color, 0.2);
+$cyan-a22: rgba($link-color, 0.22);
+$cyan-a25: rgba($link-color, 0.25);
+$cyan-a26: rgba($link-color, 0.26);
+$cyan-a30: rgba($link-color, 0.3);
+$cyan-a35: rgba($link-color, 0.35);
+$cyan-a40: rgba($link-color, 0.4);
+$cyan-a45: rgba($link-color, 0.45);
+$cyan-a50: rgba($link-color, 0.5);
+$cyan-a55: rgba($link-color, 0.55);
+$cyan-a60: rgba($link-color, 0.6);
+$cyan-a70: rgba($link-color, 0.7);
+$cyan-a75: rgba($link-color, 0.75);
+$cyan-a80: rgba($link-color, 0.8);
+$cyan-a85: rgba($link-color, 0.85);
+
+// Magenta aus $hover-color (FARB-6: nur diese Stufen, kein rgba($hover-color, …)
+// in Komponenten). Nur für Interaktions-Momente (design-praeferenz-ruhig).
+$magenta-a08: rgba($hover-color, 0.08);
+$magenta-a15: rgba($hover-color, 0.15);
+$magenta-a18: rgba($hover-color, 0.18);
+$magenta-a20: rgba($hover-color, 0.2);
+$magenta-a22: rgba($hover-color, 0.22);
+$magenta-a30: rgba($hover-color, 0.3);
+$magenta-a35: rgba($hover-color, 0.35);
+$magenta-a55: rgba($hover-color, 0.55);
+$magenta-a75: rgba($hover-color, 0.75);
+
+// Weiß aus $white. Informationstragender Text nie unter $white-a55 (FARB-3).
+$white-a00: rgba($white, 0);
+$white-a02: rgba($white, 0.02);
+$white-a03: rgba($white, 0.03);
+$white-a04: rgba($white, 0.04);
+$white-a05: rgba($white, 0.05);
+$white-a06: rgba($white, 0.06);
+$white-a08: rgba($white, 0.08);
+$white-a10: rgba($white, 0.1);
+$white-a12: rgba($white, 0.12);
+$white-a14: rgba($white, 0.14);
+$white-a15: rgba($white, 0.15);
+$white-a18: rgba($white, 0.18);
+$white-a20: rgba($white, 0.2);
+$white-a25: rgba($white, 0.25);
+$white-a32: rgba($white, 0.32);
+$white-a40: rgba($white, 0.4);
+$white-a45: rgba($white, 0.45);
+$white-a50: rgba($white, 0.5);
+$white-a55: rgba($white, 0.55);
+$white-a60: rgba($white, 0.6);
+$white-a62: rgba($white, 0.62);
+$white-a65: rgba($white, 0.65);
+$white-a70: rgba($white, 0.7);
+$white-a78: rgba($white, 0.78);
+$white-a80: rgba($white, 0.8);
+$white-a82: rgba($white, 0.82);
+$white-a85: rgba($white, 0.85);
+$white-a88: rgba($white, 0.88);
+$white-a90: rgba($white, 0.9);
+$white-a92: rgba($white, 0.92);
+$white-a95: rgba($white, 0.95);
+
+// Schwarz aus $black (Schatten, Abdunklungen)
+$black-a10: rgba($black, 0.1);
+$black-a20: rgba($black, 0.2);
+$black-a25: rgba($black, 0.25);
+$black-a30: rgba($black, 0.3);
+$black-a35: rgba($black, 0.35);
+$black-a40: rgba($black, 0.4);
+$black-a45: rgba($black, 0.45);
+$black-a50: rgba($black, 0.5);
+$black-a55: rgba($black, 0.55);
+$black-a60: rgba($black, 0.6);
+$black-a68: rgba($black, 0.68);
+$black-a70: rgba($black, 0.7);
+$black-a75: rgba($black, 0.75);
+$black-a78: rgba($black, 0.78);
+$black-a94: rgba($black, 0.94);
+$black-a95: rgba($black, 0.95);
+
+// Tinte, Panel-Ton, Beige
+$ink-a35: rgba($ink, 0.35);
+$ink-a45: rgba($ink, 0.45);
+$ink-a55: rgba($ink, 0.55);
+$console-panel-bg-a96: rgba($console-panel-bg, 0.96);
+$console-panel-bg-a98: rgba($console-panel-bg, 0.98);
+$console-heading-a50: rgba($console-heading, 0.5); // Kapitel-Hairline (section-break)
+
+// Halbtransparente Flächen ohne eigene Grundfarbe (Fraktal-Panel, CV)
+$raised-bg-from: rgb(42 42 42 / 95%); // Erklär-Karte, Verlaufsstart
+$raised-bg-to: rgb(30 30 30 / 98%);
+$raised-bg-from-hover: rgb(50 50 50 / 95%);
+$raised-bg-to-hover: rgb(35 35 35 / 98%);
+$float-panel-bg: rgb(34 34 34 / 90%); // schwebende Panels im Fraktal-Vollbild
+$float-panel-bg-strong: rgb(34 34 34 / 95%);
+$hud-bg: rgb(8 10 14 / 78%); // Mess-Chips über dem Fraktal-Canvas
+$inset-panel-bg: rgb(20 21 24 / 97%); // Skill-Erklärfeld im CV
+
+// =============================================================================
+// 3. Rollen-Tokens
+// =============================================================================
+$link-color-subtle: $cyan-a40; // Dezentes Cyan - für subtile Akzente (Trennlinien, Hamburger)
+// Aktiv-Zustände im TOC. Bewusst kräftiger als $link-color-subtle: 40% fällt als
+// TEXTfarbe durch WCAG AA (4,5:1). Das subtle-Token bleibt Flächen und Linien.
+// Gemessen auf dem echten Seitengrund #252a34 (Body im Critical CSS):
+// 60% = 3,91:1 (durchgefallen, frühere 4,52 waren gegen #1a1a1a gerechnet),
+// 70% = 4,80:1, 75% = 5,30:1. Seit 1.10.2026 75% (Style-Guide-Audit,
+// Nutzer-Freigabe). Nicht ohne Kontrastrechnung senken. Text und Rail liegen
+// bewusst auf demselben Wert, bleiben aber getrennte Tokens.
+$link-color-active: $cyan-a75; // Aktiver TOC-Eintrag (Text) - 5,30:1 auf #252a34
+$link-color-rail: $cyan-a75; // Aktives Rail-Segment (Fläche) - 5,30:1 auf #252a34
+$hover-color-subtle: rgb(255 29 206 / 60%); // Dezentes Magenta - für subtile Akzente (Trennlinien, Hamburger)
+
+// Überschriften
+$card-heading-color: $link-color; // Überschriftenfarbe für Karten
+
+// Textauswahl
+$selection-bg: $hover-color; // Hintergrundfarbe für markierten Text
+$selection-text: $black; // Textfarbe für markierten Text
+
+// Hinweis: .contact-type, .contact-value, .contact-icon Styles
+// wurden nach components/_about.scss verschoben
+
+// Konsolen-Rahmen
+$console-panel-border: $white-a08;
 
 // Syntax-Highlighting (base16) in der Site-Palette — überschreibt die
 // Material-Theme-Defaults des MM-Themes (dort !default deklariert)
-$base00: #1a1c20; // Hintergrund = Panel-Ton
-$base01: #20242a; // Highlights
+$base00: $console-panel-bg; // Hintergrund = Panel-Ton
+$base01: $console-panel-bg-hover; // Highlights
 $base02: #2a2f37; // Selektion
 $base03: #7d8590; // Kommentare
 $base04: #9aa4b2; // Zeilennummern
 $base05: #e8e6e3; // Standardtext
 $base06: #f0eee9;
-$base07: #ffffff;
+$base07: $white;
 $base08: #ff6b81; // Fehler/Deleted (weiches Rot)
-$base09: #eacfb4; // Zahlen/Konstanten = Beige
+$base09: $console-heading; // Zahlen/Konstanten = Beige
 $base0a: #ffd580; // Klassen/Attribute (warmes Amber)
 $base0b: #00ffc8; // Strings = Akzent-Grün
 $base0c: #7fdff0; // Support/Regex (helles Cyan)
-$base0d: #05d9e8; // Funktionen = Cyan
+$base0d: $link-color; // Funktionen = Cyan
 $base0e: #ff79c6; // Keywords = aufgehelltes Magenta (6:1 auf Panel-Ton)
 $base0f: #d4a37f; // Sonstiges
 
 // Abgeleitete Flächen-/Rahmen-Tokens (Konsolidierung wiederholter Literale)
-$border-accent: rgba($link-color, 0.55); // Karten-Akzentrand links
-$border-accent-hover: rgba($link-color, 0.35); // Karten-Rahmen im Hover
-$fg-muted: rgb(255 255 255 / 80%); // Fließtext auf Panels
-$fg-subtle: rgb(255 255 255 / 55%); // Meta-/Labeltext
-$surface-tint: rgb(255 255 255 / 6%); // dezente Flächen-Aufhellung / Divider
+$border-accent: $cyan-a55; // Karten-Akzentrand links
+$border-accent-hover: $cyan-a35; // Karten-Rahmen im Hover
+$fg-muted: $white-a80; // Fließtext auf Panels
+$fg-subtle: $white-a55; // Meta-/Labeltext
+$surface-tint: $white-a06; // dezente Flächen-Aufhellung / Divider
