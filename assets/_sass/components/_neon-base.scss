@@ -12,6 +12,11 @@
 // - variables/_css-properties.scss (CSS Custom Properties)
 // - variables/_colors.scss (Farbvariablen)
 
+// farb-Ausnahme: [Block] Neon-Effekt (Owner-Stilelement). Die Glow-Leitern des
+// Neon-Magentas #ff00cc und die Flacker-Stufen sind Effektdaten, kein
+// Palettenton: ein Token je Keyframe-Stufe würde nur verschleiern. Welcher
+// Magenta-Ton die Marke ist, entscheidet der Owner (Audit B-F09/B-F26).
+
 // =============================================================================
 // KEYFRAMES: Umlaut Punkt-Flicker
 // =============================================================================
@@ -319,3 +324,5 @@
   animation-timing-function: ease-in-out, ease-in-out;
   animation-iteration-count: infinite, infinite;
 }
+
+// farb-Ausnahme-Ende

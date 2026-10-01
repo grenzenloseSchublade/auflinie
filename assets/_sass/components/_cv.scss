@@ -51,7 +51,7 @@
     bottom: 8px;
     width: 2px;
     border-radius: 1px;
-    background: linear-gradient(180deg, rgba($link-color, 0.5), rgba($link-color, 0.08));
+    background: linear-gradient(180deg, $cyan-a50, $cyan-a08);
   }
 }
 
@@ -78,7 +78,7 @@
     border-radius: 50%;
     background: $console-panel-bg;
     border: 2px solid $link-color;
-    box-shadow: 0 0 6px rgb(5 217 232 / 45%);
+    box-shadow: 0 0 6px $cyan-a45;
   }
 
   .cv-entry__period {
@@ -92,7 +92,7 @@
     font-variant-numeric: tabular-nums;
     font-size: $fs-label-lg;
     letter-spacing: 0.03em;
-    color: rgba($link-color, 0.85);
+    color: $cyan-a85;
     white-space: nowrap;
   }
 
@@ -101,7 +101,7 @@
     margin-top: 0.2rem;
     font-family: $mono-font-stack;
     font-size: $fs-label-lg; // 0.68→0.78 (K7/K8, A11y: informationstragend)
-    color: rgb(255 255 255 / 40%);
+    color: $white-a40;
   }
 
   .cv-entry__body {
@@ -116,13 +116,13 @@
 
   .cv-entry__org {
     font-size: $fs-body-sm;
-    color: #aaaaaa;
+    color: $gray-67;
     margin: 0 0 0.55rem;
   }
 
   .cv-entry__desc {
     font-size: $fs-body;
-    color: rgb(255 255 255 / 85%);
+    color: $white-a85;
     margin: 0 0 0.55rem;
     line-height: 1.55;
 
@@ -232,7 +232,7 @@
     }
 
     &:hover {
-      background-color: rgb(255 255 255 / 5%);
+      background-color: $white-a05;
     }
 
     &:focus-visible {
@@ -252,18 +252,18 @@
   margin: 0.7rem 0 0.5rem;
   padding-left: 1rem;
   padding-top: 0.3rem;
-  border-top: 1px dotted rgb(255 255 255 / 10%);
+  border-top: 1px dotted $white-a10;
 
   li {
     font-size: $cv-subitems-font-size;
     margin-bottom: 0.3rem;
-    color: rgb(255 255 255 / 70%);
+    color: $white-a70;
     padding-left: 0;
     position: relative;
     transition: color 0.2s ease;
 
     &:hover {
-      color: rgb(255 255 255 / 90%);
+      color: $white-a90;
     }
 
     &::before {
@@ -326,7 +326,7 @@
 .cv-skills p.cv-skill-group__context {
   font-size: $cv-group-context-font-size;
   line-height: 1.35;
-  color: rgb(255 255 255 / 45%);
+  color: $white-a45;
   max-width: 38rem;
   margin: 0 0 0.55rem;
 }
@@ -350,9 +350,9 @@ li.cv-skill-chip {
   align-items: center;
   gap: 0.45rem;
   font-size: $cv-chip-font-size;
-  color: rgb(255 255 255 / 85%);
+  color: $white-a85;
   background: $console-panel-bg;
-  border: 1px solid rgb(255 255 255 / 10%);
+  border: 1px solid $white-a10;
   border-radius: 6px;
   padding: 0.3rem 0.6rem;
   margin: 0;
@@ -401,12 +401,12 @@ li.cv-skill-chip {
 li.cv-skill-chip.is-selected {
   position: relative;
   z-index: 1;
-  border-color: rgba($hover-color, 0.75);
-  box-shadow: 0 0 7px rgba($hover-color, 0.35);
+  border-color: $magenta-a75;
+  box-shadow: 0 0 7px $magenta-a35;
 }
 
 li.cv-skill-chip.is-related {
-  border-color: rgba($link-color, 0.5);
+  border-color: $cyan-a50;
 }
 
 // Ergänzende Breite: zweite Chip-Ebene unter den Kern-Chips. Rein visuell
@@ -421,8 +421,8 @@ li.cv-skill-chip.is-related {
 
 li.cv-skill-chip--breadth {
   background: transparent;
-  border-color: rgb(255 255 255 / 12%);
-  color: rgb(255 255 255 / 62%);
+  border-color: $white-a12;
+  color: $white-a62;
   padding: 0.24rem 0.52rem;
 }
 
@@ -455,7 +455,7 @@ li.cv-skill-chip--breadth {
   overflow-y: auto;
   margin: 0 0 1rem;
   padding: 0.4rem 0.8rem;
-  background: rgb(20 21 24 / 97%);
+  background: $inset-panel-bg;
   border-radius: 6px;
   border-left: 2px solid $link-color-subtle;
   transition: border-color 0.2s ease;
@@ -475,11 +475,11 @@ li.cv-skill-chip--breadth {
 .cv-skills__selection-skill {
   @include mono-label($cv-group-title-font-size, 0.07em);
 
-  color: rgb(255 255 255 / 85%);
+  color: $white-a85;
 }
 
 .cv-skills__selection-projekte {
-  color: rgb(255 255 255 / 70%);
+  color: $white-a70;
 }
 
 // Sprachen: Chips in der Formensprache der Fähigkeiten
@@ -491,8 +491,8 @@ li.cv-skill-chip--breadth {
   font-family: $mono-font-stack;
   font-size: $fs-label-lg; // 0.68→0.78 (K7/K8, A11y: informationstragend)
   letter-spacing: 0.04em;
-  color: rgb(255 255 255 / 45%);
-  border-left: 1px solid rgb(255 255 255 / 15%);
+  color: $white-a45;
+  border-left: 1px solid $white-a15;
   padding-left: 0.45rem;
 }
 

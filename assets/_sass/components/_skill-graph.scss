@@ -72,7 +72,7 @@
   @media (hover: hover) {
     &:hover {
       border-color: $link-color-subtle;
-      color: rgb(255 255 255 / 80%);
+      color: $white-a80;
     }
   }
 
@@ -150,7 +150,7 @@
   background: transparent;
   border: 1px solid $link-color-subtle;
   border-radius: 8px;
-  color: rgb(255 255 255 / 80%);
+  color: $white-a80;
   padding: 0.4rem 0.8rem;
   cursor: pointer;
   transition: border-color 0.2s ease, color 0.2s ease;
@@ -158,7 +158,7 @@
   @media (hover: hover) {
     &:hover {
       border-color: $link-color;
-      color: rgb(255 255 255 / 95%);
+      color: $white-a95;
     }
   }
 
@@ -169,7 +169,7 @@
 
   &[aria-pressed="true"] {
     border-color: $hover-color-subtle;
-    color: rgb(255 255 255 / 95%);
+    color: $white-a95;
   }
 }
 
@@ -178,12 +178,12 @@
 @keyframes graph-activate-glow {
   0%,
   100% {
-    box-shadow: 0 0 0 0 rgb(5 217 232 / 0%);
+    box-shadow: 0 0 0 0 $cyan-a00;
     border-color: $link-color-subtle;
   }
 
   50% {
-    box-shadow: 0 0 14px 2px rgb(5 217 232 / 45%);
+    box-shadow: 0 0 14px 2px $cyan-a45;
     border-color: $link-color;
   }
 }
@@ -209,8 +209,8 @@
   background: $console-panel-bg;
   border: 1px solid $link-color-subtle;
   border-radius: 999px;
-  box-shadow: 0 14px 34px -18px rgb(0 0 0 / 95%);
-  color: rgb(255 255 255 / 92%);
+  box-shadow: 0 14px 34px -18px $black-a95;
+  color: $white-a92;
   cursor: pointer;
 
   @media (hover: hover) {
@@ -247,13 +247,13 @@ body.graph-open .skill-graph__floating {
 @keyframes graph-floating-glow {
   0%,
   100% {
-    box-shadow: 0 14px 34px -18px rgb(0 0 0 / 95%), 0 0 0 0 rgb(5 217 232 / 0%);
+    box-shadow: 0 14px 34px -18px $black-a95, 0 0 0 0 $cyan-a00;
     border-color: $link-color-subtle;
     transform: translateX(-50%) scale(1);
   }
 
   50% {
-    box-shadow: 0 14px 34px -18px rgb(0 0 0 / 95%), 0 0 24px 5px rgb(5 217 232 / 60%);
+    box-shadow: 0 14px 34px -18px $black-a95, 0 0 24px 5px $cyan-a60;
     border-color: $link-color;
     transform: translateX(-50%) scale(1.06);
   }
@@ -307,7 +307,7 @@ html.graph-scroll-lock {
   position: fixed;
   inset: 0;
   z-index: $graph-layer-z;
-  background: rgb(0 0 0 / 55%);
+  background: $black-a55;
   animation: graph-scrim-in 0.25s ease;
 }
 
@@ -336,7 +336,7 @@ body.graph-open .skill-graph__panel {
   transform: translateX(-50%);
   border: 1px solid $console-panel-border;
   border-radius: 16px 16px 0 0;
-  box-shadow: 0 -20px 60px -30px #000000;
+  box-shadow: 0 -20px 60px -30px $black;
   display: flex;
   flex-direction: column;
   opacity: 1;
@@ -367,8 +367,8 @@ body.graph-open p.skill-graph__context {
   padding: 0.55rem 0.9rem;
   border: 1px solid $console-panel-border;
   border-radius: 12px;
-  background: rgb(0 0 0 / 68%);
-  color: rgb(255 255 255 / 90%);
+  background: $black-a68;
+  color: $white-a90;
   font-family: $mono-font-stack;
   font-size: $fs-label;
   line-height: 1.55;
@@ -402,7 +402,7 @@ body.graph-open p.skill-graph__context {
   @media (hover: hover) {
     &:hover {
       border-color: $hover-color-subtle;
-      color: rgb(255 255 255 / 95%);
+      color: $white-a95;
     }
   }
 

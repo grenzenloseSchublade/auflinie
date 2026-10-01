@@ -6,11 +6,11 @@
 // -----------------------------------------------------------------------------
 .fractal-panel__controls {
   margin-bottom: 15px;
-  background: linear-gradient(135deg, #2a2a2a 0%, #1e1e1e 100%);
+  background: linear-gradient(135deg, $gray-16 0%, $gray-12 100%);
   padding: 16px;
   border-radius: 12px;
   border: 1px solid $surface-tint;
-  box-shadow: 0 4px 12px rgb(0 0 0 / 30%);
+  box-shadow: 0 4px 12px $black-a30;
 
   @media (max-width: 768px) {
     padding: 14px;
@@ -33,7 +33,7 @@
   display: none;
   margin-top: 14px;
   padding-top: 14px;
-  border-top: 1px solid rgb(5 217 232 / 20%);
+  border-top: 1px solid $cyan-a20;
 }
 
 .fractal-panel.is-advanced-open .fractal-panel__controls-advanced {
@@ -113,20 +113,20 @@
   align-items: center;
   gap: 10px;
   padding: 10px 12px;
-  background: rgb(255 255 255 / 3%);
+  background: $white-a03;
   border-radius: 10px;
-  border: 1px solid rgb(255 255 255 / 4%);
+  border: 1px solid $white-a04;
   transition: background 0.2s ease;
 
   &:hover {
-    background: rgb(255 255 255 / 5%);
+    background: $white-a05;
   }
 
   label {
     flex-shrink: 0;
     margin: 0;
     min-width: 88px;
-    color: rgb(255 255 255 / 70%);
+    color: $white-a70;
     font-family: $fp-mono;
     font-size: $fp-fs-sm; // 11→12px (K10, A11y: Regler-Namen)
     font-weight: 600;
@@ -192,12 +192,12 @@
   align-items: center;
   gap: 10px;
   padding: 10px 12px;
-  background: rgb(255 255 255 / 3%);
+  background: $white-a03;
   border-radius: 10px;
-  border: 1px solid rgb(255 255 255 / 4%);
+  border: 1px solid $white-a04;
 
   label {
-    color: rgb(255 255 255 / 70%);
+    color: $white-a70;
     font-size: $fp-fs-sm;
     font-weight: 500;
     text-transform: uppercase;
@@ -231,8 +231,8 @@
 
   // noUiSlider setzt .noUi-target auf das Wrapper-Element selbst
   &.noUi-target {
-    background: #111318;
-    border: 1px solid rgb(255 255 255 / 8%);
+    background: $slider-track-bg;
+    border: 1px solid $white-a08;
     border-radius: 3px;
     box-shadow: none;
     height: 6px;
@@ -249,9 +249,9 @@
     width: 22px;
     height: 22px;
     border-radius: 4px;
-    background: #1f2228;
-    border: 1px solid rgb(5 217 232 / 70%);
-    box-shadow: 0 2px 0 rgb(0 0 0 / 45%), inset 0 1px 0 rgb(255 255 255 / 8%);
+    background: $slider-handle-bg;
+    border: 1px solid $cyan-a70;
+    box-shadow: 0 2px 0 $black-a45, inset 0 1px 0 $white-a08;
     cursor: pointer;
 
     // -9px statt -(22-6)/2=-8px: der 1px-Track-Border verschiebt den
@@ -266,12 +266,12 @@
 
     &:hover {
       border-color: $fp-accent;
-      box-shadow: 0 2px 0 rgb(0 0 0 / 45%), 0 0 8px rgb(5 217 232 / 30%), inset 0 1px 0 rgb(255 255 255 / 8%);
+      box-shadow: 0 2px 0 $black-a45, 0 0 8px $cyan-a30, inset 0 1px 0 $white-a08;
     }
 
     &:focus {
       outline: none;
-      box-shadow: 0 0 0 3px rgb(5 217 232 / 40%), 0 2px 0 rgb(0 0 0 / 45%);
+      box-shadow: 0 0 0 3px $cyan-a40, 0 2px 0 $black-a45;
     }
   }
 
@@ -309,8 +309,8 @@
   font-variant-numeric: tabular-nums;
   text-align: center;
   border-radius: 4px;
-  background: rgb(5 217 232 / 8%);
-  border: 1px solid rgb(5 217 232 / 20%);
+  background: $cyan-a08;
+  border: 1px solid $cyan-a20;
   outline: none;
   appearance: textfield;
   transition: border-color 0.2s, box-shadow 0.2s;
@@ -323,11 +323,11 @@
 
   &:focus {
     border-color: $fp-accent;
-    box-shadow: 0 0 8px rgb(5 217 232 / 40%);
+    box-shadow: 0 0 8px $cyan-a40;
   }
 
   &:hover {
-    border-color: rgb(5 217 232 / 50%);
+    border-color: $cyan-a50;
   }
 }
 
@@ -336,8 +336,8 @@
 // -----------------------------------------------------------------------------
 .fractal-panel select {
   background: $surface-tint;
-  color: #ffffff;
-  border: 1px solid rgb(255 255 255 / 10%);
+  color: $white;
+  border: 1px solid $white-a10;
   padding: 10px 14px;
   border-radius: 10px;
   cursor: pointer;
@@ -347,8 +347,8 @@
 }
 
 .fractal-panel select option {
-  background: #333333;
-  color: #eeeeee;
+  background: $gray-20;
+  color: $gray-93;
   font-size: $fs-base;
 }
 
@@ -371,7 +371,7 @@
 
   .ts-wrapper.single .ts-control {
     background: $surface-tint;
-    border: 1px solid rgb(255 255 255 / 10%);
+    border: 1px solid $white-a10;
     border-radius: 6px;
     padding: 6px 12px;
     min-height: 38px;
@@ -387,30 +387,30 @@
   }
 
   .ts-wrapper.single .ts-control:hover {
-    background: rgb(255 255 255 / 8%);
-    border-color: rgb(5 217 232 / 30%);
+    background: $white-a08;
+    border-color: $cyan-a30;
   }
 
   .ts-wrapper.single.focus .ts-control {
-    background: rgb(255 255 255 / 8%);
-    border-color: rgb(5 217 232 / 50%);
+    background: $white-a08;
+    border-color: $cyan-a50;
     box-shadow: 0 0 0 3px $fp-accent-soft;
   }
 
   .ts-control,
   .ts-control input {
-    color: #ffffff;
+    color: $white;
     font-family: $fp-mono;
     font-size: $fp-fs-sm;
     font-variant-numeric: tabular-nums;
   }
 
   .ts-control input::placeholder {
-    color: rgb(255 255 255 / 50%);
+    color: $white-a50;
   }
 
   .ts-wrapper.single .ts-control::after {
-    border-color: rgb(255 255 255 / 50%) transparent transparent;
+    border-color: $white-a50 transparent transparent;
     margin-top: -2px;
   }
 
@@ -419,10 +419,10 @@
   }
 
   .ts-dropdown {
-    background: #1e1e1e;
-    border: 1px solid rgb(255 255 255 / 15%);
+    background: $gray-12;
+    border: 1px solid $white-a15;
     border-radius: 6px;
-    box-shadow: 0 8px 24px rgb(0 0 0 / 50%);
+    box-shadow: 0 8px 24px $black-a50;
     margin-top: 4px;
     overflow: hidden;
     z-index: 250;
@@ -453,11 +453,11 @@
   .ts-dropdown .option:hover,
   .ts-dropdown .option.active {
     background: $fp-accent-soft;
-    color: #ffffff;
+    color: $white;
   }
 
   .ts-dropdown .option.selected {
-    background: rgb(5 217 232 / 25%);
+    background: $cyan-a25;
     color: $fp-accent;
   }
 

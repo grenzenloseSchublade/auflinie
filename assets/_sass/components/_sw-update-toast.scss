@@ -54,8 +54,8 @@ $sw-toast-z: 10020;
   flex-wrap: wrap;
   width: min(26rem, 100%);
   padding: 0.6rem 0.9rem;
-  color: rgb(255 255 255 / 92%);
-  box-shadow: 0 10px 30px rgb(0 0 0 / 40%);
+  color: $white-a92;
+  box-shadow: 0 10px 30px $black-a40;
   animation: sw-update-toast-enter 0.3s ease-out forwards;
 }
 
@@ -117,12 +117,12 @@ $sw-toast-z: 10020;
 // Sekundär: leiser Ghost
 .sw-update-toast__ghost {
   background: transparent;
-  border: 1px solid rgb(255 255 255 / 18%);
-  color: rgb(255 255 255 / 70%);
+  border: 1px solid $white-a18;
+  color: $white-a70;
 
   &:hover {
-    border-color: rgb(255 255 255 / 32%);
-    color: #ffffff;
+    border-color: $white-a32;
+    color: $white;
   }
 }
 
@@ -140,10 +140,10 @@ $sw-toast-z: 10020;
   z-index: $sw-toast-z - 1;
   max-width: calc(100% - 2.5rem);
   padding: 0.6rem 1.25rem;
-  color: rgb(255 255 255 / 92%);
+  color: $white-a92;
   font-family: $sans-serif;
   font-size: $fs-body;
-  box-shadow: 0 10px 30px rgb(0 0 0 / 40%);
+  box-shadow: 0 10px 30px $black-a40;
 
   &[hidden] {
     display: none;

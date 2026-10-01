@@ -4,7 +4,7 @@
 .author__urls-wrapper button {
   background-color: transparent;
   border: 1px solid $link-color-subtle;
-  color: rgb(255 255 255 / 88%);
+  color: $white-a88;
   border-radius: 6px;
   font-size: $fs-label; // 0.75em→0.72rem (R, Token-Skala)
   padding: 0.5em 1.1em;
@@ -12,8 +12,8 @@
 
   &:hover {
     border-color: $link-color;
-    background-color: rgba($link-color, 0.12);
-    color: #ffffff;
+    background-color: $cyan-a12;
+    color: $white;
   }
 }
 
@@ -25,7 +25,7 @@
     background-color: $console-panel-bg;
     border: 1px solid $console-panel-border;
     border-radius: 8px;
-    box-shadow: 0 8px 24px rgb(0 0 0 / 40%);
+    box-shadow: 0 8px 24px $black-a40;
 
     // Sprechblasen-Pfeil an den Panel-Ton anpassen
     &::before {
@@ -39,10 +39,10 @@
 }
 
 .author__urls {
-  color: rgb(255 255 255 / 88%);
+  color: $white-a88;
 
   a {
-    color: rgb(255 255 255 / 88%);
+    color: $white-a88;
 
     &:hover {
       color: $link-color;

@@ -21,7 +21,7 @@
   
   &:hover {
     transform: translateY($transform-value);
-    box-shadow: 0 4px 8px rgb(0 0 0 / 20%);
+    box-shadow: 0 4px 8px $black-a20;
   }
 }
 
@@ -47,8 +47,8 @@
     linear-gradient(
       90deg,
       transparent,
-      rgba($console-heading, 0.5) 12%,
-      rgba($console-heading, 0.5) 88%,
+      $console-heading-a50 12%,
+      $console-heading-a50 88%,
       transparent
     )
     top / 100% 1px no-repeat;
@@ -65,13 +65,13 @@
 // Nutzer: _buttons.scss (.btn--primary/.btn--outline), _offline.scss
 // (Reload-Button), _sw-update-toast.scss (Primär), _posts.scss (Pager).
 @mixin btn-role-primary {
-  background-color: rgba($link-color, 0.16);
-  border: 1px solid rgba($link-color, 0.5);
+  background-color: $cyan-a16;
+  border: 1px solid $cyan-a50;
   color: $link-color;
 
   &:hover,
   &:focus {
-    background-color: rgba($link-color, 0.26);
+    background-color: $cyan-a26;
     border-color: $link-color;
     color: $link-color;
   }
@@ -80,13 +80,13 @@
 @mixin btn-role-outline {
   background-color: transparent;
   border: 1px solid $link-color-subtle;
-  color: rgb(255 255 255 / 88%);
+  color: $white-a88;
 
   &:hover,
   &:focus {
     border-color: $link-color;
-    background-color: rgba($link-color, 0.12);
-    color: #ffffff;
+    background-color: $cyan-a12;
+    color: $white;
   }
 }
 
@@ -113,10 +113,10 @@
   gap: 0.7rem;
   font-size: $size;
   font-weight: 600;
-  color: rgb(255 255 255 / 95%);
+  color: $white-a95;
 
   @if $rule {
-    border-bottom: 1px solid rgb(255 255 255 / 8%);
+    border-bottom: 1px solid $white-a08;
     padding-bottom: 0.5rem;
   }
 

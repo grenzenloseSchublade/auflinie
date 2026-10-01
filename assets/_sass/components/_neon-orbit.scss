@@ -100,9 +100,9 @@
       translateX(0)
       rotate(calc(-1 * (var(--neon-orbit-start-angle-before, 180deg) + 1080deg)));
     opacity: 1;
-    background: #ffffff;
-    box-shadow: 0 0 40px rgb(255 255 255 / 100%),
-      0 0 100px rgb(255 255 255 / 95%),
+    background: $white;
+    box-shadow: 0 0 40px $white,
+      0 0 100px $white-a95,
       0 0 200px $fg-muted;
   }
 
@@ -114,13 +114,13 @@
       rotate(calc(-1 * (var(--neon-orbit-start-angle-before, 180deg) + 1080deg)))
       scale(var(--neon-orbit-explosion-scale, 50));
     opacity: 1;
-    background: #ffffff;
+    background: $white;
     box-shadow: 
-      0 0 80px rgb(255 255 255 / 100%),
-      0 0 180px rgb(255 255 255 / 95%),
-      0 0 350px rgb(255 255 255 / 85%),
-      0 0 500px rgb(255 255 255 / 60%),
-      0 0 25vw rgb(255 255 255 / 40%);
+      0 0 80px $white,
+      0 0 180px $white-a95,
+      0 0 350px $white-a85,
+      0 0 500px $white-a60,
+      0 0 25vw $white-a40;
   }
 
   100% {
@@ -131,10 +131,10 @@
       rotate(calc(-1 * (var(--neon-orbit-start-angle-before, 180deg) + 1080deg)))
       scale(1);
     opacity: 1;
-    background: #ffffff;
-    box-shadow: 0 0 30px rgb(255 255 255 / 100%),
-      0 0 80px rgb(255 255 255 / 90%),
-      0 0 150px rgb(255 255 255 / 70%);
+    background: $white;
+    box-shadow: 0 0 30px $white,
+      0 0 80px $white-a90,
+      0 0 150px $white-a70;
   }
 }
 
@@ -164,9 +164,9 @@
       translateX(0)
       rotate(calc(-1 * (var(--neon-orbit-start-angle-after, 0deg) + 1080deg)));
     opacity: 1;
-    background: #ffffff;
-    box-shadow: 0 0 40px rgb(255 255 255 / 100%),
-      0 0 100px rgb(255 255 255 / 95%),
+    background: $white;
+    box-shadow: 0 0 40px $white,
+      0 0 100px $white-a95,
       0 0 200px $fg-muted;
   }
 
@@ -178,13 +178,13 @@
       rotate(calc(-1 * (var(--neon-orbit-start-angle-after, 0deg) + 1080deg)))
       scale(var(--neon-orbit-explosion-scale, 50));
     opacity: 1;
-    background: #ffffff;
+    background: $white;
     box-shadow: 
-      0 0 80px rgb(255 255 255 / 100%),
-      0 0 180px rgb(255 255 255 / 95%),
-      0 0 350px rgb(255 255 255 / 85%),
-      0 0 500px rgb(255 255 255 / 60%),
-      0 0 25vw rgb(255 255 255 / 40%);
+      0 0 80px $white,
+      0 0 180px $white-a95,
+      0 0 350px $white-a85,
+      0 0 500px $white-a60,
+      0 0 25vw $white-a40;
   }
 
   100% {
@@ -195,38 +195,38 @@
       rotate(calc(-1 * (var(--neon-orbit-start-angle-after, 0deg) + 1080deg)))
       scale(1);
     opacity: 1;
-    background: #ffffff;
-    box-shadow: 0 0 30px rgb(255 255 255 / 100%),
-      0 0 80px rgb(255 255 255 / 90%),
-      0 0 150px rgb(255 255 255 / 70%);
+    background: $white;
+    box-shadow: 0 0 30px $white,
+      0 0 80px $white-a90,
+      0 0 150px $white-a70;
   }
 }
 
 @keyframes neonOrbitPopOutBefore {
   0% {
     opacity: 1;
-    box-shadow: 0 0 12px rgb(255 255 255 / 100%),
-      0 0 36px rgb(255 255 255 / 95%),
+    box-shadow: 0 0 12px $white,
+      0 0 36px $white-a95,
       0 0 90px $fg-muted;
   }
 
   100% {
     opacity: 0;
-    box-shadow: 0 0 0 rgb(255 255 255 / 0%);
+    box-shadow: 0 0 0 $white-a00;
   }
 }
 
 @keyframes neonOrbitPopOutAfter {
   0% {
     opacity: 1;
-    box-shadow: 0 0 12px rgb(255 255 255 / 100%),
-      0 0 36px rgb(255 255 255 / 95%),
+    box-shadow: 0 0 12px $white,
+      0 0 36px $white-a95,
       0 0 90px $fg-muted;
   }
 
   100% {
     opacity: 0;
-    box-shadow: 0 0 0 rgb(255 255 255 / 0%);
+    box-shadow: 0 0 0 $white-a00;
   }
 }
 

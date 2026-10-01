@@ -38,7 +38,7 @@
 .contact-card {
   display: flex;
   align-items: center;
-  background-color: rgb(255 255 255 / 3%);
+  background-color: $white-a03;
   border-radius: 5px;
   padding: 0.75rem;
   text-decoration: none;
@@ -49,7 +49,7 @@
   font-size: $fs-body;
 
   &:hover {
-    background-color: rgb(255 255 255 / 5%);
+    background-color: $white-a05;
     text-decoration: none; // Theme-Hover-Fall: siehe Zusatzregel unten
   }
 }
@@ -67,7 +67,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: rgba($card-heading-color, 0.1);
+  background-color: $cyan-a10;
   border-radius: 50%;
   margin-right: 0.75rem;
   color: $card-heading-color;
@@ -90,7 +90,7 @@
   font-weight: bold;
   margin-bottom: 0.15rem;
   white-space: nowrap;
-  color: white;
+  color: $white;
 }
 
 .contact-value {
@@ -129,11 +129,11 @@
     content: "";
     height: 1px;
     width: clamp(2rem, 6vw, 4.5rem);
-    background: linear-gradient(90deg, transparent, rgba($console-heading, 0.5));
+    background: linear-gradient(90deg, transparent, $console-heading-a50);
     flex-shrink: 0;
   }
 
   &::after {
-    background: linear-gradient(90deg, rgba($console-heading, 0.5), transparent);
+    background: linear-gradient(90deg, $console-heading-a50, transparent);
   }
 }

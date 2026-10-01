@@ -19,7 +19,7 @@
     &:hover {
         color: $hover-color;
         transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgb(0 0 0 / 30%);
+        box-shadow: 0 5px 15px $black-a30;
     }
     
     &:active {
@@ -41,14 +41,14 @@
 // Hero-Action-Buttons: schlicht weiß gerahmt — passt zum CRT-Bild
 // (Cyan-Umrandung entfiel auf Nutzerwunsch, Juli 2026)
 .page__hero--overlay .btn--light-outline {
-    border: 1px solid rgb(255 255 255 / 45%);
-    background-color: rgb(10 14 18 / 35%);
-    color: #ffffff;
+    border: 1px solid $white-a45;
+    background-color: $ink-a35;
+    color: $white;
 
     &:hover {
-        border-color: rgb(255 255 255 / 85%);
-        background-color: rgb(255 255 255 / 8%);
-        color: #ffffff;
+        border-color: $white-a85;
+        background-color: $white-a08;
+        color: $white;
     }
 }
 

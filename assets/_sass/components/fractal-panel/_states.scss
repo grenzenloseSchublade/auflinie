@@ -6,10 +6,10 @@
 // -----------------------------------------------------------------------------
 .fractal-panel__info-panel {
   margin-top: 10px;
-  background: #333333;
+  background: $gray-20;
   padding: 12px 15px;
   border-radius: 4px;
-  color: #dddddd;
+  color: $gray-87;
   font-size: $fp-fs-xl;
   line-height: 1.5;
   text-align: left;
@@ -26,7 +26,7 @@
 
 .fractal-panel__info-value {
   font-weight: bold;
-  color: #ffffff;
+  color: $white;
   font-family: $fp-mono;
   font-variant-numeric: tabular-nums;
 
@@ -47,10 +47,10 @@
   width: 100%;
   text-align: center;
   margin-bottom: 0;
-  background: linear-gradient(145deg, rgb(42 42 42 / 95%), rgb(30 30 30 / 98%));
+  background: linear-gradient(145deg, $raised-bg-from, $raised-bg-to);
   color: $fp-accent;
   padding: 12px 16px;
-  border: 1px solid rgb(5 217 232 / 30%);
+  border: 1px solid $cyan-a30;
   border-radius: 12px;
   cursor: pointer;
   font-size: $fp-fs-lg;
@@ -63,14 +63,14 @@
   gap: 8px;
 
   &:hover {
-    background: linear-gradient(145deg, rgb(50 50 50 / 95%), rgb(35 35 35 / 98%));
-    border-color: rgb(5 217 232 / 50%);
-    box-shadow: 0 0 15px rgb(5 217 232 / 20%);
+    background: linear-gradient(145deg, $raised-bg-from-hover, $raised-bg-to-hover);
+    border-color: $cyan-a50;
+    box-shadow: 0 0 15px $cyan-a20;
   }
 
   &.is-active {
-    background: linear-gradient(145deg, rgb(5 217 232 / 15%), rgb(5 217 232 / 8%));
-    border-color: rgb(5 217 232 / 50%);
+    background: linear-gradient(145deg, $cyan-a15, $cyan-a08);
+    border-color: $cyan-a50;
   }
 
   .toggle-icon {
@@ -80,16 +80,16 @@
 }
 
 .fractal-panel__explanation-box {
-  background: linear-gradient(145deg, rgb(42 42 42 / 95%), rgb(30 30 30 / 98%));
-  border: 1px solid rgb(5 217 232 / 20%);
+  background: linear-gradient(145deg, $raised-bg-from, $raised-bg-to);
+  border: 1px solid $cyan-a20;
   border-radius: 12px;
   padding: 20px;
   margin-top: 12px;
-  color: #e0e0e0;
+  color: $gray-88;
   font-size: $fp-fs-lg;
   line-height: 1.6;
   display: none;
-  box-shadow: 0 4px 20px rgb(0 0 0 / 30%);
+  box-shadow: 0 4px 20px $black-a30;
   max-height: 70vh;
   overflow-y: auto;
 
@@ -106,7 +106,7 @@
     color: $fp-heading;
     font-size: $fs-title;
     font-weight: 600;
-    border-bottom: 1px solid rgb(255 255 255 / 12%);
+    border-bottom: 1px solid $white-a12;
     padding-bottom: 12px;
   }
 
@@ -115,13 +115,13 @@
     color: $fp-accent;
     font-size: $fs-base;
     font-weight: 600;
-    border-bottom: 1px solid rgb(5 217 232 / 30%);
+    border-bottom: 1px solid $cyan-a30;
     padding-bottom: 8px;
   }
 
   h6 {
     margin: 0 0 6px;
-    color: #d1f7ff;
+    color: $cyan-pale;
     font-size: $fs-body; // 0.875→0.9 (R, Token-Skala)
     font-weight: 500;
   }
@@ -132,12 +132,12 @@
 
   p.hint {
     font-style: italic;
-    color: #a0a0a0;
+    color: $gray-63;
     font-size: $fs-body-sm;
   }
 
   code {
-    background: rgb(5 217 232 / 10%);
+    background: $cyan-a10;
     color: $fp-accent;
     padding: 2px 6px;
     border-radius: 4px;
@@ -180,7 +180,7 @@
   .param-group {
     margin: 12px 0;
     padding-left: 12px;
-    border-left: 2px solid rgb(5 217 232 / 20%);
+    border-left: 2px solid $cyan-a20;
   }
 
   .color-grid {
@@ -191,12 +191,12 @@
   }
 
   .color-tag {
-    background: rgb(255 255 255 / 8%);
-    border: 1px solid rgb(255 255 255 / 15%);
+    background: $white-a08;
+    border: 1px solid $white-a15;
     padding: 4px 10px;
     border-radius: 12px;
     font-size: $fs-ui;
-    color: #d1f7ff;
+    color: $cyan-pale;
   }
 
   .nav-columns {
@@ -258,12 +258,12 @@
     left: 12px;
     right: 12px;
     z-index: 200;
-    background: rgb(34 34 34 / 90%);
+    background: $float-panel-bg;
 
     @include backdrop-blur(6px);
 
     border-radius: 8px;
-    box-shadow: 0 6px 18px rgb(0 0 0 / 35%);
+    box-shadow: 0 6px 18px $black-a35;
     margin-bottom: 0;
   }
 
@@ -291,7 +291,7 @@
   .fractal-panel__explanation-toggle {
     position: relative;
     z-index: 2;
-    background: rgb(34 34 34 / 90%);
+    background: $float-panel-bg;
 
     @include backdrop-blur(6px);
   }
@@ -305,11 +305,11 @@
     display: block;
     max-height: 70vh;
     overflow-y: auto;
-    background: rgb(34 34 34 / 95%);
+    background: $float-panel-bg-strong;
 
     @include backdrop-blur(8px);
 
-    box-shadow: 0 -4px 24px rgb(0 0 0 / 50%);
+    box-shadow: 0 -4px 24px $black-a50;
     transform: translateY(20px);
     opacity: 0;
     visibility: hidden;

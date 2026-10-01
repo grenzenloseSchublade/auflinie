@@ -6,7 +6,7 @@
 .site-logo img {
     // Neon-Schein entlang der Logo-Linien (drop-shadow folgt der SVG-Kontur);
     // Duotone passend zum Cyan/Magenta-Line-Art
-    filter: drop-shadow(0 0 3px $border-accent-hover) drop-shadow(0 0 7px rgba($hover-color, 0.22));
+    filter: drop-shadow(0 0 3px $border-accent-hover) drop-shadow(0 0 7px $magenta-a22);
     transition: filter 0.45s ease;
     max-height: 5rem;  // Größer (vorher 3.5rem, Standard 2rem)
     width: auto;
@@ -19,12 +19,12 @@
 .site-logo svg {
     max-height: 5rem;
     width: auto;
-    filter: drop-shadow(0 0 3px $border-accent-hover) drop-shadow(0 0 7px rgba($hover-color, 0.22));
+    filter: drop-shadow(0 0 3px $border-accent-hover) drop-shadow(0 0 7px $magenta-a22);
     transition: filter 0.45s ease;
 }
 
 .site-logo:hover svg {
-    filter: drop-shadow(0 0 4px rgba($link-color, 0.5)) drop-shadow(0 0 10px rgba($hover-color, 0.35));
+    filter: drop-shadow(0 0 4px $cyan-a50) drop-shadow(0 0 10px $magenta-a35);
 }
 
 // Röhren-Flackern der Magenta-Konturen: zwei teilerfremde Laufzeiten
@@ -32,6 +32,7 @@
 // ~89s und wirkt dadurch unregelmäßig statt getaktet.
 // prefers-reduced-motion: wird von der globalen Drossel erfasst (Selektor
 // steht nicht auf der Ausnahmeliste in base/_accessibility.scss).
+// farb-Ausnahme: Attributwert im Inline-Logo (_includes/logo.svg), keine Farbangabe
 .site-logo svg [stroke="#f0c"] {
     animation: logo-tube-flicker-a 11.3s linear infinite,
         logo-tube-flicker-b 7.9s linear infinite;
@@ -81,7 +82,7 @@
     // Anpassung des Titels "Kraftstoff" / "Hans Müller"
     .site-title {
         font-size: $site-title-font-size; // Größerer Titel
-        color: #ffffff; // identisch mit den Nav-Links (vorher #eaeaea)
+        color: $white; // identisch mit den Nav-Links (vorher #eaeaea)
         font-weight: 600;
         transition: color 0.45s ease, text-shadow 0.45s ease; // Sanfter Übergang für Farbe/Glow
         margin-right: 3em; // Größerer Abstand zum Menü (Desktop)
@@ -91,9 +92,9 @@
 
             // Kalibriert: Glow als warmes Glühen, kein 90px-Halo
             // (Recherche: Glow <=16px, Alpha <=0.55 — Synthwave '84-Praxis)
-            text-shadow: 0 0 4px rgb(255 0 255 / 55%),
-              0 0 10px rgb(255 0 255 / 35%),
-              0 0 16px rgb(255 0 255 / 20%);
+            text-shadow: 0 0 4px $magenta-a55,
+              0 0 10px $magenta-a35,
+              0 0 16px $magenta-a20;
             text-decoration: none;
         }
         
@@ -169,7 +170,7 @@ body .masthead {
 
   @include backdrop-blur(5px);
 
-  box-shadow: 0 2px 10px rgb(0 0 0 / 30%);
+  box-shadow: 0 2px 10px $black-a30;
   border-bottom: none;
   height: var(--masthead-height);
   min-height: var(--masthead-height);
@@ -292,7 +293,7 @@ body .greedy-nav .visible-links a {
   &:hover,
   &:focus {
     color: $hover-color-text;
-    background: rgb(5 217 232 / 10%);
+    background: $cyan-a10;
   }
   
   // Theme-Override: Entferne die Teal-Underline-Animation des Themes.
@@ -331,8 +332,8 @@ body {
     // deckenden Fläche unsichtbar, wurde aber über dem permanent animierten
     // Hero (CRT-Layer, Canvas-Noise) JEDEN Frame neu gerastert — die
     // Hauptursache des ruckelnden Slide-Outs auf Mobilgeräten
-    background: rgb(15 15 20);
-    box-shadow: -4px 0 20px rgb(0 0 0 / 40%);
+    background: $drawer-bg;
+    box-shadow: -4px 0 20px $black-a40;
     z-index: 999; // Hinter dem Header (z-index: 1000)
     transform: translateX(100%);
     transition: transform 0.3s ease-in-out;
@@ -397,7 +398,7 @@ body::before {
   content: "";
   position: fixed;
   inset: var(--masthead-height) $drawer-width 0 0; // Beginnt unter dem Header // Spart Menü-Bereich (Drawer-Breite) aus, Menü bleibt klickbar
-  background: rgb(0 0 0 / 60%);
+  background: $black-a60;
   z-index: 998; // Unter Masthead (1000) und Drawer (999)
   opacity: 0;
   pointer-events: none;
@@ -448,7 +449,7 @@ body .greedy-nav .hidden-links li {
   // Desktop: Hover-Effekt auf gesamter Box
   @media (min-width: 768px) {
     &:hover {
-      background: rgb(5 217 232 / 10%);
+      background: $cyan-a10;
       border-left-color: $link-color-subtle;
       
       a {
@@ -644,7 +645,7 @@ body .greedy-nav__toggle:focus-visible {
 }
 
 .site-logo:hover img {
-    filter: drop-shadow(0 0 4px rgba($link-color, 0.5)) drop-shadow(0 0 10px rgba($hover-color, 0.35));
+    filter: drop-shadow(0 0 4px $cyan-a50) drop-shadow(0 0 10px $magenta-a35);
 }
 
 // Fokus-Hintergrund der Navigation (aus base/_accessibility.scss hierher

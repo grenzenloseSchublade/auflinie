@@ -121,7 +121,7 @@ html.spa-vt .masthead {
 // („Header blinkt"). Fester Grund in der Zwischengrund-Farbe der
 // Transition — optisch identisch, aber blickdicht.
 html:active-view-transition-type(crt)::view-transition-group(masthead) {
-  background-color: #10141a;
+  background-color: $crt-screen-bg;
 }
 
 // --- Drawer: Exit-only-Snapshot ------------------------------------------------
@@ -182,7 +182,7 @@ html.vt-capture body::before {
   $on-delay: 330ms;
 
   html:active-view-transition-type(crt)::view-transition {
-    background-color: #10141a;
+    background-color: $crt-screen-bg;
     animation: tv-phosphor-blink 140ms ease-out $blink-delay both;
   }
 
@@ -250,15 +250,16 @@ html.vt-capture body::before {
 
   @keyframes tv-phosphor-blink {
     0% {
-      background-color: #10141a;
+      background-color: $crt-screen-bg;
     }
 
     35% {
+      // farb-Ausnahme: CRT-Phosphor-Grün (Blink zwischen Aus und Ein)
       background-color: rgb(85 240 145 / 42%);
     }
 
     100% {
-      background-color: #10141a;
+      background-color: $crt-screen-bg;
     }
   }
 
@@ -296,6 +297,7 @@ html.vt-capture body::before {
   $on-dur: if($voll, 260ms, 180ms);
 
   html:active-view-transition-type(crt)::view-transition {
+    // farb-Ausnahme: CRT-Phosphor-Punkt (Nachglimmen beim Ausschalten)
     background:
       radial-gradient(
         circle,
@@ -303,7 +305,7 @@ html.vt-capture body::before {
         rgb(85 240 145 / 50%) 30%,
         transparent 70%
       )
-      center / 0 0 no-repeat #10141a;
+      center / 0 0 no-repeat $crt-screen-bg;
     animation: crt-phosphor-dot $dot-dur ease-out $dot-delay both;
   }
 
@@ -461,13 +463,14 @@ html.vt-capture body::before {
     // Dunkler Grund + statische Scanlines (Muster _crt-overlay.scss __mask):
     // scheint an den ausgefransten Displacement-Rändern durch. Statisch,
     // keine Animation — deshalb hier auch keine Drawer-Offset-Regel.
+    // farb-Ausnahme: CRT-Scanlines (Muster und Wert wie _crt-overlay.scss)
     background:
       repeating-linear-gradient(
         0deg,
         transparent 0 2px,
         rgb(0 0 0 / 25%) 2px 4px
       )
-      #10141a;
+      $crt-screen-bg;
   }
 
   html:active-view-transition-type(crt)::view-transition-old(root) {

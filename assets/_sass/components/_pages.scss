@@ -40,9 +40,9 @@ html {
   flex: 1 1 260px;
   padding: 0.55em 0.7em;
   border-radius: 6px;
-  border: 1px solid rgb(255 255 255 / 20%);
-  background: rgb(0 0 0 / 20%);
-  color: #ffffff;
+  border: 1px solid $white-a20;
+  background: $black-a20;
+  color: $white;
 }
 
 .blog-empty-message {
@@ -63,7 +63,11 @@ html {
 // „Neu hier?"-Banner auf der Blogseite: schlanke Panel-Zeile statt Notice-Box
 .guide-banner {
   background: transparent;
-  border: 1px dashed rgba($console-panel-border, 0.7);
+
+  // War rgba($console-panel-border, 0.7): Sass ersetzt den Alpha-Kanal, das
+  // ergab 70 % Weiß statt 0,7 × 8 % (FARB-5). Der gerenderte Wert bleibt
+  // bewusst stehen (optisch neutral). Ob 70 % gewollt sind, entscheidet der Owner.
+  border: 1px dashed $white-a70;
   border-radius: 8px;
   display: grid;
   grid-template-columns: auto 1fr;
@@ -88,7 +92,7 @@ html {
   min-width: 0;
   margin: 0;
   font-size: $fs-body;
-  color: rgb(255 255 255 / 82%);
+  color: $white-a82;
 
   strong {
     color: $console-heading;

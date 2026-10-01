@@ -1,7 +1,7 @@
 // Footer: Chrome-Labels in der Konsolen-Designsprache
 .page__footer {
   border-top: 1px solid $console-panel-border;
-  background-color: rgb(10 14 18 / 45%);
+  background-color: $ink-a45;
 
   footer {
     margin-top: 1.2em;
@@ -19,7 +19,7 @@
   flex-wrap: wrap;
 
   a {
-    color: rgb(255 255 255 / 70%);
+    color: $white-a70;
     text-decoration: none;
 
     &:hover {
@@ -28,13 +28,13 @@
   }
 
   .site-footer__sep {
-    color: rgb(255 255 255 / 25%);
+    color: $white-a25;
   }
 }
 
 .page__footer-copyright {
   font-family: $mono-font-stack;
   font-size: $fs-label-xs;
-  color: rgb(255 255 255 / 40%);
+  color: $white-a40;
   margin-top: 0.6rem;
 }

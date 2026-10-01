@@ -8,7 +8,7 @@
   align-items: center;
   justify-content: center;
   padding: 1rem;
-  background: rgb(10 14 18 / 55%);
+  background: $ink-a55;
 
   @include backdrop-blur(2px);
 
@@ -24,7 +24,7 @@
 
   width: min(24rem, 100%);
   padding: 1.1rem 1.3rem;
-  box-shadow: 0 14px 40px rgb(0 0 0 / 45%);
+  box-shadow: 0 14px 40px $black-a45;
   animation: blog-notice-enter 0.25s ease-out;
 }
 

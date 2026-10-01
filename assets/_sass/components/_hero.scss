@@ -70,7 +70,7 @@
         content: "";
         position: absolute;
         inset: 0;
-        background-color: rgb(0 0 0 / 30%);
+        background-color: $black-a30;
         z-index: 0;
       }
       
@@ -89,7 +89,7 @@
         inset: 0;
         z-index: 15;
         pointer-events: none;
-        background: rgb(0 0 0 / 94%);
+        background: $black-a94;
         opacity: 0;
         transition: opacity 0.32s ease-out;
       }
@@ -132,6 +132,8 @@
       z-index: 2;
       pointer-events: none;
       opacity: 0;
+
+      // farb-Ausnahme: CRT-Korn, neutrales Mittelgrau als Basis für soft-light
       background: #707070;
       filter: url("#heroGrainFilter");
       mix-blend-mode: soft-light;
@@ -158,6 +160,8 @@
         right: 0;
         top: -15vh;
         height: 12vh;
+
+        // farb-Ausnahme: CRT-Rollbalken, Lichtverlauf der Röhre
         background: linear-gradient(
           180deg,
           transparent 0%,
@@ -208,6 +212,10 @@
         inset: 0;
         pointer-events: none;
       }
+
+      // farb-Ausnahme: [Block] CRT-Raster (Owner-Stilelement). RGB-Bahnen,
+      // Phosphor-Körnung, Scanlines und Röhren-Vignette sind Effektwerte,
+      // keine Palettentöne.
 
       // Vertikale RGB-Bahnen (~früher Slot/Shadow-Mask, gedämpft / ausgewaschen)
       &::before {
@@ -297,6 +305,8 @@
         inset 0 1px 0 rgb(255 255 255 / 3%);
       filter: contrast(1.04) saturate(0.94) brightness(1.04) blur(0.28px);
     }
+
+    // farb-Ausnahme-Ende
 
     // Preboot: exakt Keyframe 0–10 % der Tube-Animation (kein Sprung beim Start von `page__hero--crt-boot`)
     &[data-background-image].loaded.page__hero--crt-preboot[data-crt-intensity="dezent"] .page__hero-crt-layer {
@@ -413,6 +423,8 @@
       inset: 0;
       z-index: 12;
       pointer-events: none;
+
+      // farb-Ausnahme: CRT-Phosphor-Grün (Aufflackern beim Moduswechsel)
       background: rgb(85 240 145 / 38%);
       mix-blend-mode: screen;
       opacity: 0;
@@ -468,6 +480,9 @@
       border-radius: 4px;
       background: transparent;
       box-shadow: none;
+
+      // farb-Ausnahme: [Block] Power-Symbol im Röhren-Look. Warmweiß (aus),
+      // Phosphor-Grün (an) und der grüne Hinweis-Puls gehören zum CRT-Effekt.
       color: rgb(248 238 220 / 90%);
       cursor: pointer;
       line-height: 0;
@@ -535,6 +550,8 @@
           animation: hero-crt-power-hint 1.4s ease-in-out;
         }
       }
+
+      // farb-Ausnahme-Ende
     }
 
     // Wrapper für den Inhalt
@@ -549,8 +566,8 @@
     .page__meta,
     .page__lead,
     .btn {
-      color: #ffffff;
-      text-shadow: 1px 1px 4px rgb(0 0 0 / 50%);
+      color: $white;
+      text-shadow: 1px 1px 4px $black-a50;
     }
 
     // Meta-Zeile (Datum + Lesezeit) klar vom Lead-Text absetzen: die
@@ -582,10 +599,10 @@
       margin: 0.5em 0.5em 1.5em 0;
       
       &--light-outline {
-        border: 1px solid #ffffff;
+        border: 1px solid $white;
         
         &:hover {
-          background-color: rgb(255 255 255 / 20%);
+          background-color: $white-a20;
         }
       }
     }
@@ -650,7 +667,7 @@
       .page__meta,
       .page__lead,
       .btn {
-        color: #000000;
+        color: $black;
         text-shadow: none;
       }
     }
@@ -665,13 +682,13 @@
   bottom: 3.2rem; // über der Caption-Leiste (die sitzt absolut am Unterrand)
   transform: translateX(-50%);
   z-index: 101;
-  color: rgb(255 255 255 / 65%);
+  color: $white-a65;
 
   // fs-Ausnahme: dekorative Icon-Glyphe, bewusst außerhalb der Token-Skala
   font-size: 1.3rem;
   line-height: 1;
   pointer-events: none;
-  text-shadow: 0 1px 4px rgb(0 0 0 / 60%);
+  text-shadow: 0 1px 4px $black-a60;
   animation: hero-scroll-cue-bounce 2.2s ease-in-out infinite;
 
   @media (max-width: 767.98px) {
@@ -706,9 +723,9 @@
   font-size: $fs-ui; // 0.62rem war dem Nutzer zu klein
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  background: rgb(10 14 18 / 55%);
-  color: rgb(255 255 255 / 78%);
-  border: 1px solid rgb(255 255 255 / 10%);
+  background: $ink-a55;
+  color: $white-a78;
+  border: 1px solid $white-a10;
   border-radius: 4px 0 0;
   line-height: 1.35;
   text-align: right;

@@ -95,7 +95,7 @@ button:focus-visible,
 .zoom-button:focus-visible {
     outline: 2px solid $hover-color;
     outline-offset: 2px;
-    box-shadow: 0 0 0 4px rgba($hover-color, 0.3);
+    box-shadow: 0 0 0 4px $magenta-a30;
 }
 
 // Focus-Styles für Links
@@ -127,5 +127,5 @@ textarea:focus-visible {
 .contact-card:focus-visible {
     outline: 2px solid $hover-color;
     outline-offset: 4px;
-    box-shadow: 0 0 0 4px rgba($hover-color, 0.2);
+    box-shadow: 0 0 0 4px $magenta-a20;
 }
