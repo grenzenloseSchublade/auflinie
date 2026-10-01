@@ -3,7 +3,7 @@
 <div class="masthead">
     <div class="masthead__inner-wrap">
         <div class="masthead__menu">
-            <nav id="site-nav" class="greedy-nav">
+            <nav id="site-nav" class="greedy-nav" aria-label="Hauptnavigation">
                 {% unless logo_path == empty %}
                 <a class="site-logo" href="{{ '/' | relative_url }}" aria-label="Startseite – {{ site.masthead_title | default: site.title }}">
                     {%- comment -%} Inline statt <img>, damit die Magenta-Pfade das Röhren-Flackern bekommen {%- endcomment -%}
