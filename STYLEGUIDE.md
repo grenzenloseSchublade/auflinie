@@ -26,7 +26,7 @@ Gilt für:
 
 - Quellen: `assets/_sass`, `assets/js`, `service-worker.js`, `_includes` (inklusive `_includes/logo.svg`), `_layouts`, `_pages`, `_posts`, `_drafts`, `_data`, `index.html`, `404.html`, `offline.html`
 - Medien und Downloads: `assets/images/`, `assets/webfonts/`, `assets/downloads/`
-- Konfiguration und Werkzeuge: `_config.yml`, `package.json`, `Gemfile`, `.stylelintrc.json`, `playwright.config.js`, `.github/workflows/`, `.devcontainer/`, `scripts/`, `tests/`
+- Konfiguration und Werkzeuge: `_config.yml`, `package.json`, `Gemfile`, `.stylelintrc.json`, `.editorconfig`, `playwright.config.js`, `.github/workflows/`, `.devcontainer/`, `scripts/`, `tests/`
 - die Repo-Dokumentation
 
 Nicht erfasst sind `vendor/`, `assets/vendor/` (unveränderte Fremddateien, siehe SEC-8), `node_modules/`, `_site/`, `.jekyll-cache/` und `tmp/`.
@@ -104,6 +104,7 @@ Durchsetzung:
 | PE-Fallback | Progressive-Enhancement-Pfad: ein Modul mountet selbst, wenn `spa-nav.js` nicht aktiv ist |
 | Kaskaden-Falle | Theme-Regeln wie `.page__content p` machen niedrig spezifische eigene Deklarationen wirkungslos (TYP-4) |
 | Kill-Switch | globaler Reduced-Motion-Block in `base/_accessibility.scss` |
+| Theme-Brücke | `assets/_sass/_theme-bridge.scss`, die einzige Stelle, die Minimal Mistakes per `@import` lädt und ihm die eigenen Tokens übergibt (SCSS-4) |
 | Choreografie | gekoppelte Abfolge mehrerer Animationen (View Transition, CRT, Drawer, Neon) |
 | Hover-Lift | Anheben eines Elements per `translateY` beim Hover |
 | Front-Loading | Kernaussage an den Anfang von Satz, Überschrift oder Listenpunkt |
@@ -128,7 +129,7 @@ Owner-Entscheidungen vom Juli 2026, mehrfach bestätigt:
 
 ## 3 Design-Tokens
 
-Quelle: `assets/_sass/variables/_colors.scss`, `_typography.scss`, `_layout.scss`, `_css-properties.scss`. Die Dateien werden **vor** dem Theme importiert (`assets/css/main.scss`), damit `!default`-Variablen des Themes überschrieben werden.
+Quelle: `assets/_sass/variables/_colors.scss`, `_typography.scss`, `_layout.scss`, `_css-properties.scss`. Die ersten drei bündelt `abstracts/_tokens.scss` als Modul. Die Theme-Brücke lädt es **vor** den Theme-Dateien, damit `!default`-Variablen des Themes überschrieben werden (SCSS-4). `_css-properties.scss` erzeugt die `:root`-Custom-Properties und steht in `assets/css/main.scss` an erster Stelle.
 
 ### 3.1 Farben
 
@@ -377,7 +378,7 @@ Globale Ebenen: Masthead `1000`, Drawer-Dimmer `body::before` `998`, Offline-Hin
 
 ## 4 Komponenten und Mixins
 
-Quelle `components/_shared-components.scss`. Ein Mixin ist Pflicht, sobald sein Look zutrifft. Handnachbauten sind ein Review-Blocker.
+Quelle `abstracts/_mixins.scss`, geladen mit `@use "abstracts/mixins" as *;`. Ein Mixin ist Pflicht, sobald sein Look zutrifft. Handnachbauten sind ein Review-Blocker.
 
 | Mixin | Wann | Hinweis |
 |---|---|---|
@@ -692,21 +693,33 @@ Werkzeuge: Dart Sass (sass-embedded, über jekyll-sass-converter auf die 1.x-Rei
 
 ### 9.1 Struktur
 
-Ladereihenfolge in `assets/css/main.scss`: `variables` → MM-Skin → MM → `custom`. Schichten in `_custom.scss` (ITCSS-artig):
+Ladereihenfolge in `assets/css/main.scss` (= Kaskade): `variables/css-properties` (`:root`) → `theme-bridge` (MM-Skin `dark`, dann MM) → `custom`. Schichten (ITCSS-artig), ab Base in `_custom.scss`:
 
 | Schicht | Ordner | Inhalt |
 |---|---|---|
-| Settings | `variables/` | Tokens, `:root`-Custom-Properties |
-| Tools | `components/_shared-components.scss` (Soll: `abstracts/`) | Mixins, Platzhalter, kein CSS-Output |
+| Settings | `variables/`, gebündelt in `abstracts/_tokens.scss` | Tokens, `:root`-Custom-Properties (`variables/_css-properties.scss`) |
+| Tools | `abstracts/_mixins.scss` | Mixins, Platzhalter, kein CSS-Output |
+| Theme | `_theme-bridge.scss` | Minimal Mistakes per `@import`, einzige Ausnahme von SCSS-2 |
 | Base | `base/` | Elemente, globale A11y, Icons |
 | Components | `components/` | ein BEM-Block je Datei |
 | Layouts | `layouts/` | Seitenkontexte, nur Container |
 | Overrides | `theme-overrides/` | Retuschen an MM-Klassen |
 
+Jedes Partial lädt am Dateianfang, was es nutzt, und nur das:
+
+```scss
+@use "sass:color";                 // Sass-Builtins zuerst, nur bei Bedarf
+@use "abstracts/tokens" as *;      // $link-color, $fs-body, $content-width …
+@use "abstracts/mixins" as *;      // card-panel, mono-label … (nur bei Bedarf)
+@use "theme-bridge" as mm;         // Theme-Werte: mm.$large, mm.$sans-serif (nur bei Bedarf)
+```
+
+Ein neues Token kommt in die passende Datei unter `variables/` und ist danach über `abstracts/tokens` überall da. Ein neues Partial mit CSS-Ausgabe bekommt ein `@use` in `_custom.scss` an der Stelle, an der es in der Kaskade stehen soll.
+
 - **SCSS-1** [MUSS · Soll · Review] Dateien `_kebab-case.scss`, Dateiname = Blockname. Große Komponenten in einen Unterordner mit Sammeldatei, deren Kopf die Reihenfolge als Kaskaden-Vertrag dokumentiert (Vorbild `fractal-panel/`).
-- **SCSS-2** [MUSS · Soll · CI-P1] Kein **neuer** `@import` außer in den bestehenden Manifesten. Sass-Builtins nur über Module (`@use "sass:list"`, `"sass:color"`, `"sass:math"`). Keine globalen Funktionen (`index`, `map-get`, `lighten` …), kein Legacy-`if()`.
-- **SCSS-3** [MUSS · Soll · CI-P2] Eigene Deprecation-Warnungen sind Fehler. `quiet_deps: true` versteckt nur Warnungen des Themes, eigene müssen sichtbar bleiben (Register R-13).
-- **SCSS-4** [SOLL · Offen · Review] Migration auf `@use`/`@forward` als eigene Runde. Hindernis: Das Theme nutzt `@import` und blockiert Dart Sass 3.0. Entscheidung als ADR.
+- **SCSS-2** [MUSS · Ist · CI] Kein `@import` außer in der Theme-Brücke. Sass-Builtins nur über Module (`@use "sass:list"`, `"sass:color"`, `"sass:math"`, `"sass:map"`). Keine globalen Funktionen (`index`, `map-get`, `lighten` …), kein Legacy-`if()`, stattdessen `@if`/`@else`. Check: Stylelint (`at-rule-disallowed-list`, `scss/no-global-function-names`), das Legacy-`if()` fängt SCSS-3.
+- **SCSS-3** [MUSS · Ist · CI] Eigene Deprecation-Warnungen sind Fehler. `quiet_deps: true` hält das Build-Log ruhig, versteckt aber auch jedes eigene Partial (alles über den Load-Path gilt für Sass als Abhängigkeit). Check: `scripts/sass-deprecation-check.sh` baut im CI-Build-Job ohne `quiet_deps` und scheitert bei jeder Warnung aus eigenem Code. Erlaubt ist nur `[import]` in der Theme-Brücke.
+- **SCSS-4** [MUSS · Ist · Review] Eigener Code ist ein `@use`/`@forward`-Modulbaum (Hausregel, Owner 1. 10. 2026). Minimal Mistakes bleibt `@import`-basiert (Issue #5026) und hängt an der Theme-Brücke: Sie lädt `abstracts/tokens` mit `as *`, damit die `!default`-Variablen des Themes unsere Werte übernehmen, und importiert danach Skin und Theme. Folgen: (a) Der Skin steht fest auf `dark` in der Brücke, `minimal_mistakes_skin` in `_config.yml` ist nur Doku (Partials laufen nicht durch Liquid). (b) Theme-`@extend` wirken nicht mehr in eigene Module (Register R-34). (c) Schalter wie `$crt-variante` sind `!default` und lassen sich in `_custom.scss` per `@use "components/view-transition" with (…)` setzen. (d) Platzhalter-Ausgabe erscheint dort, wo `abstracts/mixins` zum ersten Mal geladen wird, deshalb steht es in `_custom.scss` ausdrücklich vor `base/headings`. Fällt das `@import` im Theme weg, entfällt die Brücke.
 
 ### 9.2 Benennung
 
@@ -731,7 +744,7 @@ Ladereihenfolge in `assets/css/main.scss`: `variables` → MM-Skin → MM → `c
 - **SCSS-16** [MUSS · Soll · Review] Kommentare erklären das Warum des Ist-Zustands. Werthistorie (`// vorher 3.5rem`) gehört in die Commit-Message. A11y- und Owner-Gründe bleiben im Kommentar.
 - **SCSS-17** [MUSS · Soll · Review] Keine auskommentierten Alternativwerte, keine toten Selektoren, keine px-Umrechnungen an em- oder rem-Werten.
 - **SCSS-18** [MUSS · Soll · CI-P1] `stylelint-disable` regelgenau, mit ` -- Begründung`, Blöcke mit `stylelint-enable` schließen. Generierte Dateien über `ignoreFiles`.
-- **SCSS-19** [MUSS · Soll · CI-P1] 2 Leerzeichen, LF, abschließender Zeilenumbruch, kein Leerzeichen am Zeilenende. `@include` vor den Deklarationen.
+- **SCSS-19** [MUSS · Ist · CI] 2 Leerzeichen nach Klammertiefe, LF, abschließender Zeilenumbruch, kein Leerzeichen am Zeilenende. Editor: `.editorconfig`, Check: `scripts/scss-format.py` (mit `--fix` korrigieren). **[Soll · Review]** `@include` vor den Deklarationen.
 
 ### 9.5 Critical-CSS
 
@@ -1056,11 +1069,13 @@ Kein SemVer (eine Website hat keine öffentliche API). Ein `CHANGELOG.md` im For
 
 | Check | Wo | Prüft |
 |---|---|---|
-| Stylelint (`npm run lint:css`) | CI `lint` | SCSS-Regeln laut `.stylelintrc.json` |
+| Stylelint (`npm run lint:css`) | CI `lint` | SCSS-Regeln laut `.stylelintrc.json`, darunter SCSS-2 |
 | `scripts/fs-guardrail.sh` | CI `lint` | TYP-1 |
 | `scripts/color-guardrail.sh` | CI `lint` | FARB-1, FARB-5, FARB-6, FARB-8 (SCSS), FARB-9 |
 | `scripts/security-guardrail.sh` | CI `lint` | SEC-4, SEC-5, SEC-7, SEC-8 |
+| `scripts/scss-format.py` | CI `lint` | SCSS-19 |
 | `jekyll build --strict_front_matter` | CI `build` | Front Matter |
+| `scripts/sass-deprecation-check.sh` | CI `build` | SCSS-2, SCSS-3 |
 | `scripts/csp-check.py _site` | CI `build` | SEC-3, SEC-4 |
 | html-proofer, interne Links | CI `build` | Links |
 | Deploy nur bei grünem `build` **und** `lint` | `needs: [build, lint]` | alles oben |
@@ -1073,10 +1088,9 @@ Kein SemVer (eine Website hat keine öffentliche API). Ein `CHANGELOG.md` im For
 
 | Priorität | Check | Fängt |
 |---|---|---|
-| 1 | `.editorconfig` (utf-8, lf, 2 Leerzeichen, final newline, trim) | SCSS-19, JS-19 |
 | 1 | `node --check` über `assets/js/*.js` im Lint-Job | JS-1 |
 | 1 | Stylelint-Flags `--report-needless-disables --report-descriptionless-disables --report-invalid-scope-disables` | SCSS-18 |
-| 1 | Stylelint: `color-named: never`, `font-weight-notation: numeric`, `scss/no-global-function-names: true`, `selector-max-id: 0` | FARB-8, TYP-8, SCSS-2, SCSS-9 |
+| 1 | Stylelint: `color-named: never`, `font-weight-notation: numeric`, `selector-max-id: 0` | FARB-8, TYP-8, SCSS-9 |
 | 1 | Stylelint `declaration-property-value-disallowed-list`: `transition` mit `all`, `rgba($hover-color`, `outline: none` | FARB-6, MO-1, 2.4.7 |
 | 1 | Grep `target="_blank"` ohne `noopener` | LINK-3, SEC-9 |
 | 2 | Stylelint `selector-max-specificity: "0,4,2"` | SCSS-9 |
@@ -1087,7 +1101,6 @@ Kein SemVer (eine Website hat keine öffentliche API). Ein `CHANGELOG.md` im For
 | 2 | `scripts/bp-guardrail.sh` (`@media` mit Zahlen außerhalb `variables/`) | BP-1 |
 | 2 | Token-Kontrast-Skript (Paare Vordergrund, Grund, Mindestwert, Alpha komponiert) | FARB-2, 6.4 |
 | 2 | Critical-CSS-Sync-Check (Inline-Block gegen Tokens, verbietet `html{font-size}`, `body{font-family}`, `body{color}`) | CRIT-1 |
-| 2 | Sass-Deprecation-Check ohne `--quiet-deps`, Fehler bei Ursprung in `assets/_sass` | SCSS-3 |
 | 2 | ESLint (aktuelle Hauptversion, Flat Config: `js/recommended`, `globals.browser`/`globals.worker`, `eqeqeq`, `no-console` mit warn/error, `no-restricted-properties` gegen `navigator.userAgent`, `eslint-plugin-no-unsanitized`) | JS-2, JS-3, JS-11, JS-14, SEC-1 |
 | 2 | `exiftool`-Gate über `assets/images`, `sha384sum -c` für `assets/vendor` | SEC-10, SEC-8a |
 | 3 | `scripts/content-check.py`: Fence-Balance, Intro ohne Überschrift, Caption ≠ Titel, Sie-Formen, Semikolon in Excerpt und Intro, `<br`/`style=` in `_data`, `\d{4} - \d{4}`, gemischte Anführungszeichen, YAML-Folding-Falle, Quellenkommentare | 5, 7, 8, 12 |
@@ -1105,7 +1118,7 @@ Neue Guardrail-Skripte folgen dem Muster von `fs-guardrail.sh`: Marker in der Ze
 
 Vor jedem Push:
 
-- **REV-1** `npm run lint:css`, `bash scripts/fs-guardrail.sh` und `bash scripts/security-guardrail.sh` grün
+- **REV-1** `npm run lint:css`, `python3 scripts/scss-format.py`, `bash scripts/fs-guardrail.sh` und `bash scripts/security-guardrail.sh` grün
 - **REV-2** Docker-Build mit `--strict_front_matter` grün (kein lokales Ruby, `--user` gesetzt), danach `python3 scripts/csp-check.py _site`
 - **REV-3** Nur Tokens, keine neuen Literale (Farbe, Größe, Abstand, Breakpoint, z-index, Dauer)
 - **REV-4** Kontrast in allen Zuständen geprüft, gegen den echten Grund
@@ -1140,7 +1153,7 @@ Stand: Ist-Basis aus dem Kopf. Ein Eintrag verschwindet, sobald der Code die Reg
 | R-10 | Z-1 | Fixierte Overlays in `#main` (TOC, Back-to-Top, Skill-Graph, Blog-Notice) | B-LAY-05 | Owner (Mounting oder `$intro-transition`) |
 | R-11 | MO-1 | `transition: 0.3s` in `_masthead.scss`, Theme-`$global-transition` | B-MO-01 | migrieren |
 | R-12 | SCSS-7 | camelCase-Keyframes in `_neon-base.scss`, `_neon-orbit.scss` | B-SCSS-19 | migrieren |
-| R-13 | SCSS-3 | Legacy-`if()` und globales `index()` in `_view-transition.scss`, Kommentar zu `quiet_deps` in `_config.yml` falsch | B-SCSS-01 | migrieren |
+| R-13 | SCSS-3 | erledigt 1. 10. 2026: `@if`-Block und `list.index()` in `_view-transition.scss`, `quiet_deps`-Kommentar korrigiert, CI-Check `sass-deprecation-check.sh` | B-SCSS-01 | – |
 | R-14 | JS-2 | `var` in `greedy-navigation.js` und `fractal-panel.js` (ESLint-Override, Welle 2) | B-JS-02 | mechanisch migrieren |
 | R-15 | JS-3 | `head-early.js` ohne `'use strict'` | B-JS-22 | migrieren |
 | R-16 | JS-4 | Kopf von `skill-graph-sim.js` („SkillGraphSim — …“) und `blog-notice.js` ohne Dateinamen | B-JS-23 | migrieren |
@@ -1160,6 +1173,7 @@ Stand: Ist-Basis aus dem Kopf. Ein Eintrag verschwindet, sobald der Code die Reg
 | R-31 | CRIT-3, FARB-8, SCSS-12 | zweiter `<style>`-Block in `_includes/head/custom.html` (`rgba(0, 0, 0, 0.8)`, `!important`, globales `scroll-behavior: smooth`, tote Regeln) | B-HTML-13 | nach SCSS migrieren |
 | R-32 | OVL-4, A11Y-2 | Drawer: modal (Scrim, Scroll-Sperre, `inert`), aber ohne `role="dialog"` und `aria-modal`. Fokus wandert nur beim Öffnen per Tastatur hinein, weil mobil `:focus` die Links magenta färbt | B-A11Y-05 | Owner |
 | R-33 | 2.5.7 | Fraktal-Pan nur per Ziehen (rechte Maustaste, Leertaste), Zwei-Finger-Geste oder Pfeiltasten am fokussierten Canvas. Für Zeiger fehlt eine Alternative ohne Ziehen | B-A11Y-09 | Owner (sichtbare Pan-Buttons?) |
+| R-34 | SCSS-4 | Seit der `@use`-Migration erweitert das Theme-`@extend` (`.comment__date { @extend .page__meta }`) nur noch Theme-Regeln. Die 9 eigenen `.page__meta`-Regeln gelten nicht für `.comment__date`. Kommentare sind aus, das Element kommt auf keiner Seite vor | – | Owner-Freigabe 1. 10. 2026, beim Einschalten von Kommentaren nachziehen |
 
 ---
 
@@ -1250,3 +1264,4 @@ Prozess und Doku:
 | 2026-10-01 | Erste Fassung. Kritik-Runde eingearbeitet: Status- und Durchsetzungsangaben je Regel, Register bekannter Abweichungen, Sicherheitsabschnitt integriert, Owner-Prozessregeln, Performance, Bilder, Links, Formulare, SEO, Druck, Browser-Matrix. |
 | 2026-10-01 | JS-2 per ESLint durchgesetzt (`no-var`, `prefer-const`), Register R-14 auf zwei Dateien verkleinert. JS-18: `site-utils.js` mit `prefersReducedMotion` und `rafThrottle` angelegt. |
 | 2026-10-01 | Texte: Gedankenstrich „ – “ und „2025 – Heute“ (groß) als Owner-Entscheidungen in TYPO-2 übernommen. SEITE-1 und FM-3 auf Ist (Beiträge und Vorlage ohne Einleitungs-Überschrift, Vorlage ohne verschachtelten Kommentar), Home-Intro ohne Semikolon (7.2), R-22 erledigt. |
+| 2026-10-01 | SCSS: `@use`-Modulbaum mit Theme-Brücke als Hausregel (SCSS-4 Ist), SCSS-2, SCSS-3 und SCSS-19 auf Ist mit CI-Checks, Struktur 9.1 und Mixin-Quelle auf `abstracts/`, R-13 erledigt, R-34 (`.comment__date`) neu. |
