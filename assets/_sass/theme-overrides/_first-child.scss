@@ -1,0 +1,64 @@
+// =============================================================================
+// Theme-Overrides: erstes Kind in .page__content (Register R-50)
+// =============================================================================
+// Minimal Mistakes 4.28.1 (_page.scss, PR #5103) setzt
+//   .page__content :first-child, .page__content aside + :nth-child(2) { margin-top: 0 }
+// Gemeint war das erste Inhaltselement neben der TOC. Der Nachfahren-Selektor
+// trifft aber JEDES erste Kind in beliebiger Tiefe und schlägt mit (0,2,0)
+// alle Ein-Klassen-Regeln: Chips, Sub-Listen und Archiv-Zwischentitel
+// verloren ihren Abstand. Unsere Seiten brauchen die Regel nicht, das erste
+// Inhaltselement hat dort schon keinen oberen Abstand.
+// Hier steht für jede getroffene Stelle der vorherige Wert, mit (0,3,0) oder
+// mehr gegen die Theme-Regel (SCSS-10). Die Werte spiegeln die Quelle 1:1 wie
+// das Critical-CSS (CRIT-2): Wer dort einen Wert ändert, zieht ihn hier nach.
+// Neue Fälle zeigt der Style-Snapshot (scripts/style-snapshot.js). Die Datei
+// entfällt, sobald das Theme die Regel auf direkte Kinder begrenzt.
+
+@use "abstracts/tokens" as *;
+
+.page__content {
+  // skala-Ausnahme: [Block] Spiegelwerte der Quellen (R-50), keine neuen Abstände
+
+  // Theme _archive.scss: .archive__subtitle { margin: 1.414em 0 0.5em }
+  .archive__subtitle:first-child {
+    margin-top: 1.414em;
+  }
+
+  // components/_cv.scss: .cv-subitems--static
+  .cv-subitems--static:first-child {
+    margin-top: $space-2;
+  }
+
+  // components/_cv.scss: .cv-skill-chip__button { margin: -0.3rem -0.6rem }
+  .cv-skill-chip__button:first-child {
+    margin-top: -0.3rem;
+  }
+
+  // components/_cv.scss: .cv-languages
+  .cv-languages:first-child {
+    margin-top: 0.3rem;
+  }
+
+  // components/fractal-panel/_controls.scss: .fractal-panel__toggle-row
+  .fractal-panel__toggle-row:first-child {
+    margin-top: $fp-space-1;
+  }
+
+  // components/fractal-panel/_states.scss: .fractal-panel__info-panel p { margin: 5px 0 }
+  .fractal-panel__info-panel p:first-child {
+    margin-top: 5px;
+  }
+
+  // components/_pages.scss: .guide-banner__icon
+  .guide-banner__icon:first-child {
+    margin-top: 0.15rem;
+  }
+
+  // skala-Ausnahme-Ende
+
+  // Browser-Standard (Checkbox in Aufgabenlisten, Liste in den Fußnoten)
+  .task-list-item-checkbox:first-child,
+  .footnotes ol:first-child {
+    margin-top: revert;
+  }
+}

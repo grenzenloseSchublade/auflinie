@@ -97,7 +97,7 @@ Bei der Performance liefert das Theme eine schlanke Grundlage, den Rest erledigt
 
 Auch die Dokumentation spricht für Minimal Mistakes. Ausführlich, wie sie ist, deckt sie praktisch jede Funktion ab, mit Codebeispielen zu den meisten Einstellungen. Eine Beispielseite zeigt die Layouts in Aktion, und eine Anleitung zum Aktualisieren hilft beim Umstieg auf neue Versionen.
 
-Das Theme wird weiter gepflegt, wenn auch ohne festen Rhythmus. Neue Versionen achten auf Abwärtskompatibilität, ein Changelog listet alle Änderungen. Diese Website bindet das Theme über `remote_theme` an einen festen Commit (Version 4.27.3). Ein Update ist damit immer eine bewusste Entscheidung.
+Das Theme wird weiter gepflegt, wenn auch ohne festen Rhythmus. Neue Versionen achten auf Abwärtskompatibilität, ein Changelog listet alle Änderungen. Diese Website bindet das Theme über `remote_theme` an einen festen Commit (Version 4.28.1). Ein Update ist damit immer eine bewusste Entscheidung.
 
 Die Community ist groß. Minimal Mistakes gehört zu den meistgenutzten Jekyll-Themes, das Repository hat Tausende Stars und Forks. Fragen und Fehlerberichte laufen über GitHub, zu vielen Problemen gibt es außerdem Antworten auf Stack Overflow.
 

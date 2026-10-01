@@ -14,7 +14,7 @@ enable_image_caching: true
 enable_service_worker: true
 
 # Theme Einstellungen
-remote_theme: "mmistakes/minimal-mistakes@0064dabea814bd3a2e203320a141c037fdcf67ea" # 4.27.3 (Commit gepinnt, Tag ist verschiebbar)
+remote_theme: "mmistakes/minimal-mistakes@81f00a619fafea2f2d457da8be4788edf06a90be" # 4.28.1 (Commit gepinnt, Tag ist verschiebbar)
 # Skin-Wahl steht seit der @use-Migration fest in assets/_sass/_theme-bridge.scss
 # (Sass-Partials laufen nicht durch Liquid). Der Schlüssel bleibt nur als Doku,
 # ihn hier zu ändern wirkt nicht.

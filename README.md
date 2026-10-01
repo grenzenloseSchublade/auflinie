@@ -461,7 +461,7 @@ Leitgedanke: Wissen soll weitergegeben und weiterverwendet werden. Deshalb ist d
 
 Diese Bestandteile behalten ihre eigenen Lizenzen:
 
-- [Minimal Mistakes](https://github.com/mmistakes/minimal-mistakes) (Theme, per `remote_theme`; überschriebene Includes in `_includes/` und `_layouts/` basieren darauf) – MIT, © Michael Rose
+- [Minimal Mistakes](https://github.com/mmistakes/minimal-mistakes) 4.28.1 (Theme, per `remote_theme` auf den Commit gepinnt; überschriebene Includes in `_includes/` und `_layouts/` basieren darauf) – MIT, © Michael Rose
 - MathJax 4.1.3 mit Schrift NewCM 4.1.3 (`assets/vendor/mathjax`, `assets/vendor/mathjax-newcm-font`, npm `mathjax` und `@mathjax/mathjax-newcm-font`) – Apache 2.0
 - Tom Select 2.4.1 (`assets/vendor/tom-select.*`) – Apache 2.0
 - noUiSlider 15.7.1 (`assets/vendor/nouislider.*`) – MIT
