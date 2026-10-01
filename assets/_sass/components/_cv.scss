@@ -9,7 +9,9 @@
 // Ein einzeiliger <summary> ist 0.85rem × 1.45 = 19,7 px hoch, und die
 // Aufklapper stehen so dicht, dass auch die Abstands-Ausnahme nicht greift.
 // $cv-summary-pad füllt symmetrisch bis 24 px auf und fällt auf 0, sobald die
-// Zeile ab dem 20-px-Breakpoint ohnehin höher ist. Bullet und Chevron rücken
+// Zeile bei größerer Browser-Grundschrift ohnehin höher ist (html 100 %, die
+// Theme-Rampe 18/20/22 px ist außer Kraft). Gilt für jeden Aufklapper,
+// zweizeilige wachsen dadurch leicht mit. Bullet und Chevron rücken
 // um denselben Wert mit, damit sie auf der Textzeile bleiben.
 $cv-items-line-height: 1.45;
 $cv-summary-line: $cv-items-font-size * $cv-items-line-height;

@@ -68,7 +68,7 @@
         lastBreakpoint = curBreakpoint;
       }
 
-      let numOfVisibleItems = vlinks.children.length;
+      const numOfVisibleItems = vlinks.children.length;
       const availableSpace = nav.getBoundingClientRect().width
         - (logo ? outerWidth(logo) : 0)
         - outerWidth(title)
@@ -270,7 +270,7 @@
     // aus _view-transition.scss — beide müssen synchron bleiben. Seit dem
     // Un-Gaten auf alle Viewports (Cross-Doc-VT überall) ist die max-width-
     // Beschränkung raus; nur noch reduced-motion gated.
-    var vtGate = window.matchMedia('(prefers-reduced-motion: no-preference)');
+    const vtGate = window.matchMedia('(prefers-reduced-motion: no-preference)');
 
     hlinks.addEventListener('click', function(e) {
       if (e.target.tagName !== 'A' && !e.target.closest('a')) return;

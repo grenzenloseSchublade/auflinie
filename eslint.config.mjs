@@ -92,16 +92,6 @@ export default [
     },
   },
   {
-    // Welle 2: greedy-navigation.js nutzt noch var (Register R-14) und wird
-    // nach dem Drawer-Umbau migriert, die Ausnahme fällt dann weg.
-    // (fractal-panel.js war schon var-frei und braucht keine Ausnahme.)
-    files: ['assets/js/greedy-navigation.js'],
-    rules: {
-      'no-var': 'off',
-      'prefer-const': 'off',
-    },
-  },
-  {
     // Worker-Scope: kein window/document. Die definierenden Dateien markieren
     // ihre Funktionen per /* exported */, die nutzenden bekommen sie hier.
     files: WORKER_FILES,
