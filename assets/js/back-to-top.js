@@ -46,7 +46,10 @@
     window.addEventListener('resize', onScrollResize, { passive: true, signal: signal });
     btn.addEventListener('click', function (e) {   // element-scoped -> stirbt mit dem DOM, kein signal nötig
       e.preventDefault();
-      if ('scrollBehavior' in document.documentElement.style) window.scrollTo({ top: 0, behavior: 'smooth' });
+      // Reduced Motion: springen statt gleiten (STYLEGUIDE BEW-4). Live
+      // abgefragt, damit ein Umschalten der Systemeinstellung sofort wirkt.
+      var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if ('scrollBehavior' in document.documentElement.style) window.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' });
       else window.scrollTo(0, 0);
     });
     checkVisibility();
