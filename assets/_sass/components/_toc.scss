@@ -147,16 +147,24 @@
 }
 
 // Dropdown-Container
+// Zu: visibility: hidden, damit die Links nicht unsichtbar fokussierbar
+// bleiben (max-height: 0 allein lässt sie in der Tab-Reihenfolge, WCAG
+// 2.4.7). Umschalten erst nach dem Zuklappen (Delay = max-height-Dauer).
+// Offen: inherit statt visible, damit die (per visibility versteckte)
+// Sticky-Leiste ihr Dropdown nie sichtbar „durchreicht“.
 .toc-sticky-mobile__dropdown {
     max-height: 0;
     overflow: hidden;
+    visibility: hidden;
     background: rgb(26 28 32 / 98%);
     border-top: 1px solid $console-panel-border;
-    transition: max-height 0.3s ease-out;
+    transition: max-height 0.3s ease-out, visibility 0s linear 0.3s;
     
     .is-open & {
         max-height: 55vh;
         overflow-y: auto;
+        visibility: inherit;
+        transition-delay: 0s;
     }
 }
 
@@ -458,9 +466,16 @@
     transition: max-height $standard-transition, opacity $standard-transition;
 }
 
+// Eingeklappt zusätzlich visibility: hidden — sonst bleiben die Links
+// unsichtbar fokussierbar (WCAG 2.4.7). Delay = $standard-transition-Dauer
+// (0.3s, synchron halten), damit das Zuklappen sichtbar animiert. Beim
+// Aufklappen erbt der Wrapper wieder (kein explizites visible, das eine
+// versteckte Umgebung überstimmen würde) und schaltet sofort um.
 .toc__menu-wrapper.is-collapsed {
     max-height: 0;
     opacity: 0;
+    visibility: hidden;
+    transition: max-height $standard-transition, opacity $standard-transition, visibility 0s linear 0.3s;
 }
 
 .toc-toggle:focus-visible .nav__title {

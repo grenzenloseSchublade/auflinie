@@ -28,14 +28,18 @@
   justify-content: center;
   cursor: pointer;
   
-  // Initial versteckt (kombiniert mit horizontaler Zentrierung)
+  // Initial versteckt (kombiniert mit horizontaler Zentrierung).
+  // visibility: hidden nimmt den unsichtbaren Button aus der Tab-Reihenfolge
+  // (WCAG 2.4.7, STYLEGUIDE 6.1). Erst NACH dem Ausblenden umschalten
+  // (Delay = Fade-Dauer), damit die Ausblendanimation sichtbar bleibt.
   opacity: 0;
+  visibility: hidden;
   pointer-events: none;
   transform: translateX(-50%) translateY(20px);
   
   // Animationen: bottom wird NICHT transitioniert — es folgt scroll-gekoppelt
   // stufenlos dem Footer (eine Transition würde nachlaufen/ruckeln).
-  transition: opacity 0.3s ease, transform 0.3s ease, box-shadow 0.2s ease;
+  transition: opacity 0.3s ease, transform 0.3s ease, box-shadow 0.2s ease, visibility 0s linear 0.3s;
   will-change: opacity, transform;
   
   // SVG-Icon
@@ -49,8 +53,10 @@
   // Sichtbarer Zustand
   &.visible {
     opacity: 1;
+    visibility: visible;
     pointer-events: auto;
     transform: translateX(-50%) translateY(0);
+    transition-delay: 0s; // Einblenden: sofort sichtbar und fokussierbar
   }
   
   // Hover-Effekt (Desktop) - Cyan Glow
@@ -104,7 +110,7 @@
   
   // Reduzierte Bewegung respektieren
   @media (prefers-reduced-motion: reduce) {
-    transition: opacity 0.1s ease;
+    transition: opacity 0.1s ease, visibility 0s linear 0.1s;
     transform: translateX(-50%);
     
     &.visible {
