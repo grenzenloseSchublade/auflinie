@@ -543,7 +543,7 @@ Anlass: Im Skill-Graphen rutschte die Seite beim Wischen über den Graphen weg (
 
 - **SEO-1** [MUSS · Ist · Review] `title` im Front Matter ist der Seitenname ohne Site-Namen. Den Zusatz mit dem Site-Namen erzeugt das Theme (`site.title`, `title_separator`). `title_separator` steht in `_config.yml` auf dem Hausstil-Strich „–“ (TYPO-2).
 - **SEO-2** [SOLL · Soll · CI-P3] Excerpt bzw. Description 70 bis 160 Zeichen.
-- **SEO-3** [SOLL · Soll · Review] OG-Bild 1200 × 630 px, pro Seite über `header.og_image`, sonst Site-Standard.
+- **SEO-3** [SOLL · Soll · Review] OG-Bild 1200 × 630 px, pro Seite über `header.og_image`, sonst Site-Standard. Alt-Text (`og:image:alt`) pro Seite über `header.og_image_alt`, sonst `og_image_alt` (Site-Bild) oder `background_image_alt` (gemeinsamer Hero-Hintergrund) aus `_config.yml`. `_includes/seo.html` bindet den Text an das tatsächlich gezeigte Bild.
 - **SEO-4** [MUSS · Soll · CI-P3] Seiten, die nicht in Suche und Sitemap gehören (Archiv-Stubs, Weiterleitungen), tragen `sitemap: false` und `noindex: true` (SEC-12). Interne Werkzeugseiten werden gar nicht erst deployt (SG-1).
 - **SEO-5** [MUSS · Ist · Review] Speculation Rules schließen Pfade aus dem Wired-Set und die Drawer-Links aus, weil der Swap Prerenderings verwirft. Wer das Wired-Set ändert, prüft die Ausschlüsse (SPA-5).
 
@@ -587,7 +587,7 @@ Ziel: **WCAG 2.2 AA** als freiwillige Selbstverpflichtung. Rechtsrahmen: Das B
 | 2.5.1 / 2.5.7 | A / AA | Jede Drag- oder Mehrfinger-Geste hat eine Ein-Klick-Alternative. |
 | 2.5.3 | A | Der zugängliche Name beginnt mit dem sichtbaren Text, oder es gibt kein `aria-label`. |
 | 2.5.8 | AA | Ziele mindestens 24 × 24 px, Touch-Ziele unter `(pointer: coarse)` 44 px. |
-| 3.1.1 / 3.1.2 | A / AA | `lang="de-DE"`. Fremdsprachige Passagen (Motto, Zitate) mit `lang`. Theme-Strings übersetzt (Skip-Links). |
+| 3.1.1 / 3.1.2 | A / AA | `lang="de-DE"`. Fremdsprachige Passagen (Motto, Zitate) mit `lang`. Theme-Strings übersetzt (Skip-Links), Landmark-Namen deutsch (R-51). |
 | 3.2.3 | AA | Navigation steht auf allen Seiten in derselben Reihenfolge (Persistent Shell, `_data/navigation.yml` als einzige Quelle). |
 | 4.1.2 | A | Kein `role="button"` auf `span`/`div`, kein `aria-label` auf generischen Elementen, keine interaktiven Elemente in Überschriften, Buttons nur mit Phrasing Content. Vendor-Widgets benannt (noUiSlider `handleAttributes`). |
 | 4.1.3 | AA | Statusmeldungen über eine beim Laden vorhandene, leere Live-Region. |
@@ -1245,6 +1245,8 @@ Stand: Ist-Basis aus dem Kopf. Ein Eintrag verschwindet, sobald der Code die Reg
 | R-33 | 2.5.7 | Fraktal-Pan nur per Ziehen (rechte Maustaste, Leertaste), Zwei-Finger-Geste oder Pfeiltasten am fokussierten Canvas. Für Zeiger fehlt eine Alternative ohne Ziehen | B-A11Y-09 | Owner (sichtbare Pan-Buttons?) |
 | R-34 | SCSS-4 | Seit der `@use`-Migration erweitert das Theme-`@extend` (`.comment__date { @extend .page__meta }`) nur noch Theme-Regeln. Die 9 eigenen `.page__meta`-Regeln gelten nicht für `.comment__date`. Kommentare sind aus, das Element kommt auf keiner Seite vor | – | Owner-Freigabe 1. 10. 2026, beim Einschalten von Kommentaren nachziehen |
 | R-35 | SP-1, RAD-1, Z-2, MO-1, MO-2 | Literale außerhalb der Skalen, Stand 1. 10. 2026: 237 Abstände, 18 Radien, 34 Schatten, 22 z-index, 19 Dauern, 1 Kurve, 7× `transition: all` oder implizit (Liste: `python3 scripts/scale-literals.py --report`, Grenzwerte `scripts/scale-baseline.txt`). Dazu `section-break` neben dem Raster | B-SP-01, B-Z-01, B-MO-01, B-RAD-01, B-SH-01 | Stufe B (Zuordnung zum nächsten Token, sichtbar), Owner-Freigabe |
+| R-50 | SCSS-10 | Minimal Mistakes 4.28.1 setzt `.page__content :first-child { margin-top: 0 }` (PR #5103, gemeint war nur das erste Inhaltselement neben der TOC). Die Regel trifft jedes erste Kind in der Tiefe. Gegenmittel mit Spiegelwerten in `theme-overrides/_first-child.scss` (sieben Stellen, dazu zwei Browser-Standards), H2-Probe in `assets/css/styleguide.scss`. Wer einen gespiegelten Wert ändert, zieht ihn dort nach | – | upstream melden, Datei entfernen, sobald das Theme die Regel auf direkte Kinder begrenzt |
+| R-51 | 3.1.2 (6.1) | Minimal Mistakes 4.28.1 schreibt englische `aria-label` fest ins Markup. Deutsch überschrieben: `skip-links.html` („Sprunglinks“ aus `ui-text.yml`), `post_pagination.html` („Beitragsnavigation“), Masthead („Hauptnavigation“). Offen: `paginator-v2.html` („Pagination“), erscheint erst ab dem siebten Beitrag (`per_page: 6`) | – | Owner: beim ersten Blättern überschreiben oder upstream `ui-text`-Keys anregen |
 
 ---
 
@@ -1341,3 +1343,4 @@ Prozess und Doku:
 | 2026-10-01 | Skalen: `variables/_scales.scss` mit Abstands-, Radius-, Schatten-, Ebenen- und Motion-Tokens auf Ist (3.3, 3.5 bis 3.7), exakte Literale migriert, `skala-Ausnahme`-Marker (GOV-5) und Ratchet `scale-guardrail.sh` (16.1), Rest in R-35. |
 | 2026-10-01 | Breakpoints: Token-Set `$bp-*` mit den Mixins `up()`, `down()` und `between()`, JS über `AuflinieUtils.mq`, BP-1 und BP-2 auf Ist mit `bp-guardrail.sh`. Grenze überall halboffen, 768 px und 1024 px gehören jetzt zum größeren Bereich (Hero im Critical-CSS eingeschlossen). R-6 und R-9 erledigt. |
 | 2026-10-01 | Abhängigkeiten: SEC-8d neu (Vendor-Updates nur bei relevanten Fixes, Prüfung über `tests/vendor.spec.js`), MathJax auf 4.1.3, Gems per `bundle update`. |
+| 2026-10-01 | Theme: Minimal Mistakes 4.28.1 (Commit gepinnt), SEO-3 um `og:image:alt` ergänzt, R-50 (Abstand erstes Kind) und R-51 (englische Landmark-Namen) neu. |
