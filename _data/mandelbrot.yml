@@ -96,6 +96,8 @@ sections:
 
   - section: "Eigenschaften und Hauptstrukturen"
     icon: "fingerprint"
+    # Quelle (Mini-Mandelbrots nie exakt gleich, quasi-selbstähnlich): Wikipedia, „Mandelbrot set“, Abschnitt „Self-similarity“, https://en.wikipedia.org/wiki/Mandelbrot_set#Self-similarity
+    # Quelle (Hausdorff-Dimension des Rands = 2): M. Shishikura, „The Hausdorff dimension of the boundary of the Mandelbrot set and Julia sets“, Annals of Mathematics 147 (1998), S. 225–267
     content: >-
       - **Zusammenhang:**
         Trotz ihrer komplexen Geometrie bildet die Mandelbrot-Menge ein zusammenhängendes Objekt, wie Douady und Hubbard 1982 mathematisch gezeigt haben.
@@ -103,23 +105,26 @@ sections:
 
       - **Selbstähnlichkeit:**
         Besonders die Randbereiche enthalten eine Vielzahl von selbstähnlichen Teilstrukturen,
-        darunter Kopien der Gesamtmenge und wiederkehrende Muster wie "Seepferdchen" und "Elefantenrüssel".
+        darunter Kopien der Gesamtmenge und wiederkehrende Muster wie „Seepferdchen“ und „Elefantenrüssel“.
       
       - **Fraktale Dimension:**
         Der Rand hat die Hausdorff-Dimension exakt $2$ (Shishikura 1998) und verdeutlicht damit die enorme Komplexität der Struktur.
         Mathematisch gesehen reicht die fraktale Dimension über die klassische Topologie hinaus und ist ein Gegenstand aktueller Forschungsarbeit.
 
       - **Universalität:**
-        Die Mandelbrot-Menge enthält eine unendliche Anzahl so genannter "Mini-Mandelbrots", exakte Kopien der Hauptstruktur,
-        sowie andere wiederkehrende Muster, die immer weitere Details und mathematische Fragestellungen eröffnen.
+        Die Mandelbrot-Menge enthält unendlich viele sogenannte „Mini-Mandelbrots“. Das sind nahezu, aber nie exakt gleiche Kopien der Hauptstruktur,
+        die Menge ist also nur quasi-selbstähnlich.
+        Dazu kommen andere wiederkehrende Muster, die immer weitere Details und mathematische Fragestellungen eröffnen.
         Die Untersuchung von Universalität und Wiederholungen ist für die theoretische Mathematik und die Computergrafik gleichermaßen relevant.
 
     subsections:
       - title: "Kardioide und Hauptkreis"
-        content: >-
+        content: |
           Die Mandelbrot-Menge besteht primär aus zwei charakteristischen Bereichen:
-          - Der zentralen Kardioide (herzförmig), deren Name auf das griechische "kardia" für Herz zurückgeht und die eine spezielle mathematische Beziehung widerspiegelt.
+
+          - Der zentralen Kardioide (herzförmig), deren Name auf das griechische „kardia“ für Herz zurückgeht und die eine spezielle mathematische Beziehung widerspiegelt.
           - Dem angrenzenden Hauptkreis links von der Kardioide, der zusammen mit der Kardioide das Gerüst des Fraktals bildet.
+
           An den Rändern dieser Komponenten entstehen weitere Strukturen wie Miniaturkopien sowie die charakteristischen Muster („Seepferdchen“, „Elefantenrüssel“).
           Die mathematische Analyse dieser Hauptstrukturen liefert Einblicke in die Verzweigungsstruktur und die universellen Eigenschaften von Fraktalen.
           Die kontinuierliche Entdeckung neuer Muster am Rand der Menge macht die Mandelbrot-Menge zu einem ständig faszinierenden Objekt moderner Mathematik.<br>
@@ -130,7 +135,7 @@ sections:
       Die Mandelbrot-Menge besitzt fundamentale Bedeutung für verschiedene Disziplinen:
         - In der Chaostheorie dient sie als ideales Modell für sensitiv abhängige Systeme;
         - in der komplexen Dynamik illustriert sie die Bandbreite dynamischen Verhaltens;
-        - die fraktale Geometrie nutzt sie als Paradebeispiel nicht-ganzzahliger Dimensionen;
+        - die fraktale Geometrie nutzt sie als Paradebeispiel: Viele Fraktale haben eine nicht-ganzzahlige Dimension, der Rand der Mandelbrot-Menge erreicht dagegen mit der Hausdorff-Dimension $2$ den größtmöglichen Wert in der Ebene (Shishikura 1998);
         - die Informatik entwickelt hieraus besonders effiziente Algorithmen für Rekursion und Visualisierung;
         - in Kunst und Kultur fungiert sie als Symbol mathematischer Schönheit und reizt Künstler weltweit zu neuen Interpretationen.
       
