@@ -45,9 +45,6 @@ $fs-heading-sm: 1.2rem; // accent-header Panel-Variante
 $fs-title: 1.25rem; // Karten-Titel, Erklärbox-H4
 $fs-heading: 1.35rem; // accent-header Standard (Sektions-H2)
 
-// Leitspruch der Über-mich-Seite (einzige fluide Größe)
-$about-motto-font-size: clamp(1.35rem, 3vw, 1.9rem);
-
 // Fraktal-Panel: bewusst px (viewport-FIX, Karten-UI-Muster) — das Panel-
 // Chrome soll auf großen Schirmen nicht mit der html-Rampe mitwachsen
 // (rem hätte HUD/Toolbar auf Desktop um 25–37 % vergrößert)

@@ -46,11 +46,15 @@
   }
 }
 
+// Mono-Stil ohne mono-label-Mixin, weil dessen font-size hier nicht
+// durchkäme: Größe und Abstand (1em, 0 0 1.3em) setzt die Theme-Regel
+// .page__content p (0,1,1, Kaskaden-Falle, TYP-4). Der gerenderte Stand ist
+// der abgenommene.
 .blog-notice__title {
-  @include mono-label($fs-label, 0.08em);
-
+  font-family: $mono-font-stack;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
   color: $console-heading;
-  margin: 0 0 0.5rem;
 }
 
 // p-qualifiziert (0,2,1): Theme .page__content p (1em, margin 1.3em)

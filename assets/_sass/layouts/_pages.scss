@@ -35,10 +35,9 @@
     }
 }
 
-// 404-Seite
+// 404-Seite. Größe und Abstand der Formelzeile (1em, 0 0 1.3em) setzt die
+// Theme-Regel .page__content p (0,1,1, Kaskaden-Falle, TYP-4).
 .error-404__code {
   font-family: $mono-font-stack;
-  font-size: 1.4em;
   color: $link-color;
-  margin-bottom: 1em;
 }
