@@ -2,8 +2,10 @@
 // Aufruf: `npm run lint:js` (auch im CI-Lint-Job).
 //
 // Grundsatz: Fehlerklassen fangen (undefinierte Namen, toter Code, unbenutzte
-// Variablen, innerHTML mit Daten), keine Stilregeln. Formatierung und
-// var/let/const bleiben bewusst außen vor.
+// Variablen, innerHTML mit Daten), keine Stilregeln. Formatierung bleibt
+// bewusst außen vor. Ausnahme ist var/let/const (STYLEGUIDE JS-2): no-var und
+// prefer-const gelten für die Site-Skripte, weil Block-Scope und const
+// Fehlerklassen fangen (Hoisting, versehentliche Neuzuweisung).
 import js from '@eslint/js';
 import globals from 'globals';
 import noUnsanitized from 'eslint-plugin-no-unsanitized';
@@ -78,6 +80,24 @@ export default [
       ecmaVersion: 2022,
       sourceType: 'script',
       globals: { ...globals.browser, ...projectGlobals },
+    },
+  },
+  {
+    // ES2020-Baseline (STYLEGUIDE JS-2): const/let statt var, const wo nie
+    // neu zugewiesen wird. Gilt für alle Site- und Worker-Skripte.
+    files: ['assets/js/**/*.js'],
+    rules: {
+      'no-var': 'error',
+      'prefer-const': 'error',
+    },
+  },
+  {
+    // Welle 2: Diese beiden Dateien nutzen noch var (Register R-14) und
+    // werden gesondert migriert, die Ausnahme fällt dann weg.
+    files: ['assets/js/greedy-navigation.js', 'assets/js/fractal-panel.js'],
+    rules: {
+      'no-var': 'off',
+      'prefer-const': 'off',
     },
   },
   {
