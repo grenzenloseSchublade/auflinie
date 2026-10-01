@@ -20,9 +20,9 @@
   {% endif %}
   {% for skill_group in include.skill_groups %}
   <div class="cv-skill-group">
-    <p class="cv-skill-group__title">{{ skill_group.group }}</p>
+    <p class="cv-skill-group__title">{{ skill_group.group | escape }}</p>
     {% if skill_group.context %}
-    <p class="cv-skill-group__context">{{ skill_group.context }}</p>
+    <p class="cv-skill-group__context">{{ skill_group.context | escape }}</p>
     {% endif %}
     {% assign core_skills = skill_group.core | default: skill_group.skills %}
     <ul class="cv-skills__chips">
@@ -38,7 +38,7 @@
       {% endfor %}
     </ul>
     {% if skill_group.breadth and skill_group.breadth.size > 0 %}
-    <ul class="cv-skills__chips cv-skills__chips--breadth" aria-label="Ergänzende Kenntnisse in {{ skill_group.group }}">
+    <ul class="cv-skills__chips cv-skills__chips--breadth" aria-label="Ergänzende Kenntnisse in {{ skill_group.group | escape }}">
       {% for skill in skill_group.breadth %}
       {% assign skill_name = skill.name | default: skill %}
       <li class="cv-skill-chip cv-skill-chip--breadth">
@@ -59,6 +59,6 @@
   {% endif %}
 
   {% if page.skill_graph.enabled or page.skill_graph.stage2 %}
-  <script type="application/json" data-skill-graph-data>{{ site.data.skill_graph | jsonify }}</script>
+  <script type="application/json" data-skill-graph-data>{{ site.data.skill_graph | jsonify | replace: '</', '<\/' }}</script>
   {% endif %}
 </div>

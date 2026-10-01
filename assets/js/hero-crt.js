@@ -520,30 +520,4 @@
   function heroPeFallback() { if (!window.__spaNavActive) mountHero(document); }
   if (document.readyState === 'complete') heroPeFallback();
   else document.addEventListener('DOMContentLoaded', heroPeFallback);
-  
-  // Service Worker-Kommunikation für Bild-Caching
-  if ('serviceWorker' in navigator && window.caches) {
-    // Nachricht an den Service Worker senden, um Bilder zu cachen
-    setTimeout(() => {
-      if (navigator.serviceWorker.controller) {
-        // Alle Bild-URLs sammeln
-        const imageUrls = Array.from(document.querySelectorAll('[data-background-image]'))
-          .map(el => el.getAttribute('data-background-image'))
-          .filter(Boolean);
-        
-        // Globales Hintergrundbild hinzufügen, falls vorhanden
-        if (config.backgroundImage) {
-          imageUrls.push(config.backgroundImage);
-        }
-        
-        // Nachricht an Service Worker senden
-        if (imageUrls.length > 0) {
-          navigator.serviceWorker.controller.postMessage({
-            type: 'CACHE_IMAGES',
-            images: imageUrls
-          });
-        }
-      }
-    }, 1000);
-  }
 })();

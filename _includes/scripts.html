@@ -45,6 +45,11 @@
 <script src="{{ '/assets/js/blog-search.js' | relative_url }}" defer></script>
 {% endif %}
 
+{% if page.blog_notice.enabled %}
+<!-- Blog-Hinweis (Markup: _includes/blog-notice.html), am spaModule-Kontrakt -->
+<script src="{{ '/assets/js/blog-notice.js' | relative_url }}" defer></script>
+{% endif %}
+
 {% if page.url == "/" %}
 <!-- Neon-Namenseffekt: nur Startseite -->
 <script src="{{ '/assets/js/neon-orbit-toggle.js' | relative_url }}" defer></script>

@@ -125,3 +125,27 @@ $sw-toast-z: 10020;
     color: #ffffff;
   }
 }
+
+// -----------------------------------------------------------------------------
+// Offline-Hinweis (Markup: _layouts/default.html, Steuerung: sw-register.js).
+// Vorher Inline-Style im Layout — ausgelagert für die CSP. Gleiche Panel-Sprache
+// wie der Update-Toast, eine Ebene darunter.
+// -----------------------------------------------------------------------------
+.offline-notification {
+  @include card-panel(2px);
+
+  position: fixed;
+  right: max(1.25rem, env(safe-area-inset-right, 0));
+  bottom: max(1.25rem, env(safe-area-inset-bottom, 0));
+  z-index: $sw-toast-z - 1;
+  max-width: calc(100% - 2.5rem);
+  padding: 0.6rem 1.25rem;
+  color: rgb(255 255 255 / 92%);
+  font-family: $sans-serif;
+  font-size: $fs-body;
+  box-shadow: 0 10px 30px rgb(0 0 0 / 40%);
+
+  &[hidden] {
+    display: none;
+  }
+}

@@ -1,6 +1,6 @@
 <!doctype html>
 {% include copyright.html %}
-<html lang="{{ site.locale | replace: "_", "-" | default: "en" }}" class="no-js" data-enable-service-worker="{% if jekyll.environment == 'production' %}{{ site.enable_service_worker }}{% else %}false{% endif %}" data-baseurl="{{ site.baseurl }}">
+<html lang="{{ site.locale | replace: "_", "-" | default: "en" }}" class="no-js" data-enable-service-worker="{% if jekyll.environment == 'production' %}{{ site.enable_service_worker }}{% else %}false{% endif %}" data-baseurl="{{ site.baseurl }}" data-enable-image-caching="{% if site.enable_image_caching != false %}true{% else %}false{% endif %}" data-background-image="{{ site.background_image | relative_url }}">
   <head>
     {% include head.html %}
     {% include head/custom.html %}
@@ -72,20 +72,9 @@
     {% comment %} Bewusst NICHT include_cached: scripts.html lädt seitenabhängig (page.fractal_panels u.a.) {% endcomment %}
     {% include scripts.html %}
     
-    <!-- Offline-Benachrichtigung -->
-    <div id="offline-notification" style="display: none; position: fixed; bottom: 20px; right: 20px; background-color: #333; color: white; padding: 10px 20px; border-radius: 4px; z-index: 9999;">
+    <!-- Offline-Benachrichtigung (Steuerung: assets/js/sw-register.js) -->
+    <div id="offline-notification" class="offline-notification" role="status" hidden>
       Gerade offline — einige Inhalte könnten nicht verfügbar sein.
     </div>
-    
-    <script>
-      // Offline-Status überwachen
-      window.addEventListener('online', function() {
-        document.getElementById('offline-notification').style.display = 'none';
-      });
-      
-      window.addEventListener('offline', function() {
-        document.getElementById('offline-notification').style.display = 'block';
-      });
-    </script>
   </body>
 </html> 

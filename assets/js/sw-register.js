@@ -69,8 +69,11 @@
    * Zeitstempel) — die gemeldete Dauerschleife beim lokalen Entwickeln.
    */
   function cleanupServiceWorker() {
-    navigator.serviceWorker.getRegistrations()
-      .then((regs) => regs.forEach((reg) => reg.unregister()))
+    // Nur die EIGENE Registrierung: getRegistrations() lieferte auch die
+    // Worker anderer Projekte auf demselben Origin (github.io-Nutzerseite).
+    const scopeUrl = new URL(getRootPath(), window.location.href).href;
+    navigator.serviceWorker.getRegistration(scopeUrl)
+      .then((reg) => { if (reg && reg.scope === scopeUrl) reg.unregister(); })
       .catch(() => {});
 
     if (window.caches && caches.keys) {
@@ -128,35 +131,6 @@
             .catch(error => {
               console.error('ServiceWorker-Registrierung fehlgeschlagen:', error);
             });
-          
-          // Auf Nachrichten vom Service Worker hören
-          navigator.serviceWorker.addEventListener('message', event => {
-            // Cache-Events werden still behandelt
-          });
-          
-          // Nach kurzer Verzögerung Hintergrundbilder cachen
-          setTimeout(() => {
-            if (navigator.serviceWorker.controller) {
-              // Alle Hintergrundbilder sammeln
-              const backgroundImages = Array.from(document.querySelectorAll('[data-background-image]'))
-                .map(el => el.getAttribute('data-background-image'))
-                .filter(Boolean);
-              
-              // Globales Hintergrundbild hinzufügen, falls vorhanden
-              const globalBackgroundImage = document.documentElement.getAttribute('data-background-image');
-              if (globalBackgroundImage) {
-                backgroundImages.push(globalBackgroundImage);
-              }
-              
-              // Nachricht an Service Worker senden
-              if (backgroundImages.length > 0) {
-                navigator.serviceWorker.controller.postMessage({
-                  type: 'CACHE_IMAGES',
-                  images: backgroundImages
-                });
-              }
-            }
-          }, 2000);
         }
       });
     }
@@ -244,7 +218,22 @@
     });
   }
 
+  /**
+   * Offline-Hinweis (Markup in _layouts/default.html, außerhalb von
+   * .initial-content und damit swap-fest). Früher Inline-Skript im Layout,
+   * ausgelagert für die CSP ohne 'unsafe-inline'.
+   */
+  function wireOfflineNotice() {
+    function sync() {
+      const note = document.getElementById('offline-notification');
+      if (note) note.hidden = navigator.onLine !== false;
+    }
+    window.addEventListener('online', sync);
+    window.addEventListener('offline', sync);
+  }
+
   // Service Worker registrieren
+  wireOfflineNotice();
   registerServiceWorker();
   wireSpaUpdateChecks();
   wireControllerReload();

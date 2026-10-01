@@ -1,4 +1,22 @@
 <meta charset="utf-8">
+{%- comment %}
+  Sicherheits-Metas GANZ OBEN: eine Meta-CSP gilt nur für nachfolgendes Markup.
+  GitHub Pages kann keine eigenen Header setzen, daher Meta statt Header.
+  Nicht per Meta möglich: frame-ancestors, report-uri, sandbox.
+  - script-src ohne 'unsafe-inline': Inline-Skripte sind verboten, Code liegt
+    in assets/js/. 'inline-speculation-rules' erlaubt nur den
+    <script type="speculationrules">-Block (lässt sich nicht auslagern).
+    JSON-LD-Blöcke sind Daten und unterliegen script-src nicht.
+  - style-src 'unsafe-inline' bleibt: MathJax 4 (CHTML) erzeugt zur Laufzeit
+    <style> und style-Attribute, kramdown style="text-align" in Tabellen.
+  - worker-src 'self': Fraktal-Worker. Kein blob:, die MathJax-Sprachausgabe
+    ist abgeschaltet (assets/js/mathjax-config.js).
+  - Die Policy muss auf ALLEN Seiten byte-identisch sein: spa-nav.js tauscht
+    nur den Inhalt, es gilt die Policy der Einstiegsseite.
+  Prüfung: scripts/csp-check.py (CI, nach jekyll build).
+{% endcomment %}
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'inline-speculation-rules'; style-src 'self' 'unsafe-inline'; img-src 'self'; font-src 'self'; connect-src 'self'; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta name="referrer" content="strict-origin-when-cross-origin">
 
 {% include seo.html %}
 
@@ -9,12 +27,9 @@
 {%- comment %} https://docs.google.com/presentation/d/1rmxwWa9P6_xHqonmh5ONXRS-jPc5XKbnv99Rjkhe04s/present {% endcomment -%}
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<script>
-  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
-  {% if site.enable_copy_code_button -%}
-    window.enable_copy_code_button = true;
-  {%- endif %}
-</script>
+{%- comment %} Frühere Inline-Skripte (no-js-Tausch, pagereveal) als Datei: die CSP
+erlaubt keine Inline-Skripte. Bewusst ohne defer/async (vor dem ersten Render). {% endcomment %}
+<script src="{{ '/assets/js/head-early.js' | relative_url }}"></script>
 
 <!-- For all browsers -->
 <link rel="stylesheet" href="{{ '/assets/css/main.css' | relative_url }}">

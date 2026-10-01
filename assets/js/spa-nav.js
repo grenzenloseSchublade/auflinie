@@ -62,12 +62,13 @@
   });
 
   // ── Pfad-Helfer + Wired-Praedikat ───────────────────────────────────────────
+  // Pfad relativ zur baseurl. Nur an Segmentgrenzen: "/auflinieposts/x"
+  // gehört NICHT zur Site. Pfade außerhalb der baseurl -> null (nie verdrahtet).
   function stripBase(pathname) {
-    if (BASEURL && pathname.indexOf(BASEURL) === 0) {
-      var rest = pathname.slice(BASEURL.length);
-      return rest.charAt(0) === '/' ? rest : '/' + rest;
-    }
-    return pathname;
+    if (!BASEURL) return pathname;
+    if (pathname === BASEURL) return '/';
+    if (pathname.indexOf(BASEURL + '/') === 0) return pathname.slice(BASEURL.length);
+    return null;
   }
   // Wired-Set: Home, About, CV, Mandelbrot sowie ALLES unter /posts/
   // (Uebersicht, Pagination UND einzelne Beitraege). Mandelbrot und
@@ -77,6 +78,7 @@
   // faengt weiterhin needsFullLoad ab.
   function isWired(pathname) {
     var p = stripBase(pathname);
+    if (p === null) return false;
     if (p === '/' || p === '/about/' || p === '/cv/' || p === '/mandelbrot/') return true;
     return /^\/posts\//.test(p);   // Übersicht, Pagination UND einzelne Beiträge
   }
@@ -456,6 +458,7 @@
       a.classList.remove('current');
       a.removeAttribute('aria-current');
       var lp = stripBase(new URL(a.href, location.href).pathname);
+      if (target === null || lp === null) continue;   // Ziel außerhalb der Site
       if (target === lp || (lp !== '/' && target.indexOf(lp) === 0)) {
         a.classList.add('current');
         a.setAttribute('aria-current', 'page');
@@ -546,7 +549,9 @@
     requestAnimationFrame(function () {
       requestAnimationFrame(function () {
         if (hash) {
-          var el = document.getElementById(decodeURIComponent(hash));
+          var id = hash;
+          try { id = decodeURIComponent(hash); } catch (_) { /* kaputtes Prozent-Encoding: roh verwenden */ }
+          var el = document.getElementById(id);
           if (el) { el.scrollIntoView({ behavior: 'auto' }); focusTarget(el); return; }
         }
         window.scrollTo({ top: y || 0, left: 0, behavior: 'auto' });

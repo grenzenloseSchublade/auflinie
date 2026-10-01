@@ -29,9 +29,21 @@
       skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
       ignoreHtmlClass: 'tex2jax_ignore',
       processHtmlClass: 'tex2jax_process',
+      // Sprach-/Braille-Ausgabe (SRE) aus: Sie startet einen blob:-Worker,
+      // dessen Dateien (vendor/mathjax/sre/) nicht mitgeliefert sind, und
+      // würde worker-src blob: in der CSP erzwingen. Barrierefreiheit trägt
+      // das versteckte MathML (assistiveMml), das Screenreader selbst
+      // vorlesen. Die Menü-Settings überschreiben die Optionen, daher beides.
+      enableEnrichment: false,
+      enableSpeech: false,
+      enableBraille: false,
+      enableExplorer: false,
       menuOptions: {
         settings: {
-          assistiveMml: true
+          assistiveMml: true,
+          enrich: false,
+          speech: false,
+          braille: false
         }
       }
     },

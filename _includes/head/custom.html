@@ -1,50 +1,5 @@
 <!-- start custom head snippets -->
 
-<!-- Security Headers (nur die via meta unterstützten) -->
-<!-- Hinweis: X-Frame-Options, Permissions-Policy und frame-ancestors erfordern HTTP-Header -->
-<meta name="referrer" content="strict-origin-when-cross-origin">
-<!-- jsdelivr entfiel: MathJax ist seit dem Self-Host (assets/vendor/mathjax)
-     die letzte CDN-Quelle gewesen — alles läuft same-origin -->
-<meta http-equiv="Content-Security-Policy" content="
-  default-src 'self';
-  script-src 'self' 'unsafe-inline';
-  style-src 'self' 'unsafe-inline';
-  img-src 'self' data: https:;
-  font-src 'self';
-  connect-src 'self';
-  worker-src 'self' blob:;
-  base-uri 'self';
-  form-action 'self';
-">
-
-<!-- View-Transition-Types (Zielseite): MUSS parser-blockierend vor dem
-     ersten Render registriert sein — defer/async verpassen pagereveal.
-     Gegenstück: pageswap in assets/js/tv-switch.js schreibt den Zustand
-     (CRT bei Scroll-Top, Drawer offen) nach sessionStorage. -->
-<script>
-(function () {
-  var KEY = 'tv-switch:state';
-  window.addEventListener('pagereveal', function (e) {
-    if (!e.viewTransition) return;
-    var raw = null;
-    try {
-      raw = sessionStorage.getItem(KEY);
-      if (raw !== null) sessionStorage.removeItem(KEY);
-    } catch (err) { return; }
-    if (!raw) return;
-    var st;
-    try { st = JSON.parse(raw); } catch (err) { return; }
-    var here = location.pathname.replace(/\/+$/, '') || '/';
-    // Stale-Guard: nur akzeptieren, wenn der Eintrag frisch ist und für
-    // GENAU diese Seite geschrieben wurde (Trailing-Slash normalisiert,
-    // deckt den GitHub-Pages-Redirect /about -> /about/ ab)
-    if (!st || st.to !== here || !st.t || (Date.now() - st.t) > 10000) return;
-    if (st.crt) e.viewTransition.types.add('crt');
-    if (st.drawer) e.viewTransition.types.add('drawer');
-  });
-})();
-</script>
-
 {% if page.fractal_panels %}
 <!-- Fraktal-Panels: CSS der CDN-Libs einmal pro Seite (JS in fractal/deps.html) -->
 <link href="{{ '/assets/vendor/nouislider.min.css' | relative_url }}" rel="stylesheet">
@@ -149,17 +104,6 @@
 }
 </script>
 
-<!-- Konfiguration für Bild-Caching und Service Worker -->
-<script>
-  // Konfiguration aus _config.yml an das HTML-Dokument übergeben.
-  // WICHTIG: data-enable-service-worker wird hier NICHT mehr gesetzt —
-  // das Attribut kommt serverseitig aus _layouts/default.html und ist dort
-  // env-gegated (nur Production). Das frühere Laufzeit-Override erzwang
-  // "true" auch im Dev-Betrieb und hielt die Update-Dauerschleife am Leben.
-  document.documentElement.setAttribute('data-enable-image-caching', '{% if site.enable_image_caching != false %}true{% else %}false{% endif %}');
-  document.documentElement.setAttribute('data-background-image', '{{ site.background_image | relative_url }}');
-</script>
-
 <!-- insert favicons. use https://realfavicongenerator.net/ -->
 
 <!-- Strukturierte Daten (JSON-LD) für SEO -->
@@ -184,12 +128,12 @@
   {% endif %}
   "author": {
     "@type": "Person",
-    "name": "{{ site.author.name | default: site.name }}",
+    "name": {{ site.author.name | default: site.name | jsonify }},
     "url": "{{ site.url }}"
   },
   "publisher": {
     "@type": "Person",
-    "name": "{{ site.author.name | default: site.name }}",
+    "name": {{ site.author.name | default: site.name | jsonify }},
     "logo": {
       "@type": "ImageObject",
       "url": "{{ site.logo | absolute_url }}"
@@ -204,16 +148,16 @@
 {
   "@context": "https://schema.org",
   "@type": "Person",
-  "name": "{{ site.author.name }}",
+  "name": {{ site.author.name | jsonify }},
   "url": "{{ site.url }}{{ site.baseurl }}",
   "image": "{{ site.author.avatar | absolute_url }}",
-  "jobTitle": "{{ site.author.bio }}",
+  "jobTitle": {{ site.author.bio | jsonify }},
   "address": {
     "@type": "PostalAddress",
     "addressCountry": "DE"
   },
   "sameAs": [
-    {% for link in site.social.links %}"{{ link }}"{% unless forloop.last %},{% endunless %}
+    {% for link in site.social.links %}{{ link | jsonify }}{% unless forloop.last %},{% endunless %}
     {% endfor %}]
 }
 </script>

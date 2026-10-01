@@ -8,9 +8,23 @@
  * Offline-Funktionalität zu ermöglichen.
  */
 
-// Cache-Name mit Build-Version
+// Cache-Name mit Build-Version. Der Präfix grenzt die eigenen Caches ab:
+// Alle Pages-Projekte unter grenzenloseSchublade.github.io teilen sich EINEN
+// Origin und damit dieselbe CacheStorage. Löschen und Lesen deshalb nur über
+// CACHE_PREFIX bzw. CACHE_NAME, nie origin-weit (Security-Audit 10/2026, N1/N2).
 const CACHE_VERSION = '{{ site.time | date: "%Y%m%d%H%M" }}';
-const CACHE_NAME = `kraftstoff-cache-${CACHE_VERSION}`;
+const CACHE_PREFIX = 'kraftstoff-cache-';
+const CACHE_NAME = CACHE_PREFIX + CACHE_VERSION;
+// Scope-Pfad (z. B. "/auflinie/") für die Zuständigkeitsprüfung im fetch-Handler
+const SCOPE_PATH = new URL(self.registration.scope).pathname;
+
+// Liest ausschließlich aus dem eigenen, aktuellen Cache. caches.match() ohne
+// Cache-Namen durchsucht jeden Cache des Origins, also auch die der
+// Geschwister-Projekte.
+async function matchOwn(request, options) {
+  const cache = await caches.open(CACHE_NAME);
+  return cache.match(request, options);
+}
 
 // Ressourcen, die beim Installieren des Service Workers gecached werden.
 // App-Shell-Voll-Precache: ALLE Seiten + Assets — Seitenwechsel sind danach
@@ -101,16 +115,14 @@ self.addEventListener('message', event => {
 
 // Aktivierung des Service Workers
 self.addEventListener('activate', event => {
-  // Alte Caches löschen
+  // Nur eigene Alt-Versionen löschen, fremde Caches des Origins bleiben
   event.waitUntil(
     caches.keys()
       .then(cacheNames => {
         return Promise.all(
-          cacheNames.map(cacheName => {
-            if (cacheName !== CACHE_NAME) {
-              return caches.delete(cacheName);
-            }
-          })
+          cacheNames
+            .filter(cacheName => cacheName.startsWith(CACHE_PREFIX) && cacheName !== CACHE_NAME)
+            .map(cacheName => caches.delete(cacheName))
         );
       })
       .then(() => self.clients.claim())
@@ -122,15 +134,15 @@ self.addEventListener('fetch', event => {
   // Nur GET-Requests behandeln
   if (event.request.method !== 'GET') return;
   
-  // Ignoriere Chrome-Extensions und andere externe Requests
-  if (!event.request.url.startsWith(self.location.origin)) return;
-  
+  // Nur eigene Requests: gleicher Origin UND unterhalb des eigenen Scopes.
+  // startsWith(origin) ließe auch "…github.io.evil.example" durch.
+  const requestUrl = new URL(event.request.url);
+  if (requestUrl.origin !== self.location.origin || !requestUrl.pathname.startsWith(SCOPE_PATH)) return;
+
   const url = event.request.url;
 
-  // Navigationen (HTML-Seiten): IMMER frisch vom Server — cache:'reload'
-  // umgeht auch den HTTP-Cache des Browsers. Veraltete Seiten aus dem
-  // Laufzeit-Cache waren die Ursache der Update-Dauerschleife; der Cache
-  // dient nur noch als Offline-Fallback (offline.html).
+  // Navigationen (HTML-Seiten): cache-first aus dem Voll-Precache, Details
+  // siehe handleNavigation. Frische kommt über den SW-Update-Pfad (Toast).
   // X-SPA-Nav: clientseitige Navigation (spa-nav.js) holt die Ziel-HTML per
   // fetch — das ist KEINE 'navigate'-Anfrage, soll aber denselben cache-first-
   // Pfad + Offline-Fallback nutzen wie eine echte Navigation.
@@ -163,11 +175,11 @@ self.addEventListener('fetch', event => {
 // fetch per URL-String — Chromium ignoriert die cache-Option beim
 // wiederverwendeten Navigations-Request-Objekt (verifiziert).
 async function handleNavigation(request) {
-  let cached = await caches.match(request, { ignoreSearch: true });
+  let cached = await matchOwn(request, { ignoreSearch: true });
   if (!cached && request.url.split('?')[0].endsWith('/')) {
     // Paginierte Seiten liegen unter .../index.html im Cache (jekyll-paginate-v2
     // schreibt page.url um) — Trailing-Slash-Anfragen darauf zurückfallen lassen
-    cached = await caches.match(request.url.split('?')[0] + 'index.html');
+    cached = await matchOwn(request.url.split('?')[0] + 'index.html');
   }
   if (cached) {
     return cached;
@@ -178,9 +190,15 @@ async function handleNavigation(request) {
       const cache = await caches.open(CACHE_NAME);
       cache.put(request.url.split('?')[0], response.clone());
     }
+    // GitHub Pages leitet /about auf /about/ um (301). Eine umgeleitete
+    // Antwort auf eine echte Navigation wertet der Browser als Netzwerkfehler
+    // (Fetch-Spec, redirect mode "manual") -> Umleitung explizit weiterreichen.
+    if (response.redirected && request.mode === 'navigate') {
+      return Response.redirect(response.url, 301);
+    }
     return response;
   } catch (error) {
-    const offline = await caches.match('./offline.html');
+    const offline = await matchOwn('./offline.html');
     if (offline) {
       return offline;
     }
@@ -190,7 +208,7 @@ async function handleNavigation(request) {
 
 // Cache-First-Strategie für Bilder
 async function cacheFirst(request) {
-  const cachedResponse = await caches.match(request);
+  const cachedResponse = await matchOwn(request);
   if (cachedResponse) {
     return cachedResponse;
   }
@@ -222,7 +240,7 @@ async function networkFirst(request) {
     return networkResponse;
   } catch (error) {
     // Offline-Modus - verwende Cache
-    const cachedResponse = await caches.match(request);
+    const cachedResponse = await matchOwn(request);
     if (cachedResponse) {
       return cachedResponse;
     }
@@ -230,48 +248,9 @@ async function networkFirst(request) {
     // Fallback für HTML-Seiten (request.mode robuster als Accept-Sniffing;
     // Accept kann null sein -> früher TypeError im Offline-Fall)
     if (request.mode === 'navigate' || (request.headers.get('Accept') || '').includes('text/html')) {
-      return caches.match('./offline.html');
+      return matchOwn('./offline.html');
     }
     
     return new Response('Ressource nicht verfügbar', { status: 404 });
   }
 }
-
-// Nachricht-Event-Handler für explizites Caching von Bildern
-self.addEventListener('message', event => {
-  if (event.data && event.data.type === 'CACHE_IMAGES') {
-    const imageUrls = event.data.images || [];
-    if (imageUrls.length > 0) {
-      caches.open(CACHE_NAME)
-        .then(cache => {
-          return Promise.all(
-            imageUrls.map(url => {
-              // Relativen Pfad zum Basis-URL hinzufügen
-              const fullUrl = url.startsWith('/') ? self.location.origin + url : url;
-              
-              // same-origin für lokale Bilder, cors für externe
-              const fetchMode = fullUrl.startsWith(self.location.origin) ? 'same-origin' : 'cors';
-              
-              return fetch(fullUrl, { mode: fetchMode })
-                .then(response => {
-                  if (response && response.ok) {
-                    cache.put(fullUrl, response);
-                    
-                    // Benachrichtigung an Client senden
-                    if (event.source) {
-                      event.source.postMessage({
-                        type: 'CACHE_COMPLETE',
-                        url: url
-                      });
-                    }
-                  }
-                })
-                .catch(() => {
-                  // Fehler beim Bild-Caching still ignorieren
-                });
-            })
-          );
-        });
-    }
-  }
-}); 
