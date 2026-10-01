@@ -1,0 +1,60 @@
+# Bedientexte des Themes (Minimal Mistakes 4.27.3, _data/ui-text.yml)
+#
+# ACHTUNG: Diese Datei ERSETZT die gleichnamige Theme-Datei vollständig.
+# Jekyll mischt _data-Dateien nicht, andere Locales gibt es damit nicht mehr.
+# Genutzt wird nur site.locale "de-DE" (_config.yml).
+#
+# Grundlage ist der komplette de-Block des Themes. Geändert nur, was gegen
+# STYLEGUIDE 7 (anredefrei, nie „Sie“) oder 8 (Typografie) verstieß oder leer
+# war und deshalb auf den englischen Fallback der Templates fiel (Skip-Links).
+# Keys bleiben in Theme-Schreibweise (YAML-1).
+de: &DEFAULT_DE
+  skip_links                 : "Sprunglinks"
+  skip_primary_nav           : "Zur Hauptnavigation springen"
+  skip_content               : "Zum Inhalt springen"
+  skip_footer                : "Zur Fußzeile springen"
+  page                       : "Seite"
+  pagination_previous        : "Vorherige"
+  pagination_next            : "Nächste"
+  breadcrumb_home_label      : "Start"
+  breadcrumb_separator       : "/"
+  menu_label                 : "Menü"
+  search_label               : "Suche ein-/ausblenden"
+  toc_label                  : "Auf dieser Seite"
+  ext_link_label             : "Direkter Link"
+  less_than                  : "weniger als"
+  minute_read                : "Minuten zum Lesen"
+  share_on_label             : "Teilen auf"
+  meta_label                 :
+  tags_label                 : "Tags:"
+  categories_label           : "Kategorien:"
+  date_label                 : "Aktualisiert:"
+  comments_label             : "Kommentar schreiben"
+  comments_title             : "Kommentare"
+  more_label                 : "Mehr anzeigen"
+  related_label              : "Das könnte auch interessieren"
+  follow_label               : "Folgen:"
+  feed_label                 : "Feed"
+  powered_by                 : "Möglich durch"
+  website_label              : "Webseite"
+  email_label                : "E-Mail"
+  recent_posts               : "Aktuelle Beiträge"
+  undefined_wpm              : "Undefinierter Parameter words_per_minute in _config.yml"
+  comment_form_info          : "Die E-Mail-Adresse wird nicht veröffentlicht. Pflichtfelder sind markiert"
+  comment_form_comment_label : "Kommentar"
+  comment_form_md_info       : "Markdown wird unterstützt."
+  comment_form_name_label    : "Name"
+  comment_form_email_label   : "E-Mail-Adresse"
+  comment_form_website_label : "Webseite (optional)"
+  comment_btn_submit         : "Kommentar absenden"
+  comment_btn_submitted      : "Versendet"
+  comment_success_msg        : "Danke für den Kommentar! Er erscheint auf der Seite, sobald er geprüft wurde."
+  comment_error_msg          : "Beim Absenden ist ein Fehler aufgetreten. Bitte alle Pflichtfelder ausfüllen und erneut versuchen."
+  loading_label              : "Lädt …"
+  search_label_text          : "Suchbegriff eingeben …"
+  search_placeholder_text    : "Suchbegriff eingeben …"
+  search_algolia_no_results  : "Keine Ergebnisse"
+  results_found              : "Ergebnis(se) gefunden"
+  back_to_top                : "Zurück nach oben"
+de-DE:
+  <<: *DEFAULT_DE
