@@ -23,9 +23,6 @@
     "containerEnv": {
         "CLAUDE_CONFIG_DIR": "/home/vscode/.claude"
     },
-    "remoteEnv": {
-        "GH_TOKEN": "${localEnv:GH_TOKEN}"
-    },
     "customizations": {
         "vscode": {
             "extensions": [

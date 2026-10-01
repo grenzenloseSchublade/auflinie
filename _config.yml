@@ -14,7 +14,7 @@ enable_image_caching: true
 enable_service_worker: true
 
 # Theme Einstellungen
-remote_theme: "mmistakes/minimal-mistakes@4.27.3"
+remote_theme: "mmistakes/minimal-mistakes@0064dabea814bd3a2e203320a141c037fdcf67ea" # 4.27.3 (Commit gepinnt, Tag ist verschiebbar)
 minimal_mistakes_skin: "dark" # "default", air", "aqua", "contrast", "dark", "dirt", "neon", "mint", "plum", "sunrise"
 
 # Site Settings
