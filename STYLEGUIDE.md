@@ -248,7 +248,6 @@ Weitere bestehende Tokens:
 |---|---|---|---|
 | `$site-title-font-size` | `1.8em` | Seitentitel im Masthead | em-Ausnahme (TYP-2) |
 | `$nav-font-size` | `1.0em` | Navigationslinks | em-Ausnahme (TYP-2) |
-| `$about-motto-font-size` | `clamp(1.35rem, 3vw, 1.9rem)` | Motto auf „Über mich“ | fluide Ausnahme, heute wirkungslos (Audit B-T3) |
 | `$cv-group-title-font-size`, `$cv-chip-font-size` | `1em` | Skill-Gruppen, Chips | em-Ausnahme (TYP-2) |
 | `$medium-weight` | `600` | Gewicht für Titel | Name passt nicht zum Wert, Soll: `$fw-semibold` |
 | `$sans-serif` | `"Ubuntu derivative auflinie"`, Ersatzschrift, `$system-font-stack` | Fließtext, Überschriften, Navigation | Familie, Schalter `$text-font` (TYP-13) |
@@ -677,7 +676,7 @@ Je Fall genau eine Entscheidung. Gilt für alle Quellen (Markdown, HTML-Includes
 | Uhrzeit | 14:30 Uhr, volle Stunde 14 Uhr | | DIN 5008 |
 | Schrägstrich | ohne Leerzeichen bei Einzelwörtern, mit bei Mehrwortgliedern | CI/CD, C/C++, Azure AI / OpenAI | Duden |
 | Komposita | deutsch zusammen, fremdsprachige Mehrwortglieder durchgekoppelt | Webanwendung, GitHub-Pages-Integration | Duden |
-| Und-Zeichen | „&“ nur in Firmennamen, sonst „und“ | Procter & Gamble | Duden |
+| Und-Zeichen | „&“ in Firmennamen und als bewusstes Stilelement in kurzen Labels (Autoren-Bio, Kapitel- und Gruppentitel, Owner, 1. 10. 2026). Im Fließtext „und“ | Procter & Gamble, Ingenieur & Entwickler, Data & Analytics | Duden, Hausstil |
 | Noten | klein | sehr gut (1,3) | |
 | Doppelformen | Duden-Empfehlung | sogenannt, potenziell, Kryptografie | Duden |
 | Umlaute | immer echt, auch in JS | verfügbar, nicht verfuegbar | |
@@ -1178,6 +1177,7 @@ Stand: Ist-Basis aus dem Kopf. Ein Eintrag verschwindet, sobald der Code die Reg
 | R-32 | OVL-4, A11Y-2 | Drawer: modal (Scrim, Scroll-Sperre, `inert`), aber ohne `role="dialog"` und `aria-modal`. Fokus wandert nur beim Öffnen per Tastatur hinein, weil mobil `:focus` die Links magenta färbt | B-A11Y-05 | Owner |
 | R-33 | 2.5.7 | Fraktal-Pan nur per Ziehen (rechte Maustaste, Leertaste), Zwei-Finger-Geste oder Pfeiltasten am fokussierten Canvas. Für Zeiger fehlt eine Alternative ohne Ziehen | B-A11Y-09 | Owner (sichtbare Pan-Buttons?) |
 | R-34 | SCSS-4 | Seit der `@use`-Migration erweitert das Theme-`@extend` (`.comment__date { @extend .page__meta }`) nur noch Theme-Regeln. Die 9 eigenen `.page__meta`-Regeln gelten nicht für `.comment__date`. Kommentare sind aus, das Element kommt auf keiner Seite vor | – | Owner-Freigabe 1. 10. 2026, beim Einschalten von Kommentaren nachziehen |
+| R-35 | TYP-4, TYP-5 | erledigt 1. 10. 2026: tote Kaskaden-Werte gestrichen statt scharfgeschaltet (Motto-Größe samt `$about-motto-font-size`, Titel-Label des Blog-Hinweises, Epigraph-Abstand, Formelzeile der 404-Seite). Der gerenderte Stand bleibt (Owner: Altlast) | B-T3 | – |
 
 ---
 
@@ -1270,3 +1270,4 @@ Prozess und Doku:
 | 2026-10-01 | Texte: Gedankenstrich „ – “ und „2025 – Heute“ (groß) als Owner-Entscheidungen in TYPO-2 übernommen. SEITE-1 und FM-3 auf Ist (Beiträge und Vorlage ohne Einleitungs-Überschrift, Vorlage ohne verschachtelten Kommentar), Home-Intro ohne Semikolon (7.2), R-22 erledigt. |
 | 2026-10-01 | SCSS: `@use`-Modulbaum mit Theme-Brücke als Hausregel (SCSS-4 Ist), SCSS-2, SCSS-3 und SCSS-19 auf Ist mit CI-Checks, Struktur 9.1 und Mixin-Quelle auf `abstracts/`, R-13 erledigt, R-34 (`.comment__date`) neu. |
 | 2026-10-01 | Schrift: TYP-13 (Ubuntu selbst gehostet, Schalter `text_font`) und PERF-5 neu, TYP-12, LIZ-2 und 9.1 nachgeführt, FARB-10 auf Ist für `$primary-color`, R-29 erledigt, R-5 ohne `font-family`. |
+| 2026-10-01 | Inhalte: TYPO-2 erlaubt „&“ als Stilelement in kurzen Labels (Owner), Token-Zeile `$about-motto-font-size` entfernt, R-35 (tote Kaskaden-Werte, B-T3) erledigt. Demo-Beitrag nach INH-4 depubliziert. |
