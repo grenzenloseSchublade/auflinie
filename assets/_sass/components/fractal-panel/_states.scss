@@ -11,8 +11,8 @@
 .fractal-panel__info-panel {
   margin-top: 10px;
   background: $gray-20;
-  padding: 12px 15px;
-  border-radius: 4px;
+  padding: $fp-space-3 15px;
+  border-radius: $radius-sm;
   color: $gray-87;
   font-size: $fp-fs-xl;
   line-height: 1.5;
@@ -43,7 +43,7 @@
 // Erklärbereich
 // -----------------------------------------------------------------------------
 .fractal-panel__explanation {
-  margin-top: 20px;
+  margin-top: $fp-space-5;
   display: block;
 }
 
@@ -53,18 +53,18 @@
   margin-bottom: 0;
   background: linear-gradient(145deg, $raised-bg-from, $raised-bg-to);
   color: $fp-accent;
-  padding: 12px 16px;
+  padding: $fp-space-3 $fp-space-4;
   border: 1px solid $cyan-a30;
-  border-radius: 12px;
+  border-radius: $radius-xl;
   cursor: pointer;
   font-size: $fp-fs-lg;
   font-weight: 500;
-  transition: all 0.3s ease;
+  transition: all $duration-moderate ease;
   min-height: 44px;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: $fp-space-2;
 
   &:hover {
     background: linear-gradient(145deg, $raised-bg-from-hover, $raised-bg-to-hover);
@@ -79,16 +79,16 @@
 
   .toggle-icon {
     font-size: $fp-fs-2xs;
-    transition: transform 0.3s ease;
+    transition: transform $duration-moderate ease;
   }
 }
 
 .fractal-panel__explanation-box {
   background: linear-gradient(145deg, $raised-bg-from, $raised-bg-to);
   border: 1px solid $cyan-a20;
-  border-radius: 12px;
-  padding: 20px;
-  margin-top: 12px;
+  border-radius: $radius-xl;
+  padding: $fp-space-5;
+  margin-top: $fp-space-3;
   color: $gray-88;
   font-size: $fp-fs-lg;
   line-height: 1.6;
@@ -106,21 +106,21 @@
   }
 
   h4 {
-    margin: 0 0 20px;
+    margin: 0 0 $fp-space-5;
     color: $fp-heading;
     font-size: $fs-title;
     font-weight: 600;
     border-bottom: 1px solid $white-a12;
-    padding-bottom: 12px;
+    padding-bottom: $fp-space-3;
   }
 
   h5 {
-    margin: 0 0 12px;
+    margin: 0 0 $fp-space-3;
     color: $fp-accent;
     font-size: $fs-base;
     font-weight: 600;
     border-bottom: 1px solid $cyan-a30;
-    padding-bottom: 8px;
+    padding-bottom: $fp-space-2;
   }
 
   h6 {
@@ -144,20 +144,20 @@
     background: $cyan-a10;
     color: $fp-accent;
     padding: 2px 6px;
-    border-radius: 4px;
+    border-radius: $radius-sm;
     font-size: 0.9em;
     font-family: "JetBrains Mono", "Fira Code", monospace;
   }
 
   ul {
-    margin: 8px 0;
+    margin: $fp-space-2 0;
     padding-left: 0;
     list-style: none;
   }
 
   li {
     position: relative;
-    padding-left: 16px;
+    padding-left: $fp-space-4;
     margin-bottom: 6px;
   }
 
@@ -174,7 +174,7 @@
   }
 
   .explanation-section {
-    margin-bottom: 20px;
+    margin-bottom: $fp-space-5;
   }
 
   .explanation-section:last-child {
@@ -182,8 +182,8 @@
   }
 
   .param-group {
-    margin: 12px 0;
-    padding-left: 12px;
+    margin: $fp-space-3 0;
+    padding-left: $fp-space-3;
     border-left: 2px solid $cyan-a20;
   }
 
@@ -191,14 +191,14 @@
     display: flex;
     flex-wrap: wrap;
     gap: 6px;
-    margin-top: 8px;
+    margin-top: $fp-space-2;
   }
 
   .color-tag {
     background: $white-a08;
     border: 1px solid $white-a15;
-    padding: 4px 10px;
-    border-radius: 12px;
+    padding: $fp-space-1 10px;
+    border-radius: $radius-xl;
     font-size: $fs-ui;
     color: $cyan-pale;
   }
@@ -206,8 +206,8 @@
   .nav-columns {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 16px;
-    margin-top: 12px;
+    gap: $fp-space-4;
+    margin-top: $fp-space-3;
   }
 
   @media (max-width: 500px) {
@@ -217,7 +217,7 @@
   }
 
   .nav-column h6 {
-    margin-bottom: 8px;
+    margin-bottom: $fp-space-2;
     color: $fp-heading;
   }
 }
@@ -266,14 +266,14 @@
 
     @include backdrop-blur(6px);
 
-    border-radius: 8px;
+    border-radius: $radius-lg;
     box-shadow: 0 6px 18px $black-a35;
     margin-bottom: 0;
   }
 
   .fractal-panel__toolbar {
     top: 12px;
-    padding: 8px 12px;
+    padding: $fp-space-2 $fp-space-3;
   }
 
   .fractal-panel__controls {
@@ -305,7 +305,7 @@
     bottom: 100%;
     left: 0;
     right: 0;
-    margin-bottom: 8px;
+    margin-bottom: $fp-space-2;
     display: block;
     max-height: 70vh;
     overflow-y: auto;
@@ -317,7 +317,7 @@
     transform: translateY(20px);
     opacity: 0;
     visibility: hidden;
-    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease, visibility 0.3s ease;
+    transition: transform $duration-moderate $ease-standard, opacity $duration-moderate ease, visibility $duration-moderate ease;
 
     &.is-visible {
       transform: translateY(0);

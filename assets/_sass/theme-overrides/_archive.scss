@@ -38,10 +38,10 @@
 // Globaler Hover-Akzent für Archiv/Teaser-Items (list + grid)
 // Hover-Effekt: NUR Glow-Rahmen, keine Text-/Hintergrundänderung
 .archive__item {
-  border-radius: 8px;
+  border-radius: $radius-lg;
   padding-block: 0.1em;
   padding-inline: 0.2em;
-  transition: box-shadow 0.2s ease;
+  transition: box-shadow $duration-base ease;
 }
 
 // Karten-Hover folgt dem ruhigen Site-Schema (Cyan-subtle statt

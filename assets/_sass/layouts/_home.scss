@@ -37,9 +37,9 @@
 
   display: grid;
   grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
-  gap: 1.5rem;
+  gap: $space-6;
   align-items: center;
-  padding: 1.5rem;
+  padding: $space-6;
   margin-bottom: $section-spacing;
   transition: border-color $standard-transition;
 
@@ -60,7 +60,7 @@
 
   @media (max-width: 768px) {
     grid-template-columns: 1fr;
-    padding: 1rem;
+    padding: $space-4;
   }
 }
 
@@ -71,7 +71,7 @@
     display: block;
     width: 100%;
     height: auto;
-    border-radius: 6px;
+    border-radius: $radius-md;
   }
 }
 

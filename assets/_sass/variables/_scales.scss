@@ -1,0 +1,105 @@
+// =============================================================================
+// Skalen: Abstände, Rundungen, Schatten, Ebenen, Motion (Oktober 2026)
+// =============================================================================
+// Eine Quelle für alle Zahlenwerte dieser Kategorien (STYLEGUIDE.md 3.3 bis
+// 3.7). Neue Werte kommen aus diesen Skalen. Ein Wert außerhalb braucht
+// `// skala-Ausnahme: <Grund>` in der Zeile darüber. Den Bestand zählt
+// scripts/scale-guardrail.sh als Ratchet (Grenzwerte in scale-baseline.txt).
+
+// Einheiten bleiben beim Ersetzen erhalten: rem hängt an der Browser-
+// Grundschrift, px nicht. Ein px-Literal wird deshalb nie still zu einem
+// rem-Token (SP-2).
+@use "colors" as *;
+
+// -----------------------------------------------------------------------------
+// Abstände: 4-px-Raster in rem
+// -----------------------------------------------------------------------------
+// Index = Vielfaches von 4 px bei 16 px Grundschrift ($space-4 = 16 px).
+$space-1: 0.25rem; // 4 px
+$space-2: 0.5rem; // 8 px
+$space-3: 0.75rem; // 12 px
+$space-4: 1rem; // 16 px
+$space-5: 1.25rem; // 20 px
+$space-6: 1.5rem; // 24 px
+$space-8: 2rem; // 32 px
+$space-10: 2.5rem; // 40 px
+$space-12: 3rem; // 48 px
+$space-16: 4rem; // 64 px
+
+// Fraktal-Panel: px wie $fp-fs-*, das Panel-Chrome bleibt viewport-fix.
+$fp-space-1: 4px;
+$fp-space-2: 8px;
+$fp-space-3: 12px;
+$fp-space-4: 16px;
+$fp-space-5: 20px;
+
+// -----------------------------------------------------------------------------
+// Rundungen
+// -----------------------------------------------------------------------------
+$radius-xs: 2px; // Mini-Marker, Regler-Spur
+$radius-sm: 4px; // Chips, kleine Flächen (= Theme-$border-radius)
+$radius-md: 6px; // Buttons, Code, Eingaben
+$radius-lg: 8px; // Karten (card-panel-Standard)
+$radius-xl: 12px; // große Panels
+$radius-2xl: 16px; // Bottom-Sheet
+$radius-pill: 999px; // Pillen
+$radius-circle: 50%; // Kreise
+
+// Minimal Mistakes liest $border-radius (Theme-Default 4px). Gesetzt wird es
+// hier, damit es dieselbe Quelle hat wie die eigene Skala.
+$border-radius: $radius-sm;
+
+// -----------------------------------------------------------------------------
+// Schatten
+// -----------------------------------------------------------------------------
+// Elevation in drei Stufen. Glows (Neon, CRT, Fokus-Glimmen) sind keine
+// Elevation und bleiben Effektwerte am Einsatzort.
+$shadow-1: 0 1px 3px $black-a20; // knapp abgehoben (Chips, kleine Buttons)
+$shadow-2: 0 4px 12px $black-a30; // schwebende Leisten und Menüs
+$shadow-3: 0 10px 30px $black-a40; // Toasts, Dialoge
+
+// Benannte Sonderfälle (feste Chrome-Teile mit eigener Lichtrichtung)
+$shadow-masthead: 0 2px 10px $black-a30;
+$shadow-drawer: -4px 0 20px $black-a40; // fällt nach links, Drawer kommt von rechts
+$shadow-sheet: 0 -20px 60px -30px $black; // Bottom-Sheet, fällt nach oben
+$shadow-focus-ring: 0 0 0 4px $magenta-a30; // Fokus-Hof um Buttons (Interaktions-Moment)
+
+// -----------------------------------------------------------------------------
+// Ebenen (z-index) im Wurzel-Stapel
+// -----------------------------------------------------------------------------
+// Aufsteigend sortiert, Werte und Reihenfolge exakt aus dem Bestand (Oktober
+// 2026). Gleich hohe Ebenen sind gewollt gleich hoch, dort entscheidet die
+// DOM-Reihenfolge. Lokale Stapel in einem eigenen Stacking-Kontext (Hero,
+// Fraktal-Panel, CRT) bleiben bei 0 bis 10 und stehen in ihrer Komponente
+// (Z-2). Achtung: TOC, Back-to-Top, Skill-Graph und Blog-Hinweis liegen in
+// #main und damit im Stacking-Kontext der Theme-Einblendung (Register R-10).
+$z-graph-float: 900; // schwebender Skill-Graph-Knopf
+$z-toc-overlay: 997; // Scrim hinter dem aufgeklappten Sticky-TOC
+$z-toc-sticky: 998; // mitlaufende TOC-Leiste (mobil)
+$z-scrim: 998; // Drawer-Dimmer body::before
+$z-float: 999; // Back-to-Top
+$z-drawer: 999; // Drawer-Liste, wirkt im Stacking-Kontext des Mastheads
+$z-masthead: 1000;
+$z-drawer-toggle: 1010; // Burger/X, im Masthead über der Drawer-Liste
+$z-sheet: 1100; // Skill-Graph-Ebene (Scrim)
+$z-sheet-panel: $z-sheet + 10; // Skill-Graph-Sheet
+$z-notice: 10010; // Blog-Hinweis
+$z-toast: 10020; // Service-Worker-Toast
+$z-offline: $z-toast - 1; // Offline-Hinweis direkt unter dem Toast
+
+// -----------------------------------------------------------------------------
+// Motion (UI-Übergänge)
+// -----------------------------------------------------------------------------
+// Bandbreite 100 bis 500 ms (NN/g). Choreografien (View Transition, CRT, Neon,
+// Logo-Flackern, Drawer) stehen außerhalb dieser Skala und behalten benannte
+// Werte in ihrer Datei (MO-4).
+$duration-instant: 100ms; // Druck, Farbe
+$duration-fast: 150ms; // kleine Zustandswechsel
+$duration-base: 200ms; // Hover, Fokus
+$duration-moderate: 300ms; // Toast, Overlay, Karten-Lift
+$duration-slow: 400ms; // große Flächen
+$duration-slower: 500ms; // Obergrenze für UI
+
+$ease-standard: cubic-bezier(0.4, 0, 0.2, 1); // Bewegung im Viewport
+$ease-decelerate: cubic-bezier(0.215, 0.61, 0.355, 1); // Einblenden
+$ease-accelerate: cubic-bezier(0.4, 0, 1, 1); // Ausblenden

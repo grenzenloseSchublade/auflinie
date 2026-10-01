@@ -65,5 +65,5 @@
 // (0.75 oben vs. 1.5 unten — die Meta gruppiert sich zum Titel).
 // Blog-POSTS haben Hero-Overlays — deren Meta-Abstand regelt _hero.scss!
 .page__inner-wrap > header .page__meta {
-  margin: 0.75rem 0 1.5rem;
+  margin: $space-3 0 $space-6;
 }

@@ -24,7 +24,7 @@ $cv-summary-pad: max(0px, calc((24px - #{$cv-summary-line}) / 2));
 
   .cv-section__content {
     p {
-      margin-bottom: 1rem;
+      margin-bottom: $space-4;
       line-height: 1.6;
     }
   }
@@ -38,7 +38,7 @@ $cv-summary-pad: max(0px, calc((24px - #{$cv-summary-line}) / 2));
 
     border-bottom: none;
     padding-bottom: 0;
-    margin-bottom: 1.5rem;
+    margin-bottom: $space-6;
   }
 }
 
@@ -72,12 +72,12 @@ $cv-summary-pad: max(0px, calc((24px - #{$cv-summary-line}) / 2));
 .cv-entry {
   display: grid;
   grid-template-columns: 118px 1fr;
-  column-gap: 3rem;
+  column-gap: $space-12;
   position: relative;
   padding-bottom: 1.7rem;
 
   &:last-child {
-    padding-bottom: 0.5rem;
+    padding-bottom: $space-2;
   }
 
   // Punkt-Marker auf der Linie — left so, dass die Punkt-Mitte (137 + 5)
@@ -89,7 +89,7 @@ $cv-summary-pad: max(0px, calc((24px - #{$cv-summary-line}) / 2));
     top: 5px;
     width: 10px;
     height: 10px;
-    border-radius: 50%;
+    border-radius: $radius-circle;
     background: $console-panel-bg;
     border: 2px solid $link-color;
     box-shadow: 0 0 6px $cyan-a45;
@@ -166,7 +166,7 @@ $cv-summary-pad: max(0px, calc((24px - #{$cv-summary-line}) / 2));
     // (1em) schlägt jede Vererbung vom ul — auf dem ul war sie tot
     > li {
       position: relative;
-      padding-left: 1rem;
+      padding-left: $space-4;
       margin-bottom: 0.2rem;
       font-size: $cv-items-font-size;
       line-height: $cv-items-line-height;
@@ -227,9 +227,9 @@ $cv-summary-pad: max(0px, calc((24px - #{$cv-summary-line}) / 2));
   .cv-details__summary {
     cursor: pointer;
     position: relative;
-    padding-right: 2rem;
+    padding-right: $space-8;
     list-style: none;
-    border-radius: 4px;
+    border-radius: $radius-sm;
 
     // Zielgröße mindestens 24 px (siehe $cv-summary-pad oben). min-height
     // sichert die 24 px zusätzlich gegen Subpixel-Rundung ab.
@@ -252,7 +252,7 @@ $cv-summary-pad: max(0px, calc((24px - #{$cv-summary-line}) / 2));
       font-size: $fs-ui;
       width: 1rem;
       text-align: center;
-      transition: transform 0.3s ease;
+      transition: transform $duration-moderate ease;
     }
 
     &:hover {
@@ -273,8 +273,8 @@ $cv-summary-pad: max(0px, calc((24px - #{$cv-summary-line}) / 2));
 // Unterpunkt-Listen (aufgeklappt oder statisch)
 .cv-subitems {
   list-style: none;
-  margin: 0.7rem 0 0.5rem;
-  padding-left: 1rem;
+  margin: 0.7rem 0 $space-2;
+  padding-left: $space-4;
   padding-top: 0.3rem;
   border-top: 1px dotted $white-a10;
 
@@ -284,7 +284,7 @@ $cv-summary-pad: max(0px, calc((24px - #{$cv-summary-line}) / 2));
     color: $white-a70;
     padding-left: 0;
     position: relative;
-    transition: color 0.2s ease;
+    transition: color $duration-base ease;
 
     &:hover {
       color: $white-a90;
@@ -306,7 +306,7 @@ $cv-summary-pad: max(0px, calc((24px - #{$cv-summary-line}) / 2));
   &--static {
     border-top: none;
     padding-top: 0;
-    margin-top: 0.5rem;
+    margin-top: $space-2;
   }
 }
 
@@ -377,10 +377,10 @@ li.cv-skill-chip {
   color: $white-a85;
   background: $console-panel-bg;
   border: 1px solid $white-a10;
-  border-radius: 6px;
+  border-radius: $radius-md;
   padding: 0.3rem 0.6rem;
   margin: 0;
-  transition: border-color 0.2s ease, opacity 0.2s ease;
+  transition: border-color $duration-base ease, opacity $duration-base ease;
 
   // Nur auf echten Hover-Geräten: auf Touch bleibt :hover nach dem Tippen
   // kleben und übermalte die Auswahl-Border (cyan Rand + magenta Glow)
@@ -477,12 +477,12 @@ li.cv-skill-chip--breadth {
   box-sizing: border-box;
   height: calc(3 * 1.5em + 0.8rem);
   overflow-y: auto;
-  margin: 0 0 1rem;
+  margin: 0 0 $space-4;
   padding: 0.4rem 0.8rem;
   background: $inset-panel-bg;
-  border-radius: 6px;
+  border-radius: $radius-md;
   border-left: 2px solid $link-color-subtle;
-  transition: border-color 0.2s ease;
+  transition: border-color $duration-base ease;
 
   @media (max-width: 640px) {
     height: calc(4 * 1.5em + 0.8rem);

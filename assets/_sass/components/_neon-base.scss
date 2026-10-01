@@ -23,6 +23,9 @@
 
 @use "abstracts/tokens" as *;
 
+// skala-Ausnahme: [Block] Neon-Choreografie (MO-4, Owner-Stilelement). Flacker-
+// Takte und Glow-Leitern sind Effektdaten, keine UI-Skala.
+
 /// Flicker-Animation A für den ersten Umlaut-Punkt (::before)
 /// Erzeugt unregelmäßiges Flackern mit Glow-Effekt
 @keyframes neonUmlautFlickerA {
@@ -229,7 +232,7 @@
 .neon-orbit-trigger:focus-visible {
   outline: 2px solid $hover-color;
   outline-offset: 4px;
-  border-radius: 4px;
+  border-radius: $radius-sm;
 }
 
 /// Die leuchtenden Punkte über dem "ü"
@@ -241,7 +244,7 @@
   top: var(--neon-umlaut-dot-offset-top, -0.04em);
   width: var(--neon-umlaut-dot-size, 0.18em);
   height: var(--neon-umlaut-dot-size, 0.18em);
-  border-radius: 999px;
+  border-radius: $radius-pill;
   background: var(--neon-umlaut-dot-color, #ffffff);
   opacity: 1;
 
@@ -328,3 +331,5 @@
 }
 
 // farb-Ausnahme-Ende
+
+// skala-Ausnahme-Ende

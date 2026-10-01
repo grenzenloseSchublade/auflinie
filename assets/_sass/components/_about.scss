@@ -26,7 +26,7 @@
 .section-epigraph__author {
   @include mono-label($fs-label, 0.06em);
 
-  margin-top: 0.5rem;
+  margin-top: $space-2;
   color: $fg-subtle;
   font-style: normal;
 }
@@ -35,9 +35,9 @@
 .contact-container {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
-  margin-top: 1rem;
-  margin-bottom: 2rem;
+  gap: $space-3;
+  margin-top: $space-4;
+  margin-bottom: $space-8;
 }
 
 .contact-card {
@@ -45,7 +45,7 @@
   align-items: center;
   background-color: $white-a03;
   border-radius: 5px;
-  padding: 0.75rem;
+  padding: $space-3;
   text-decoration: none;
   color: inherit;
 
@@ -73,8 +73,8 @@
   align-items: center;
   justify-content: center;
   background-color: $cyan-a10;
-  border-radius: 50%;
-  margin-right: 0.75rem;
+  border-radius: $radius-circle;
+  margin-right: $space-3;
   color: $card-heading-color;
   flex-shrink: 0;
 
@@ -109,7 +109,7 @@
 .about-motto-wrap {
   display: flex;
   justify-content: center;
-  margin: 2rem 0 0.6rem;
+  margin: $space-8 0 0.6rem;
 }
 
 // Der warme Einzelakzent der Seite. Größe und Abstand (1em, margin 0 0

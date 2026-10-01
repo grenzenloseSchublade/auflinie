@@ -33,7 +33,7 @@
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
-    animation: fadeIn 0.5s ease-in-out;
+    animation: fadeIn $duration-slower ease-in-out;
 
     // Einheitliche Hero-Höhe auf allen Seiten (vorher inhaltsabhängig
     // 342-513px); Inhalt OBEN verankert statt zentriert: der H1 sitzt
@@ -80,7 +80,7 @@
       &.loaded {
         &::before {
           opacity: 0;
-          transition: opacity 0.3s ease-in-out;
+          transition: opacity $duration-moderate ease-in-out;
         }
       }
 
@@ -106,6 +106,9 @@
       }
     }
 
+    // skala-Ausnahme: [Block] CRT-Hero (MO-4, Owner-Stilelement). Laufzeiten,
+    // Verzögerungen und der lokale Ebenen-Stapel der Röhre gehören zum Effekt
+    // (Stapel-Reihenfolge siehe Kommentar bei .page__hero--crt-over-text).
     // Clippt CRT an die Hero-Fläche. Roll-Fahrt: 100cqh = Höhe dieser Box (nicht 100% in translateY — das wäre ~Höhe des 12vh-Balkens!)
     .page__hero-crt-media {
       position: absolute;
@@ -459,6 +462,8 @@
       animation: none;
     }
 
+    // skala-Ausnahme-Ende
+
     // Startseite: Power (über Effekten/Vorhang, klickbar)
     .page__hero-crt-power-wrap {
       position: absolute;
@@ -479,7 +484,7 @@
       min-width: 2.5rem;
       min-height: 2.5rem;
       border: none;
-      border-radius: 4px;
+      border-radius: $radius-sm;
       background: transparent;
       box-shadow: none;
 
@@ -488,7 +493,7 @@
       color: rgb(248 238 220 / 90%);
       cursor: pointer;
       line-height: 0;
-      transition: color 0.2s ease, filter 0.2s ease, opacity 0.2s ease;
+      transition: color $duration-base ease, filter $duration-base ease, opacity $duration-base ease;
 
       &:hover {
         color: rgb(255 255 255 / 98%);
@@ -545,7 +550,7 @@
           content: "";
           position: absolute;
           inset: -45%; // Bloom größer als der Button -> runde Blüte über die Ecken hinaus
-          border-radius: 50%;
+          border-radius: $radius-circle;
           background: radial-gradient(closest-side, rgb(90 200 120 / 55%), rgb(90 200 120 / 0%) 72%);
           pointer-events: none;
           z-index: -1; // hinter dem Power-Icon
@@ -734,7 +739,7 @@
   background: $ink-a55;
   color: $white-a78;
   border: 1px solid $white-a10;
-  border-radius: 4px 0 0;
+  border-radius: $radius-sm 0 0;
   line-height: 1.35;
   text-align: right;
 }

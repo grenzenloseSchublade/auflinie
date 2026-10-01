@@ -21,11 +21,11 @@ $fp-heading: $console-heading;
   max-width: 100%;
   width: 100%;
   box-sizing: border-box;
-  margin: 0 auto 20px;
+  margin: 0 auto $fp-space-5;
   background: $console-panel-bg;
   border: 1px solid $console-panel-border;
   border-radius: 10px;
-  padding: 16px;
+  padding: $fp-space-4;
   box-shadow: 0 2px 6px $black-a25;
 
   @media (max-width: 768px) {
@@ -39,5 +39,5 @@ $fp-heading: $console-heading;
 .fractal-panel__title {
   @include accent-header($fs-heading-sm);
 
-  margin: 0 0 16px;
+  margin: 0 0 $fp-space-4;
 }

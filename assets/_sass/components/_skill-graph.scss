@@ -21,7 +21,7 @@
   @include mono-label($fs-label-xs, 0.07em); // 0.62→0.68 (K6, Skalen-Hygiene)
 
   border: 1px solid $link-color-subtle;
-  border-radius: 999px;
+  border-radius: $radius-pill;
   padding: 0.15rem 0.55rem;
   color: $fg-subtle;
 }
@@ -30,7 +30,7 @@
   @include card-panel(0, 10px);
 
   margin-top: 0.8rem;
-  padding: 1rem;
+  padding: $space-4;
 
   @media (max-width: 640px) {
     padding: 0.6rem;
@@ -66,11 +66,11 @@
   gap: 0.35rem;
   background: transparent;
   border: 1px solid $console-panel-border;
-  border-radius: 6px;
+  border-radius: $radius-md;
   color: $fg-subtle;
   padding: 0.28rem 0.6rem;
   cursor: pointer;
-  transition: border-color 0.2s ease, color 0.2s ease;
+  transition: border-color $duration-base ease, color $duration-base ease;
 
   @media (hover: hover) {
     &:hover {
@@ -152,11 +152,11 @@
   gap: 0.4rem;
   background: transparent;
   border: 1px solid $link-color-subtle;
-  border-radius: 8px;
+  border-radius: $radius-lg;
   color: $white-a80;
   padding: 0.4rem 0.8rem;
   cursor: pointer;
-  transition: border-color 0.2s ease, color 0.2s ease;
+  transition: border-color $duration-base ease, color $duration-base ease;
 
   @media (hover: hover) {
     &:hover {
@@ -211,7 +211,7 @@
   padding: 0.6rem 1.1rem;
   background: $console-panel-bg;
   border: 1px solid $link-color-subtle;
-  border-radius: 999px;
+  border-radius: $radius-pill;
   box-shadow: 0 14px 34px -18px $black-a95;
   color: $white-a92;
   cursor: pointer;
@@ -233,7 +233,7 @@ body.graph-here .skill-graph__floating {
   position: fixed;
   bottom: calc(20px + var(--graph-float-push, 0px));
   left: 50%;
-  z-index: 900;
+  z-index: $z-graph-float;
   display: inline-flex;
   transform: translateX(-50%);
 }
@@ -298,8 +298,8 @@ body.graph-here .cv-skills p.cv-skills__selection-info {
 // ── Modales Bottom-Sheet (body.graph-open, seit 1.10.2026) ──────────────────
 // skill-graph-sheet.js verschiebt das Panel beim Öffnen in .skill-graph-layer
 // direkt unter <body>: Scrim davor, Rest der Seite inert, Scroll gesperrt.
-// Ebene über dem Masthead (1000), unter Toasts (10020).
-$graph-layer-z: 1100;
+// Ebenen $z-sheet und $z-sheet-panel (variables/_scales.scss): über dem
+// Masthead, unter Hinweis und Toasts.
 
 html.graph-scroll-lock {
   overflow: hidden;
@@ -309,7 +309,7 @@ html.graph-scroll-lock {
 .skill-graph__scrim {
   position: fixed;
   inset: 0;
-  z-index: $graph-layer-z;
+  z-index: $z-sheet;
   background: $black-a55;
   animation: graph-scrim-in 0.25s ease;
 }
@@ -332,19 +332,19 @@ body.graph-open .skill-graph__panel {
   position: fixed;
   left: 50%;
   bottom: 0;
-  z-index: $graph-layer-z + 10;
+  z-index: $z-sheet-panel;
   width: min(760px, 94vw);
   height: 68vh;
   margin: 0;
   transform: translateX(-50%);
   border: 1px solid $console-panel-border;
-  border-radius: 16px 16px 0 0;
-  box-shadow: 0 -20px 60px -30px $black;
+  border-radius: $radius-2xl $radius-2xl 0 0;
+  box-shadow: $shadow-sheet;
   display: flex;
   flex-direction: column;
   opacity: 1;
   transition: opacity 0.25s ease;
-  animation: graph-sheet-up 0.3s cubic-bezier(0.22, 0.61, 0.36, 1);
+  animation: graph-sheet-up $duration-moderate cubic-bezier(0.22, 0.61, 0.36, 1);
 }
 
 body.graph-open .skill-graph__canvas-wrap {
@@ -369,7 +369,7 @@ body.graph-open p.skill-graph__context {
   max-width: 82%;
   padding: 0.55rem 0.9rem;
   border: 1px solid $console-panel-border;
-  border-radius: 12px;
+  border-radius: $radius-xl;
   background: $black-a68;
   color: $white-a90;
   font-family: $mono-font-stack;
@@ -379,7 +379,7 @@ body.graph-open p.skill-graph__context {
   text-align: center;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.4s ease;
+  transition: opacity $duration-slow ease;
 }
 
 .skill-graph__touch-hint.is-show {
@@ -396,7 +396,7 @@ body.graph-open p.skill-graph__context {
   width: 32px;
   height: 32px;
   border: 1px solid $console-panel-border;
-  border-radius: 8px;
+  border-radius: $radius-lg;
   background: $console-panel-bg;
   color: $fg-muted;
   font-size: $fs-base;

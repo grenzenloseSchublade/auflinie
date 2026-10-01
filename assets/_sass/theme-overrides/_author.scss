@@ -7,10 +7,10 @@
   background-color: transparent;
   border: 1px solid $link-color-subtle;
   color: $white-a88;
-  border-radius: 6px;
+  border-radius: $radius-md;
   font-size: $fs-label; // 0.75em→0.72rem (R, Token-Skala)
   padding: 0.5em 1.1em;
-  transition: border-color 0.2s ease, background-color 0.2s ease;
+  transition: border-color $duration-base ease, background-color $duration-base ease;
 
   &:hover {
     border-color: $link-color;
@@ -26,7 +26,7 @@
   .author__urls {
     background-color: $console-panel-bg;
     border: 1px solid $console-panel-border;
-    border-radius: 8px;
+    border-radius: $radius-lg;
     box-shadow: 0 8px 24px $black-a40;
 
     // Sprechblasen-Pfeil an den Panel-Ton anpassen

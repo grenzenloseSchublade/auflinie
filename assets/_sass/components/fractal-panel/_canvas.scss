@@ -28,7 +28,7 @@
 .fractal-panel__column-title {
   @include accent-header($fs-base, false);
 
-  margin: 0 0 12px;
+  margin: 0 0 $fp-space-3;
   padding: 2px 0;
 }
 
@@ -54,7 +54,7 @@
   display: block;
   width: 100%;
   height: auto;
-  border-radius: 4px;
+  border-radius: $radius-sm;
   cursor: crosshair;
   aspect-ratio: 16 / 9;
 
@@ -118,7 +118,7 @@
   z-index: 4;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: $fp-space-1;
   pointer-events: none;
 
   @media (max-width: 600px) {
@@ -132,8 +132,8 @@
   background: $hud-bg;
   color: $white-a65;
   border: 1px solid $cyan-a25;
-  padding: 4px 8px;
-  border-radius: 4px;
+  padding: $fp-space-1 $fp-space-2;
+  border-radius: $radius-sm;
   font-size: $fp-fs-xs;
   font-family: $fp-mono;
   font-variant-numeric: tabular-nums;
@@ -165,8 +165,8 @@
   transform: translate(-50%, -50%);
   background: $black-a70;
   color: $white;
-  padding: 10px 20px;
-  border-radius: 4px;
+  padding: 10px $fp-space-5;
+  border-radius: $radius-sm;
   display: none;
   font-size: $fp-fs-xl;
   z-index: 5;
@@ -180,7 +180,7 @@
   background: $black-a75;
   color: $red-pale;
   padding: 6px 10px;
-  border-radius: 6px;
+  border-radius: $radius-md;
   font-size: $fp-fs-sm;
   display: none;
   z-index: 5;
@@ -194,18 +194,18 @@
   display: none;
   flex-direction: row;
   align-items: center;
-  gap: 8px;
+  gap: $fp-space-2;
   background: $black-a45;
   border-radius: 26px;
-  padding: 6px 8px;
+  padding: 6px $fp-space-2;
   z-index: 6;
-  box-shadow: 0 1px 3px $black-a20;
+  box-shadow: $shadow-1;
 }
 
 .fractal-panel__zoom-button {
   width: 44px;
   height: 44px;
-  border-radius: 50%;
+  border-radius: $radius-circle;
   background: $gray-27;
   color: $white;
   font-size: $fp-fs-icon;
@@ -218,7 +218,7 @@
   line-height: 1;
   box-shadow: 0 1px 2px $black-a20;
   border: none;
-  transition: background-color 0.2s, transform 0.1s;
+  transition: background-color $duration-base, transform $duration-instant;
 
   &:hover {
     background: $gray-33;
@@ -235,7 +235,7 @@
   font-size: $fp-fs-sm;
   background: $black-a30;
   padding: 2px 6px;
-  border-radius: 8px;
+  border-radius: $radius-lg;
   text-align: center;
   min-width: 45px;
   margin: 0 2px;
@@ -276,8 +276,8 @@
   transform: translate(-50%, -50%);
   background: $black-a78;
   color: $white;
-  padding: 10px 16px;
-  border-radius: 8px;
+  padding: 10px $fp-space-4;
+  border-radius: $radius-lg;
   font-size: $fp-fs-lg;
   text-align: center;
   pointer-events: none;

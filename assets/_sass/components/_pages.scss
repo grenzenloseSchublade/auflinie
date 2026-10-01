@@ -61,7 +61,7 @@ body {
   min-width: 220px;
   flex: 1 1 260px;
   padding: 0.55em 0.7em;
-  border-radius: 6px;
+  border-radius: $radius-md;
   border: 1px solid $white-a20;
   background: $black-a20;
   color: $white;
@@ -90,13 +90,13 @@ body {
   // ergab 70 % Weiß statt 0,7 × 8 % (FARB-5). Der gerenderte Wert bleibt
   // bewusst stehen (optisch neutral). Ob 70 % gewollt sind, entscheidet der Owner.
   border: 1px dashed $white-a70;
-  border-radius: 8px;
+  border-radius: $radius-lg;
   display: grid;
   grid-template-columns: auto 1fr;
   gap: 0.55rem 0.9rem;
   align-items: start;
-  padding: 0.75rem 1.1rem;
-  margin: 1.2rem 0 1rem;
+  padding: $space-3 1.1rem;
+  margin: 1.2rem 0 $space-4;
 }
 
 .guide-banner__icon {

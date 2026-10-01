@@ -6,8 +6,6 @@
 @use "abstracts/tokens" as *;
 @use "abstracts/mixins" as *;
 
-$sw-toast-z: 10020;
-
 @keyframes sw-update-toast-enter {
   from {
     opacity: 0;
@@ -35,10 +33,10 @@ $sw-toast-z: 10020;
 .sw-update-toast {
   position: fixed;
   inset: auto 0 0;
-  z-index: $sw-toast-z;
+  z-index: $z-toast;
   display: flex;
   justify-content: center;
-  padding: 0 max(0.75rem, env(safe-area-inset-right, 0)) max(0.75rem, env(safe-area-inset-bottom, 0)) max(0.75rem, env(safe-area-inset-left, 0));
+  padding: 0 max($space-3, env(safe-area-inset-right, 0)) max($space-3, env(safe-area-inset-bottom, 0)) max($space-3, env(safe-area-inset-left, 0));
   pointer-events: none;
   font-family: $sans-serif;
 
@@ -58,12 +56,12 @@ $sw-toast-z: 10020;
   width: min(26rem, 100%);
   padding: 0.6rem 0.9rem;
   color: $white-a92;
-  box-shadow: 0 10px 30px $black-a40;
-  animation: sw-update-toast-enter 0.3s ease-out forwards;
+  box-shadow: $shadow-3;
+  animation: sw-update-toast-enter $duration-moderate ease-out forwards;
 }
 
 .sw-update-toast--leaving .sw-update-toast__panel {
-  animation: sw-update-toast-leave 0.2s ease-in forwards;
+  animation: sw-update-toast-leave $duration-base ease-in forwards;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -74,7 +72,7 @@ $sw-toast-z: 10020;
   .sw-update-toast--leaving .sw-update-toast__panel {
     animation: none;
     opacity: 0;
-    transition: opacity 0.2s ease;
+    transition: opacity $duration-base ease;
   }
 }
 
@@ -102,9 +100,9 @@ $sw-toast-z: 10020;
   font-weight: 600;
   line-height: 1.2;
   cursor: pointer;
-  border-radius: 6px;
+  border-radius: $radius-md;
   padding: 0.45rem 0.8rem;
-  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+  transition: background-color $duration-base ease, color $duration-base ease, border-color $duration-base ease;
 
   &:focus-visible {
     outline: 2px solid $hover-color;
@@ -140,13 +138,13 @@ $sw-toast-z: 10020;
   position: fixed;
   right: max(1.25rem, env(safe-area-inset-right, 0));
   bottom: max(1.25rem, env(safe-area-inset-bottom, 0));
-  z-index: $sw-toast-z - 1;
+  z-index: $z-offline;
   max-width: calc(100% - 2.5rem);
-  padding: 0.6rem 1.25rem;
+  padding: 0.6rem $space-5;
   color: $white-a92;
   font-family: $sans-serif;
   font-size: $fs-body;
-  box-shadow: 0 10px 30px $black-a40;
+  box-shadow: $shadow-3;
 
   &[hidden] {
     display: none;

@@ -37,6 +37,7 @@
 // steht nicht auf der Ausnahmeliste in base/_accessibility.scss).
 // farb-Ausnahme: Attributwert im Inline-Logo (_includes/logo.svg), keine Farbangabe
 .site-logo svg [stroke="#f0c"] {
+  // skala-Ausnahme: Logo-Flackern (MO-4), teilerfremde Laufzeiten
   animation: logo-tube-flicker-a 11.3s linear infinite,
       logo-tube-flicker-b 7.9s linear infinite;
 }
@@ -128,7 +129,7 @@
         margin: 0 0.2em;
         font-weight: $medium-weight; // Etwas fetter
         color: $white; // Weiß für bessere Lesbarkeit
-        transition: color 0.2s ease, text-shadow 0.2s ease;
+        transition: color $duration-base ease, text-shadow $duration-base ease;
 
         // Desktop: Größere Schrift (moderne Standards: 16-18px)
         @media (min-width: 768px) {
@@ -167,14 +168,14 @@ body .masthead {
   left: 0;
   right: 0;
   width: 100%;
-  z-index: 1000;
-  transition: transform 0.4s cubic-bezier(0.215, 0.61, 0.355, 1),
-    opacity 0.3s ease;
+  z-index: $z-masthead;
+  transition: transform $duration-slow $ease-decelerate,
+    opacity $duration-moderate ease;
   background-color: $masthead-bg;
 
   @include backdrop-blur(5px);
 
-  box-shadow: 0 2px 10px $black-a30;
+  box-shadow: $shadow-masthead;
   border-bottom: none;
   height: var(--masthead-height);
   min-height: var(--masthead-height);
@@ -291,7 +292,7 @@ body .greedy-nav .visible-links a {
   padding: 0 0.75em;
   position: relative; // auch Anker für den ::after-Marker (Tab-Linie)
   z-index: 2;
-  transition: color 0.2s ease-in-out, background-color 0.2s ease-in-out;
+  transition: color $duration-base ease-in-out, background-color $duration-base ease-in-out;
 
   // Hover-Effekt wie hidden-links
   &:hover,
@@ -337,9 +338,11 @@ body {
     // Hero (CRT-Layer, Canvas-Noise) JEDEN Frame neu gerastert — die
     // Hauptursache des ruckelnden Slide-Outs auf Mobilgeräten
     background: $drawer-bg;
-    box-shadow: -4px 0 20px $black-a40;
-    z-index: 999; // Hinter dem Header (z-index: 1000)
+    box-shadow: $shadow-drawer;
+    z-index: $z-drawer; // Hinter dem Header ($z-masthead)
     transform: translateX(100%);
+
+    // skala-Ausnahme: Drawer-Choreografie (MO-4), gekoppelt an greedy-navigation.js
     transition: transform 0.3s ease-in-out;
     will-change: transform; // Performance-Optimierung für Animation
     overflow: hidden auto;
@@ -354,6 +357,8 @@ body {
     transform: translateX(0);
     pointer-events: auto;
     visibility: visible;
+
+    // skala-Ausnahme: Drawer-Choreografie (MO-4), gekoppelt an greedy-navigation.js
     transition: transform 0.3s ease-in-out, visibility 0s;
   }
 
@@ -371,6 +376,7 @@ body {
 
     // Exit beschleunigend und kürzer als der Entrance (Material-Muster:
     // Abgänge accelerate); visibility-Delay MUSS synchron zur Dauer bleiben
+    // skala-Ausnahme: Drawer-Choreografie (MO-4), gekoppelt an greedy-navigation.js
     transition: transform 0.24s cubic-bezier(0.4, 0, 1, 1), visibility 0s 0.24s;
   }
 }
@@ -403,10 +409,10 @@ body::before {
   position: fixed;
   inset: var(--masthead-height) $drawer-width 0 0; // Beginnt unter dem Header // Spart Menü-Bereich (Drawer-Breite) aus, Menü bleibt klickbar
   background: $black-a60;
-  z-index: 998; // Unter Masthead (1000) und Drawer (999)
+  z-index: $z-scrim; // Unter Masthead und Drawer
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.2s ease-out;
+  transition: opacity $duration-base ease-out;
   will-change: opacity;
 }
 
@@ -440,7 +446,7 @@ body .greedy-nav .hidden-links li {
   border-bottom: none;
   border-left: 2px solid transparent; // Platzhalter für Hover-Border
   pointer-events: auto;
-  transition: background-color 0.2s ease-in-out, border-left-color 0.2s ease-in-out;
+  transition: background-color $duration-base ease-in-out, border-left-color $duration-base ease-in-out;
 
   &:last-child {
     border-bottom: none;
@@ -480,7 +486,7 @@ body .greedy-nav .hidden-links li a {
   color: $white;
   font-size: 1em;
   text-decoration: none;
-  transition: color 0.2s ease-in-out;
+  transition: color $duration-base ease-in-out;
   position: relative;
   z-index: 10;
   border-radius: 0;
@@ -501,9 +507,9 @@ body .greedy-nav__toggle {
   border: none; // Keine Umrandung mehr
   cursor: pointer;
   padding: 0.4em;
-  transition: opacity 0.2s ease;
+  transition: opacity $duration-base ease;
   position: relative;
-  z-index: 1010; // Über Overlay (1005) - X-Button immer klickbar
+  z-index: $z-drawer-toggle; // über der Drawer-Liste, X-Button immer klickbar
   border-radius: 0;
   box-shadow: none;
 
@@ -543,7 +549,7 @@ body .navicon {
   height: 0.2em;
   background: $link-color-subtle; // Dezentes Cyan
   box-shadow: none;
-  transition: 0.3s;
+  transition: $duration-moderate;
 }
 
 body .navicon::before,
@@ -555,7 +561,7 @@ body .navicon::after {
   height: 100%;
   background: $link-color-subtle; // Dezentes Cyan
   box-shadow: none;
-  transition: 0.3s;
+  transition: $duration-moderate;
 }
 
 body .navicon::before {
@@ -640,9 +646,9 @@ body .greedy-nav .visible-links a::after {
   right: 0.75em;
   bottom: 0; // Unterkante des Masthead („Tab"-Muster)
   height: 3px;
-  border-radius: 2px 2px 0 0;
+  border-radius: $radius-xs $radius-xs 0 0;
   background: transparent;
-  transition: background-color 0.2s ease;
+  transition: background-color $duration-base ease;
 }
 
 body .greedy-nav .visible-links a.current::after {

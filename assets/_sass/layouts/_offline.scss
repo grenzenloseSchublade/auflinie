@@ -13,7 +13,7 @@
   margin: 0 auto;
 
   &__title {
-    margin-bottom: 1rem;
+    margin-bottom: $space-4;
   }
 
   &__description {
@@ -28,7 +28,7 @@
 
     @include card-panel(0);
 
-    padding: 1rem 1.4rem;
+    padding: $space-4 1.4rem;
 
     .options-list {
       list-style: none;
@@ -56,10 +56,10 @@
 
     padding: 10px 20px;
     font-size: $fs-base;
-    border-radius: 6px;
+    border-radius: $radius-md;
     cursor: pointer;
     margin-top: 1em;
-    transition: background-color 0.2s ease, border-color 0.2s ease;
+    transition: background-color $duration-base ease, border-color $duration-base ease;
 
     &:active {
       transform: translateY(0);

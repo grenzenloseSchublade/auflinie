@@ -3,6 +3,9 @@
 
 @use "abstracts/tokens" as *;
 
+// skala-Ausnahme: [Block] Neon-Orbit-Choreografie (MO-4). Phasen und Verzögerungen
+// sind gekoppelt (Custom Properties in variables/_css-properties.scss).
+
 // Spiral-Start: Punkte starten von ihrer ECHTEN Position und spiralen zum Orbit
 // --neon-orbit-center-y verschiebt den Orbit vertikal (höher = Punkte weiter oben)
 @keyframes neonOrbitRampBefore {
@@ -529,3 +532,5 @@
   animation-fill-mode: none, none, none, none, forwards;
   animation-delay: 0.95s, 0s, 0s, 0s, 0s;  // Kein Delay für Scatter - beide Punkte starten gleichzeitig
 }
+
+// skala-Ausnahme-Ende

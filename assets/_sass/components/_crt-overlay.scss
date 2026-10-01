@@ -18,6 +18,9 @@
 
 @use "abstracts/tokens" as *;
 
+// skala-Ausnahme: [Block] CRT-Overlay (MO-4, Owner-Stilelement). Flacker-Takt,
+// Roll-Dauer und lokaler Stapel gehören zum Effekt.
+
 // farb-Ausnahme: [Block] CRT-Röhre (Owner-Stilelement). Scanline-Schwarz,
 // RGB-Aperture-Grille, Korn-Grau und Vignette sind physikalische
 // Effektwerte, keine Palettentöne.
@@ -189,3 +192,5 @@
   overflow: hidden;
   pointer-events: none;
 }
+
+// skala-Ausnahme-Ende

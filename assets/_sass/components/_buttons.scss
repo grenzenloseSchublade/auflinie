@@ -17,7 +17,7 @@
 .btn {
   // Hier können spezifische Anpassungen für die Standard-Buttons hinzugefügt werden
   // Die Grundstile werden aus dem Theme übernommen
-  transition: all 0.3s ease;
+  transition: all $duration-moderate ease;
 
   &:hover {
     color: $hover-color;

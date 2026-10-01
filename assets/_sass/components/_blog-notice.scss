@@ -6,11 +6,11 @@
 .blog-notice {
   position: fixed;
   inset: 0;
-  z-index: 10010;
+  z-index: $z-notice;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 1rem;
+  padding: $space-4;
   background: $ink-a55;
 
   @include backdrop-blur(2px);

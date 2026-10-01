@@ -12,12 +12,12 @@
   position: fixed;
   bottom: calc(var(--btt-base-bottom) + var(--btt-footer-push));
   left: 50%;
-  z-index: 999;
+  z-index: $z-float;
 
   // Größe und Form
   width: 48px;
   height: 48px;
-  border-radius: 50%;
+  border-radius: $radius-circle;
 
   // Farben (Projekt-Variablen)
   background-color: $background-dark;
@@ -41,7 +41,7 @@
 
   // Animationen: bottom wird NICHT transitioniert — es folgt scroll-gekoppelt
   // stufenlos dem Footer (eine Transition würde nachlaufen/ruckeln).
-  transition: opacity 0.3s ease, transform 0.3s ease, box-shadow 0.2s ease, visibility 0s linear 0.3s;
+  transition: opacity $duration-moderate ease, transform $duration-moderate ease, box-shadow $duration-base ease, visibility 0s linear $duration-moderate;
   will-change: opacity, transform;
 
   // SVG-Icon
@@ -49,7 +49,7 @@
     width: 24px;
     height: 24px;
     stroke: $link-color-subtle;
-    transition: filter 0.2s ease;
+    transition: filter $duration-base ease;
   }
 
   // Sichtbarer Zustand
@@ -92,7 +92,7 @@
   // Active-State
   &:active {
     transform: translateX(-50%) translateY(2px);
-    transition-duration: 0.1s;
+    transition-duration: $duration-instant;
   }
 
   // Mobile Anpassungen
@@ -112,7 +112,7 @@
 
   // Reduzierte Bewegung respektieren
   @media (prefers-reduced-motion: reduce) {
-    transition: opacity 0.1s ease, visibility 0s linear 0.1s;
+    transition: opacity $duration-instant ease, visibility 0s linear $duration-instant;
     transform: translateX(-50%);
 
     &.visible {

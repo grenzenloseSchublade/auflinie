@@ -41,9 +41,12 @@ html {
   *:not(.neon-umlaut, .neon-glow, .neon-name, .neon-orbit-trigger, .page__hero-crt-roll, .page__hero-crt-layer, .page__hero-grain, .page__hero-crt-noise, .page__hero--overlay),
   *:not(.neon-umlaut, .neon-glow, .neon-name, .neon-orbit-trigger, .page__hero-crt-roll, .page__hero-crt-layer)::before,
   *:not(.neon-umlaut, .neon-glow, .neon-name, .neon-orbit-trigger, .page__hero-crt-layer, .page__hero--overlay, .page__hero-crt-media)::after {
+    // skala-Ausnahme: [Block] Kill-Switch, 0.01ms statt 0 hält animationend und transitionend am Leben
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+
+    // skala-Ausnahme-Ende
     scroll-behavior: auto !important;
   }
 
@@ -97,7 +100,7 @@ button:focus-visible,
 .zoom-button:focus-visible {
   outline: 2px solid $hover-color;
   outline-offset: 2px;
-  box-shadow: 0 0 0 4px $magenta-a30;
+  box-shadow: $shadow-focus-ring;
 }
 
 // Focus-Styles für Links

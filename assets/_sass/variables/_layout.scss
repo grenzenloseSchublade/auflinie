@@ -1,5 +1,7 @@
 // Layout-Variablen für das gesamte Projekt
-// Diese Datei enthält alle Abstände, Größen und Layout-bezogenen Variablen
+// Diese Datei enthält Breiten und Layout-bezogene Variablen. Die Skalen für
+// Abstände, Rundungen, Schatten, Ebenen und Motion stehen in _scales.scss.
+@use "scales" as *;
 
 // Abstände
 $section-spacing: 2em; // Abstand zwischen Sektionen
@@ -16,7 +18,7 @@ $drawer-width: 180px;
 
 // Effekte
 $hover-transform: translateY(-5px); // Transformation beim Hover
-$standard-transition: 0.3s ease; // Standard-Übergangseffekt
+$standard-transition: $duration-moderate ease; // Standard-Übergangseffekt
 
 // Responsive Breakpoints werden aus dem Theme übernommen
 // $small, $medium, $large, $x-large sind bereits definiert

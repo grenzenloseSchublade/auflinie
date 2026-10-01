@@ -14,6 +14,10 @@
 @use "sass:list";
 @use "abstracts/tokens" as *;
 
+// skala-Ausnahme: [Block] Choreografie View Transition und CRT-Umschalten (MO-4).
+// Dauern, Kurven und Ebenen sind aufeinander abgestimmt und gekoppelt an
+// greedy-navigation.js und tv-switch.js, sie liegen außerhalb der UI-Skala.
+
 // "dezent"      — heutige Struktur, aber smooth (easeOutQuint) + Einschalt-Bloom
 // "linie-punkt" — V-Kollaps -> Linie -> Leuchtpunkt mit Nachglimmen (EMPFOHLEN)
 // "voll"        — wie linie-punkt + langes Nachglimmen unter der neuen Seite,
@@ -1044,3 +1048,5 @@ html.vt-capture body::before {
     animation: none !important;
   }
 }
+
+// skala-Ausnahme-Ende
