@@ -19,6 +19,7 @@ minimal_mistakes_skin: "dark" # "default", air", "aqua", "contrast", "dark", "di
 
 # Site Settings
 locale: "de-DE"
+title_separator: "–" # Hausstil-Gedankenstrich im <title> (STYLEGUIDE SEO-1, TYPO-2)
 search: false
 # search_full_content und lunr werden nur benötigt wenn search: true
 # search_full_content: true

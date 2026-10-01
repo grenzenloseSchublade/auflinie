@@ -474,7 +474,7 @@ Anlass: Im Skill-Graphen rutschte die Seite beim Wischen über den Graphen weg (
 
 ### 5.3 SEO und Metadaten
 
-- **SEO-1** [MUSS · Soll · Review] `title` im Front Matter ist der Seitenname ohne Site-Namen. Den Zusatz mit dem Site-Namen erzeugt das Theme (`site.title`, `title_separator`). **[Soll]** `title_separator` in `_config.yml` auf den Hausstil-Strich „—“ setzen, heute gilt der Theme-Default „-“ (Bindestrich als Strich, TYPO-2, Register R-30).
+- **SEO-1** [MUSS · Ist · Review] `title` im Front Matter ist der Seitenname ohne Site-Namen. Den Zusatz mit dem Site-Namen erzeugt das Theme (`site.title`, `title_separator`). `title_separator` steht in `_config.yml` auf dem Hausstil-Strich „–“ (TYPO-2).
 - **SEO-2** [SOLL · Soll · CI-P3] Excerpt bzw. Description 70 bis 160 Zeichen.
 - **SEO-3** [SOLL · Soll · Review] OG-Bild 1200 × 630 px, pro Seite über `header.og_image`, sonst Site-Standard.
 - **SEO-4** [MUSS · Soll · CI-P3] Seiten, die nicht in Suche und Sitemap gehören (Archiv-Stubs, Weiterleitungen), tragen `sitemap: false` und `noindex: true` (SEC-12). Interne Werkzeugseiten werden gar nicht erst deployt (SG-1).
@@ -906,7 +906,7 @@ Die Seite ist statisch, hat keine Nutzerkonten und keine Formulare. Die realisti
 - **HTML-1** [MUSS · Soll · Review] `<button type="button">` für Aktionen, `<a href>` für Navigation. `type` ist Pflicht.
 - **HTML-2** [MUSS · Soll · CI-P4] Landmarks: `<header class="masthead">`, `<main id="main">`, `<footer>`. Ein `<main>` pro Seite, auch auf `offline.html`. Jedes `<nav>` mit deutschem `aria-label`, sobald es mehrere gibt. `role="region"` nur für Bereiche mit Überschrift. **[Soll]** Ist sind `<div class="masthead">` (`_includes/masthead.html`), `<div id="main" role="main">` (`_layouts/single.html`) und `<div id="main">` ohne Rolle (`offline.html`), siehe Register R-19.
 - **HTML-3** [MUSS · Soll · Review] Bilder mit `alt`, `width`/`height` als ganze Pixelzahlen.
-- **HTML-4** [MUSS · Soll · Review] Zitatquelle außerhalb von `<blockquote>`: `<figure><blockquote>…</blockquote><figcaption>— Autor</figcaption></figure>`.
+- **HTML-4** [MUSS · Soll · Review] Zitatquelle außerhalb von `<blockquote>`: `<figure><blockquote>…</blockquote><figcaption>– Autor</figcaption></figure>`.
 
 ### 12.2 Liquid
 
@@ -1157,7 +1157,6 @@ Stand: Ist-Basis aus dem Kopf. Ein Eintrag verschwindet, sobald der Code die Reg
 | R-27 | 1.4.4 | px-Schriften im Fraktal-Panel, `html{font-size:16px}` | B-T1 | Owner |
 | R-28 | LIZ-1, LIZ-2 | keine `LICENSE`, keine Fremdcode-Liste | B-D25 | Owner |
 | R-29 | FARB-10 | Theme-Teal `#00adb5` in Fokus-Glow und Pagination | B-F25 | migrieren |
-| R-30 | TYPO-2, SEO-1 | `title_separator` fehlt, Theme-Default „-“ im `<title>` | B-HTML-30 | migrieren |
 | R-31 | CRIT-3, FARB-8, SCSS-12 | zweiter `<style>`-Block in `_includes/head/custom.html` (`rgba(0, 0, 0, 0.8)`, `!important`, globales `scroll-behavior: smooth`, tote Regeln) | B-HTML-13 | nach SCSS migrieren |
 | R-32 | OVL-4, A11Y-2 | Drawer: modal (Scrim, Scroll-Sperre, `inert`), aber ohne `role="dialog"` und `aria-modal`. Fokus wandert nur beim Öffnen per Tastatur hinein, weil mobil `:focus` die Links magenta färbt | B-A11Y-05 | Owner |
 | R-33 | 2.5.7 | Fraktal-Pan nur per Ziehen (rechte Maustaste, Leertaste), Zwei-Finger-Geste oder Pfeiltasten am fokussierten Canvas. Für Zeiger fehlt eine Alternative ohne Ziehen | B-A11Y-09 | Owner (sichtbare Pan-Buttons?) |

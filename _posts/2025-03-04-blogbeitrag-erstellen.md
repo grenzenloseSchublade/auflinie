@@ -1,7 +1,7 @@
 ---
 title: "Erstellung von Blogbeiträgen"
 date: 2025-03-04
-last_modified_at: 2025-09-10
+last_modified_at: 2026-10-01
 author_profile: true
 categories:
   - Tutorial
@@ -102,7 +102,7 @@ Die wichtigsten Parameter sind:
 ### Inhaltlicher Aufbau
 
 Der Markdown-Teil enthält den eigentlichen Beitrag mit Überschriften, Absätzen, Listen und anderen Elementen. Geschrieben wird im klassischen Markdown-Stil.
-Markdown kennt die grundlegenden Formatierungen: Überschriften, Listen, Fett- und Kursivschrift, Zitate und Code-Blöcke. Überschriften beginnen mit einem oder mehreren Rautezeichen (`#`) am Zeilenanfang, die Anzahl bestimmt die Ebene. Ungeordnete Listen beginnen mit Bindestrichen (`-`), Sternchen (`*`) oder Pluszeichen (`+`), nummerierte Listen mit einer Zahl und einem Punkt. Fetter Text steht zwischen zwei Sternchen (`**`) oder Unterstrichen (`__`), kursiver zwischen einem Sternchen (`*`) oder Unterstrich (`_`). Code-Blöcke stehen zwischen drei Backticks (`` ``` ``), dahinter lässt sich optional die Programmiersprache angeben.
+Markdown kennt die grundlegenden Formatierungen: Überschriften, Listen, Fett- und Kursivschrift, Zitate und Code-Blöcke. Überschriften beginnen mit einem oder mehreren Rautezeichen (`#`) am Zeilenanfang, die Anzahl bestimmt die Ebene. Ungeordnete Listen beginnen mit Bindestrichen (`-`), Sternchen (`*`) oder Pluszeichen (`+`), nummerierte Listen mit einer Zahl und einem Punkt. Fetter Text steht zwischen zwei Sternchen (`**`) oder Unterstrichen (`__`), kursiver zwischen einem Sternchen (`*`) oder Unterstrich (`_`). Code-Blöcke stehen zwischen drei Backticks (<code>&#96;&#96;&#96;</code>), dahinter lässt sich optional die Programmiersprache angeben.
 
 [Im Exkurs am Ende](#exkurs-wie-verwende-ich-markdown) stehen die wichtigsten Markdown-Elemente mit Beispielen. Das Template enthält sie ebenfalls.
 
