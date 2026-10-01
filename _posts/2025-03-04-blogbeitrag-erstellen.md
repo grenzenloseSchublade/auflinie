@@ -22,50 +22,48 @@ toc_label: "Inhalt"
 toc_icon: "list"
 toc_sticky: true
 toc_collapse: true
-excerpt: "Eine systematische Darstellung der technischen Grundlagen und methodischen Ansätze für die Erstellung strukturierter Blogbeiträge in Jekyll-basierten Systemen."
+excerpt: "Wie ein Beitrag auf dieser Website entsteht, vom Entwurf in Markdown bis zur Veröffentlichung – mit Vorlage zum Herunterladen."
 ---
 
-## Einleitung
+Dieser Beitrag zeigt, wie ein Blogbeitrag auf dieser Website entsteht: welche Technik dahintersteckt, wie eine Beitragsdatei aufgebaut ist und worauf es beim Schreiben ankommt. Er ist als Leitfaden gedacht und soll den Einstieg leichter machen.
 
-Im Folgenden wird die technische Infrastruktur und methodischen Ansätze, die der Erstellung strukturierter Blogbeiträge auf dieser Website zugrunde liegen, analysiert und beschrieben. Zusätzlich wird die Erstellung von Blogbeiträgen selbst erklärt. Es wird ein Leitfaden für die Erstellung von Blogbeiträgen auf dieser Website bereitgestellt und erleichtert so den Einstieg.
+Wer sich mit dem Thema schon auskennt, kann direkt das <a href="{{ "assets/downloads/post-template.md" | relative_url }}" download="post-template.md" style="text-decoration: underline;">Template <i class="fas fa-download" style="margin-left: 0.35em;"></i></a> herunterladen und losschreiben. Es enthält alles, was ein Blogbeitrag braucht: Front Matter, Gliederung und kurze Hinweise.
 
-Wer sich mit dieser Thematik bereits auskennt, kann direkt das <a href="{{ "assets/downloads/post-template.md" | relative_url }}" download="post-template.md" style="text-decoration: underline;">Template <i class="fas fa-download" style="margin-left: 0.35em;"></i></a> herunterladen und mit der Erstellung von Inhalten beginnen. Dieses Template enthält alle notwendigen Informationen und Strukturen, um einen Blogbeitrag zu erstellen.
+## Technischer Aufbau
 
-## Technische Systemarchitektur
+Die Website basiert auf **Jekyll**, einem etablierten Static Site Generator, in Kombination mit dem **Minimal Mistakes Theme**. Jekyll macht aus Markdown-Dateien und strukturierten Daten statische HTML-Seiten. Das hat mehrere Vorteile:
 
-Die Website basiert auf **Jekyll**, einem etablierten Static Site Generator, in Kombination mit dem **Minimal Mistakes Theme**. Jekyll transformiert Markdown-Dateien und strukturierte Daten in statische HTML-Seiten, was mehrere architektonische Vorteile bietet:
+- **Performance**: Statische Dateien laden schnell, weil der Server nichts berechnen muss
+- **Sicherheit**: Ohne Datenbank und dynamische Serverkomponenten gibt es weniger Angriffsfläche
+- **Skalierbarkeit**: Content Delivery Networks können statische Inhalte effizient verteilen
+- **Wartbarkeit**: Markdown ist gut lesbar und lässt sich mit Git versionieren
 
-- **Performance**: Statische Dateien ermöglichen minimale Ladezeiten ohne serverseitige Verarbeitung
-- **Sicherheit**: Keine Datenbank oder dynamische Serverkomponenten reduzieren potentielle Angriffsvektoren  
-- **Skalierbarkeit**: Content Delivery Networks können statische Inhalte effizient distribuieren
-- **Wartbarkeit**: Markdown als Auszeichnungssprache ermöglicht versionskontrollierte, menschenlesbare Inhalte
-  
-Diese Architektur folgt dem **JAMstack-Prinzip** (JavaScript, APIs, Markup), welches moderne Webentwicklungsstandards für Content-Management-Systeme definiert. Konkret heisst JAMstack-Prinzip eine moderne Webarchitektur, die auf der Kombination von clientseitigem JavaScript, wiederverwendbaren APIs und vorgerendertem statischem Markup basiert. Dabei werden Webseiten im Voraus als statische Assets generiert und über Content Delivery Networks (CDNs) ausgeliefert, was zu schnelleren Ladezeiten führt, da die Inhalte nicht bei jeder Anfrage dynamisch generiert werden müssen. Die Architektur setzt auf die Entkopplung von Frontend und Backend, wodurch unabhängige Entwicklung und Skalierung möglich sind.
+Diese Architektur folgt dem **JAMstack-Prinzip** (JavaScript, APIs, Markup). Gemeint ist eine Webarchitektur aus clientseitigem JavaScript, wiederverwendbaren APIs und vorab gerendertem, statischem Markup. Die Seiten entstehen im Voraus als statische Dateien und werden über Content Delivery Networks (CDNs) ausgeliefert. Das macht sie schnell, weil nichts bei jeder Anfrage neu erzeugt werden muss. Frontend und Backend sind dabei entkoppelt und lassen sich unabhängig voneinander entwickeln und skalieren.
 
-Das Minimal Mistakes Theme ist ein modernes, anpassbares und leichtgewichtiges Theme für Jekyll. Es bietet eine robuste Basis für die Erstellung von Blogbeiträgen und Website-Inhalten. Es ermöglicht die Erstellung von Blogbeiträgen mit einer einheitlichen Struktur und einem einheitlichen Stil. Gleichzeitig ist es dabei modular aufgebaut und erlaubt so die vollständige individuelle Anpassung der Website.
+Minimal Mistakes ist ein anpassbares, schlankes Theme für Jekyll und eine solide Grundlage für Beiträge und Seiten. Alle Beiträge bekommen damit dieselbe Struktur und denselben Stil. Weil das Theme modular aufgebaut ist, lässt sich die Website trotzdem individuell anpassen.
 
 ### Content-First-Design
 
-Die Struktur folgt etablierten Prinzipien des **Content-First-Designs** und ermöglicht eine klare Trennung von Inhalt und Präsentation.
-Das Theme trennt dabei strikt Inhalt und Struktur. Dafür werden Markdown- und YAML-Dateien verwendet, um den Inhalt und die Struktur der Webseite zu definieren. Markdown wird als Standard-Format für den Inhalt von Posts und Seiten verwendet, da es eine einfache, lesbare Syntax für Textformatierung bietet und von Jekyll mit dem Kramdown-Parser verarbeitet wird. Dies ermöglicht die Erstellung von Inhalten wie Blogbeiträgen oder Seiten mit formatiertem Text, Listen, Links und anderen Elementen.
+Die Struktur folgt dem **Content-First-Design**: Inhalt und Präsentation sind klar getrennt.
+Inhalt und Struktur der Seiten stehen in Markdown- und YAML-Dateien. Markdown ist das Standardformat für Beiträge und Seiten, weil es eine einfache, lesbare Syntax für Textformatierung hat. Jekyll verarbeitet es mit dem Parser kramdown. So entstehen Beiträge und Seiten mit formatiertem Text, Listen, Links und anderen Elementen.
 
-YAML-Dateien, insbesondere die YAML Front Matter in den einzelnen Markdown-Dateien, dienen dazu, Metadaten für den Inhalt zu definieren. Diese Metadaten umfassen Informationen wie den Titel, das Datum, Kategorien, Tags und andere Einstellungen, die das Verhalten des Themes beeinflussen. Beispielsweise kann die date-Metadaten im YAML Front Matter verwendet werden, um das Veröffentlichungsdatum eines Beitrags festzulegen, und categories oder tags dienen zur Klassifizierung. Diese Metadaten werden von Jekyll beim Erstellen der Webseite verarbeitet, um die downloadsInhalte korrekt zu organisieren und anzuzeigen.
+YAML legt die Metadaten fest, vor allem im Front Matter am Anfang jeder Markdown-Datei. Dazu gehören Titel, Datum, Kategorien, Tags und weitere Einstellungen, die das Verhalten des Themes steuern. `date` legt zum Beispiel das Veröffentlichungsdatum fest, `categories` und `tags` ordnen den Beitrag ein. Jekyll liest diese Metadaten beim Bauen der Website und ordnet und zeigt die Inhalte danach an.
 
 ## Aufbau der Markdown-Dateien
 
-Zur Erstellung von Blogbeiträgen ist es lediglich notwendig, eine Markdown Datei mit entsprechenden Front Matter zu erstellen und zu befüllen. Diese Markdown Datei folgt dabei einem definierten bzw. standardisierten Schema. Zur Vereinfachung wird ein Template bereitgestellt, das die notwendigen Metadaten und die inhaltliche Gliederung definiert. Nachfolgend wird allgemein aufgezeigt, wie das Template gegliedert ist und welche Elemente es aufweist.
+Für einen Blogbeitrag reicht eine Markdown-Datei mit passendem Front Matter. Die Datei folgt einem festen Schema. Damit der Anfang leichter fällt, gibt es ein Template, das die nötigen Metadaten und die Gliederung schon enthält. Die folgenden Abschnitte zeigen, wie es aufgebaut ist und welche Elemente es enthält.
 <div style="text-align: center">
   <a href="{{ "assets/downloads/post-template.md" | relative_url }}" class="btn btn--primary btn--medium" download="post-template.md"><i class="fas fa-download"></i> Template herunterladen</a>
 </div>
 
 ### Syntaktischer Aufbau
 
-Dieses Template definiert sowohl die Metadatenstruktur als auch die inhaltliche Gliederung. Es ist in zwei Teile gegliedert:
+Das Template legt die Metadaten und die Gliederung fest. Es besteht aus zwei Teilen:
 
-- YAML-Frontmatter: Metadaten-Management
-- Markdown-Inhalt: Inhalt und Gliederung
+- Front Matter (YAML): die Metadaten
+- Markdown: Inhalt und Gliederung
 
-Die YAML-Frontmatter definiert die Metadaten des Blogbeitrags, wie den Titel, das Datum, die Kategorien und weitere strukturelle Parameter:
+Das Front Matter enthält die Metadaten des Beitrags, etwa Titel, Datum, Kategorien und weitere Parameter für den Aufbau:
 
 ```yaml
 ---
@@ -91,62 +89,62 @@ Die wichtigsten Parameter sind:
 
 | Parameter | Beschreibung |
 |-----------|--------------|
-| **title** | Primärer Seitenidentifier für SEO und Navigation |
-| **date** | Zeitstempel für chronologische Sortierung und Archivierung im ISO-Format |
-| **categories** | Taxonomische Klassifizierung für thematische Gruppierung |
-| **tags** | Granulare Schlagwörter für erweiterte Suchfunktionalität |
-| **header** | Visueller Präsentationskontext mit konfigurierbaren Bildparametern |
-| **toc** | Automatisierte Navigationsgenerierung basierend auf Überschriftenhierarchie |
-| **toc_label** | Titel für die Navigationsleiste |
-| **toc_sticky** | Eigenschaft der Navigationsleiste |
-| **toc_collapse** | Eigenschaft der Navigationsleiste |
+| **title** | Titel des Beitrags, erscheint im Bild oben, in der Übersicht und in Suchmaschinen |
+| **date** | Veröffentlichungsdatum im ISO-Format, bestimmt die Reihenfolge in Übersicht und Archiv |
+| **categories** | Grobe thematische Einordnung |
+| **tags** | Schlagwörter zur feineren Einordnung |
+| **header** | Bild oben im Beitrag, mit Abdunklung und Bildunterschrift |
+| **toc** | Erzeugt das Inhaltsverzeichnis aus den Überschriften |
+| **toc_label** | Titel des Inhaltsverzeichnisses |
+| **toc_sticky** | Inhaltsverzeichnis bleibt beim Scrollen sichtbar |
+| **toc_collapse** | Inhaltsverzeichnis lässt sich ein- und ausklappen |
 
 ### Inhaltlicher Aufbau
 
-Der Markdown-Inhalt definiert die inhaltliche Gliederung des Blogbeitrags, wie die Überschriften, Absätze, Listen und andere Elemente. Dabei wird dem klassischem Markdown Stil gefolgt.
-Mit Markdown können grundlegende Formatierungen wie Überschriften, Listen, Fett- und Kursivschrift, Zitate und Code-Blöcke erstellt werden.  Überschriften werden durch ein oder mehrere Hash-Symbole (#) am Anfang einer Zeile definiert, wobei die Anzahl der Rauten die Hierarchie bestimmt. Für ungeordnete Listen dienen Bindestriche (-), Sterne (*) oder Pluszeichen (+), während geordnete Listen durch Zahlen gefolgt von einem Punkt erstellt werden. Fettgedruckter Text wird mit zwei Sternchen (**) oder Unterstrichen (__) umschlossen, kursiver Text mit einem einzelnen Sternchen (`*`) oder Unterstrich (_). Code-Blöcke werden durch drei umgekehrte Anführungszeichen (```) eingeleitet und abgeschlossen, wobei die Programmiersprache optional angegeben werden kann.
+Der Markdown-Teil enthält den eigentlichen Beitrag mit Überschriften, Absätzen, Listen und anderen Elementen. Geschrieben wird im klassischen Markdown-Stil.
+Markdown kennt die grundlegenden Formatierungen: Überschriften, Listen, Fett- und Kursivschrift, Zitate und Code-Blöcke. Überschriften beginnen mit einem oder mehreren Rautezeichen (`#`) am Zeilenanfang, die Anzahl bestimmt die Ebene. Ungeordnete Listen beginnen mit Bindestrichen (`-`), Sternchen (`*`) oder Pluszeichen (`+`), nummerierte Listen mit einer Zahl und einem Punkt. Fetter Text steht zwischen zwei Sternchen (`**`) oder Unterstrichen (`__`), kursiver zwischen einem Sternchen (`*`) oder Unterstrich (`_`). Code-Blöcke stehen zwischen drei Backticks (`` ``` ``), dahinter lässt sich optional die Programmiersprache angeben.
 
-[In diesem Abschnitt](#exkurs-wie-verwende-ich-markdown) werden wichtige Markdown-Elemente exemplarisch aufgeführt, außerdem sind sie zusätzlich im Template enthalten.
+[Im Exkurs am Ende](#exkurs-wie-verwende-ich-markdown) stehen die wichtigsten Markdown-Elemente mit Beispielen. Das Template enthält sie ebenfalls.
 
 ## Veröffentlichung von Blogbeiträgen
 
-Im Laufe der Zeit wird es zu Bedarf externer Beiträge geben. Daher wird ein strukturiertes Verfahren zur Veröffentlichung von Blogbeiträgen definiert. Die Einreichung externer Beiträge folgt entsprechend diesen Schritten:
+Mit der Zeit sollen hier auch Gastbeiträge erscheinen. Dafür gibt es ein festes Verfahren in vier Schritten:
 
-1. **Initiale Kontaktaufnahme**: Interessenten können Themenvorschläge über definierte Kommunikationskanäle einreichen
-2. **Content-Vorbereitung**: Eingereichte Inhalte sollen nach Möglichkeit bereits in Markdown-Format vorliegen und dem Template-Standard entsprechen  
-3. **Qualitätssicherung**: Eingereichte Beiträge durchlaufen eine systematische Begutachtung bezüglich inhaltlicher Relevanz, technischer Standards und stilistischer Konsistenz
-4. **Administrative Integration**: Nach positiver Evaluation erfolgt die technische Integration
+1. **Kontakt**: Themenvorschläge kommen per Nachricht, etwa über GitHub oder LinkedIn
+2. **Vorbereitung**: Der Text liegt möglichst schon als Markdown vor und folgt dem Template
+3. **Prüfung**: Jeder Beitrag wird auf Relevanz, technische Korrektheit und einheitlichen Stil durchgesehen
+4. **Veröffentlichung**: Passt alles, wird der Beitrag eingebunden und veröffentlicht
 
 ### Qualitätsstandards und Best Practices
 
-Um ein gewisses Maß an Qualität und Konsistenz zu gewährleisten, werden bestimmte Standards und Best Practices definiert und nachfolgend aufgeführt.
+Damit die Beiträge einheitlich und gut lesbar bleiben, gelten ein paar Standards.
 
 #### Strukturelle Anforderungen
-- **Logische Hierarchie**: Überschriftenstruktur folgt semantischen Prinzipien
-- **Modulare Absätze**: Kurze, fokussierte Textblöcke für optimale Lesbarkeit
-- **Multimediale Integration**: Gezielter Einsatz visueller und interaktiver Elemente
+- **Logische Hierarchie**: Überschriften folgen der Gliederung, keine Ebene wird übersprungen
+- **Kurze Absätze**: ein Gedanke pro Absatz, das liest sich leichter
+- **Bilder und Interaktives**: gezielt dort, wo sie etwas erklären
 
 #### Technische Standards
-- **Mathematische Notation**: LaTeX-Syntax für wissenschaftliche Formeln mit `mathjax: true`-Aktivierung
-- **Code-Qualität**: Syntax-Highlighting und semantisch korrekte Auszeichnung
+- **Formeln**: in LaTeX-Syntax, dazu `mathjax: true` im Front Matter
+- **Code**: in Code-Blöcken mit Sprachangabe, damit das Syntax-Highlighting greift
 
 #### Redaktionelle Qualitätssicherung
-- **Stilistische Konsistenz**: Einheitlicher akademischer Schreibstil ohne unnötige Komplexität
-- **Orthographische Präzision**: Systematische Korrektur und Lektorat
-- **Metadaten-Optimierung**: SEO-konforme Kategorien und Tags für verbesserte Auffindbarkeit
-- **Definitionen**: Fachspezifische Terminologie und Definitionen
+- **Einheitlicher Stil**: wissenschaftlich sauber, aber ohne unnötige Komplexität
+- **Rechtschreibung**: Jeder Text wird vor dem Veröffentlichen Korrektur gelesen
+- **Metadaten**: passende Kategorien und Tags
+- **Fachbegriffe**: werden beim ersten Auftreten erklärt
 
-#### Wissenschaftliche Einbettung und Referenzsystem
+#### Wissenschaftliche Sorgfalt
 
-Für fachlich orientierte Beiträge wird die Integration wissenschaftlicher Standards empfohlen:
+Für fachliche Beiträge empfehlen sich wissenschaftliche Standards:
 
-- **Quellenangaben**: Strukturierte Literaturverweise nach etablierten Zitationsstandards
-- **Begriffsklärung**: Definition fachspezifischer Terminologie für breitere Zugänglichkeit
-- **Methodische Transparenz**: Nachvollziehbare Darstellung verwendeter Ansätze und Verfahren
+- **Quellen**: Literatur nach einem gängigen Zitierstil angeben
+- **Begriffe**: Fachbegriffe definieren, damit auch Fachfremde folgen können
+- **Nachvollziehbarkeit**: offenlegen, mit welchen Ansätzen und Verfahren ein Ergebnis zustande kam
 
-## Fazit und systemische Bewertung
+## Fazit
 
-Das Jekyll-basierte System bietet eine leistungsfähige, sichere und wartbare Umgebung für die Erstellung qualitativ hochwertiger Blogbeiträge. Die inhaltliche Gliederung, die Metadatenverwaltung und die Redaktion erfüllen hohe Standards, während die technische Infrastruktur einen flexiblen und zukunftsfähigen Workflow ermöglicht. Die klare Trennung der Ebenen und die systematische Herangehensweise fördern die Qualität und Wiederverwendbarkeit der Beiträge – gleichzeitig bleibt das System flexibel genug für verschiedene Inhaltstypen: von technischen Tutorials bis hin zu wissenschaftlichen Analysen. Damit bietet dieses System sowohl Autoren als auch Lesern einen nachhaltigen Mehrwert.
+Mit Jekyll entstehen Blogbeiträge schnell, sicher und gut wartbar. Gliederung, Metadaten und Redaktion folgen klaren Regeln, die Technik dahinter bleibt flexibel. Weil Inhalt, Metadaten und Darstellung getrennt sind, bleiben Beiträge einheitlich und wiederverwendbar – und das System passt trotzdem für ganz verschiedene Texte, vom technischen Tutorial bis zur wissenschaftlichen Analyse. Davon haben Schreibende und Lesende gleichermaßen etwas.
 
 ---
 
@@ -154,7 +152,7 @@ Das Jekyll-basierte System bietet eine leistungsfähige, sichere und wartbare Um
 
 ## Exkurs: Wie verwende ich Markdown?
 
-Markdown ist eine leichtgewichtige Markup-Sprache. Die wesentlichen Syntax-Elemente umfassen:
+Markdown ist eine schlanke Auszeichnungssprache. Die wichtigsten Elemente im Überblick:
 
 ### Hierarchische Strukturierung
 
@@ -284,13 +282,13 @@ Ergebnis:
 
 ### Bildintegration
 
-Visuelle Inhalte werden systematisch im Verzeichnis `assets/images/posts/` organisiert. Die Einbindung erfolgt über standardisierte Pfadkonventionen:
+Bilder für Beiträge gehören in den Ordner `assets/images/posts/`. Eingebunden werden sie über ihren Pfad:
 
 ```markdown
 ![Semantische Beschreibung]({{ "/assets/images/posts/dateiname.jpg" | relative_url }})
 ```
 
-Header- und Teaser-Bilder werden über Frontmatter-Parameter konfiguriert, was eine einheitliche visuelle Präsentation gewährleistet:
+Header- und Teaser-Bilder stehen im Front Matter. So sehen alle Beiträge einheitlich aus:
 
 ```yaml
 header:
@@ -330,7 +328,7 @@ Ergebnis:
 
 **Fußnoten:**
 
-Anmerkung: Fussnoten werden am Ende einer Seite angezeigt.
+Anmerkung: Fußnoten erscheinen am Ende der Seite.
 
 ```markdown
 Text mit Fußnote[^1] und weiterer Referenz[^2]
