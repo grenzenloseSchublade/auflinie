@@ -31,25 +31,9 @@
     ],
     "selector-max-compound-selectors": 6,
     "declaration-no-important": true,
-    "scss/no-global-function-names": null,
+    "scss/no-global-function-names": true,
     "scss/operator-no-newline-after": null,
-    "function-no-unknown": [
-      true,
-      {
-        "ignoreFunctions": [
-          "lighten",
-          "darken",
-          "saturate",
-          "desaturate",
-          "adjust-hue",
-          "rgba",
-          "hsla",
-          "mix",
-          "transparentize",
-          "opacify"
-        ]
-      }
-    ],
+    "function-no-unknown": true,
     "annotation-no-unknown": [
       true,
       {
@@ -59,7 +43,10 @@
       }
     ],
     "media-feature-range-notation": "prefix",
-    "keyframes-name-pattern": "^[a-z][a-zA-Z0-9-]*$"
+    "keyframes-name-pattern": "^[a-z][a-zA-Z0-9-]*$",
+    "at-rule-disallowed-list": [
+      "import"
+    ]
   },
   "ignoreFiles": [
     "vendor/**/*",
