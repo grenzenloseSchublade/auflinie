@@ -33,6 +33,10 @@ kramdown:
   math_engine: mathjax
   syntax_highlighter: rouge
   input: GFM
+  # Deutsche Anführungszeichen aus geraden " und ' (STYLEGUIDE TYPO-3):
+  # „…“ und ‚…‘. Apostrophe wandelt kramdown dabei zu ‘ — deshalb im
+  # Markdown immer direkt ’ (U+2019) tippen.
+  smart_quotes: ["sbquo", "lsquo", "bdquo", "ldquo"]
   syntax_highlighter_opts:
     css_class: "highlight"
     span:
