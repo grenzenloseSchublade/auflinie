@@ -197,6 +197,16 @@ $link-color-active: $cyan-a75; // Aktiver TOC-Eintrag (Text) - 5,30:1 auf #252a3
 $link-color-rail: $cyan-a75; // Aktives Rail-Segment (Fläche) - 5,30:1 auf #252a34
 $hover-color-subtle: rgb(255 29 206 / 60%); // Dezentes Magenta - für subtile Akzente (Trennlinien, Hamburger)
 
+// Theme-Primärfarbe (FARB-10). Ohne eigenen Wert setzt der Dark-Skin Teal
+// #00adb5. Abnehmer im gebauten Theme-CSS (geprüft 1. 10. 2026): sichtbar
+// nur der Fokus-Schein von input:focus (Blog-Suchfeld) und der Hover der
+// Hamburger-Balken, den components/_masthead.scss mit $cyan-a75 selbst
+// setzt. a/button:focus-Outline, blockquote-Rand, .btn--primary, TOC-Kopf,
+// Navicon-Ruhezustand und Nav-Unterstrich überdecken eigene Regeln.
+// Pagination-current, .notice--primary, Suche und Algolia sind im Markup
+// ungenutzt.
+$primary-color: $link-color;
+
 // Überschriften
 $card-heading-color: $link-color; // Überschriftenfarbe für Karten
 
