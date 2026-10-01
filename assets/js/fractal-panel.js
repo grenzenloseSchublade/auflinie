@@ -334,6 +334,16 @@
       }, 1600);
     }
 
+    // Teardown: Timer und rAF, die sonst destroy() überleben — ein später
+    // clickTimer (applyTap -> requestRender) oder Vorschau-Frame würde nach
+    // einem Content-Swap auf dem entsorgten Renderer neue Worker starten.
+    dispose() {
+      if (this._previewRaf) { cancelAnimationFrame(this._previewRaf); this._previewRaf = null; }
+      if (this.gestureHintTimer) { clearTimeout(this.gestureHintTimer); this.gestureHintTimer = null; }
+      if (this.clickTimer) { clearTimeout(this.clickTimer); this.clickTimer = null; }
+      this.renderer.dispose();
+    }
+
     resetView() {
       Object.assign(this.view, this.config.view);
       this.renderer.animateTo(this.config.view, 180);
@@ -547,6 +557,7 @@
       this.variant = variant;
       this.workerBase = root.dataset.workerBase || '/assets/js';
       this.abort = new AbortController();
+      this.timers = new Set(); // verzögerte Re-Layouts, im destroy() abgeräumt
       this.isSpacePanning = false;
 
       this.state = {
@@ -849,7 +860,7 @@
           focusButton.classList.toggle('is-active', active);
           focusButton.setAttribute('aria-pressed', String(active));
           if (!root.classList.contains('is-fullscreen')) {
-            setTimeout(() => this.resizeAndRender(), 100);
+            this.later(() => this.resizeAndRender(), 100);
           }
         }, { signal: signal });
       }
@@ -864,7 +875,7 @@
           setButtonLabel(advancedButton, isOpen ? 'Optionen ausblenden' : 'Erweiterte Optionen');
           advancedButton.title = isOpen ? 'Erweiterte Optionen ausblenden' : 'Erweiterte Optionen anzeigen';
           if (!root.classList.contains('is-fullscreen')) {
-            setTimeout(() => this.resizeAndRender(), 100);
+            this.later(() => this.resizeAndRender(), 100);
           }
         }, { signal: signal });
       }
@@ -952,7 +963,7 @@
           if (!isFullscreen && !root.classList.contains('is-fullscreen')) return;
           root.classList.toggle('is-fullscreen', isFullscreen);
           setButtonLabel(fullscreenButton, isFullscreen ? 'Vollbild aus' : 'Vollbild');
-          setTimeout(() => this.resizeAndRender(), 80);
+          this.later(() => this.resizeAndRender(), 80);
         }, { signal: signal });
       }
 
@@ -1001,10 +1012,21 @@
       });
     }
 
+    /** setTimeout, das destroy() mit abräumt (Persistent-Shell-Kontrakt). */
+    later(fn, ms) {
+      const id = setTimeout(() => {
+        this.timers.delete(id);
+        fn();
+      }, ms);
+      this.timers.add(id);
+    }
+
     destroy() {
       this.abort.abort();
+      this.timers.forEach((id) => clearTimeout(id));
+      this.timers.clear();
       if (this.resizeObserver) this.resizeObserver.disconnect();
-      this.views.forEach((view) => view.renderer.dispose());
+      this.views.forEach((view) => view.dispose());
       if (this.colorTomSelect) this.colorTomSelect.destroy();
       if (this.presetTomSelect) this.presetTomSelect.destroy();
     }
