@@ -43,6 +43,11 @@ $console-panel-bg-hover: #20242a;
 // Hero-Caption, Blog-Hinweis, Hero-Buttons)
 $ink: #0a0e12;
 
+// Seitengrund (Skin-Wert des Themes, im Critical-CSS als body-Hintergrund).
+// Masthead: derselbe Grund, leicht durchscheinend für den Blur.
+$page-bg: #252a34;
+$masthead-bg: rgba($page-bg, 0.95);
+
 // Neutrale Graustufen (Zahl = HSL-Helligkeit in %). Heute nur im
 // Fraktal-Panel, CV und Offline-Seite. Nahe Nachbarn (87/88) zusammenzulegen
 // wäre eine sichtbare Änderung und braucht eine Owner-Entscheidung.
@@ -222,6 +227,12 @@ $base0c: #7fdff0; // Support/Regex (helles Cyan)
 $base0d: $link-color; // Funktionen = Cyan
 $base0e: #ff79c6; // Keywords = aufgehelltes Magenta (6:1 auf Panel-Ton)
 $base0f: #d4a37f; // Sonstiges
+
+// Fließtext auf dem Seitengrund, 11,55:1 auf #252a34. Bewusst ein eigenes
+// Token statt Theme-$text-color (#eaeaea): aus dem leitet das Theme weitere
+// Töne ab (Masthead-Links, Notices), die unverändert bleiben sollen.
+// Alias auf $base05 (gleicher Wert, FARB-9).
+$body-text-color: $base05;
 
 // Abgeleitete Flächen-/Rahmen-Tokens (Konsolidierung wiederholter Literale)
 $border-accent: $cyan-a55; // Karten-Akzentrand links

@@ -16,6 +16,12 @@ html {
   scroll-behavior: smooth;
 }
 
+// Textfarbe des Fließtexts. Typografie und Farbe des body gehören nach SCSS,
+// nicht ins Critical-CSS (STYLEGUIDE CRIT-1).
+body {
+  color: $body-text-color;
+}
+
 // Aktuell nur von Drafts genutzt (kein veröffentlichtes Markup erzeugt die
 // Klasse) — bewusst behalten als Anker-Muster für künftige Beiträge.
 .section-anchor {
