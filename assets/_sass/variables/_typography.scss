@@ -1,8 +1,41 @@
 // Typografie-Variablen für das gesamte Projekt
 // Diese Datei enthält alle Schriftarten, Größen und Stile
+@use "sass:list";
 
-// Schriftarten werden aus dem Theme übernommen
-// $sans-serif, $serif, $monospace sind bereits im Theme definiert
+// =============================================================================
+// Textschrift (STYLEGUIDE TYP-13)
+// =============================================================================
+// Schalter text_font in _config.yml. Er kommt über die erste Zeile von
+// assets/css/main.scss herein (@use "abstracts/tokens" with (…)), weil nur
+// diese Datei durch Liquid läuft.
+//   "ubuntu" = Ubuntu, selbst gehostet (base/_fonts.scss), überall gleich
+//   "system" = Systemschrift des Geräts, keine Webfont-Anfrage
+$text-font: "ubuntu" !default;
+
+@if not list.index(("ubuntu", "system"), $text-font) {
+  @error "text_font in _config.yml muss \"ubuntu\" oder \"system\" sein, nicht \"#{$text-font}\".";
+}
+
+// Eigener Familienname der selbst gehosteten Datei. Die Ubuntu Font Licence
+// 1.0 (2c) verlangt für ein Subset den Zusatz „derivative“. Nebeneffekt: Die
+// Seite greift nie zufällig auf eine installierte Ubuntu zurück.
+$ubuntu-family: "Ubuntu derivative auflinie";
+
+// Metrisch angepasste lokale Ersatzschrift für die Ladezeit (base/_fonts.scss)
+$ubuntu-fallback-family: "Ubuntu derivative auflinie Fallback";
+
+// Systemschrift je Gerät: Modus "system" und letzte Rückfallebene im Modus
+// "ubuntu" (Zeichen außerhalb des Latin-Subsets, z. B. Pfeile)
+$system-font-stack: -apple-system, "BlinkMacSystemFont", "Segoe UI", "Roboto", "Oxygen-Sans", "Ubuntu", "Cantarell", "Helvetica Neue", sans-serif;
+
+// Ein Sans-Stack für Fließtext, Überschriften und Navigation. Das Theme
+// leitet $global-font-family, $header-font-family und $sans-serif-narrow per
+// !default davon ab (Theme-Brücke). Mono bleibt $mono-font-stack.
+$sans-serif: $system-font-stack;
+
+@if $text-font == "ubuntu" {
+  $sans-serif: list.join(($ubuntu-family, $ubuntu-fallback-family), $system-font-stack, $separator: comma);
+}
 
 // Schriftgrößen
 // Die meisten Schriftgrößen werden aus dem Theme übernommen ($type-size-1 bis $type-size-8)

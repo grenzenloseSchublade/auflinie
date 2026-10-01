@@ -35,6 +35,13 @@ erlaubt keine Inline-Skripte. Bewusst ohne defer/async (vor dem ersten Render). 
 <link rel="stylesheet" href="{{ '/assets/css/main.css' | relative_url }}">
 {% comment %} Font Awesome: self-hosted Subset (assets/_sass/base/_icons.scss + assets/webfonts/) statt 100-KB-CDN-Komplett-CSS {% endcomment %}
 <link rel="preload" href="{{ '/assets/webfonts/fa-solid-900-subset.woff2' | relative_url }}" as="font" type="font/woff2" crossorigin>
+{%- comment %} Textschrift (STYLEGUIDE TYP-13): nur die aufrechte Datei vorladen, sie
+trägt Fließtext, Überschriften und Navigation auf jeder Seite. Kursiv lädt bei
+Bedarf. crossorigin ist Pflicht, sonst lädt der Browser die Schrift doppelt.
+Bei text_font: system gibt es kein @font-face und keinen Preload. {% endcomment %}
+{%- unless site.text_font == "system" %}
+<link rel="preload" href="{{ '/assets/webfonts/ubuntu-latin-wght.woff2' | relative_url }}" as="font" type="font/woff2" crossorigin>
+{%- endunless %}
 
 {% if site.head_scripts %}
   {% for script in site.head_scripts %}

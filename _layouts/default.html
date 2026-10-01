@@ -21,8 +21,8 @@
       :root{--masthead-height:74px}
       @media (min-width:768px){:root{--masthead-height:88px}}
       /* padding-top wie html body in components/_masthead.scss, background = Theme-$background-color (Skin dark).
-         font-family: eigener Stack, Vereinheitlichung mit $sans-serif wartet auf Owner-Entscheidung (B-T2) */
-      body{margin:0;padding-top:var(--masthead-height);background:#252a34;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif}
+         Keine font-family: die Textschrift kommt allein aus $sans-serif (TYP-13) */
+      body{margin:0;padding-top:var(--masthead-height);background:#252a34}
       /* wie body .masthead in components/_masthead.scss */
       .masthead{position:fixed;top:0;left:0;right:0;height:var(--masthead-height);z-index:1000}
       /* Hero-Mindesthöhe wie components/_hero.scss. Offene Abweichung: die Mobil-Query

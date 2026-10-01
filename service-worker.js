@@ -83,7 +83,10 @@ const CACHE_URLS = [
   './assets/images/mandelbrot-preview.jpg',
   './assets/webfonts/fa-solid-900-subset.woff2',
   './assets/webfonts/fa-regular-400-subset.woff2',
-  './assets/webfonts/fa-brands-400-subset.woff2'
+  './assets/webfonts/fa-brands-400-subset.woff2'{% unless site.text_font == "system" %},
+  // Textschrift (STYLEGUIDE TYP-13), nur bei text_font: ubuntu
+  './assets/webfonts/ubuntu-latin-wght.woff2',
+  './assets/webfonts/ubuntu-latin-italic-wght.woff2'{% endunless %}
 ];
 
 // Installation des Service Workers

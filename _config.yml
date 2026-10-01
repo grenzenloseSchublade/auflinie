@@ -20,6 +20,15 @@ remote_theme: "mmistakes/minimal-mistakes@0064dabea814bd3a2e203320a141c037fdcf67
 # ihn hier zu ändern wirkt nicht.
 minimal_mistakes_skin: "dark"
 
+# Textschrift für Fließtext, Überschriften und Navigation (STYLEGUIDE TYP-13):
+#   ubuntu = Ubuntu, selbst gehostet (assets/webfonts/ubuntu-*.woff2), überall gleich
+#   system = Systemschrift des Geräts. Die Ubuntu-Dateien bleiben im Repo,
+#            werden aber nicht geladen (kein @font-face, kein Preload, kein Precache).
+# Wirkt beim Build (assets/css/main.scss, _includes/head.html, service-worker.js).
+# Nach dem Umschalten die Vergleichsbilder neu erzeugen (tests/README.md).
+# Die Konsolenschrift ($mono-font-stack) hängt nicht daran.
+text_font: "ubuntu"
+
 # Site Settings
 locale: "de-DE"
 title_separator: "–" # Hausstil-Gedankenstrich im <title> (STYLEGUIDE SEO-1, TYPO-2)

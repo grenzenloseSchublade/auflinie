@@ -8,6 +8,9 @@
 // Eigener Code ist ein Modulbaum (@use/@forward, STYLEGUIDE.md 9.1).
 // @import gibt es nur noch in der Theme-Brücke, weil Minimal Mistakes
 // selbst @import nutzt.
+// Textschrift-Schalter aus _config.yml (STYLEGUIDE TYP-13). Muss das erste
+// Laden der Tokens sein, danach ist die Konfiguration fest.
+@use "abstracts/tokens" with ($text-font: "{{ site.text_font | default: 'ubuntu' }}");
 @use "variables/css-properties";
 @use "theme-bridge";
 @use "custom";

@@ -1,0 +1,77 @@
+// =============================================================================
+// Textschrift Ubuntu, selbst gehostet (STYLEGUIDE TYP-13)
+// =============================================================================
+// Nur bei text_font: "ubuntu" (_config.yml). Bei "system" entsteht hier kein
+// CSS, die Dateien werden dann nie geladen.
+// Dateien: assets/webfonts/ubuntu-latin-wght.woff2 (aufrecht) und
+// ubuntu-latin-italic-wght.woff2 (kursiv), je eine variable Schrift mit
+// Gewichtsachse 400–700. Die Seite nutzt 400, 500, 600 und 700, alle exakt
+// aus einer Datei. Quelle, Subset und Lizenz: scripts/ubuntu-font-subset.py,
+// assets/webfonts/UBUNTU-FONT-LICENCE.txt.
+// Ersatzschrift: Bis die Datei da ist (font-display: swap), steht der Text in
+// Arial bzw. dem metrisch gleichen Liberation Sans, skaliert auf Ubuntus
+// Breite und Zeilenmetrik. So springt beim Tausch kaum etwas (gemessen, siehe
+// STYLEGUIDE PERF-5). Werte aus scripts/ubuntu-font-subset.py --fallback
+// (400) bzw. dieselbe Rechnung für 600/700 und kursiv.
+@use "sass:string";
+@use "abstracts/tokens" as *;
+
+// Google-Fonts-/Fontsource-Bereich „latin“, deckt Deutsch samt „“ ‚‘ – — …
+// ab. Gleiche Liste wie im Subset-Skript.
+$ubuntu-unicode-range: string.unquote("U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD");
+
+@if $text-font == "ubuntu" {
+  @font-face {
+    font-family: $ubuntu-family;
+    font-style: normal;
+    font-weight: 400 700;
+    font-display: swap;
+    src: url("../webfonts/ubuntu-latin-wght.woff2") format("woff2");
+    unicode-range: $ubuntu-unicode-range;
+  }
+
+  @font-face {
+    font-family: $ubuntu-family;
+    font-style: italic;
+    font-weight: 400 700;
+    font-display: swap;
+    src: url("../webfonts/ubuntu-latin-italic-wght.woff2") format("woff2");
+    unicode-range: $ubuntu-unicode-range;
+  }
+
+  // Ersatzschrift aufrecht 400 (auch für 500)
+  @font-face {
+    font-family: $ubuntu-fallback-family;
+    font-style: normal;
+    font-weight: 400;
+    src: local("Arial"), local("ArialMT"), local("Liberation Sans"), local("LiberationSans"), local("Helvetica"), local("Arimo");
+    size-adjust: 100.26%;
+    ascent-override: 92.96%;
+    descent-override: 18.85%;
+    line-gap-override: 0%;
+  }
+
+  // Ersatzschrift fett (auch für 600, Mittel aus Ubuntu 600 und 700)
+  @font-face {
+    font-family: $ubuntu-fallback-family;
+    font-style: normal;
+    font-weight: 700;
+    src: local("Arial Bold"), local("Arial-BoldMT"), local("Liberation Sans Bold"), local("LiberationSans-Bold"), local("Helvetica Bold"), local("Helvetica-Bold"), local("Arimo Bold");
+    size-adjust: 97.75%;
+    ascent-override: 95.35%;
+    descent-override: 19.34%;
+    line-gap-override: 0%;
+  }
+
+  // Ersatzschrift kursiv
+  @font-face {
+    font-family: $ubuntu-fallback-family;
+    font-style: italic;
+    font-weight: 400;
+    src: local("Arial Italic"), local("Arial-ItalicMT"), local("Liberation Sans Italic"), local("LiberationSans-Italic"), local("Helvetica Oblique"), local("Helvetica-Oblique"), local("Arimo Italic");
+    size-adjust: 98.05%;
+    ascent-override: 95.06%;
+    descent-override: 19.28%;
+    line-gap-override: 0%;
+  }
+}

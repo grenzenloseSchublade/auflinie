@@ -467,4 +467,5 @@ Diese Bestandteile behalten ihre eigenen Lizenzen:
 - noUiSlider (`assets/vendor/nouislider.*`) – MIT
 - Gumshoe (`assets/vendor/gumshoe.min.js`) – MIT, © Chris Ferdinandi
 - Font Awesome Free (Subset in `assets/webfonts/`) – Fonts SIL OFL 1.1, Icons CC BY 4.0
+- Ubuntu Font Family 0.869 (Textschrift, Subset `assets/webfonts/ubuntu-latin-*.woff2`, umbenannt in „Ubuntu derivative auflinie“) – [Ubuntu Font Licence 1.0](assets/webfonts/UBUNTU-FONT-LICENCE.txt), © Canonical Ltd. Ubuntu und Canonical sind Marken von Canonical Ltd. Erzeugt mit `scripts/ubuntu-font-subset.py`
 
