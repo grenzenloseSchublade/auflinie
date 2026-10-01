@@ -212,6 +212,11 @@
     // Fläche scrollt weiter (touch-action: pan-y bleibt wirksam).
     this.canvas.addEventListener('touchstart', this.onTouchStart.bind(this),
       { signal: this.abort.signal, passive: false });
+    // Mausrad/Trackpad im modalen Sheet: verschiebt die Ansicht statt der Seite
+    // (Gesten gehören der Fläche, siehe STYLEGUIDE). Inline ohne Sheet scrollt
+    // das Rad weiter die Seite.
+    this.canvas.addEventListener('wheel', this.onWheel.bind(this),
+      { signal: this.abort.signal, passive: false });
     if (this.resetBtn) {
       this.resetBtn.addEventListener('click', this.reset.bind(this), canvasSignal);
     }
@@ -521,9 +526,27 @@
     return hit;
   };
 
+  // Modal = Präsentations-Wrapper hat das Sheet geöffnet (skill-graph-sheet.js).
+  // Dann gehört jede Geste auf dem Canvas dem Graphen, die Seite ist gesperrt.
+  SkillGraph.prototype.isModal = function () {
+    return document.body.classList.contains('graph-open');
+  };
+
+  SkillGraph.prototype.onWheel = function (event) {
+    if (!this.sim || this.panel.hidden || !this.isModal()) { return; }
+    event.preventDefault();
+    var unit = event.deltaMode === 1 ? 16 : (event.deltaMode === 2 ? this.canvasH || 400 : 1);
+    var dx = event.deltaX * unit, dy = event.deltaY * unit;
+    if (event.shiftKey && !dx) { dx = dy; dy = 0; }   // Shift+Rad = waagerecht
+    this.panX = (this.panX || 0) - dx;
+    this.panY = (this.panY || 0) - dy;
+    this.clampPan();
+    this.render();
+  };
+
   SkillGraph.prototype.onTouchStart = function (event) {
     if (!this.sim || this.panel.hidden) { return; }
-    if (event.touches.length >= 2) { event.preventDefault(); return; }
+    if (this.isModal() || event.touches.length >= 2) { event.preventDefault(); return; }
     var t = event.touches[0];
     var rect = this.canvas.getBoundingClientRect();
     var hit = this.hitTest(
@@ -556,14 +579,16 @@
       this.pointerStart = pos;
       try { this.canvas.setPointerCapture(event.pointerId); } catch (e) { /* noop */ }
       try { this.canvas.style.cursor = 'grabbing'; } catch (e) { /* noop */ }
-    } else if (event.pointerType === 'mouse') {
-      // Maus auf leere Fläche -> Pan (Desktop, kein Scroll-Konflikt).
+    } else if (event.pointerType === 'mouse' || this.isModal()) {
+      // Leere Fläche -> Pan: mit der Maus immer, per Touch im modalen Sheet
+      // (dort ist die Seite gesperrt, ein Finger verschiebt die Ansicht).
       // Capture nötig: ohne sie erreicht ein pointerup außerhalb des Canvas
-      // onPointerUp nie und der Pan bliebe am Hover kleben (Touch captured implizit).
+      // onPointerUp nie und der Pan bliebe am Hover kleben.
       this.startPan();
       try { this.canvas.setPointerCapture(event.pointerId); } catch (e) { /* noop */ }
     }
-    // Touch auf leere Fläche: nichts -> die Seite scrollt (touch-action: pan-y).
+    // Inline (ohne Sheet) per Touch auf leere Fläche: nichts -> die Seite
+    // scrollt (touch-action: pan-y).
   };
 
   SkillGraph.prototype.onPointerMove = function (event) {

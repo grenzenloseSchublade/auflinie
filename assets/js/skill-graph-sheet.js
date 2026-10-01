@@ -10,10 +10,15 @@
  *      zurück und der Floating-Button verschwindet — der Modus bleibt aber an.
  *   2) Der floatende Button IST der bestehende [data-role="graph-toggle"] —
  *      sein Klick öffnet das Panel über skill-graph.js. Dieses Modul präsentiert
- *      es dann NON-MODAL als Bottom-Sheet (body.graph-open): KEIN Scrim, KEIN
- *      Scroll-Lock — die Chips bleiben live und steuern den Graphen. Geschlossen
- *      wird über ✕ / Esc / erneut den Toggle; ein MutationObserver auf [hidden]
- *      ist die einzige Reaktionsstelle.
+ *      es dann MODAL als Bottom-Sheet (body.graph-open, seit 1.10.2026): Scrim,
+ *      Scroll-Sperre, Hintergrund inert. Vorher war das Sheet non-modal, die Seite
+ *      rutschte beim Wischen über den Graphen weg (Nutzer: „kontraintuitiv").
+ *      Gesten gehören jetzt dem Graphen (skill-graph.js: Ein-Finger-/Maus-Pan,
+ *      Mausrad verschiebt). Das Panel wandert beim Öffnen in eine Ebene direkt
+ *      unter <body> (raus aus dem Stacking-Kontext von #main, sonst lag der
+ *      Footer darüber) und beim Schließen zurück an seinen Platz.
+ *      Schließen: ✕ / Esc / Tippen auf den Scrim (Light Dismiss) / erneut den
+ *      Toggle; ein MutationObserver auf [hidden] ist die einzige Reaktionsstelle.
  *
  * Fällt dieses Modul aus, bleibt der Graph über skill-graph.js voll funktionsfähig
  * (das Panel zeigt sich dann inline). Am Persistent-Shell-Kontrakt.
@@ -43,7 +48,7 @@
     this.closeBtn.className = 'skill-graph__sheet-close';
     this.closeBtn.setAttribute('aria-label', 'Graph schließen');
     this.closeBtn.innerHTML = '<span aria-hidden="true">✕</span>';
-    // In die Kopfzeile (neben „Zurücksetzen") statt frei ins Panel -> kein
+    // In die Kopfzeile (neben „Reset") statt frei ins Panel -> kein
     // Überlappen mit dem Reset-Button.
     (this.panel.querySelector('.skill-graph__head') || this.panel).appendChild(this.closeBtn);
     this.closeBtn.addEventListener('click', this.close.bind(this), signal);
@@ -55,7 +60,7 @@
     this.touchHint.className = 'skill-graph__touch-hint';
     this.touchHint.setAttribute('aria-hidden', 'true');
     this.touchHint.innerHTML =
-      '↔ Zwei Finger verschieben die Ansicht<br>' +
+      '↔ Ziehen verschiebt die Ansicht<br>' +
       '● Knoten: ziehen ordnet um, tippen wählt aus';
     this.panel.appendChild(this.touchHint);
 
@@ -114,6 +119,9 @@
   };
 
   GraphMode.prototype.updateInView = function () {
+    // Offenes Sheet ist modal (Scroll gesperrt): Sichtbarkeit nicht neu bewerten,
+    // sonst könnte ein Resize das offene Sheet unsichtbar schalten.
+    if (document.body.classList.contains('graph-open')) { return; }
     var r = this.section.getBoundingClientRect();
     var vh = window.innerHeight || document.documentElement.clientHeight || 800;
     // „Im Kapitel" = das Skills-Kapitel überlappt ein zentrales Band
@@ -165,12 +173,62 @@
 
   GraphMode.prototype.onHidden = function () {
     var open = !this.panel.hidden;
+    if (open) { this.enterModal(); } else { this.leaveModal(); }
     document.body.classList.toggle('graph-open', open);
+    var self = this;
     if (open) {
-      var self = this;
       requestAnimationFrame(function () { try { self.closeBtn.focus(); } catch (e) { /* noop */ } });
       this.maybeTouchHint();
+    } else {
+      // Fokus zurück zum Auslöser — erst jetzt, vorher war er per graph-open
+      // ausgeblendet und damit nicht fokussierbar.
+      requestAnimationFrame(function () { try { self.toggle.focus({ preventScroll: true }); } catch (e) { /* noop */ } });
     }
+  };
+
+  // Modal öffnen: Panel in eine eigene Ebene unter <body> verschieben (Platzhalter
+  // merkt die Herkunft), Scrim davor, Rest der Seite inert, Scroll sperren.
+  GraphMode.prototype.enterModal = function () {
+    if (this.layer) { return; }
+    this.placeholder = document.createComment('skill-graph-panel');
+    this.panel.parentNode.insertBefore(this.placeholder, this.panel);
+
+    this.layer = document.createElement('div');
+    this.layer.className = 'skill-graph-layer';
+    var scrim = document.createElement('div');
+    scrim.className = 'skill-graph__scrim';
+    scrim.addEventListener('click', this.close.bind(this));   // Light Dismiss
+    this.layer.appendChild(scrim);
+    this.layer.appendChild(this.panel);
+    document.body.appendChild(this.layer);
+
+    this.panel.setAttribute('role', 'dialog');
+    this.panel.setAttribute('aria-modal', 'true');
+    this.panel.setAttribute('aria-label', 'Skill-Graph');
+
+    var layer = this.layer;
+    this.inerted = Array.prototype.filter.call(document.body.children, function (el) {
+      return el !== layer && el.tagName !== 'SCRIPT' && !el.inert;
+    });
+    this.inerted.forEach(function (el) { el.inert = true; });
+    document.documentElement.classList.add('graph-scroll-lock');
+  };
+
+  GraphMode.prototype.leaveModal = function () {
+    if (!this.layer) { return; }
+    (this.inerted || []).forEach(function (el) { el.inert = false; });
+    this.inerted = null;
+    document.documentElement.classList.remove('graph-scroll-lock');
+    this.panel.removeAttribute('role');
+    this.panel.removeAttribute('aria-modal');
+    this.panel.removeAttribute('aria-label');
+    if (this.placeholder && this.placeholder.parentNode) {
+      this.placeholder.parentNode.insertBefore(this.panel, this.placeholder);
+      this.placeholder.parentNode.removeChild(this.placeholder);
+    }
+    this.placeholder = null;
+    if (this.layer.parentNode) { this.layer.parentNode.removeChild(this.layer); }
+    this.layer = null;
   };
 
   // Touch-Hinweis einmal pro Session einblenden, dann nach ~4.5s ausblenden.
@@ -186,8 +244,7 @@
   // Schließen delegiert an den bestehenden Toggle -> skill-graph.js räumt sauber auf.
   GraphMode.prototype.close = function () {
     if (!this.panel.hidden) {
-      this.toggle.click();
-      try { this.toggle.focus(); } catch (e) { /* noop */ }
+      this.toggle.click();   // Fokus-Rückgabe übernimmt onHidden
     }
   };
 
@@ -203,6 +260,7 @@
     if (this.abort) { this.abort.abort(); }   // deckt auch die Scroll/Resize-Listener
     if (this.observer) { this.observer.disconnect(); this.observer = null; }
     if (this.touchHintTimer) { clearTimeout(this.touchHintTimer); this.touchHintTimer = null; }
+    this.leaveModal();
     document.body.classList.remove('graph-here', 'graph-open');
     if (this.closeBtn && this.closeBtn.parentNode) { this.closeBtn.parentNode.removeChild(this.closeBtn); }
     if (this.touchHint && this.touchHint.parentNode) { this.touchHint.parentNode.removeChild(this.touchHint); }

@@ -45,7 +45,7 @@
 
 // p-qualifiziert (0,2,1): die Theme-Regel .page__content p (1em) und die
 // CV-Absatz-Regel machten font-size/line-height/margin sonst wirkungslos
-.skill-graph p.skill-graph__note {
+:is(.skill-graph, .skill-graph-layer) p.skill-graph__note {
   font-size: $fs-ui;
   line-height: 1.5;
   color: $fg-subtle;
@@ -103,7 +103,7 @@
 // p-qualifiziert wie die Note — erst dadurch stimmt auch der Höhen-calc:
 // er rechnet mit 1.5em der EIGENEN Größe (vorher gewann Theme 1em/1.6
 // und die dritte Zeile clippte)
-.skill-graph p.skill-graph__context {
+:is(.skill-graph, .skill-graph-layer) p.skill-graph__context {
   font-size: $fs-body-sm;
   line-height: 1.5;
   color: $fg-subtle;
@@ -292,12 +292,44 @@ body.graph-here .cv-skills p.cv-skills__selection-info {
   top: calc(var(--masthead-height) + 8px);
 }
 
-// ── Non-modales Bottom-Sheet (body.graph-open): kein Scrim, kein Scroll-Lock ──
+// ── Modales Bottom-Sheet (body.graph-open, seit 1.10.2026) ──────────────────
+// skill-graph-sheet.js verschiebt das Panel beim Öffnen in .skill-graph-layer
+// direkt unter <body>: Scrim davor, Rest der Seite inert, Scroll gesperrt.
+// Ebene über dem Masthead (1000), unter Toasts (10020).
+$graph-layer-z: 1100;
+
+html.graph-scroll-lock {
+  overflow: hidden;
+  scrollbar-gutter: stable; // kein Layout-Sprung, wenn die Scrollbar verschwindet
+}
+
+.skill-graph__scrim {
+  position: fixed;
+  inset: 0;
+  z-index: $graph-layer-z;
+  background: rgb(0 0 0 / 55%);
+  animation: graph-scrim-in 0.25s ease;
+}
+
+@keyframes graph-scrim-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skill-graph__scrim { animation: none; }
+}
+
+// Im Sheet gehört jede Touch-Geste dem Graphen (Ein-Finger-Pan, Knoten ziehen)
+body.graph-open .skill-graph__canvas-wrap canvas {
+  touch-action: none;
+}
+
 body.graph-open .skill-graph__panel {
   position: fixed;
   left: 50%;
   bottom: 0;
-  z-index: 910;
+  z-index: $graph-layer-z + 10;
   width: min(760px, 94vw);
   height: 68vh;
   margin: 0;
@@ -310,15 +342,6 @@ body.graph-open .skill-graph__panel {
   opacity: 1;
   transition: opacity 0.25s ease;
   animation: graph-sheet-up 0.3s cubic-bezier(0.22, 0.61, 0.36, 1);
-}
-
-// An das Kapitel gebunden: verlässt „Technische Fähigkeiten" das zentrale
-// Sichtband (graph-here fällt weg), blendet das offene Sheet sanft aus — der
-// Zustand bleibt „offen", beim Zurückscrollen kommt es wieder. Kein Folgen
-// des Sheets in fremde Abschnitte.
-body.graph-open:not(.graph-here) .skill-graph__panel {
-  opacity: 0;
-  pointer-events: none;
 }
 
 body.graph-open .skill-graph__canvas-wrap {
