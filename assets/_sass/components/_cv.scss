@@ -101,7 +101,7 @@
     margin-top: 0.2rem;
     font-family: $mono-font-stack;
     font-size: $fs-label-lg; // 0.68→0.78 (K7/K8, A11y: informationstragend)
-    color: $white-a40;
+    color: $fg-subtle; // FARB-3 (vorher 40 %, 3,59:1)
   }
 
   .cv-entry__body {
@@ -326,7 +326,7 @@
 .cv-skills p.cv-skill-group__context {
   font-size: $cv-group-context-font-size;
   line-height: 1.35;
-  color: $white-a45;
+  color: $fg-subtle; // FARB-3 (vorher 45 %, 4,15:1)
   max-width: 38rem;
   margin: 0 0 0.55rem;
 }
@@ -491,7 +491,7 @@ li.cv-skill-chip--breadth {
   font-family: $mono-font-stack;
   font-size: $fs-label-lg; // 0.68→0.78 (K7/K8, A11y: informationstragend)
   letter-spacing: 0.04em;
-  color: $white-a45;
+  color: $fg-subtle; // FARB-3 (vorher 45 %, 4,44:1)
   border-left: 1px solid $white-a15;
   padding-left: 0.45rem;
 }

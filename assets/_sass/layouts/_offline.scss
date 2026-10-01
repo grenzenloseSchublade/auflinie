@@ -67,6 +67,6 @@
   &__cache-notice {
     margin-top: 3em;
     font-size: $fs-body;
-    color: $gray-53;
+    color: $fg-subtle; // FARB-1/FARB-3 statt #888888 (4,06:1)
   }
 }

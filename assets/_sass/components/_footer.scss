@@ -35,6 +35,6 @@
 .page__footer-copyright {
   font-family: $mono-font-stack;
   font-size: $fs-label-xs;
-  color: $white-a40;
+  color: $fg-subtle; // FARB-3: vorher 40 % (3,78:1), die Links erben
   margin-top: 0.6rem;
 }
