@@ -49,6 +49,10 @@ $ubuntu-unicode-range: string.unquote("U+0000-00FF, U+0131, U+0152-0153, U+02BB-
     ascent-override: 92.96%;
     descent-override: 18.85%;
     line-gap-override: 0%;
+
+    // Nur für Zeichen, die Ubuntu selbst hat: Pfeile, ▼ & Co. fallen sonst
+    // dauerhaft auf Arial statt auf den System-Stack (Prüfer-Hinweis Welle 2)
+    unicode-range: $ubuntu-unicode-range;
   }
 
   // Ersatzschrift fett (auch für 600, Mittel aus Ubuntu 600 und 700)
@@ -61,6 +65,10 @@ $ubuntu-unicode-range: string.unquote("U+0000-00FF, U+0131, U+0152-0153, U+02BB-
     ascent-override: 95.35%;
     descent-override: 19.34%;
     line-gap-override: 0%;
+
+    // Nur für Zeichen, die Ubuntu selbst hat: Pfeile, ▼ & Co. fallen sonst
+    // dauerhaft auf Arial statt auf den System-Stack (Prüfer-Hinweis Welle 2)
+    unicode-range: $ubuntu-unicode-range;
   }
 
   // Ersatzschrift kursiv
@@ -73,5 +81,9 @@ $ubuntu-unicode-range: string.unquote("U+0000-00FF, U+0131, U+0152-0153, U+02BB-
     ascent-override: 95.06%;
     descent-override: 19.28%;
     line-gap-override: 0%;
+
+    // Nur für Zeichen, die Ubuntu selbst hat: Pfeile, ▼ & Co. fallen sonst
+    // dauerhaft auf Arial statt auf den System-Stack (Prüfer-Hinweis Welle 2)
+    unicode-range: $ubuntu-unicode-range;
   }
 }

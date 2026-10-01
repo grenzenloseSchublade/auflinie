@@ -819,7 +819,6 @@ Langfristig (ab drei Jahren) geht es darum, neue Static Site Generators zu bewer
 - **Erweiterte JavaScript-Features**: Neue interaktive Elemente für Fraktal-Visualisierungen
 - **Progressive Web App**: App-ähnliche Funktionen, aufbauend auf dem vorhandenen Offline-Zugriff
 - **Real-time Features**: Live-Updates und Echtzeit-Interaktionen
-- **Personalization**: Anpassung der Inhalte an individuelle Nutzerpräferenzen
 - **Accessibility**: Verbesserte Barrierefreiheit für alle Nutzer
 
 **Performance und Skalierung:**
@@ -834,6 +833,5 @@ Langfristig (ab drei Jahren) geht es darum, neue Static Site Generators zu bewer
 - **Community-Features**: Kommentare, Bewertungen und Nutzerinteraktionen
 - **Content-Collaboration**: Erweiterte Tools für Team-Kollaboration
 - **Internationalization**: Mehrsprachige Unterstützung und Lokalisierung
-- **Content-Recommendation**: Intelligente Empfehlungssysteme für verwandte Inhalte
 
 Was bleibt: Die Fraktal-Visualisierungen zeigen, dass auch anspruchsvolle Interaktion auf einer statischen Website möglich ist. Web Worker, Canvas und modernes JavaScript gehen weit über die klassische statische Seite hinaus, ohne deren Stärken aufzugeben – Geschwindigkeit, Stabilität und keine laufenden Kosten. Vielleicht helfen die Entscheidungen und Erfahrungen hier auch bei ähnlichen Projekten.

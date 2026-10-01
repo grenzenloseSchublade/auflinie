@@ -1,6 +1,6 @@
 # Format-Grundregeln für Editoren (STYLEGUIDE.md SCSS-19, JS-19)
 # https://editorconfig.org
-# Für assets/_sass prüft scripts/format-guardrail.sh dieselben Regeln in der CI.
+# Für assets/_sass prüft scripts/scss-format.py dieselben Regeln in der CI.
 root = true
 
 [*]
