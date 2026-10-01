@@ -13,7 +13,7 @@
 
   .archive__item {
     position: relative;
-    border-radius: 5px;
+    border-radius: $radius-sm;
     overflow: hidden;
     transition: transform $standard-transition;
 
@@ -22,7 +22,7 @@
     }
 
     .archive__item-teaser {
-      border-radius: 5px 5px 0 0;
+      border-radius: $radius-sm $radius-sm 0 0;
     }
 
     .archive__item-title {
@@ -47,7 +47,7 @@
 // Karten-Hover folgt dem ruhigen Site-Schema (Cyan-subtle statt
 // Magenta-Glow-Ring — Magenta bleibt Moment-Farbe)
 .archive__item:hover {
-  box-shadow: 0 0 0 1px $border-accent-hover;
+  box-shadow: $shadow-ring-hairline;
 }
 
 // Meta-Zeile der Startseiten-Karten im Chrome-Label-Stil (wie Blogliste)

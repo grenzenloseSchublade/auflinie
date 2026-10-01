@@ -52,10 +52,10 @@
   pointer-events: auto;
   display: flex;
   align-items: center;
-  gap: 0.9rem;
+  gap: $space-4;
   flex-wrap: wrap;
   width: min(26rem, 100%);
-  padding: 0.6rem 0.9rem;
+  padding: $space-2 $space-4;
   color: $white-a92;
   box-shadow: $shadow-3;
   animation: sw-update-toast-enter $duration-moderate ease-out forwards;
@@ -89,7 +89,7 @@
 .sw-update-toast__actions {
   display: flex;
   align-items: center;
-  gap: 0.45rem;
+  gap: $space-2;
   margin-left: auto;
 }
 
@@ -102,7 +102,7 @@
   line-height: 1.2;
   cursor: pointer;
   border-radius: $radius-md;
-  padding: 0.45rem 0.8rem;
+  padding: $space-2 $space-3;
   transition: background-color $duration-base ease, color $duration-base ease, border-color $duration-base ease;
 
   &:focus-visible {
@@ -141,7 +141,7 @@
   bottom: max(1.25rem, env(safe-area-inset-bottom, 0));
   z-index: $z-offline;
   max-width: calc(100% - 2.5rem);
-  padding: 0.6rem $space-5;
+  padding: $space-2 $space-5;
   color: $white-a92;
   font-family: $sans-serif;
   font-size: $fs-body;

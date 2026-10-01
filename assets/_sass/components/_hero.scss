@@ -8,9 +8,23 @@
 @use "abstracts/tokens" as *;
 @use "abstracts/breakpoints" as *;
 
+// skala-Ausnahme: [Block] lokaler Ebenen-Stapel des Hero (Z-2, isolation: isolate
+// auf .page__hero--overlay). Von unten nach oben; die Ebenen der CRT-Röhre
+// stehen im CRT-Block weiter unten.
+$hero-z-behind: -1; // Bloom hinter dem Power-Icon
+$hero-z-placeholder: 0; // Lade-Platzhalter des Hintergrunds
+$hero-z-content: 3; // Titel, Text, Buttons
+$hero-z-curtain: 15; // Vorhang beim Einschalten, liegt über Schrift und CRT
+$hero-z-power: 25; // Power-Schalter über dem Vorhang
+$hero-z-caption: 100; // Caption-Leiste
+$hero-z-scroll-cue: 101; // Scroll-Hinweis über der Caption
+// skala-Ausnahme-Ende
+
 // Grundlegende Stile für die Hero-Komponente
 .page__hero {
   position: relative;
+
+  // skala-Ausnahme: Hero-em-System (SP-2), wächst mit dem Titel
   margin-bottom: 2em;
   clear: both;
 
@@ -24,11 +38,14 @@
   // Overlay-Variante
   &--overlay {
     position: relative;
+
+    // skala-Ausnahme: Hero-em-System (SP-2), wächst mit dem Titel
     margin-bottom: 2em;
 
     // 8em oben: Titel-Oberkante ~248px — Text sitzt tief im Hero
     // (Nutzerwunsch), weiterhin top-verankert und damit seitenübergreifend
     // pixelgleich
+    // skala-Ausnahme: Hero-em-System (SP-2), wächst mit dem Titel
     padding: 8em 0 2em;
     clear: both;
     background-size: cover;
@@ -52,6 +69,8 @@
       // der mobilen Adressleiste — der Hero skalierte live nach und das
       // Cover-Bild "wanderte" sichtbar beim Scrollen
       min-height: calc(100svh - var(--masthead-height));
+
+      // skala-Ausnahme: Hero-em-System (SP-2), wächst mit dem Titel
       margin-bottom: 1.2em;
       padding-top: 18vh;
     }
@@ -74,7 +93,7 @@
         position: absolute;
         inset: 0;
         background-color: $black-a30;
-        z-index: 0;
+        z-index: $hero-z-placeholder;
       }
 
       // Fade-In-Animation, wenn das Bild geladen ist
@@ -90,11 +109,11 @@
         content: "";
         position: absolute;
         inset: 0;
-        z-index: 15;
+        z-index: $hero-z-curtain;
         pointer-events: none;
         background: $black-a94;
         opacity: 0;
-        transition: opacity 0.32s ease-out;
+        transition: opacity $duration-moderate ease-out;
       }
 
       &.page__hero--crt-preboot:not(.page__hero--crt-boot)::after {
@@ -470,7 +489,7 @@
       position: absolute;
       left: 0.75rem;
       bottom: 0.75rem;
-      z-index: 25;
+      z-index: $hero-z-power;
       pointer-events: none;
     }
 
@@ -480,7 +499,7 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      padding: 0.35rem;
+      padding: $space-1;
       margin: 0;
       min-width: 2.5rem;
       min-height: 2.5rem;
@@ -554,7 +573,8 @@
           border-radius: $radius-circle;
           background: radial-gradient(closest-side, rgb(90 200 120 / 55%), rgb(90 200 120 / 0%) 72%);
           pointer-events: none;
-          z-index: -1; // hinter dem Power-Icon
+          z-index: $hero-z-behind; // hinter dem Power-Icon
+          // skala-Ausnahme: Hinweis-Puls über 500 ms, keine UI-Übergangsdauer (MO-4)
           animation: hero-crt-power-hint 1.4s ease-in-out;
         }
       }
@@ -568,7 +588,9 @@
     // über der Schrift liegt.
     .wrapper {
       position: relative;
-      z-index: 3;
+      z-index: $hero-z-content;
+
+      // skala-Ausnahme: Hero-em-System (SP-2), wächst mit dem Titel
       padding: 2em 1em;
     }
 
@@ -593,7 +615,7 @@
     // drückte sie sonst direkt an den Text — Spezifität hier (0,2,0)
     // schlägt die Reset-Regel (0,1,1) unabhängig von der Ladereihenfolge
     .page__meta {
-      margin-top: 1.1rem;
+      margin-top: $space-4;
     }
 
     // Titel-Größe
@@ -614,6 +636,8 @@
     // Buttons
     .btn {
       display: inline-block;
+
+      // skala-Ausnahme: Hero-em-System (SP-2), wächst mit dem Titel
       margin: 0.5em 0.5em 1.5em 0;
 
       &--light-outline {
@@ -633,6 +657,7 @@
 @include up(md) {
   .page__hero {
     &--overlay {
+      // skala-Ausnahme: Hero-em-System (SP-2), wächst mit dem Titel
       padding-bottom: 6em;
 
       .page__title {
@@ -695,7 +720,7 @@
   left: 50%;
   bottom: 3.2rem; // über der Caption-Leiste (die sitzt absolut am Unterrand)
   transform: translateX(-50%);
-  z-index: 101;
+  z-index: $hero-z-scroll-cue;
   color: $white-a65;
 
   // fs-Ausnahme: dekorative Icon-Glyphe, bewusst außerhalb der Token-Skala
@@ -703,6 +728,8 @@
   line-height: 1;
   pointer-events: none;
   text-shadow: 0 1px 4px $black-a60;
+
+  // skala-Ausnahme: Ambient-Animation über 500 ms, keine UI-Übergangsdauer (MO-4)
   animation: hero-scroll-cue-bounce 2.2s ease-in-out infinite;
 
   @include down(md) {
@@ -728,11 +755,11 @@
   position: absolute;
   right: 0;
   bottom: 0;
-  z-index: 100;
+  z-index: $hero-z-caption;
   width: fit-content;
   max-width: min(75%, 34ch);
   margin: 0;
-  padding: 0.28rem 0.6rem;
+  padding: $space-1 $space-2;
   font-family: $mono-font-stack;
   font-size: $fs-ui; // 0.62rem war dem Nutzer zu klein
   text-transform: uppercase;

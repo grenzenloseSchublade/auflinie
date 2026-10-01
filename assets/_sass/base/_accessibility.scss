@@ -132,5 +132,5 @@ textarea:focus-visible {
 .contact-card:focus-visible {
   outline: 2px solid $hover-color;
   outline-offset: 4px;
-  box-shadow: 0 0 0 4px $magenta-a20;
+  box-shadow: $shadow-ring-focus-soft;
 }

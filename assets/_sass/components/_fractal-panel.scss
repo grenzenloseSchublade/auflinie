@@ -6,7 +6,7 @@
 // Modifier --single (Julia, 1 Canvas) / --dual (Explorer, 2 Canvases),
 // Zustände .is-focus-mode, .is-advanced-open, .is-fullscreen.
 // Markup: _includes/fractal/panel.html — Verhalten: assets/js/fractal-panel.js.
-// Z-Index-Skala im __canvas-frame:
+// Z-Index-Skala im __canvas-frame ($fp-z-* in fractal-panel/_tokens.scss):
 //   Canvas (statisch) → CRT-Overlay 2 → Zoom-Box 3 → HUD 4
 //   → Loading/Warnung 5 → Mobile-Zoom 6
 // Panel-Chrome im Fullscreen: Toolbar/Controls 200, Tom-Select-Dropdown 250,

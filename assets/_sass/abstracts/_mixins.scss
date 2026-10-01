@@ -29,7 +29,7 @@
 
   &:hover {
     transform: translateY($transform-value);
-    box-shadow: 0 4px 8px $black-a20;
+    box-shadow: $shadow-2;
   }
 }
 
@@ -49,8 +49,8 @@
 // dieselbe Sprache wie die flankierenden Motto-Linien auf Über-mich.
 // Border kann kein Gradient → 1px-Background an der Oberkante.
 @mixin section-break {
-  margin-top: 3.2rem;
-  padding-top: 2.4rem;
+  margin-top: $space-section-break;
+  padding-top: $space-section-break-inner;
   background:
     linear-gradient(
       90deg,
@@ -62,8 +62,8 @@
     top / 100% 1px no-repeat;
 
   @include down(content) {
-    margin-top: 2.4rem;
-    padding-top: 1.8rem;
+    margin-top: $space-section-break-narrow;
+    padding-top: $space-section-break-inner-narrow;
   }
 }
 
@@ -118,7 +118,7 @@
 @mixin accent-header($size: $fs-heading, $rule: true) {
   display: flex;
   align-items: center;
-  gap: 0.7rem;
+  gap: $space-3;
   font-size: $size;
   font-weight: 600;
   color: $white-a95;

@@ -28,16 +28,16 @@
 
     @include card-panel(0);
 
-    padding: $space-4 1.4rem;
+    padding: $space-4 $space-6;
 
     .options-list {
       list-style: none;
       padding: 0;
-      margin: 0.4rem 0 0;
+      margin: $space-2 0 0;
 
       li {
         margin: 0.7em 0;
-        padding-left: 1.1rem;
+        padding-left: $space-4;
         position: relative;
 
         &::before {
@@ -54,7 +54,7 @@
     // Primär-Rolle des Button-Systems (getönt statt Voll-Cyan)
     @include btn-role-primary;
 
-    padding: 10px 20px;
+    padding: $space-2 $space-5;
     font-size: $fs-base;
     border-radius: $radius-md;
     cursor: pointer;

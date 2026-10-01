@@ -65,9 +65,7 @@
   // Hover-Effekt (Desktop) - Cyan Glow
   @media (hover: hover) {
     &:hover {
-      box-shadow: 0 0 12px $cyan-a50,
-                  0 0 24px $cyan-a30,
-                  0 0 36px $cyan-a15;
+      box-shadow: $glow-halo;
 
       svg {
         filter: drop-shadow(0 0 4px $cyan-a80);
@@ -87,7 +85,7 @@
   &:focus-visible {
     outline: none;
     border-color: $link-color;
-    box-shadow: 0 0 0 3px $cyan-a30;
+    box-shadow: $shadow-ring-cyan;
   }
 
   // Active-State

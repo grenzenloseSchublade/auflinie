@@ -3,10 +3,10 @@
 # assets/_sass/variables/. Die CI scheitert, wenn eine Zahl steigt.
 # Nach einer Migration senken: bash scripts/scale-guardrail.sh --update
 # (schreibt nur nach unten). Erhöhen nur mit Begründung im Commit.
-spacing 237
-radius 18
-shadow 34
-z-index 22
-duration 19
-easing 1
-transition-all 7
+spacing 25
+radius 0
+shadow 0
+z-index 0
+duration 0
+easing 0
+transition-all 0

@@ -17,7 +17,7 @@
   letter-spacing: 0.05em;
   display: flex;
   align-items: center;
-  gap: 0.6rem;
+  gap: $space-2;
   flex-wrap: wrap;
 
   a {
@@ -38,5 +38,5 @@
   font-family: $mono-font-stack;
   font-size: $fs-label-xs;
   color: $fg-subtle; // FARB-3: vorher 40 % (3,78:1), die Links erben
-  margin-top: 0.6rem;
+  margin-top: $space-2;
 }

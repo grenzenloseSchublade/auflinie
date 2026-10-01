@@ -24,21 +24,21 @@
   }
 
   .icon {
-    margin-right: 6px;
+    margin-right: $fp-space-1-5;
   }
 
   // Mobil: alle fünf Buttons gleichberechtigt als Icon-über-Label-Stack
   // (App-Tab-Bar-Muster) — vorher waren Fokus/Vollbild icon-only 38px,
   // die Gruppe 74px mit Text ("außen doppelt so klein")
   @include down(md) {
-    gap: 6px;
+    gap: $fp-space-1-5;
 
     .fractal-panel__button {
       flex: 1 1 0;
       flex-direction: column;
-      gap: 3px;
+      gap: $fp-space-0-5;
       min-height: 48px;
-      padding: 6px $fp-space-1;
+      padding: $fp-space-1-5 $fp-space-1;
     }
 
     .icon {
@@ -58,7 +58,7 @@
   display: flex;
   flex: 1.6;
   max-width: 320px; // Platz für Reset / Neu / CRT
-  gap: 6px;
+  gap: $fp-space-1-5;
 
   .fractal-panel__button {
     flex: 1;
@@ -80,7 +80,7 @@
   background: $control-bg;
   color: $gray-87;
   border: 1px solid $white-a14;
-  padding: $fp-space-2 14px;
+  padding: $fp-space-2 $fp-space-3-5;
   border-radius: $radius-md;
   cursor: pointer;
   transition: border-color $duration-fast ease, box-shadow $duration-fast ease, transform $duration-instant ease, background $duration-fast ease;
@@ -94,10 +94,10 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 7px;
+  gap: $fp-space-1-5;
 
   // Keycap-Tiefe: Unterkante + Lichtkante
-  box-shadow: 0 2px 0 $black-a45, inset 0 1px 0 $surface-tint;
+  box-shadow: $shadow-key-edge, $shadow-key-light-tint;
 
   .icon {
     display: flex;
@@ -114,12 +114,12 @@
   &:hover {
     background: $control-bg-hover;
     border-color: $cyan-a55;
-    box-shadow: 0 2px 0 $black-a45, 0 0 8px $cyan-a30, inset 0 1px 0 $surface-tint;
+    box-shadow: $shadow-key-edge, $glow-key, $shadow-key-light-tint;
   }
 
   &:active {
     transform: translateY(2px);
-    box-shadow: 0 0 0 $black-a45, inset 0 1px 0 $white-a04;
+    box-shadow: $shadow-key-edge-pressed, $shadow-key-light-pressed;
   }
 
   &:focus-visible {
@@ -131,7 +131,7 @@
     background: $cyan-a22;
     color: $white;
     border-color: $cyan-a60;
-    box-shadow: 0 2px 0 $black-a45, 0 0 8px $cyan-a35, inset 0 0 4px $cyan-a20;
+    box-shadow: $shadow-key-edge, $glow-key-active, $glow-key-inner;
   }
 }
 
@@ -184,7 +184,7 @@
   border-radius: $radius-md;
   color: $white-a60;
   font-size: $fp-fs-md;
-  transition: all 0.25s ease;
+  transition: background-color $duration-base ease, border-color $duration-base ease, color $duration-base ease, box-shadow $duration-base ease;
 
   &:hover {
     background: $white-a05;
@@ -209,7 +209,7 @@
   border-color: $cyan-a30;
   border-style: solid;
   color: $fp-accent;
-  box-shadow: 0 0 8px 2px $cyan-a20;
+  box-shadow: $glow-open;
 
   .chevron {
     transform: rotate(180deg);

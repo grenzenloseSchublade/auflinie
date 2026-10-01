@@ -6,14 +6,17 @@
 @use "abstracts/mixins" as *;
 @use "abstracts/breakpoints" as *;
 
+// skala-Ausnahme: lokale Ebene (Z-2), Touch-Hinweis über dem Canvas
+$graph-z-touch-hint: 3;
+
 .skill-graph {
-  margin-top: 1.4rem;
+  margin-top: $space-6;
 }
 
 .skill-graph__bar {
   display: flex;
   align-items: center;
-  gap: 0.7rem;
+  gap: $space-3;
 }
 
 // Generisches Beta-/WIP-Badge: Pill mit Cyan-subtle-Rand, bewusst dezent
@@ -23,18 +26,18 @@
 
   border: 1px solid $link-color-subtle;
   border-radius: $radius-pill;
-  padding: 0.15rem 0.55rem;
+  padding: $space-1 $space-2;
   color: $fg-subtle;
 }
 
 .skill-graph__panel {
-  @include card-panel(0, 10px);
+  @include card-panel(0);
 
-  margin-top: 0.8rem;
+  margin-top: $space-3;
   padding: $space-4;
 
   @include down(content) {
-    padding: 0.6rem;
+    padding: $space-2;
   }
 }
 
@@ -43,8 +46,8 @@
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 0.8rem;
-  margin: 0 0 0.7rem;
+  gap: $space-3;
+  margin: 0 0 $space-3;
 }
 
 // p-qualifiziert (0,2,1): die Theme-Regel .page__content p (1em) und die
@@ -64,12 +67,12 @@
   flex-shrink: 0;
   display: inline-flex;
   align-items: center;
-  gap: 0.35rem;
+  gap: $space-1;
   background: transparent;
   border: 1px solid $console-panel-border;
   border-radius: $radius-md;
   color: $fg-subtle;
-  padding: 0.28rem 0.6rem;
+  padding: $space-1 $space-2;
   cursor: pointer;
   transition: border-color $duration-base ease, color $duration-base ease;
 
@@ -117,7 +120,7 @@
   box-sizing: border-box;
   height: calc(3 * 1.5em);
   overflow-y: auto;
-  margin: 0.7rem 0 0;
+  margin: $space-3 0 0;
 
   @include down(content) {
     height: calc(4 * 1.5em);
@@ -150,12 +153,12 @@
 
   display: inline-flex;
   align-items: center;
-  gap: 0.4rem;
+  gap: $space-2;
   background: transparent;
   border: 1px solid $link-color-subtle;
   border-radius: $radius-lg;
   color: $white-a80;
-  padding: 0.4rem 0.8rem;
+  padding: $space-2 $space-3;
   cursor: pointer;
   transition: border-color $duration-base ease, color $duration-base ease;
 
@@ -187,12 +190,13 @@
   }
 
   50% {
-    box-shadow: 0 0 14px 2px $cyan-a45;
+    box-shadow: $glow-hint;
     border-color: $link-color;
   }
 }
 
 .skill-graph__activate.is-hint {
+  // skala-Ausnahme: Hinweis-Puls über 500 ms, keine UI-Übergangsdauer (MO-4)
   animation: graph-activate-glow 1.1s ease 2;
 }
 
@@ -208,12 +212,12 @@
 
   display: none;
   align-items: center;
-  gap: 0.4rem;
-  padding: 0.6rem 1.1rem;
+  gap: $space-2;
+  padding: $space-2 $space-4;
   background: $console-panel-bg;
   border: 1px solid $link-color-subtle;
   border-radius: $radius-pill;
-  box-shadow: 0 14px 34px -18px $black-a95;
+  box-shadow: $shadow-float;
   color: $white-a92;
   cursor: pointer;
 
@@ -251,19 +255,20 @@ body.graph-open .skill-graph__floating {
 @keyframes graph-floating-glow {
   0%,
   100% {
-    box-shadow: 0 14px 34px -18px $black-a95, 0 0 0 0 $cyan-a00;
+    box-shadow: $shadow-float, 0 0 0 0 $cyan-a00;
     border-color: $link-color-subtle;
     transform: translateX(-50%) scale(1);
   }
 
   50% {
-    box-shadow: 0 14px 34px -18px $black-a95, 0 0 24px 5px $cyan-a60;
+    box-shadow: $shadow-float, $glow-hint-strong;
     border-color: $link-color;
     transform: translateX(-50%) scale(1.06);
   }
 }
 
 .skill-graph__floating.is-hint {
+  // skala-Ausnahme: Hinweis-Puls über 500 ms, keine UI-Übergangsdauer (MO-4)
   animation: graph-floating-glow 0.95s ease 3;
 }
 
@@ -312,7 +317,7 @@ html.graph-scroll-lock {
   inset: 0;
   z-index: $z-sheet;
   background: $black-a55;
-  animation: graph-scrim-in 0.25s ease;
+  animation: graph-scrim-in $duration-base ease;
 }
 
 @keyframes graph-scrim-in {
@@ -344,8 +349,8 @@ body.graph-open .skill-graph__panel {
   display: flex;
   flex-direction: column;
   opacity: 1;
-  transition: opacity 0.25s ease;
-  animation: graph-sheet-up $duration-moderate cubic-bezier(0.22, 0.61, 0.36, 1);
+  transition: opacity $duration-base ease;
+  animation: graph-sheet-up $duration-moderate $ease-decelerate;
 }
 
 body.graph-open .skill-graph__canvas-wrap {
@@ -365,10 +370,10 @@ body.graph-open p.skill-graph__context {
   position: absolute;
   top: 50%;
   left: 50%;
-  z-index: 3;
+  z-index: $graph-z-touch-hint;
   transform: translate(-50%, -50%);
   max-width: 82%;
-  padding: 0.55rem 0.9rem;
+  padding: $space-2 $space-4;
   border: 1px solid $console-panel-border;
   border-radius: $radius-xl;
   background: $black-a68;

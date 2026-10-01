@@ -12,7 +12,7 @@
 .fractal-panel__row {
   display: flex;
   flex-wrap: wrap;
-  gap: 15px;
+  gap: $fp-space-3-5;
   justify-content: center;
 }
 
@@ -30,20 +30,20 @@
   @include accent-header($fs-base, false);
 
   margin: 0 0 $fp-space-3;
-  padding: 2px 0;
+  padding: $fp-space-0-5 0;
 }
 
 .fractal-panel__canvas-frame {
   position: relative;
   width: 100%;
   margin: 0 auto;
-  border-radius: 10px;
+  border-radius: $radius-lg;
   overflow: hidden;
 
   // Rahmenlinie als box-shadow statt border: border ginge in die
   // getBoundingClientRect-Messung von resizeToContainer ein und erzeugte
   // eine Endlos-Wachstumsschleife (Canvas-Höhe = Frame-Höhe + Rahmen)
-  box-shadow: inset 0 0 0 1px $white-a10;
+  box-shadow: $shadow-ring-hairline-inset;
   background: $black;
 
   // Blend-Layer des CRT-Overlays (soft-light-Grain) blendet nur gegen den
@@ -109,14 +109,14 @@
   pointer-events: none;
   display: none;
   box-sizing: border-box;
-  z-index: 3;
+  z-index: $fp-z-zoom-box;
 }
 
 .fractal-panel__hud {
   position: absolute;
   top: 10px;
   right: 10px;
-  z-index: 4;
+  z-index: $fp-z-hud;
   display: flex;
   flex-direction: column;
   gap: $fp-space-1;
@@ -125,7 +125,7 @@
   @include down(sm) {
     top: 6px;
     right: 6px;
-    gap: 3px;
+    gap: $fp-space-0-5;
   }
 }
 
@@ -154,7 +154,7 @@
   }
 
   @include down(sm) {
-    padding: 3px 6px;
+    padding: $fp-space-0-5 $fp-space-1-5;
     font-size: $fp-fs-2xs;
   }
 }
@@ -166,11 +166,13 @@
   transform: translate(-50%, -50%);
   background: $black-a70;
   color: $white;
-  padding: 10px $fp-space-5;
+  padding: $fp-space-2-5 $fp-space-5;
   border-radius: $radius-sm;
   display: none;
   font-size: $fp-fs-xl;
-  z-index: 5;
+  z-index: $fp-z-loading;
+
+  // skala-Ausnahme: Ambient-Puls über 500 ms, keine UI-Übergangsdauer (MO-4)
   animation: fractal-panel-loading-pulse 1.6s ease-in-out infinite;
 }
 
@@ -180,11 +182,11 @@
   bottom: 12px;
   background: $black-a75;
   color: $red-pale;
-  padding: 6px 10px;
+  padding: $fp-space-1-5 $fp-space-2-5;
   border-radius: $radius-md;
   font-size: $fp-fs-sm;
   display: none;
-  z-index: 5;
+  z-index: $fp-z-loading;
 }
 
 // Mobiler Zoom-Regler (per JS nur auf kleinen Screens eingeblendet)
@@ -197,9 +199,9 @@
   align-items: center;
   gap: $fp-space-2;
   background: $black-a45;
-  border-radius: 26px;
-  padding: 6px $fp-space-2;
-  z-index: 6;
+  border-radius: $radius-pill;
+  padding: $fp-space-1-5 $fp-space-2;
+  z-index: $fp-z-mobile-zoom;
   box-shadow: $shadow-1;
 }
 
@@ -217,7 +219,7 @@
   user-select: none;
   padding: 0;
   line-height: 1;
-  box-shadow: 0 1px 2px $black-a20;
+  box-shadow: $shadow-1;
   border: none;
   transition: background-color $duration-base, transform $duration-instant;
 
@@ -227,7 +229,7 @@
 
   &:active {
     transform: scale(0.92);
-    box-shadow: 0 0 1px $black-a20;
+    box-shadow: $shadow-pressed;
   }
 }
 
@@ -235,18 +237,18 @@
   color: $white;
   font-size: $fp-fs-sm;
   background: $black-a30;
-  padding: 2px 6px;
+  padding: $fp-space-0-5 $fp-space-1-5;
   border-radius: $radius-lg;
   text-align: center;
   min-width: 45px;
-  margin: 0 2px;
+  margin: 0 $fp-space-0-5;
 }
 
 
 // Statuszeile mit Gesten-/Tastatur-Hinweisen unter dem Canvas-Bereich
 .fractal-panel__hint {
-  margin-top: 6px;
-  padding: 5px 10px;
+  margin-top: $fp-space-1-5;
+  padding: $fp-space-1 $fp-space-2-5;
   border-top: 1px solid $surface-tint;
   color: $fg-subtle; // FARB-3 (vorher 45 %, 4,44:1)
   font-family: $fp-mono;
@@ -277,14 +279,14 @@
   transform: translate(-50%, -50%);
   background: $black-a78;
   color: $white;
-  padding: 10px $fp-space-4;
+  padding: $fp-space-2-5 $fp-space-4;
   border-radius: $radius-lg;
   font-size: $fp-fs-lg;
   text-align: center;
   pointer-events: none;
   opacity: 0;
-  transition: opacity 0.25s ease;
-  z-index: 4;
+  transition: opacity $duration-base ease;
+  z-index: $fp-z-hud;
 
   &.is-visible {
     opacity: 1;

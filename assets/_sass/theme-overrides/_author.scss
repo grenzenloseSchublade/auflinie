@@ -28,7 +28,7 @@
     background-color: $console-panel-bg;
     border: 1px solid $console-panel-border;
     border-radius: $radius-lg;
-    box-shadow: 0 8px 24px $black-a40;
+    box-shadow: $shadow-3;
 
     // Sprechblasen-Pfeil an den Panel-Ton anpassen
     &::before {

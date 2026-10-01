@@ -11,6 +11,7 @@
 // scroll-margin-top-Regeln (Überschriften, .fractal-panel, :target,
 // .section-anchor) sind deshalb raus — beides addiert sich sonst.
 html {
+  // skala-Ausnahme: Fallback = Masthead 88 px + 8 px, gekoppelt an --anchor-offset (SP-4)
   scroll-padding-top: var(--anchor-offset, 96px);
 
   // Weiches Scrollen bei Anker-Sprüngen. Bewusst unverändert übernommen
@@ -93,10 +94,10 @@ body {
   border-radius: $radius-lg;
   display: grid;
   grid-template-columns: auto 1fr;
-  gap: 0.55rem 0.9rem;
+  gap: $space-2 $space-4;
   align-items: start;
-  padding: $space-3 1.1rem;
-  margin: 1.2rem 0 $space-4;
+  padding: $space-3 $space-4;
+  margin: $space-5 0 $space-4;
 }
 
 .guide-banner__icon {
@@ -104,7 +105,7 @@ body {
   color: $console-heading;
   opacity: 0.85;
   font-size: $fs-md; // 1.1→1.125 (R, Token-Skala)
-  margin-top: 0.15rem;
+  margin-top: $space-1;
 }
 
 // p-qualifiziert (0,2,1): Theme .page__content p (1em, margin 1.3em)

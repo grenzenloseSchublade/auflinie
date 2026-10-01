@@ -17,12 +17,12 @@
 .btn {
   // Hier können spezifische Anpassungen für die Standard-Buttons hinzugefügt werden
   // Die Grundstile werden aus dem Theme übernommen
-  transition: all $duration-moderate ease;
+  transition: color $duration-moderate ease, background-color $duration-moderate ease, border-color $duration-moderate ease, box-shadow $duration-moderate ease, transform $duration-moderate ease;
 
   &:hover {
     color: $hover-color;
     transform: translateY(-2px);
-    box-shadow: 0 5px 15px $black-a30;
+    box-shadow: $shadow-2;
   }
 
   &:active {

@@ -8,8 +8,8 @@
 
 // Epigraph am Abschnittsanfang: keine Karte, nur Hairline und Zurückhaltung
 .section-epigraph {
-  margin: 0.4rem 0 1.6rem;
-  padding: 0.2rem 0 0.2rem 1.1rem;
+  margin: $space-2 0 $space-6;
+  padding: $space-1 0 $space-1 $space-4;
   border-left: 2px solid $link-color-subtle;
   background: none;
   font-style: italic;
@@ -44,7 +44,7 @@
   display: flex;
   align-items: center;
   background-color: $white-a03;
-  border-radius: 5px;
+  border-radius: $radius-sm;
   padding: $space-3;
   text-decoration: none;
   color: inherit;
@@ -93,7 +93,7 @@
 
 .contact-type {
   font-weight: bold;
-  margin-bottom: 0.15rem;
+  margin-bottom: $space-1;
   white-space: nowrap;
   color: $white;
 }
@@ -109,7 +109,7 @@
 .about-motto-wrap {
   display: flex;
   justify-content: center;
-  margin: $space-8 0 0.6rem;
+  margin: $space-8 0 $space-2;
 }
 
 // Der warme Einzelakzent der Seite. Größe und Abstand (1em, margin 0 0
@@ -119,7 +119,7 @@
 .about-motto {
   display: flex;
   align-items: center;
-  gap: 1.1rem;
+  gap: $space-4;
   font-style: italic;
   line-height: 1.4;
   color: $console-heading;

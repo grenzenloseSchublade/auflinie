@@ -9,7 +9,7 @@
 // Controls-Panel
 // -----------------------------------------------------------------------------
 .fractal-panel__controls {
-  margin-bottom: 15px;
+  margin-bottom: $fp-space-3-5;
   background: linear-gradient(135deg, $gray-16 0%, $gray-12 100%);
   padding: $fp-space-4;
   border-radius: $radius-xl;
@@ -17,12 +17,12 @@
   box-shadow: $shadow-2;
 
   @include down(md) {
-    padding: 14px;
+    padding: $fp-space-3-5;
   }
 
   @include down(xs) {
     padding: $fp-space-3;
-    border-radius: 10px;
+    border-radius: $radius-lg;
   }
 }
 
@@ -30,13 +30,13 @@
 .fractal-panel__controls-advanced {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: $fp-space-3-5;
 }
 
 .fractal-panel__controls-advanced {
   display: none;
-  margin-top: 14px;
-  padding-top: 14px;
+  margin-top: $fp-space-3-5;
+  padding-top: $fp-space-3-5;
   border-top: 1px solid $cyan-a20;
 }
 
@@ -45,8 +45,8 @@
 }
 
 .fractal-panel__advanced-row {
-  margin-top: 14px;
-  padding-top: 14px;
+  margin-top: $fp-space-3-5;
+  padding-top: $fp-space-3-5;
   border-top: 1px solid $surface-tint;
 }
 
@@ -56,7 +56,7 @@
     display: grid;
     grid-template-columns: 1fr auto;
     grid-template-rows: auto auto;
-    gap: 14px;
+    gap: $fp-space-3-5;
     align-items: center;
 
     > .fractal-panel__control-row {
@@ -79,7 +79,7 @@
   .fractal-panel--single.is-advanced-open .fractal-panel__controls-advanced {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 14px;
+    gap: $fp-space-3-5;
 
     > .fractal-panel__control-row:nth-child(1) {
       grid-column: 1;
@@ -115,10 +115,10 @@
 .fractal-panel__control-row {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 10px $fp-space-3;
+  gap: $fp-space-2-5;
+  padding: $fp-space-2-5 $fp-space-3;
   background: $white-a03;
-  border-radius: 10px;
+  border-radius: $radius-lg;
   border: 1px solid $white-a04;
   transition: background $duration-base ease;
 
@@ -146,7 +146,7 @@
     label {
       width: 100%;
       min-width: unset;
-      margin-bottom: 2px;
+      margin-bottom: $fp-space-0-5;
     }
 
     .fractal-panel__value-chip {
@@ -156,7 +156,7 @@
   }
 
   @include down(xs) {
-    padding: $fp-space-2 10px;
+    padding: $fp-space-2 $fp-space-2-5;
   }
 }
 
@@ -176,7 +176,7 @@
 @include down(md) {
   .fractal-panel__control-row--colors {
     .fractal-panel__button--intensity {
-      padding: 10px;
+      padding: $fp-space-2-5;
       min-width: auto;
       width: auto;
     }
@@ -194,10 +194,10 @@
 .fractal-panel__preset-row {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 10px $fp-space-3;
+  gap: $fp-space-2-5;
+  padding: $fp-space-2-5 $fp-space-3;
   background: $white-a03;
-  border-radius: 10px;
+  border-radius: $radius-lg;
   border: 1px solid $white-a04;
 
   label {
@@ -220,7 +220,7 @@
   display: flex;
   gap: $fp-space-2;
   flex-wrap: wrap;
-  padding-top: 10px;
+  padding-top: $fp-space-2-5;
   margin-top: $fp-space-1;
   border-top: 1px solid $surface-tint;
 }
@@ -237,7 +237,7 @@
   &.noUi-target {
     background: $slider-track-bg;
     border: 1px solid $white-a08;
-    border-radius: 3px;
+    border-radius: $radius-xs;
     box-shadow: none;
     height: 6px;
   }
@@ -255,7 +255,7 @@
     border-radius: $radius-sm;
     background: $slider-handle-bg;
     border: 1px solid $cyan-a70;
-    box-shadow: 0 2px 0 $black-a45, inset 0 1px 0 $white-a08;
+    box-shadow: $shadow-key-edge, $shadow-key-light;
     cursor: pointer;
 
     // -9px statt -(22-6)/2=-8px: der 1px-Track-Border verschiebt den
@@ -270,12 +270,12 @@
 
     &:hover {
       border-color: $fp-accent;
-      box-shadow: 0 2px 0 $black-a45, 0 0 8px $cyan-a30, inset 0 1px 0 $white-a08;
+      box-shadow: $shadow-key-edge, $glow-key, $shadow-key-light;
     }
 
     &:focus {
       outline: none;
-      box-shadow: 0 0 0 3px $cyan-a40, 0 2px 0 $black-a45;
+      box-shadow: $shadow-ring-cyan-strong, $shadow-key-edge;
     }
   }
 
@@ -305,7 +305,7 @@
   margin: 0;
   min-width: 52px;
   width: 65px;
-  padding: 5px $fp-space-2;
+  padding: $fp-space-1 $fp-space-2;
   color: $fp-accent;
   font-size: $fp-fs-md;
   font-weight: 600;
@@ -327,7 +327,7 @@
 
   &:focus {
     border-color: $fp-accent;
-    box-shadow: 0 0 8px $cyan-a40;
+    box-shadow: $glow-focus;
   }
 
   &:hover {
@@ -342,8 +342,8 @@
   background: $surface-tint;
   color: $white;
   border: 1px solid $white-a10;
-  padding: 10px 14px;
-  border-radius: 10px;
+  padding: $fp-space-2-5 $fp-space-3-5;
+  border-radius: $radius-lg;
   cursor: pointer;
   font-family: inherit;
   font-size: $fp-fs-md;
@@ -377,11 +377,11 @@
     background: $surface-tint;
     border: 1px solid $white-a10;
     border-radius: $radius-md;
-    padding: 6px $fp-space-3;
+    padding: $fp-space-1-5 $fp-space-3;
     min-height: 38px;
     align-items: center;
     cursor: pointer;
-    transition: all $duration-base ease;
+    transition: background-color $duration-base ease, border-color $duration-base ease, box-shadow $duration-base ease;
     box-shadow: none;
   }
 
@@ -398,7 +398,7 @@
   .ts-wrapper.single.focus .ts-control {
     background: $white-a08;
     border-color: $cyan-a50;
-    box-shadow: 0 0 0 3px $fp-accent-soft;
+    box-shadow: $shadow-ring-cyan-soft;
   }
 
   .ts-control,
@@ -415,7 +415,7 @@
 
   .ts-wrapper.single .ts-control::after {
     border-color: $white-a50 transparent transparent;
-    margin-top: -2px;
+    margin-top: (-$fp-space-0-5);
   }
 
   .ts-wrapper.single.dropdown-active .ts-control::after {
@@ -426,10 +426,10 @@
     background: $gray-12;
     border: 1px solid $white-a15;
     border-radius: $radius-md;
-    box-shadow: 0 8px 24px $black-a50;
+    box-shadow: $shadow-3;
     margin-top: $fp-space-1;
     overflow: hidden;
-    z-index: 250;
+    z-index: $fp-z-dropdown;
     width: 100%;
     min-width: 0;
     max-width: 100%;
@@ -439,16 +439,16 @@
   }
 
   .ts-dropdown .ts-dropdown-content {
-    padding: 6px;
+    padding: $fp-space-1-5;
     max-height: 250px;
   }
 
   .ts-dropdown .option {
-    padding: 10px $fp-space-3;
+    padding: $fp-space-2-5 $fp-space-3;
     color: $fg-muted;
     border-radius: $radius-sm;
     cursor: pointer;
-    transition: all $duration-fast ease;
+    transition: background-color $duration-fast ease, color $duration-fast ease;
     font-family: $fp-mono;
     font-size: $fp-fs-sm;
     font-variant-numeric: tabular-nums;

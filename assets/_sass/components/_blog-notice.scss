@@ -26,9 +26,9 @@
   @include card-panel(2px);
 
   width: min(24rem, 100%);
-  padding: 1.1rem 1.3rem;
-  box-shadow: 0 14px 40px $black-a45;
-  animation: blog-notice-enter 0.25s ease-out;
+  padding: $space-4 $space-5;
+  box-shadow: $shadow-3;
+  animation: blog-notice-enter $duration-base ease-out;
 }
 
 @keyframes blog-notice-enter {
@@ -63,7 +63,7 @@
 // p-qualifiziert (0,2,1): Theme .page__content p (1em, margin 1.3em)
 // machte font-size und margin sonst wirkungslos
 .blog-notice__panel p.blog-notice__text {
-  margin: 0 0 0.9rem;
+  margin: 0 0 $space-4;
   font-size: $fs-body;
   line-height: 1.5;
   color: $fg-muted;

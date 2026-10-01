@@ -10,9 +10,9 @@
 // Info-Panel (nur --dual, sichtbar bei erweiterten Optionen)
 // -----------------------------------------------------------------------------
 .fractal-panel__info-panel {
-  margin-top: 10px;
+  margin-top: $fp-space-2-5;
   background: $gray-20;
-  padding: $fp-space-3 15px;
+  padding: $fp-space-3 $fp-space-3-5;
   border-radius: $radius-sm;
   color: $gray-87;
   font-size: $fp-fs-xl;
@@ -21,7 +21,7 @@
   display: none;
 
   p {
-    margin: 5px 0;
+    margin: $fp-space-1 0;
   }
 }
 
@@ -60,7 +60,7 @@
   cursor: pointer;
   font-size: $fp-fs-lg;
   font-weight: 500;
-  transition: all $duration-moderate ease;
+  transition: background-color $duration-moderate ease, border-color $duration-moderate ease, box-shadow $duration-moderate ease;
   min-height: 44px;
   display: flex;
   align-items: center;
@@ -70,7 +70,7 @@
   &:hover {
     background: linear-gradient(145deg, $raised-bg-from-hover, $raised-bg-to-hover);
     border-color: $cyan-a50;
-    box-shadow: 0 0 15px $cyan-a20;
+    box-shadow: $glow-hover;
   }
 
   &.is-active {
@@ -94,7 +94,7 @@
   font-size: $fp-fs-lg;
   line-height: 1.6;
   display: none;
-  box-shadow: 0 4px 20px $black-a30;
+  box-shadow: $shadow-2;
   max-height: 70vh;
   overflow-y: auto;
 
@@ -125,14 +125,14 @@
   }
 
   h6 {
-    margin: 0 0 6px;
+    margin: 0 0 $fp-space-1-5;
     color: $cyan-pale;
     font-size: $fs-body; // 0.875→0.9 (R, Token-Skala)
     font-weight: 500;
   }
 
   p {
-    margin: 0 0 10px;
+    margin: 0 0 $fp-space-2-5;
   }
 
   p.hint {
@@ -144,7 +144,7 @@
   code {
     background: $cyan-a10;
     color: $fp-accent;
-    padding: 2px 6px;
+    padding: $fp-space-0-5 $fp-space-1-5;
     border-radius: $radius-sm;
     font-size: 0.9em;
     font-family: "JetBrains Mono", "Fira Code", monospace;
@@ -159,7 +159,7 @@
   li {
     position: relative;
     padding-left: $fp-space-4;
-    margin-bottom: 6px;
+    margin-bottom: $fp-space-1-5;
   }
 
   li::before {
@@ -191,14 +191,14 @@
   .color-grid {
     display: flex;
     flex-wrap: wrap;
-    gap: 6px;
+    gap: $fp-space-1-5;
     margin-top: $fp-space-2;
   }
 
   .color-tag {
     background: $white-a08;
     border: 1px solid $white-a15;
-    padding: $fp-space-1 10px;
+    padding: $fp-space-1 $fp-space-2-5;
     border-radius: $radius-xl;
     font-size: $fs-ui;
     color: $cyan-pale;
@@ -232,7 +232,7 @@
 // Zustand: Fokusmodus
 // -----------------------------------------------------------------------------
 .fractal-panel.is-focus-mode {
-  padding: 10px;
+  padding: $fp-space-2-5;
 
   .fractal-panel__controls,
   .fractal-panel__info-panel {
@@ -240,11 +240,11 @@
   }
 
   .fractal-panel__explanation {
-    margin-top: 10px;
+    margin-top: $fp-space-2-5;
   }
 
   .fractal-panel__row {
-    gap: 10px;
+    gap: $fp-space-2-5;
   }
 }
 
@@ -262,13 +262,13 @@
     position: absolute;
     left: 12px;
     right: 12px;
-    z-index: 200;
+    z-index: $fp-z-chrome;
     background: $float-panel-bg;
 
     @include backdrop-blur(6px);
 
     border-radius: $radius-lg;
-    box-shadow: 0 6px 18px $black-a35;
+    box-shadow: $shadow-2;
     margin-bottom: 0;
   }
 
@@ -289,13 +289,13 @@
     bottom: 12px;
     left: 12px;
     right: 12px;
-    z-index: 300;
+    z-index: $fp-z-explanation;
     margin-top: 0;
   }
 
   .fractal-panel__explanation-toggle {
     position: relative;
-    z-index: 2;
+    z-index: $fp-z-explanation-toggle;
     background: $float-panel-bg;
 
     @include backdrop-blur(6px);
@@ -314,7 +314,7 @@
 
     @include backdrop-blur(8px);
 
-    box-shadow: 0 -4px 24px $black-a50;
+    box-shadow: $shadow-sheet-float;
     transform: translateY(20px);
     opacity: 0;
     visibility: hidden;

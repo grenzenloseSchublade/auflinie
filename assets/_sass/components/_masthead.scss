@@ -6,12 +6,19 @@
 @use "abstracts/mixins" as *;
 @use "abstracts/breakpoints" as *;
 
+// skala-Ausnahme: [Block] lokale Ebenen (Z-2): Nav-Link über seinem Marker,
+// Drawer-Link über dem Drawer-Grund
+$masthead-z-link: 2;
+$masthead-z-drawer-link: 10;
+
+// skala-Ausnahme-Ende
+
 // Logo im Header größer und mit Transparenz
 .site-logo img {
   // Neon-Schein entlang der Logo-Linien (drop-shadow folgt der SVG-Kontur);
   // Duotone passend zum Cyan/Magenta-Line-Art
   filter: drop-shadow(0 0 3px $border-accent-hover) drop-shadow(0 0 7px $magenta-a22);
-  transition: filter 0.45s ease;
+  transition: filter $duration-slow ease;
   max-height: 5rem;  // Größer (vorher 3.5rem, Standard 2rem)
   width: auto;
 
@@ -24,7 +31,7 @@
   max-height: 5rem;
   width: auto;
   filter: drop-shadow(0 0 3px $border-accent-hover) drop-shadow(0 0 7px $magenta-a22);
-  transition: filter 0.45s ease;
+  transition: filter $duration-slow ease;
 }
 
 .site-logo:hover svg {
@@ -89,7 +96,8 @@
     font-size: $site-title-font-size; // Größerer Titel
     color: $white; // identisch mit den Nav-Links (vorher #eaeaea)
     font-weight: 600;
-    transition: color 0.45s ease, text-shadow 0.45s ease; // Sanfter Übergang für Farbe/Glow
+    transition: color $duration-slow ease, text-shadow $duration-slow ease; // Sanfter Übergang für Farbe/Glow
+    // skala-Ausnahme: Masthead-em-System (SP-2), wächst mit der Nav-Schrift
     margin-right: 3em; // Größerer Abstand zum Menü (Desktop)
 
     &:hover {
@@ -106,11 +114,14 @@
     // Responsive Anpassung für kleinere Bildschirme
     @include down(md) {
       font-size: 1.6em;
+
+      // skala-Ausnahme: Masthead-em-System (SP-2), wächst mit der Nav-Schrift
       margin-right: 1em; // Kleiner Abstand auch auf Mobile
     }
 
     // Tablet
     @include between(md, lg) {
+      // skala-Ausnahme: Masthead-em-System (SP-2), wächst mit der Nav-Schrift
       margin-right: 2em;
     }
   }
@@ -123,10 +134,12 @@
     .visible-links {
       a {
         font-size: $nav-font-size; // Mobile: Standard-Schriftgröße
+        // skala-Ausnahme: Masthead-em-System (SP-2), wächst mit der Nav-Schrift
         padding: 0.5em;
 
         // Nur horizontal: vertikales Margin ließ die Links 4px über
         // den Masthead ragen (Marker an der Unterkante wurde geclippt)
+        // skala-Ausnahme: Masthead-em-System (SP-2), wächst mit der Nav-Schrift
         margin: 0 0.2em;
         font-weight: $medium-weight; // Etwas fetter
         color: $white; // Weiß für bessere Lesbarkeit
@@ -185,6 +198,7 @@ body .masthead {
 }
 
 body .masthead__inner-wrap {
+  // skala-Ausnahme: Masthead-em-System (SP-2), wächst mit der Nav-Schrift
   padding: 0 1em 0 0.4em; // Rechts 1em, Links 0.4em (Logo näher am Rand)
   width: 100%;
   height: 100%;
@@ -221,6 +235,7 @@ body .visible-links li {
 // Trennung nach dem Feature-Link (Mandelbrot) — an der Klasse verankert,
 // damit der Trenner mitwandert, wenn der Link ins Seitenmenü umbricht
 body .visible-links li.masthead__menu-item--featured {
+  // skala-Ausnahme: Masthead-em-System (SP-2), wächst mit der Nav-Schrift
   margin-right: 1.2em; // Größerer Abstand als normal
 
   // Schmale Cyan-Linie nach dem ersten Element
@@ -247,7 +262,11 @@ body .visible-links li.masthead__menu-item--featured {
   // Im Seitenmenü: horizontale Linie UNTER Mandelbrot als einziger Trenner
   @at-root body .greedy-nav .hidden-links li.masthead__menu-item--featured {
     margin-right: 0;
+
+    // skala-Ausnahme: Masthead-em-System (SP-2), wächst mit der Nav-Schrift
     padding-bottom: 0.45em;
+
+    // skala-Ausnahme: Masthead-em-System (SP-2), wächst mit der Nav-Schrift
     margin-bottom: 0.45em;
 
     // Eingerückte Linie (nicht durchgängig). Vollständige Eigendefinition —
@@ -268,6 +287,7 @@ body .visible-links li.masthead__menu-item--featured {
 
   // Tablet: etwas kleiner
   @include between(md, lg) {
+    // skala-Ausnahme: Masthead-em-System (SP-2), wächst mit der Nav-Schrift
     margin-right: 1em;
 
     &::after {
@@ -277,6 +297,7 @@ body .visible-links li.masthead__menu-item--featured {
 
   // Mobile: proportional kleiner
   @include down(md) {
+    // skala-Ausnahme: Masthead-em-System (SP-2), wächst mit der Nav-Schrift
     margin-right: 0.8em;
 
     &::after {
@@ -290,9 +311,11 @@ body .greedy-nav .visible-links a {
   display: flex;
   align-items: center;
   height: 100%;
+
+  // skala-Ausnahme: Masthead-em-System (SP-2), wächst mit der Nav-Schrift
   padding: 0 0.75em;
   position: relative; // auch Anker für den ::after-Marker (Tab-Linie)
-  z-index: 2;
+  z-index: $masthead-z-link;
   transition: color $duration-base ease-in-out, background-color $duration-base ease-in-out;
 
   // Hover-Effekt wie hidden-links
@@ -349,7 +372,9 @@ body {
     overflow: hidden auto;
 
     // Container für Links mit Padding
+    // skala-Ausnahme: Masthead-em-System (SP-2), wächst mit der Nav-Schrift
     padding-top: 1em; // Menü startet bereits unter Header
+    // skala-Ausnahme: Masthead-em-System (SP-2), wächst mit der Nav-Schrift
     padding-bottom: 2em;
   }
 
@@ -482,14 +507,14 @@ body .greedy-nav .hidden-links li {
 // Hidden-Links: Link-Styling
 body .greedy-nav .hidden-links li a {
   display: block;
-  padding: 12px 20px;
+  padding: $space-3 $space-5;
   margin: 0;
   color: $white;
   font-size: 1em;
   text-decoration: none;
   transition: color $duration-base ease-in-out;
   position: relative;
-  z-index: 10;
+  z-index: $masthead-z-drawer-link;
   border-radius: 0;
   background: transparent;
   white-space: nowrap;
@@ -507,6 +532,8 @@ body .greedy-nav__toggle {
   background-color: transparent;
   border: none; // Keine Umrandung mehr
   cursor: pointer;
+
+  // skala-Ausnahme: Masthead-em-System (SP-2), wächst mit der Nav-Schrift
   padding: 0.4em;
   transition: opacity $duration-base ease;
   position: relative;
@@ -550,7 +577,7 @@ body .navicon {
   height: 0.2em;
   background: $link-color-subtle; // Dezentes Cyan
   box-shadow: none;
-  transition: $duration-moderate;
+  transition: background-color $duration-moderate, transform $duration-moderate, top $duration-moderate, bottom $duration-moderate, width $duration-moderate;
 }
 
 body .navicon::before,
@@ -562,7 +589,7 @@ body .navicon::after {
   height: 100%;
   background: $link-color-subtle; // Dezentes Cyan
   box-shadow: none;
-  transition: $duration-moderate;
+  transition: background-color $duration-moderate, transform $duration-moderate, top $duration-moderate, bottom $duration-moderate, width $duration-moderate;
 }
 
 body .navicon::before {

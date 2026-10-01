@@ -13,6 +13,20 @@ $fp-magenta: $hover-color;
 $fp-slider-handle: $slider-connect-blue;
 $fp-heading: $console-heading;
 
+// skala-Ausnahme: [Block] lokale Ebenen (Z-2), Reihenfolge siehe Kopf von
+// components/_fractal-panel.scss. Im __canvas-frame (isolation: isolate):
+$fp-z-zoom-box: 3;
+$fp-z-hud: 4; // HUD und Gesten-Hinweis
+$fp-z-loading: 5; // Laden und Zoom-Warnung
+$fp-z-mobile-zoom: 6;
+
+// Panel-Chrome im Vollbild:
+$fp-z-chrome: 200; // Toolbar und Regler
+$fp-z-dropdown: 250; // Tom-Select-Liste
+$fp-z-explanation: 300; // Erklärbox
+$fp-z-explanation-toggle: 2; // Schalter über der Box, innerhalb der Erklärung
+// skala-Ausnahme-Ende
+
 // -----------------------------------------------------------------------------
 // Block
 // -----------------------------------------------------------------------------
@@ -25,12 +39,12 @@ $fp-heading: $console-heading;
   margin: 0 auto $fp-space-5;
   background: $console-panel-bg;
   border: 1px solid $console-panel-border;
-  border-radius: 10px;
+  border-radius: $radius-lg;
   padding: $fp-space-4;
-  box-shadow: 0 2px 6px $black-a25;
+  box-shadow: $shadow-1;
 
   @include down(md) {
-    padding: 10px;
+    padding: $fp-space-2-5;
     margin-left: 0;
     margin-right: 0;
     border-radius: 0;
