@@ -42,6 +42,8 @@ jobs:
         run: bash scripts/color-guardrail.sh
       - name: Security-Guardrail (Quellcode)
         run: bash scripts/security-guardrail.sh
+      - name: SCSS-Format (Einrückung, Endleerzeichen)
+        run: python3 scripts/scss-format.py
 
   build:
     runs-on: ubuntu-latest
@@ -64,6 +66,10 @@ jobs:
         run: bundle exec jekyll build --strict_front_matter
         env:
           JEKYLL_ENV: production
+      # quiet_deps verschluckt auch eigene Deprecations (alle Partials kommen
+      # über den Load-Path), daher ein Zusatzlauf ohne (STYLEGUIDE.md SCSS-3)
+      - name: Sass-Deprecation-Check (eigener Code)
+        run: bash scripts/sass-deprecation-check.sh
       - name: Gate – Styleguide nie im Deploy (STYLEGUIDE.md SG-1)
         run: test ! -e _site/styleguide && test ! -e _site/assets/css/styleguide.css
       - name: Review-Build mit Styleguide-Ansicht (wird nicht deployt)

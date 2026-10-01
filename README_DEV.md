@@ -16,7 +16,7 @@ Die Entwicklungsumgebung ist mit Visual Studio Code und Dev Containers konfiguri
 - Ruby 3.4.8 + Bundler (Jekyll, Remote-Theme Minimal Mistakes)
 - Node LTS (Stylelint via `npm run lint:css`, Playwright-Tests in `tests/`)
 - ESLint via `npm run lint:js` prüft `assets/js/` und `tests/` auf undefinierte Namen, toten Code und `innerHTML` mit Daten (Regeln und Ausnahmen in `eslint.config.mjs`, läuft auch im CI-Lint-Job).
-- Hilfsskripte: `scripts/fs-guardrail.sh` (Schriftgrößen-Tokens), `scripts/color-guardrail.sh` (Farb-Tokens, Ausnahmen per `// farb-Ausnahme:`), `scripts/cascade-check.py`
+- Hilfsskripte: `scripts/fs-guardrail.sh` (Schriftgrößen-Tokens), `scripts/color-guardrail.sh` (Farb-Tokens, Ausnahmen per `// farb-Ausnahme:`), `scripts/scss-format.py` (Einrückung und Endleerzeichen in `assets/_sass`, mit `--fix` korrigieren), `scripts/sass-deprecation-check.sh` (eigene Sass-Deprecations, braucht Jekyll, also im Ruby-Container), `scripts/cascade-check.py`
 
 ## Jekyll / Hero
 

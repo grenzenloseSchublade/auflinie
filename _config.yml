@@ -196,7 +196,8 @@ sass:
   # Warnungen aus allen Dateien, die über einen Load-Path geladen werden. Das ist
   # das Theme (minimal-mistakes nutzt intern noch globale Funktionen, Sass-if(),
   # `/`-Division, @import), aber AUCH jedes eigene Partial unter assets/_sass.
-  # Eigene Deprecations sieht man hier also nicht.
+  # Eigene Deprecations sieht man hier also nicht, dafür baut
+  # scripts/sass-deprecation-check.sh im CI-Build-Job einmal ohne quiet_deps.
   # Ein silence_deprecations für [import] braucht es nicht mehr: main.scss lädt
   # nur noch per @use, das einzige eigene @import steht in der Theme-Brücke
   # (assets/_sass/_theme-bridge.scss, STYLEGUIDE.md SCSS-4).
