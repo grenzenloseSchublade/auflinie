@@ -141,17 +141,27 @@
     }
   };
 
-  const getAngle = (el, pseudo) => {
+  // Aktuelle Position auf der Kreisbahn als Winkel. Die Transformation ist
+  // rotate(a) translateX(r) rotate(-a): die Drehanteile heben sich auf, die
+  // Matrix enthält nur noch die Verschiebung (r·cos a, cy + r·sin a). Der
+  // Winkel kommt daher aus der Verschiebung relativ zum Bahnmittelpunkt.
+  const getAngle = (el, pseudo, scope) => {
     if (!el) return null;
-    const transform = getComputedStyle(el, pseudo).transform;
+    const cs = getComputedStyle(el, pseudo);
+    const transform = cs.transform;
     if (!transform || transform === "none") return null;
-    const values =
-      transform.match(/matrix3d\(([^)]+)\)/) ||
-      transform.match(/matrix\(([^)]+)\)/);
-    if (!values) return null;
-    const parts = values[1].split(",").map((v) => parseFloat(v.trim()));
-    const [a, b] = parts;
-    return Math.atan2(b, a) * (180 / Math.PI);
+    const m3 = transform.match(/matrix3d\(([^)]+)\)/);
+    const m2 = transform.match(/matrix\(([^)]+)\)/);
+    if (!m3 && !m2) return null;
+    const parts = (m3 || m2)[1].split(",").map((v) => parseFloat(v.trim()));
+    const tx = m3 ? parts[12] : parts[4];
+    const ty = m3 ? parts[13] : parts[5];
+    const rawCenter = getVar(scope || el, "--neon-orbit-center-y");
+    const fontPx = parseFloat(cs.fontSize) || 16;
+    const center = rawCenter.endsWith("em") ? parseFloat(rawCenter) * fontPx : parseFloat(rawCenter) || 0;
+    const dy = ty - center;
+    if (Math.abs(tx) < 0.01 && Math.abs(dy) < 0.01) return null;
+    return Math.atan2(dy, tx) * (180 / Math.PI);
   };
 
   const toMs = (value) => {
@@ -165,8 +175,8 @@
   const scatterOrbitSequence = (scope, state, target) => {
     clearTimers(state);
 
-    let angleBefore = getAngle(target, "::before");
-    let angleAfter = getAngle(target, "::after");
+    let angleBefore = getAngle(target, "::before", scope);
+    let angleAfter = getAngle(target, "::after", scope);
 
     if (angleBefore === null || angleAfter === null) {
       const periodMs = toMs(getVar(scope, "--neon-orbit-period")) || 6400;
@@ -210,8 +220,8 @@
   const finishOrbitSequence = (scope, state, target) => {
     clearTimers(state);
 
-    let angleBefore = getAngle(target, "::before");
-    let angleAfter = getAngle(target, "::after");
+    let angleBefore = getAngle(target, "::before", scope);
+    let angleAfter = getAngle(target, "::after", scope);
 
     if (angleBefore === null || angleAfter === null) {
       const periodMs = toMs(getVar(scope, "--neon-orbit-period")) || 6400;
