@@ -37,7 +37,7 @@ Nebenbei entsteht dabei, was kein Training im Studio ersetzt: echte Erlebnisse �
 
 {% include section-epigraph.html text="Wer glaubt etwas zu sein, hat aufgehört etwas zu werden." author="Sokrates" %}
 
-Yoga und Calisthenics sind die regelmäßige Basis – zwei Praxen, die sich ergänzen: Calisthenics baut Kraft mit dem eigenen Körpergewicht auf, sauber und ohne Gerätepark; Yoga bringt Beweglichkeit, Balance und die Ruhe, die harte Sätze allein nicht liefern.
+Yoga und Calisthenics sind die regelmäßige Basis – zwei Praxen, die sich ergänzen: Calisthenics baut Kraft mit dem eigenen Körpergewicht auf, sauber und ohne Gerätepark. Yoga bringt Beweglichkeit, Balance und die Ruhe, die harte Sätze allein nicht liefern.
 
 Beides belohnt vor allem eines: Geduld. Fortschritt kommt in kleinen Schritten über Monate, nicht über Nacht. Genau das macht die Praxis wertvoll – sie ist ein ehrlicher Spiegel: Was heute nicht geht, zeigt, woran zu arbeiten sich lohnt.
 

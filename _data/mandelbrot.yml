@@ -133,11 +133,11 @@ sections:
     icon: "star"
     content: >-
       Die Mandelbrot-Menge besitzt fundamentale Bedeutung für verschiedene Disziplinen:
-        - In der Chaostheorie dient sie als ideales Modell für sensitiv abhängige Systeme;
-        - in der komplexen Dynamik illustriert sie die Bandbreite dynamischen Verhaltens;
-        - die fraktale Geometrie nutzt sie als Paradebeispiel: Viele Fraktale haben eine nicht-ganzzahlige Dimension, der Rand der Mandelbrot-Menge erreicht dagegen mit der Hausdorff-Dimension $2$ den größtmöglichen Wert in der Ebene (Shishikura 1998);
-        - die Informatik entwickelt hieraus besonders effiziente Algorithmen für Rekursion und Visualisierung;
-        - in Kunst und Kultur fungiert sie als Symbol mathematischer Schönheit und reizt Künstler weltweit zu neuen Interpretationen.
+        - In der Chaostheorie dient sie als ideales Modell für sensitiv abhängige Systeme.
+        - In der komplexen Dynamik illustriert sie die Bandbreite dynamischen Verhaltens.
+        - Die fraktale Geometrie nutzt sie als Paradebeispiel: Viele Fraktale haben eine nicht-ganzzahlige Dimension, der Rand der Mandelbrot-Menge erreicht dagegen mit der Hausdorff-Dimension $2$ den größtmöglichen Wert in der Ebene (Shishikura 1998).
+        - Die Informatik entwickelt hieraus besonders effiziente Algorithmen für Rekursion und Visualisierung.
+        - In Kunst und Kultur fungiert sie als Symbol mathematischer Schönheit und reizt Künstler weltweit zu neuen Interpretationen.
       
       Darüber hinaus fördert die Mandelbrot-Menge das Verständnis für fundamentale Aspekte der Mathematik, wie Instabilitäten, Phasenübergänge
       und die Emergenz komplexer Muster aus einfachen Gesetzmäßigkeiten.
@@ -148,8 +148,8 @@ sections:
           Die Mandelbrot-Menge exemplifiziert die sensitive Abhängigkeit von Anfangsbedingungen:
           Minimale Veränderungen der Parameter $c$ können zu signifikant unterschiedlichen dynamischen Entwicklungen führen.
           Zwei Punkte, die sich nur geringfügig unterscheiden, können über die Iteration in der Folge $\\{z_n\\}$ vollkommen verschiedene Verhaltensweisen entwickeln.
-          Dieses Verhalten ist zentral in der Chaostheorie und verdeutlicht die Nichtlinearität komplexer Systeme;
-          nahegelegene Punkte können divergente Laufbahnen zeigen.
+          Dieses Verhalten ist zentral in der Chaostheorie und verdeutlicht die Nichtlinearität komplexer Systeme.
+          Nahegelegene Punkte können divergente Laufbahnen zeigen.
           Das Studium solcher Phänomene liefert wichtige Erkenntnisse für die Stabilität von Algorithmen,
           die Simulation dynamischer Systeme und die Modellierung natürlicher Prozesse.
           Sensitivität gegenüber Anfangsdaten ist auch in anderen Kontexten wie z.B. in der Wettervorhersage und der Kryptographie von Bedeutung.
