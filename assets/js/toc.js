@@ -15,9 +15,9 @@
 (function () {
   'use strict';
 
-  var MOBILE_BREAKPOINT = 1024;
-  var controller = null;
-  var gumshoeInstance = null;
+  const MOBILE_BREAKPOINT = 1024;
+  let controller = null;
+  let gumshoeInstance = null;
 
   function teardown() {
     if (gumshoeInstance && gumshoeInstance.destroy) { gumshoeInstance.destroy(); }
@@ -29,13 +29,13 @@
   }
 
   function mount(root) {
-    var scope = root || document;
-    var stickyToc = scope.querySelector('#toc-sticky-mobile');
-    var stickyToggle = scope.querySelector('#toc-sticky-toggle');
-    var stickyDropdown = scope.querySelector('#toc-sticky-dropdown');
-    var stickyCurrent = scope.querySelector('#toc-sticky-current');
-    var stickyOverlay = scope.querySelector('#toc-sticky-overlay');
-    var originalToc = scope.querySelector('#toc-original');
+    const scope = root || document;
+    const stickyToc = scope.querySelector('#toc-sticky-mobile');
+    const stickyToggle = scope.querySelector('#toc-sticky-toggle');
+    const stickyDropdown = scope.querySelector('#toc-sticky-dropdown');
+    const stickyCurrent = scope.querySelector('#toc-sticky-current');
+    const stickyOverlay = scope.querySelector('#toc-sticky-overlay');
+    const originalToc = scope.querySelector('#toc-original');
 
     if (!stickyToc || !originalToc) { return; }
     if (stickyToc.hasAttribute('data-toc-init')) { return; }   // idempotent
@@ -43,21 +43,21 @@
 
     if (controller) { controller.abort(); }
     controller = new AbortController();
-    var signal = { signal: controller.signal };
+    const signal = { signal: controller.signal };
     // Mount-Generation für den Gumshoe-Retry: nach Teardown (abort) darf die
     // 50ms-Schleife keine verwaiste Instanz einer alten Generation erzeugen.
-    var mountSignal = controller.signal;
-    var gumshoeRetries = 0;
+    const mountSignal = controller.signal;
+    let gumshoeRetries = 0;
 
-    var isDropdownOpen = false;
-    var stickyVisible = false;
-    var cachedMastheadHeight = null;
+    let isDropdownOpen = false;
+    let stickyVisible = false;
+    let cachedMastheadHeight = null;
 
-    var isMobile = function () { return window.innerWidth < MOBILE_BREAKPOINT; };
+    const isMobile = function () { return window.innerWidth < MOBILE_BREAKPOINT; };
 
-    var getMastheadHeight = function () {
+    const getMastheadHeight = function () {
       if (cachedMastheadHeight === null) {
-        var val = getComputedStyle(document.documentElement).getPropertyValue('--masthead-height').trim();
+        const val = getComputedStyle(document.documentElement).getPropertyValue('--masthead-height').trim();
         cachedMastheadHeight = parseInt(val, 10) || 60;
       }
       return cachedMastheadHeight;
@@ -66,10 +66,10 @@
     // ── Visibility: Sticky-TOC nur mobil + gescrollt + Original-TOC aus dem Bild
     function updateStickyVisibility() {
       if (!isMobile()) { hideStickyToc(); return; }
-      var tocRect = originalToc.getBoundingClientRect();
-      var mastheadHeight = getMastheadHeight();
-      var tocBelowMasthead = tocRect.bottom < mastheadHeight;
-      var hasScrolled = window.scrollY > 50;
+      const tocRect = originalToc.getBoundingClientRect();
+      const mastheadHeight = getMastheadHeight();
+      const tocBelowMasthead = tocRect.bottom < mastheadHeight;
+      const hasScrolled = window.scrollY > 50;
       if (tocBelowMasthead && hasScrolled) { showStickyToc(); } else { hideStickyToc(); }
     }
 
@@ -96,8 +96,8 @@
 
     // ── Gumshoe (ScrollSpy) ────────────────────────────────────────────────
     function getGumshoeOffset() {
-      var mastheadH = getMastheadHeight();
-      var stickyH = (isMobile() && stickyVisible) ? stickyToc.offsetHeight : 0;
+      const mastheadH = getMastheadHeight();
+      const stickyH = (isMobile() && stickyVisible) ? stickyToc.offsetHeight : 0;
       return mastheadH + stickyH + 20;
     }
 
@@ -108,7 +108,7 @@
         window.setTimeout(initGumshoe, 50);
         return;
       }
-      var tocMenu = originalToc.querySelector('.toc__menu');
+      const tocMenu = originalToc.querySelector('.toc__menu');
       if (!tocMenu) { return; }
 
       gumshoeInstance = new Gumshoe('#toc-original .toc__menu a', {
@@ -122,14 +122,14 @@
       });
 
       document.addEventListener('gumshoeActivate', function (event) {
-        var link = event.detail.link;
+        const link = event.detail.link;
         if (link && isMobile()) { updateCurrentHeading(link.textContent.trim()); }
         if (link) { link.setAttribute('aria-current', 'true'); }
         syncDropdownActive(link);
       }, signal);
 
       document.addEventListener('gumshoeDeactivate', function (event) {
-        var link = event.detail.link;
+        const link = event.detail.link;
         if (link) { link.removeAttribute('aria-current'); }
       }, signal);
     }
@@ -140,12 +140,12 @@
 
     // ── Scroll-Handler (Visibility + Lesefortschritt) ──────────────────────
     function updateReadingProgress() {
-      var max = document.documentElement.scrollHeight - window.innerHeight;
-      var progress = max > 0 ? Math.min(1, window.scrollY / max) : 0;
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = max > 0 ? Math.min(1, window.scrollY / max) : 0;
       stickyToc.style.setProperty('--toc-progress', progress.toFixed(4));
     }
 
-    var scrollTicking = false;
+    let scrollTicking = false;
     window.addEventListener('scroll', function () {
       if (!scrollTicking) {
         window.requestAnimationFrame(function () {
@@ -201,12 +201,12 @@
     }
 
     // ── Aktuelle Überschrift im Sticky-Header (mit Slide-Animation) ─────────
-    var lastActiveText = '';
-    var isAnimating = false;
+    let lastActiveText = '';
+    let isAnimating = false;
 
     function updateCurrentHeading(newText) {
       if (!stickyCurrent || !newText) { return; }
-      var displayText = newText;
+      const displayText = newText;
       if (lastActiveText !== newText && !isAnimating) {
         lastActiveText = newText;
         isAnimating = true;
@@ -223,13 +223,13 @@
       }
     }
 
-    var dropdownLinks = stickyDropdown ? Array.prototype.slice.call(stickyDropdown.querySelectorAll('a')) : [];
+    const dropdownLinks = stickyDropdown ? Array.prototype.slice.call(stickyDropdown.querySelectorAll('a')) : [];
 
     function syncDropdownActive(activeLink) {
       if (!activeLink || dropdownLinks.length === 0) { return; }
-      var activeText = activeLink.textContent.trim();
+      const activeText = activeLink.textContent.trim();
       dropdownLinks.forEach(function (link) {
-        var li = link.parentElement;
+        const li = link.parentElement;
         if (link.textContent.trim() === activeText) { li.classList.add('active'); }
         else { li.classList.remove('active'); }
       });
@@ -238,18 +238,18 @@
     // Initiale Überschrift (nach Gumshoe-Init)
     window.requestAnimationFrame(function () {
       window.setTimeout(function () {
-        var activeLi = originalToc.querySelector('.toc__menu li.active');
+        const activeLi = originalToc.querySelector('.toc__menu li.active');
         if (activeLi) {
-          var link = activeLi.querySelector(':scope > a');
+          const link = activeLi.querySelector(':scope > a');
           if (link) { updateCurrentHeading(link.textContent.trim()); return; }
         }
-        var firstLink = originalToc.querySelector('.toc__menu a');
+        const firstLink = originalToc.querySelector('.toc__menu a');
         if (firstLink && !lastActiveText) { updateCurrentHeading(firstLink.textContent.trim()); }
       }, 150);
     });
 
     // ── Resize ──────────────────────────────────────────────────────────────
-    var resizeTimeout;
+    let resizeTimeout;
     window.addEventListener('resize', function () {
       window.clearTimeout(resizeTimeout);
       resizeTimeout = window.setTimeout(function () {
@@ -260,24 +260,24 @@
     }, signal);
 
     // ── Optionales Collapse des Original-TOC (nur wenn Toggle vorhanden) ─────
-    var tocToggle = originalToc.querySelector('.toc-toggle');
-    var tocContent = scope.querySelector('.toc__menu-wrapper');
+    const tocToggle = originalToc.querySelector('.toc-toggle');
+    const tocContent = scope.querySelector('.toc__menu-wrapper');
     if (tocToggle && tocContent) {
       // Projekt-Präfix auflinie: (geteilter github.io-Origin, STYLEGUIDE SEC-6)
-      var legacyKey = tocToggle.id ? tocToggle.id.replace(/-toggle$/, '') + '-state' : 'toc-state';
-      var storageKey = 'auflinie:' + legacyKey;
-      var prefersReducedMotion = window.matchMedia
+      const legacyKey = tocToggle.id ? tocToggle.id.replace(/-toggle$/, '') + '-state' : 'toc-state';
+      const storageKey = 'auflinie:' + legacyKey;
+      const prefersReducedMotion = window.matchMedia
         ? window.matchMedia('(prefers-reduced-motion: reduce)').matches
         : false;
-      var resizeRaf = null;
+      let resizeRaf = null;
 
-      var updateMaxHeight = function () {
+      const updateMaxHeight = function () {
         if (tocToggle.getAttribute('aria-expanded') === 'true') {
           tocContent.style.maxHeight = tocContent.scrollHeight + 'px';
         }
       };
 
-      var setExpanded = function (isExpanded, persist) {
+      const setExpanded = function (isExpanded, persist) {
         tocToggle.setAttribute('aria-expanded', isExpanded ? 'true' : 'false');
         tocContent.classList.toggle('is-collapsed', !isExpanded);
         if (isExpanded) { updateMaxHeight(); } else { tocContent.style.maxHeight = '0px'; }
@@ -287,14 +287,14 @@
         }
       };
 
-      var storedState;
+      let storedState;
       try {
         storedState = localStorage.getItem(storageKey);
         // Einmalige Übernahme des Zustands unter dem alten Schlüssel ohne
         // Präfix. Gelöscht wird nur ein Wert im eigenen Format, nie ein
         // fremder Eintrag eines anderen Projekts auf demselben Origin.
         if (storedState === null) {
-          var legacyState = localStorage.getItem(legacyKey);
+          const legacyState = localStorage.getItem(legacyKey);
           if (legacyState === 'expanded' || legacyState === 'collapsed') {
             storedState = legacyState;
             localStorage.setItem(storageKey, legacyState);
@@ -303,15 +303,15 @@
         }
       } catch (error) { storedState = null; }
 
-      var isFullWidthToc = originalToc.getBoundingClientRect().width > 520;
-      var defaultExpanded = !isFullWidthToc;
-      var startExpanded = storedState ? storedState !== 'collapsed' : defaultExpanded;
+      const isFullWidthToc = originalToc.getBoundingClientRect().width > 520;
+      const defaultExpanded = !isFullWidthToc;
+      const startExpanded = storedState ? storedState !== 'collapsed' : defaultExpanded;
       setExpanded(startExpanded, false);
 
       if (prefersReducedMotion) { tocContent.style.transition = 'none'; }
 
       tocToggle.addEventListener('click', function () {
-        var isExpanded = tocToggle.getAttribute('aria-expanded') === 'true';
+        const isExpanded = tocToggle.getAttribute('aria-expanded') === 'true';
         setExpanded(!isExpanded);
       }, signal);
 

@@ -13,10 +13,10 @@
 
   // Projekt-Präfix auflinie: (geteilter github.io-Origin, STYLEGUIDE SEC-6).
   // KEY muss identisch zu KEY in assets/js/head-early.js bleiben.
-  var KEY = 'auflinie:tv-switch:state';
-  var COOLDOWN_KEY = 'auflinie:tv-switch:last-crt';
-  var COOLDOWN_MS = 6000;
-  var BASE = document.documentElement.getAttribute('data-baseurl') || '';
+  const KEY = 'auflinie:tv-switch:state';
+  const COOLDOWN_KEY = 'auflinie:tv-switch:last-crt';
+  const COOLDOWN_MS = 6000;
+  const BASE = document.documentElement.getAttribute('data-baseurl') || '';
 
   function normalizePath(p) {
     return p.replace(/\/+$/, '') || '/';
@@ -45,7 +45,7 @@
     if (window.scrollY > 4) return false;
     if (!toPath || area(fromPath) === area(toPath)) return false;
     try {
-      var last = parseInt(sessionStorage.getItem(COOLDOWN_KEY) || '0', 10);
+      const last = parseInt(sessionStorage.getItem(COOLDOWN_KEY) || '0', 10);
       if (Date.now() - last < COOLDOWN_MS) return false;
       sessionStorage.setItem(COOLDOWN_KEY, String(Date.now()));
     } catch (err) { /* Storage weg: lieber Effekt zeigen als nie */ }
@@ -55,7 +55,7 @@
   window.addEventListener('pageswap', function (e) {
     if (!e.viewTransition) return;
 
-    var drawerOpen = !!document.querySelector('.greedy-nav .hidden-links:not(.hidden)');
+    const drawerOpen = !!document.querySelector('.greedy-nav .hidden-links:not(.hidden)');
 
     // Last-minute-Änderung VOR dem Old-Snapshot (pageswap feuert vor dem
     // letzten Frame): das Content-Overlay (body::before, 0.2s-Fade) sofort
@@ -63,7 +63,7 @@
     // zeigen; der Drawer selbst bleibt offen (eigener Snapshot nav-drawer).
     if (drawerOpen) document.documentElement.classList.add('vt-capture');
 
-    var to = '';
+    let to = '';
     try {
       if (e.activation && e.activation.entry && e.activation.entry.url) {
         to = normalizePath(new URL(e.activation.entry.url).pathname);

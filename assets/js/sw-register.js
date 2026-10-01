@@ -173,13 +173,13 @@
    */
   function wireSpaUpdateChecks() {
     if (!('serviceWorker' in navigator) || !config.enableServiceWorker) return;
-    var THROTTLE = 12 * 1000;   // nur gegen Doppel-Feuern; sonst so oft wie möglich
-    var last = 0;
+    const THROTTLE = 12 * 1000;   // nur gegen Doppel-Feuern; sonst so oft wie möglich
+    let last = 0;
 
     function checkForUpdate() {
       // Ohne Controller (Erstbesuch) gibt es kein "Update" -> nichts zu tun.
       if (!navigator.serviceWorker.controller) return;
-      var now = Date.now();
+      const now = Date.now();
       if (now - last < THROTTLE) return;
       last = now;
       navigator.serviceWorker.ready.then(function (reg) {

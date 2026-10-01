@@ -26,44 +26,44 @@
 (function () {
   'use strict';
 
-  var SOURCE = 'chips';
-  var controller = null;   // dokumentweite Listener dieses Mounts
+  const SOURCE = 'chips';
+  let controller = null;   // dokumentweite Listener dieses Mounts
 
   function mount(root) {
-    var scope = root || document;
-    var container = scope.querySelector('.cv-skills');
-    var dataTag = scope.querySelector('script[data-skill-graph-data]');
-    var contextLine = scope.querySelector('[data-role="skill-context"]');
+    const scope = root || document;
+    const container = scope.querySelector('.cv-skills');
+    const dataTag = scope.querySelector('script[data-skill-graph-data]');
+    const contextLine = scope.querySelector('[data-role="skill-context"]');
     if (!container || !dataTag || !contextLine) { return; }
     if (container.hasAttribute('data-skill-chips-init')) { return; }   // idempotent
     container.setAttribute('data-skill-chips-init', '');
 
-    var data = window.SkillGraphData.parse(dataTag, 'skill-chips');
+    const data = window.SkillGraphData.parse(dataTag, 'skill-chips');
     if (!data) { return; }
 
     if (controller) { controller.abort(); }
     controller = new AbortController();
-    var signal = { signal: controller.signal };
+    const signal = { signal: controller.signal };
 
     // Basis-Skills (generische Dev-Infra): bewusst ohne Projektkanten
-    var foundations = new Set(Array.isArray(data.foundations) ? data.foundations : []);
+    const foundations = new Set(Array.isArray(data.foundations) ? data.foundations : []);
 
-    var buttons = Array.prototype.slice.call(
+    const buttons = Array.prototype.slice.call(
       container.querySelectorAll('.cv-skill-chip__button[data-skill]')
     );
-    var domSkills = new Set(buttons.map(function (btn) {
+    const domSkills = new Set(buttons.map(function (btn) {
       return btn.getAttribute('data-skill');
     }));
 
     // Skill-ID → Projekte (gemeinsamer Aufbau, warnt bei fehlenden
     // Pflichtfeldern und bei Skills, die keinen DOM-Chip haben)
-    var skillProjects = window.SkillGraphData.buildSkillProjects(data.projects, {
+    const skillProjects = window.SkillGraphData.buildSkillProjects(data.projects, {
       prefix: 'skill-chips',
       knownIds: domSkills
     }).map;
 
-    var defaultText = contextLine.textContent;
-    var selected = null;
+    const defaultText = contextLine.textContent;
+    let selected = null;
 
     // Strukturierte Anzeige statt Komma-Fließtext: Skill als Mono-Label
     // (Formensprache der Gruppen-Titel), Projekte darunter mit ·-Trennern.
@@ -72,12 +72,12 @@
     function renderContext(label, projects, kind) {
       contextLine.textContent = '';
 
-      var labelEl = document.createElement('span');
+      const labelEl = document.createElement('span');
       labelEl.className = 'cv-skills__selection-skill';
       labelEl.textContent = label;
       contextLine.appendChild(labelEl);
 
-      var roleEl = document.createElement('span');
+      const roleEl = document.createElement('span');
       roleEl.className = 'cv-skills__selection-rolle';
       if (projects.length) {
         roleEl.textContent = ' – gemeinsam im Einsatz bei';
@@ -90,7 +90,7 @@
 
       if (projects.length) {
         contextLine.appendChild(document.createElement('br'));
-        var listEl = document.createElement('span');
+        const listEl = document.createElement('span');
         listEl.className = 'cv-skills__selection-projekte';
         listEl.textContent = projects.map(function (project) {
           return project.label;
@@ -100,20 +100,20 @@
     }
 
     function applySelection(skillId) {
-      var projects = skillProjects.get(skillId) || [];
-      var hasProjects = projects.length > 0;
-      var related = new Set();
+      const projects = skillProjects.get(skillId) || [];
+      const hasProjects = projects.length > 0;
+      const related = new Set();
       if (hasProjects) {
         projects.forEach(function (project) {
           project.skills.forEach(function (id) { related.add(id); });
         });
       }
 
-      var selectedLabel = '';
+      let selectedLabel = '';
       buttons.forEach(function (btn) {
-        var id = btn.getAttribute('data-skill');
-        var chip = btn.closest('.cv-skill-chip');
-        var isSelected = id === skillId;
+        const id = btn.getAttribute('data-skill');
+        const chip = btn.closest('.cv-skill-chip');
+        const isSelected = id === skillId;
         if (isSelected) { selectedLabel = btn.textContent.trim(); }
         btn.setAttribute('aria-pressed', String(isSelected));
         chip.classList.toggle('is-selected', isSelected);
@@ -130,7 +130,7 @@
     function clearSelection() {
       buttons.forEach(function (btn) {
         btn.setAttribute('aria-pressed', 'false');
-        var chip = btn.closest('.cv-skill-chip');
+        const chip = btn.closest('.cv-skill-chip');
         chip.classList.remove('is-selected', 'is-related');
       });
       container.classList.remove('has-selection');
@@ -146,9 +146,9 @@
 
     // Element-scoped (Container lebt in .initial-content) -> stirbt mit dem DOM.
     container.addEventListener('click', function (event) {
-      var btn = event.target.closest('.cv-skill-chip__button');
+      const btn = event.target.closest('.cv-skill-chip__button');
       if (!btn) { return; }
-      var skillId = btn.getAttribute('data-skill');
+      const skillId = btn.getAttribute('data-skill');
       if (selected === skillId) { clearSelection(); } else { applySelection(skillId); }
       dispatch();
     }, signal);

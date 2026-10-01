@@ -26,37 +26,37 @@
   window.__spaNavActive = true;
 
   // ── Konfiguration ──────────────────────────────────────────────────────────
-  var RUNTIME_CLASSES = ['menu-open', 'page-loading', 'page-loaded', 'vt-capture'];
-  var BASEURL = (document.documentElement.getAttribute('data-baseurl') || '').replace(/\/+$/, '');
+  const RUNTIME_CLASSES = ['menu-open', 'page-loading', 'page-loaded', 'vt-capture'];
+  const BASEURL = (document.documentElement.getAttribute('data-baseurl') || '').replace(/\/+$/, '');
   // Pro Dokument-Instanz einmalig — unterscheidet Same-Document-Geschwister-
   // Entries von fremden/bfcache-Entries.
-  var DOC_ID = (window.performance && performance.timeOrigin ? performance.timeOrigin : Date.now()) +
+  const DOC_ID = (window.performance && performance.timeOrigin ? performance.timeOrigin : Date.now()) +
                ':' + Math.random().toString(36).slice(2);
 
   // ── Zustand ────────────────────────────────────────────────────────────────
   // Eine Navigation ist eine stornierbare Transaktion mit einer Epoch (nav.token).
   // Die Epoch besitzt Fetch UND Commit. Wird sie ueberholt, bricht der Fetch hart
   // ab (currentAbort) und der Commit kommt nie — kein Zustand bleibt haengen.
-  var nav = { token: 0 };
-  var STALE = {};
-  var announcer = null;
-  var bfRestored = false;   // pageshow(persisted) -> naechsten popstate ueberspringen
-  var bfPending = null;     // verzoegerter popstate-Swap (durch pageshow abbrechbar)
-  var vtDepth = 0;          // laufende SPA-View-Transitions (Masthead-Snapshot-Gate)
+  const nav = { token: 0 };
+  const STALE = {};
+  let announcer = null;
+  let bfRestored = false;   // pageshow(persisted) -> naechsten popstate ueberspringen
+  let bfPending = null;     // verzoegerter popstate-Swap (durch pageshow abbrechbar)
+  let vtDepth = 0;          // laufende SPA-View-Transitions (Masthead-Snapshot-Gate)
   // Single-Flight-Commit: es committet IMMER nur genau EINE Navigation ins DOM.
   // Kommt waehrend eines laufenden Commits eine neue, wartet sie als 'pending'
   // (juengste gewinnt) und laeuft, sobald der aktuelle Commit fertig ist. Dadurch
   // koennen sich Swap-Ketten und View-Transitions NIE ueberlappen — Epoch-Race,
   // VT-Skip-Ruckeln und vt-capture/spa-vt-Cleanup-Races sind strukturell
   // ausgeschlossen statt per Guard geflickt.
-  var committing = false;
-  var pending = null;
-  var currentAbort = null;  // laufender Fetch; bei Ueberholung hart abgebrochen
-  var loadedScripts = new Set();
+  let committing = false;
+  let pending = null;
+  let currentAbort = null;  // laufender Fetch; bei Ueberholung hart abgebrochen
+  const loadedScripts = new Set();
   Array.prototype.forEach.call(document.querySelectorAll('script[src]'), function (s) {
     loadedScripts.add(s.src);
   });
-  var loadedStyles = new Set();
+  const loadedStyles = new Set();
   Array.prototype.forEach.call(document.querySelectorAll('link[rel="stylesheet"][href]'), function (l) {
     loadedStyles.add(l.href);
   });
@@ -77,7 +77,7 @@
   // setzt neue Inhalte auf spa:load. Unbekannte Cross-Origin-Abhaengigkeiten
   // faengt weiterhin needsFullLoad ab.
   function isWired(pathname) {
-    var p = stripBase(pathname);
+    const p = stripBase(pathname);
     if (p === null) return false;
     if (p === '/' || p === '/about/' || p === '/cv/' || p === '/mandelbrot/') return true;
     return /^\/posts\//.test(p);   // Übersicht, Pagination UND einzelne Beiträge
@@ -90,13 +90,13 @@
     if (!isWired(location.pathname)) return;
     if (e.defaultPrevented || e.button !== 0 ||
         e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
-    var a = e.target.closest && e.target.closest('a[href]');
+    const a = e.target.closest && e.target.closest('a[href]');
     if (!a) return;
     if (a.target && a.target !== '_self') return;
     if (a.hasAttribute('download') || a.hasAttribute('data-no-swap')) return;
     if (a.getAttribute('rel') === 'external') return;
 
-    var url;
+    let url;
     try { url = new URL(a.href, location.href); } catch (_) { return; }
     if (url.origin !== location.origin) return;
     if (url.protocol !== 'http:' && url.protocol !== 'https:') return;
@@ -123,14 +123,14 @@
   // (SW-/HTTP-)Cache, sodass der spaetere Swap-fetch ein Cache-Treffer ist —
   // macht den Wechsel auch in Firefox quasi-instant (dort kein speculationrules).
   // Nutzt bewusst NICHT nav.token (kein Eingriff in die Swap-Staleness-Logik).
-  var prefetched = new Set();
+  const prefetched = new Set();
   function prefetchCandidate(target) {
-    var a = target && target.closest && target.closest('a[href]');
+    const a = target && target.closest && target.closest('a[href]');
     if (!a) return null;
     if (a.target && a.target !== '_self') return null;
     if (a.hasAttribute('download') || a.hasAttribute('data-no-swap')) return null;
     if (a.getAttribute('rel') === 'external') return null;
-    var url;
+    let url;
     try { url = new URL(a.href, location.href); } catch (_) { return null; }
     if (url.origin !== location.origin) return null;
     if (url.protocol !== 'http:' && url.protocol !== 'https:') return null;
@@ -140,9 +140,9 @@
   }
   function warm(target) {
     if (document.visibilityState === 'hidden') return;
-    var href = prefetchCandidate(target);
+    const href = prefetchCandidate(target);
     if (!href || prefetched.has(href)) return;
-    var c = navigator.connection;                          // fehlt in Firefox -> uebersprungen
+    const c = navigator.connection;                          // fehlt in Firefox -> uebersprungen
     if (c && (c.saveData || /(^|-)2g$/.test(c.effectiveType || ''))) return;  // Datensparen respektieren
     prefetched.add(href);
     fetch(href, { headers: { 'X-SPA-Nav': '1' }, credentials: 'same-origin' })
@@ -156,7 +156,7 @@
   // renderedUrl = Pfad+Search des Inhalts, der TATSÄCHLICH im DOM steht.
   // Unterscheidet im popstate Same-Page-Traversal (nur Hash/Scroll) von echtem
   // Seitenwechsel — native Anker-Sprünge ändern renderedUrl nicht.
-  var renderedUrl = location.pathname + location.search;
+  let renderedUrl = location.pathname + location.search;
   if (isWired(location.pathname)) {
     if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
     try {
@@ -171,13 +171,13 @@
     // Reload, Back UND Forward aus history.state.scrollY bedient werden.
     // Trailing-Throttle 500ms: bleibt weit unter Safaris replaceState-Limit
     // (100 Aufrufe / 30 s) und erfasst die Endposition nach dem letzten Event.
-    var scrollSaveQueued = false;
+    let scrollSaveQueued = false;
     window.addEventListener('scroll', function () {
       if (scrollSaveQueued) return;
       scrollSaveQueued = true;
       setTimeout(function () {
         scrollSaveQueued = false;
-        var s = history.state;
+        const s = history.state;
         if (!s || !s.spa || s.docId !== DOC_ID || committing) return;
         try { history.replaceState(assign({}, s, { scrollY: window.scrollY }), ''); } catch (_) {}
       }, 500);
@@ -207,11 +207,11 @@
 
   window.addEventListener('popstate', function (e) {
     if (bfRestored) { bfRestored = false; return; }                  // bfcache-Restore
-    var st = e.state;
+    const st = e.state;
     if (!st || !st.spa) return;                                      // fremder/MPA-Entry -> Browser
     if (st.docId !== DOC_ID) return;                                 // anderes Dokument -> Browser laedt korrekt
     if (!isWired(location.pathname)) return;                         // Sicherheitsnetz
-    var y = st.scrollY || 0;
+    const y = st.scrollY || 0;
     // Same-Page-Traversal (z.B. Back nach TOC-Anker-Klick): der Inhalt steht
     // bereits im DOM — nur Scroll/Hash anwenden, KEIN Refetch + Content-Swap.
     if (location.pathname + location.search === renderedUrl) {
@@ -228,10 +228,10 @@
   // Transaktion: Epoch ziehen, ueberholten Fetch hart abbrechen, Ziel holen,
   // dann committen (oder hinter einen laufenden Commit stellen).
   function navigate(href, push, restoreY) {
-    var my = ++nav.token;
+    const my = ++nav.token;
     // Laufenden, jetzt ueberholten Fetch WIRKLICH abbrechen (nicht nur verwerfen).
     if (currentAbort) { try { currentAbort.abort(); } catch (_) {} }
-    var ac = ('AbortController' in window) ? new AbortController() : null;
+    const ac = ('AbortController' in window) ? new AbortController() : null;
     currentAbort = ac;
     fetchPage(href, my, ac && ac.signal).then(function (doc) {
       if (my !== nav.token) return;                                  // waehrend Fetch ueberholt/abgebrochen
@@ -255,7 +255,7 @@
     committing = true;
     // fromPath JETZT (vor pushState) = die Seite, die wir tatsaechlich verlassen —
     // korrekt fuer die CRT-Dosierung, auch wenn dieser Commit gewartet hat.
-    var fromPath = location.pathname;
+    const fromPath = location.pathname;
     if (job.push) {
       // Ausgehenden Scroll sichern, DANN den neuen Eintrag pushen — atomar, damit
       // Verlauf und Inhalt zusammenpassen (auch nach Wartezeit hinter Single-Flight).
@@ -268,7 +268,7 @@
       .catch(function () {})                                         // Swap-Kette resolvet immer; Guertel & Hosentraeger
       .then(function () {
         committing = false;
-        var p = pending; pending = null;
+        const p = pending; pending = null;
         if (p) runCommit(p);                                        // juengste wartende jetzt fahren
       });
   }
@@ -277,17 +277,17 @@
   // Epoch (my) wird von navigate gezogen; ein abgebrochener Fetch (signal) wird
   // von der Epoch-Pruefung im Caller ohnehin verworfen -> kein Fallback-Reload.
   function fetchPage(href, my, signal) {
-    var opts = { headers: { 'X-SPA-Nav': '1' }, credentials: 'same-origin', redirect: 'follow' };
+    const opts = { headers: { 'X-SPA-Nav': '1' }, credentials: 'same-origin', redirect: 'follow' };
     if (signal) opts.signal = signal;
     return fetch(href, opts).then(function (res) {
       if (my !== nav.token) return STALE;
       if (res.redirected && new URL(res.url).origin !== location.origin) { location.href = res.url; return null; }
       if (!res.ok) return null;
-      var ct = res.headers.get('content-type') || '';
+      const ct = res.headers.get('content-type') || '';
       if (ct.indexOf('text/html') === -1) return null;
       return res.text().then(function (html) {
         if (my !== nav.token) return STALE;
-        var doc = new DOMParser().parseFromString(html, 'text/html'); // inert
+        const doc = new DOMParser().parseFromString(html, 'text/html'); // inert
         if (!doc.querySelector('.initial-content')) return null;
         return doc;
       });
@@ -307,9 +307,10 @@
     // idempotent auf spa:load (spaModule), die same-origin Vendor-Deps laedt
     // der Script-/Stylesheet-Reconcile nach — das fruehere
     // [data-fractal-panel]-Gate entfaellt.
-    var els = doc.querySelectorAll('script[src], link[rel="stylesheet"][href]');
-    for (var i = 0; i < els.length; i++) {
-      var el = els[i], a = el.tagName === 'SCRIPT' ? 'src' : 'href', u;
+    const els = doc.querySelectorAll('script[src], link[rel="stylesheet"][href]');
+    for (let i = 0; i < els.length; i++) {
+      const el = els[i], a = el.tagName === 'SCRIPT' ? 'src' : 'href';
+      let u;
       try { u = new URL(el.getAttribute(a), location.href); } catch (_) { continue; }
       if (u.origin !== location.origin) { return true; }
     }
@@ -329,8 +330,8 @@
   // finishSwap/Cleanup ueberholen koennte. Die Balance spa:load<->spa:unload ist
   // damit strukturell garantiert, nicht per Race-Guard erkauft.
   function swap(doc, href, push, fromPath) {
-    var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    var drawerOpen = !!(window.__tvSwitch &&
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const drawerOpen = !!(window.__tvSwitch &&
       typeof window.__tvSwitch.drawerOpen === 'function' && window.__tvSwitch.drawerOpen());
 
     // Drawer INSTANT (transition:none) schließen. Im VT-Pfad INNERHALB mutate,
@@ -341,7 +342,7 @@
       }
     }
 
-    var mutate = function () {
+    const mutate = function () {
       closeDrawerInstant();       // vor updateBodyClass -> menu-open nicht als Runtime-Klasse bewahrt
       replaceContent(doc);        // spa:unload + innerHTML
       if (push) focusMain();      // Fokus SYNCHRON, nur vorwaerts, VOR reconcile
@@ -351,17 +352,17 @@
       updateActiveNav(href);
     };
 
-    var done;
+    let done;
     if (document.startViewTransition && !reduce) {
-      var toPath = '';
+      let toPath = '';
       try { toPath = new URL(href, location.href).pathname; } catch (_) {}
       // Dosierung wie Full-Reload (tv-switch.crtAllowed: mobil/Scroll-Top/
       // Bereichswechsel/Cooldown; Seiteneffekt Cooldown -> genau EIN Aufruf).
-      var wantsCrt = !!(push && window.__tvSwitch &&
+      const wantsCrt = !!(push && window.__tvSwitch &&
         typeof window.__tvSwitch.crtAllowed === 'function' &&
         window.__tvSwitch.crtAllowed(fromPath, toPath));
 
-      var types = [];
+      const types = [];
       if (wantsCrt) types.push('crt');
       if (drawerOpen) types.push('drawer');
       // vt-capture: Content-Overlay (body::before) aus dem Snapshot nehmen —
@@ -374,10 +375,10 @@
       // MIT CRT: KEIN spa-vt -> Masthead behält seinen Snapshot, der minimale
       // Versatz wird vom Effekt überdeckt (identisch zum Full-Reload).
       // Entscheidung VOR startViewTransition (spa-vt wirkt auf den Snapshot).
-      var usedSpaVt = !wantsCrt;
+      const usedSpaVt = !wantsCrt;
       if (usedSpaVt) { document.documentElement.classList.add('spa-vt'); vtDepth++; }
 
-      var vt;
+      let vt;
       try {
         vt = types.length
           ? document.startViewTransition({ update: mutate, types: types })
@@ -385,7 +386,7 @@
       } catch (_) {
         vt = document.startViewTransition(mutate);   // object-Form nicht unterstützt -> ohne Typen
       }
-      var cleanup = function () {
+      const cleanup = function () {
         document.documentElement.classList.remove('vt-capture');
         if (usedSpaVt && --vtDepth <= 0) { vtDepth = 0; document.documentElement.classList.remove('spa-vt'); }
       };
@@ -410,8 +411,8 @@
   }
 
   function replaceContent(doc) {
-    var current = document.querySelector('.initial-content');
-    var next = doc.querySelector('.initial-content');
+    const current = document.querySelector('.initial-content');
+    const next = doc.querySelector('.initial-content');
     if (!current || !next) return;
     dispatch('spa:unload', { root: current });            // Teardown, solange altes DOM lebt
     // Same-Origin-HTML der eigenen Site (fetch nur same-origin, inert per
@@ -431,37 +432,37 @@
     copyAttr(doc, 'meta[property="og:url"]', 'content');
     copyAttr(doc, 'meta[name="twitter:title"]', 'content');
     copyAttr(doc, 'meta[name="twitter:description"]', 'content');
-    var old = document.head.querySelectorAll('script[type="application/ld+json"]');
-    for (var i = 0; i < old.length; i++) old[i].parentNode.removeChild(old[i]);
-    var neu = doc.head.querySelectorAll('script[type="application/ld+json"]');
-    for (var j = 0; j < neu.length; j++) {
-      var s = document.createElement('script');
+    const old = document.head.querySelectorAll('script[type="application/ld+json"]');
+    for (let i = 0; i < old.length; i++) old[i].parentNode.removeChild(old[i]);
+    const neu = doc.head.querySelectorAll('script[type="application/ld+json"]');
+    for (let j = 0; j < neu.length; j++) {
+      const s = document.createElement('script');
       s.type = 'application/ld+json';
       s.textContent = neu[j].textContent;
       document.head.appendChild(s);
     }
   }
   function copyAttr(doc, sel, attr) {
-    var n = doc.head.querySelector(sel), o = document.head.querySelector(sel);
+    const n = doc.head.querySelector(sel), o = document.head.querySelector(sel);
     if (n && o) o.setAttribute(attr, n.getAttribute(attr));
   }
 
   function updateBodyClass(doc) {
     if (!doc.body) return;
-    var keep = RUNTIME_CLASSES.filter(function (c) { return document.body.classList.contains(c); });
+    const keep = RUNTIME_CLASSES.filter(function (c) { return document.body.classList.contains(c); });
     document.body.className = doc.body.className;
     keep.forEach(function (c) { document.body.classList.add(c); });
   }
 
   // ── Aktiv-Marker (Jekyll-Semantik: exakt ODER Praefix), beide ul-Listen ─────
   function updateActiveNav(href) {
-    var target = stripBase(new URL(href, location.href).pathname);
-    var links = document.querySelectorAll('.greedy-nav .visible-links a, .greedy-nav .hidden-links a');
-    for (var i = 0; i < links.length; i++) {
-      var a = links[i];
+    const target = stripBase(new URL(href, location.href).pathname);
+    const links = document.querySelectorAll('.greedy-nav .visible-links a, .greedy-nav .hidden-links a');
+    for (let i = 0; i < links.length; i++) {
+      const a = links[i];
       a.classList.remove('current');
       a.removeAttribute('aria-current');
-      var lp = stripBase(new URL(a.href, location.href).pathname);
+      const lp = stripBase(new URL(a.href, location.href).pathname);
       if (target === null || lp === null) continue;   // Ziel außerhalb der Site
       if (target === lp || (lp !== '/' && target.indexOf(lp) === 0)) {
         a.classList.add('current');
@@ -476,9 +477,9 @@
   // nachladen (nie entfernen: einmal geladene Styles schaden auf anderen
   // Seiten nicht, ihre Selektoren matchen dort schlicht nichts).
   function reconcilePageStyles(doc) {
-    var hrefs = [], nodes = doc.querySelectorAll('link[rel="stylesheet"][href]');
-    for (var i = 0; i < nodes.length; i++) {
-      var href;
+    const hrefs = [], nodes = doc.querySelectorAll('link[rel="stylesheet"][href]');
+    for (let i = 0; i < nodes.length; i++) {
+      let href;
       try { href = new URL(nodes[i].getAttribute('href'), location.href); } catch (_) { continue; }
       if (href.origin !== location.origin) continue;      // CDN-Styles NICHT hier laden
       if (loadedStyles.has(href.href)) continue;
@@ -490,7 +491,7 @@
   function injectStyle(href) {
     loadedStyles.add(href);
     return new Promise(function (resolve) {
-      var l = document.createElement('link');
+      const l = document.createElement('link');
       l.rel = 'stylesheet'; l.href = href;
       l.onload = resolve; l.onerror = resolve;
       document.head.appendChild(l);
@@ -499,9 +500,9 @@
 
   // ── §2.4 Script-Reconcile: nur fehlende same-origin-Skripte injizieren ──────
   function reconcilePageScripts(doc) {
-    var srcs = [], nodes = doc.querySelectorAll('script[src]');
-    for (var i = 0; i < nodes.length; i++) {
-      var src;
+    const srcs = [], nodes = doc.querySelectorAll('script[src]');
+    for (let i = 0; i < nodes.length; i++) {
+      let src;
       try { src = new URL(nodes[i].getAttribute('src'), location.href); } catch (_) { continue; }
       if (src.origin !== location.origin) continue;       // jsdelivr NICHT hier laden
       if (loadedScripts.has(src.href)) continue;
@@ -513,7 +514,7 @@
   function injectScript(src) {
     loadedScripts.add(src);
     return new Promise(function (resolve) {
-      var s = document.createElement('script');
+      const s = document.createElement('script');
       s.src = src; s.async = false;                       // 'self' + Reihenfolge
       s.onload = resolve; s.onerror = resolve;
       document.body.appendChild(s);
@@ -523,15 +524,15 @@
   // ── Abschluss: Lifecycle + Ansage (Fokus lief schon synchron in mutate) ─────
   function finishSwap(doc, href) {
     renderedUrl = location.pathname + location.search;
-    var root = document.querySelector('.initial-content');
+    const root = document.querySelector('.initial-content');
     dispatch('spa:load', { root: root, url: href, initial: false });
     announce(document.title);
   }
 
   // ── §2 A11y: Fokus auf #main[role=main], NICHT auf das dekorative Hero-h1 ────
   function focusMain() {
-    var root = document.querySelector('.initial-content');
-    var main = (root && (root.querySelector('#main') || root.querySelector('[role="main"]'))) || root;
+    const root = document.querySelector('.initial-content');
+    const main = (root && (root.querySelector('#main') || root.querySelector('[role="main"]'))) || root;
     focusTarget(main);
   }
   function focusTarget(el) {
@@ -548,14 +549,14 @@
 
   // ── §1 Scroll anwenden (immer OHNE smooth — reduced-motion-Primaernutzer) ────
   function applyScroll(href, y) {
-    var hash = '';
+    let hash = '';
     try { hash = new URL(href, location.href).hash.slice(1); } catch (_) {}
     requestAnimationFrame(function () {
       requestAnimationFrame(function () {
         if (hash) {
-          var id = hash;
+          let id = hash;
           try { id = decodeURIComponent(hash); } catch (_) { /* kaputtes Prozent-Encoding: roh verwenden */ }
-          var el = document.getElementById(id);
+          const el = document.getElementById(id);
           if (el) { el.scrollIntoView({ behavior: 'auto' }); focusTarget(el); return; }
         }
         window.scrollTo({ top: y || 0, left: 0, behavior: 'auto' });
@@ -566,9 +567,9 @@
   // ── Utilities ────────────────────────────────────────────────────────────────
   function dispatch(name, detail) { document.dispatchEvent(new CustomEvent(name, { detail: detail })); }
   function assign(t) {
-    for (var i = 1; i < arguments.length; i++) {
-      var s = arguments[i]; if (!s) continue;
-      for (var k in s) if (Object.prototype.hasOwnProperty.call(s, k)) t[k] = s[k];
+    for (let i = 1; i < arguments.length; i++) {
+      const s = arguments[i]; if (!s) continue;
+      for (const k in s) if (Object.prototype.hasOwnProperty.call(s, k)) t[k] = s[k];
     }
     return t;
   }
@@ -579,7 +580,7 @@
     // Reload/Traversal-Einstieg mitten im Artikel: scrollRestoration='manual'
     // heißt, der Browser stellt NICHTS wieder her — aus dem (in §1 bewahrten)
     // history.state.scrollY nachziehen. Hash-URLs macht der Browser selbst.
-    var st = history.state;
+    const st = history.state;
     if (st && st.spa && st.docId === DOC_ID && st.scrollY && !location.hash) {
       applyScroll(location.href, st.scrollY);
     }

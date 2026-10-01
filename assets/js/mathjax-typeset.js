@@ -15,7 +15,7 @@
 (function () {
   'use strict';
 
-  var MAX_RETRIES = 5;
+  const MAX_RETRIES = 5;
 
   function typesetRoot(root, attempts) {
     if (!window.MathJax || typeof MathJax.typeset !== 'function') { return; }
@@ -31,9 +31,9 @@
   }
 
   document.addEventListener('spa:load', function (e) {
-    var detail = e.detail || {};
+    const detail = e.detail || {};
     if (detail.initial) { return; }              // Initial-Load typesettet MathJax selbst
-    var root = detail.root;
+    const root = detail.root;
     if (!root || !window.MathJax) { return; }
     if (typeof MathJax.typeset === 'function') {
       typesetRoot(root, MAX_RETRIES);
@@ -41,7 +41,7 @@
     }
     // Erster Swap auf eine Formel-Seite: tex-chtml.js wurde soeben injiziert,
     // der Startup läuft noch — kurz pollen, bis die API bereitsteht.
-    var tries = 40;                              // ~2s
+    let tries = 40;                              // ~2s
     (function waitForApi() {
       if (typeof MathJax.typeset === 'function') { typesetRoot(root, MAX_RETRIES); return; }
       if (tries-- > 0) { setTimeout(waitForApi, 50); }
@@ -49,7 +49,7 @@
   });
 
   document.addEventListener('spa:unload', function (e) {
-    var root = e.detail && e.detail.root;
+    const root = e.detail && e.detail.root;
     if (!window.MathJax || typeof MathJax.typesetClear !== 'function') { return; }
     try {
       // Referenzen auf die gleich verworfenen DOM-Knoten freigeben

@@ -21,14 +21,14 @@
 (function () {
   'use strict';
 
-  var SOURCE = 'graph';
-  var CYAN = '5, 217, 232';
-  var MAGENTA = '255, 0, 255'; // nur für die aktive Auswahl (Interaktionszustand)
-  var NODE_RADIUS = 6;
-  var HIT_RADIUS = 16;
+  const SOURCE = 'graph';
+  const CYAN = '5, 217, 232';
+  const MAGENTA = '255, 0, 255'; // nur für die aktive Auswahl (Interaktionszustand)
+  const NODE_RADIUS = 6;
+  const HIT_RADIUS = 16;
   // Eine Quelle für render UND hitTest — sonst misst measureText die
   // Label-Breite mit der falschen Schrift (Canvas-Default 10px sans-serif).
-  var LABEL_FONT = '11px "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace';
+  const LABEL_FONT = '11px "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace';
 
   function SkillGraph(root) {
     this.root = root;
@@ -55,7 +55,7 @@
     this.pointers = {};
     this.reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
-    var signal = { signal: this.abort.signal };
+    const signal = { signal: this.abort.signal };
     this.toggle.addEventListener('click', this.onToggle.bind(this), signal);
     document.addEventListener('auflinie:skill-select', this.onExternalSelect.bind(this), signal);
     document.addEventListener('visibilitychange', this.onVisibility.bind(this), signal);
@@ -63,7 +63,7 @@
   }
 
   SkillGraph.prototype.onToggle = function () {
-    var open = this.panel.hidden;
+    const open = this.panel.hidden;
     this.panel.hidden = !open;
     this.toggle.setAttribute('aria-expanded', String(open));
     this.toggle.textContent = open ? 'Graph ausblenden' : 'Graph anzeigen';
@@ -74,7 +74,7 @@
       // später gestreckt -> Klick-Koordinaten passen nicht (Hit-Test daneben,
       // v.a. beim Wieder-Öffnen). syncLayout koppelt Canvas+Pan an die aktuelle
       // Größe = einzige Wahrheit fürs Koordinatensystem.
-      var self = this;
+      const self = this;
       requestAnimationFrame(function () {
         if (self.panel.hidden) { return; }
         if (!self.initialized) { self.build(); }
@@ -90,10 +90,10 @@
   // Render und Hit-Test nutzen dieselben node.x/panX -> bleiben deckungsgleich,
   // egal ob Erst-Öffnen, Wieder-Öffnen oder Viewport-Änderung.
   SkillGraph.prototype.syncLayout = function () {
-    var cw = this.wrap.clientWidth, ch = this.wrap.clientHeight;
+    const cw = this.wrap.clientWidth, ch = this.wrap.clientHeight;
     if (!cw || !ch) { return; }
     if (this.sim && (cw !== this.canvasW || ch !== this.canvasH)) {
-      var vw = cw * this.spread, vh = ch * this.spread;
+      const vw = cw * this.spread, vh = ch * this.spread;
       this.sim.resize(vw, vh);          // skaliert Knoten-Positionen proportional
       this.panX = (cw - vw) / 2;
       this.panY = (ch - vh) / 2;
@@ -105,17 +105,17 @@
   };
 
   SkillGraph.prototype.build = function () {
-    var dataTag = document.querySelector('script[data-skill-graph-data]');
-    var data = dataTag && window.SkillGraphData.parse(dataTag, 'skill-graph');
+    const dataTag = document.querySelector('script[data-skill-graph-data]');
+    const data = dataTag && window.SkillGraphData.parse(dataTag, 'skill-graph');
     if (!data) { return; }
 
-    var self = this;
+    const self = this;
 
     // Nur verbundene Skills werden Knoten: erst die IDs sammeln, die in
     // mindestens einem Projekt vorkommen. Basis-Skills (foundations) und
     // projektlose Breite-Chips bleiben bewusst außen vor — sonst schweben
     // sie kantenlos herum und überfüllen die Fläche.
-    var connected = new Set();
+    const connected = new Set();
     data.projects.forEach(function (project) {
       // Derselbe Pflichtfeld-Filter wie in SkillGraphData.buildSkillProjects:
       // Projekte ohne id/label fallen dort heraus — ihre Skills dürfen deshalb
@@ -126,11 +126,11 @@
     });
 
     // Knoten aus den DOM-Chips (deterministische Reihenfolge), gefiltert auf verbundene
-    var buttons = document.querySelectorAll('.cv-skill-chip__button[data-skill]');
-    var indexById = new Map();
+    const buttons = document.querySelectorAll('.cv-skill-chip__button[data-skill]');
+    const indexById = new Map();
     this.nodes = [];
     Array.prototype.forEach.call(buttons, function (btn) {
-      var id = btn.getAttribute('data-skill');
+      const id = btn.getAttribute('data-skill');
       if (!connected.has(id) || indexById.has(id)) { return; }
       indexById.set(id, self.nodes.length);
       self.nodes.push({ id: id, label: btn.textContent.trim() });
@@ -139,32 +139,32 @@
     // Kanten: Skill-Paare mit gemeinsamen Projekten (Gewicht = Anzahl);
     // Skill→Projekte-Map über den gemeinsamen Helfer (warnt bei fehlenden
     // Pflichtfeldern und unbekannten Skill-IDs)
-    var built = window.SkillGraphData.buildSkillProjects(data.projects, {
+    const built = window.SkillGraphData.buildSkillProjects(data.projects, {
       prefix: 'skill-graph',
       knownIds: new Set(indexById.keys())
     });
     this.skillProjects = built.map;
-    var edgeMap = new Map();
+    const edgeMap = new Map();
     built.projects.forEach(function (entry) {
-      var ids = entry.ids;
-      for (var i = 0; i < ids.length; i++) {
-        for (var j = i + 1; j < ids.length; j++) {
-          var a = indexById.get(ids[i]);
-          var b = indexById.get(ids[j]);
-          var key = Math.min(a, b) + ':' + Math.max(a, b);
+      const ids = entry.ids;
+      for (let i = 0; i < ids.length; i++) {
+        for (let j = i + 1; j < ids.length; j++) {
+          const a = indexById.get(ids[i]);
+          const b = indexById.get(ids[j]);
+          const key = Math.min(a, b) + ':' + Math.max(a, b);
           edgeMap.set(key, (edgeMap.get(key) || 0) + 1);
         }
       }
     });
     this.edges = Array.from(edgeMap, function (entry) {
-      var parts = entry[0].split(':');
+      const parts = entry[0].split(':');
       return { source: +parts[0], target: +parts[1], weight: entry[1] };
     });
 
     this.neighbors = new Map();
     this.edges.forEach(function (edge) {
-      var s = self.nodes[edge.source].id;
-      var t = self.nodes[edge.target].id;
+      const s = self.nodes[edge.source].id;
+      const t = self.nodes[edge.target].id;
       if (!self.neighbors.has(s)) { self.neighbors.set(s, new Set()); }
       if (!self.neighbors.has(t)) { self.neighbors.set(t, new Set()); }
       self.neighbors.get(s).add(t);
@@ -174,13 +174,13 @@
     // Größerer virtueller Layout-Raum: dieselbe Physik, aber mehr Platz, damit
     // sich die Knoten verteilen statt am Rand zu stauen. Der Canvas ist ein
     // verschiebbares Fenster (Pan) in diese Fläche.
-    var w = this.wrap.clientWidth || 600;
-    var h = this.wrap.clientHeight || 380;
+    const w = this.wrap.clientWidth || 600;
+    const h = this.wrap.clientHeight || 380;
     this.canvasW = w;
     this.canvasH = h;
     this.spread = Math.max(1.4, Math.min(2.5, this.nodes.length / 6));
-    var vw = w * this.spread;
-    var vh = h * this.spread;
+    const vw = w * this.spread;
+    const vh = h * this.spread;
     this.seedLayout(vw, vh, false);
     this.sim = new window.SkillGraphSim(this.nodes, this.edges, vw, vh);
     // Pan so, dass die virtuelle Mitte im Canvas zentriert startet.
@@ -200,7 +200,7 @@
     });
     this.observer.observe(this.wrap);
 
-    var canvasSignal = { signal: this.abort.signal };
+    const canvasSignal = { signal: this.abort.signal };
     this.canvas.addEventListener('pointerdown', this.onPointerDown.bind(this), canvasSignal);
     this.canvas.addEventListener('pointermove', this.onPointerMove.bind(this), canvasSignal);
     this.canvas.addEventListener('pointerup', this.onPointerUp.bind(this), canvasSignal);
@@ -228,9 +228,9 @@
   };
 
   SkillGraph.prototype.sizeCanvas = function () {
-    var dpr = Math.min(window.devicePixelRatio || 1, 2);
-    var w = this.wrap.clientWidth;
-    var h = this.wrap.clientHeight;
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const w = this.wrap.clientWidth;
+    const h = this.wrap.clientHeight;
     if (!w || !h) { return; }
     this.canvas.width = Math.round(w * dpr);
     this.canvas.height = Math.round(h * dpr);
@@ -254,8 +254,8 @@
   // Deterministische Kreis-Startlage im virtuellen Layout-Raum (w×h).
   // clearPins löst zusätzlich Drag-Fixierungen und nullt Geschwindigkeiten.
   SkillGraph.prototype.seedLayout = function (w, h, clearPins) {
-    var count = this.nodes.length || 1;
-    var radius = Math.min(w, h) * 0.36;
+    const count = this.nodes.length || 1;
+    const radius = Math.min(w, h) * 0.36;
     this.nodes.forEach(function (node, i) {
       if (clearPins) {
         node.fx = null;
@@ -263,7 +263,7 @@
         node.vx = 0;
         node.vy = 0;
       }
-      var angle = (i / count) * Math.PI * 2 - Math.PI / 2;
+      const angle = (i / count) * Math.PI * 2 - Math.PI / 2;
       node.x = w / 2 + Math.cos(angle) * radius;
       node.y = h / 2 + Math.sin(angle) * radius;
     });
@@ -273,8 +273,8 @@
   // Kreis-Startlage zurücksetzen, Sim neu aufheizen.
   SkillGraph.prototype.reset = function () {
     if (!this.sim) { return; }
-    var w = this.sim.width;
-    var h = this.sim.height;
+    const w = this.sim.width;
+    const h = this.sim.height;
     // Ansicht wieder auf die virtuelle Mitte zentrieren (Pan zurücksetzen).
     this.panX = ((this.canvasW || w) - w) / 2;
     this.panY = ((this.canvasH || h) - h) / 2;
@@ -288,9 +288,9 @@
   };
 
   SkillGraph.prototype.loop = function () {
-    var self = this;
+    const self = this;
     this.rafId = requestAnimationFrame(function () {
-      var moving = self.sim.tick();
+      const moving = self.sim.tick();
       self.render();
       if (moving && !self.panel.hidden) {
         self.loop();
@@ -336,10 +336,10 @@
 
   SkillGraph.prototype.render = function () {
     if (!this.ctx || !this.sim) { return; }
-    var ctx = this.ctx;
-    var nodes = this.nodes;
-    var selected = this.selected;
-    var neighbors = selected !== null ? (this.neighbors.get(selected) || new Set()) : null;
+    const ctx = this.ctx;
+    const nodes = this.nodes;
+    const selected = this.selected;
+    const neighbors = selected !== null ? (this.neighbors.get(selected) || new Set()) : null;
 
     // Vollflächig löschen unabhängig von der DPR-Rundung — sonst bleibt am
     // rechten/unteren Rand eine Subpixel-Spalte mit Geister-Pixeln stehen.
@@ -353,13 +353,13 @@
     ctx.translate(this.panX || 0, this.panY || 0);
 
     // Kanten: Deckkraft nach Gewicht; bei Auswahl nur die Nachbarschaft betonen
-    var self = this;
+    const self = this;
     this.edges.forEach(function (edge) {
-      var a = nodes[edge.source];
-      var b = nodes[edge.target];
-      var alpha = 0.12 + Math.min(edge.weight - 1, 3) * 0.06;
+      const a = nodes[edge.source];
+      const b = nodes[edge.target];
+      let alpha = 0.12 + Math.min(edge.weight - 1, 3) * 0.06;
       if (selected !== null) {
-        var touches = a.id === selected || b.id === selected;
+        const touches = a.id === selected || b.id === selected;
         alpha = touches ? 0.4 : alpha * 0.25;
       }
       ctx.strokeStyle = 'rgba(' + CYAN + ', ' + alpha + ')';
@@ -373,12 +373,12 @@
     ctx.font = LABEL_FONT;
     ctx.textAlign = 'center';
     nodes.forEach(function (node) {
-      var state = 'base';
+      let state = 'base';
       if (selected !== null) {
         if (node.id === selected) { state = 'selected'; } else if (neighbors.has(node.id)) { state = 'related'; } else { state = 'dimmed'; }
       }
 
-      var nodeAlpha = state === 'dimmed' ? 0.3 : 1;
+      const nodeAlpha = state === 'dimmed' ? 0.3 : 1;
       ctx.save();
       ctx.globalAlpha = nodeAlpha;
       if (state === 'selected') {
@@ -418,22 +418,22 @@
   // Liegen Knoten außerhalb des sichtbaren Fensters, deutet ein dezenter Pfeil
   // "hier geht's weiter" an. Screen-Space (nach dem Pan-restore gezeichnet).
   SkillGraph.prototype.drawEdgeHints = function () {
-    var ctx = this.ctx;
+    const ctx = this.ctx;
     if (!ctx) { return; }
-    var w = this.canvasW || this.wrap.clientWidth;
-    var h = this.canvasH || this.wrap.clientHeight;
-    var px = this.panX || 0, py = this.panY || 0;
-    var m = 6;
-    var left = false, right = false, top = false, bottom = false;
+    const w = this.canvasW || this.wrap.clientWidth;
+    const h = this.canvasH || this.wrap.clientHeight;
+    const px = this.panX || 0, py = this.panY || 0;
+    const m = 6;
+    let left = false, right = false, top = false, bottom = false;
     this.nodes.forEach(function (n) {
-      var sx = n.x + px, sy = n.y + py;
+      const sx = n.x + px, sy = n.y + py;
       if (sx < m) { left = true; }
       if (sx > w - m) { right = true; }
       if (sy < m) { top = true; }
       if (sy > h - m) { bottom = true; }
     });
     if (!(left || right || top || bottom)) { return; }
-    var s = 6;
+    const s = 6;
     ctx.save();
     ctx.fillStyle = 'rgba(' + CYAN + ', 0.8)';
     function chevron(cx, cy, dx, dy) {
@@ -454,9 +454,10 @@
   };
 
   SkillGraph.prototype.centroid = function () {
-    var ids = Object.keys(this.pointers), cx = 0, cy = 0, i;
+    const ids = Object.keys(this.pointers);
+    let cx = 0, cy = 0, i;
     for (i = 0; i < ids.length; i++) { cx += this.pointers[ids[i]].x; cy += this.pointers[ids[i]].y; }
-    var n = ids.length || 1;
+    const n = ids.length || 1;
     return { x: cx / n, y: cy / n };
   };
 
@@ -470,18 +471,18 @@
   // Pan begrenzen: mindestens PAD px der Knoten-Wolke bleiben je Seite sichtbar.
   SkillGraph.prototype.clampPan = function () {
     if (!this.nodes || !this.nodes.length) { return; }
-    var minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+    let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
     this.nodes.forEach(function (n) {
       if (n.x < minX) { minX = n.x; }
       if (n.x > maxX) { maxX = n.x; }
       if (n.y < minY) { minY = n.y; }
       if (n.y > maxY) { maxY = n.y; }
     });
-    var w = this.canvasW || this.wrap.clientWidth;
-    var h = this.canvasH || this.wrap.clientHeight;
-    var pad = 60;
-    var minPanX = pad - maxX, maxPanX = (w - pad) - minX;
-    var minPanY = pad - maxY, maxPanY = (h - pad) - minY;
+    const w = this.canvasW || this.wrap.clientWidth;
+    const h = this.canvasH || this.wrap.clientHeight;
+    const pad = 60;
+    let minPanX = pad - maxX, maxPanX = (w - pad) - minX;
+    let minPanY = pad - maxY, maxPanY = (h - pad) - minY;
     if (minPanX > maxPanX) { minPanX = maxPanX = (minPanX + maxPanX) / 2; }
     if (minPanY > maxPanY) { minPanY = maxPanY = (minPanY + maxPanY) / 2; }
     this.panX = Math.max(minPanX, Math.min(maxPanX, this.panX));
@@ -489,12 +490,12 @@
   };
 
   SkillGraph.prototype.canvasPos = function (event) {
-    var rect = this.canvas.getBoundingClientRect();
+    const rect = this.canvas.getBoundingClientRect();
     return { x: event.clientX - rect.left, y: event.clientY - rect.top };
   };
 
   SkillGraph.prototype.nodeById = function (id) {
-    for (var i = 0; i < this.nodes.length; i++) {
+    for (let i = 0; i < this.nodes.length; i++) {
       if (this.nodes[i].id === id) { return this.nodes[i]; }
     }
     return null;
@@ -502,20 +503,20 @@
 
   // Treffer: nächster Knoten im HIT_RADIUS oder dessen Label (zentriert darüber)
   SkillGraph.prototype.hitTest = function (x, y) {
-    var ctx = this.ctx;
-    var hit = null;
-    var best = HIT_RADIUS * HIT_RADIUS;
+    const ctx = this.ctx;
+    let hit = null;
+    let best = HIT_RADIUS * HIT_RADIUS;
     if (ctx) { ctx.font = LABEL_FONT; }   // Trefferfläche mit der Render-Schrift messen
     this.nodes.forEach(function (node) {
-      var dx = node.x - x;
-      var dy = node.y - y;
-      var d = dx * dx + dy * dy;
+      const dx = node.x - x;
+      const dy = node.y - y;
+      const d = dx * dx + dy * dy;
       if (d <= best) { best = d; hit = node.id; }
 
       // Auch das Label ist Trefferfläche (Text sitzt zentriert über dem Knoten)
       if (hit !== node.id && ctx) {
-        var w = ctx.measureText(node.label).width;
-        var labelBottom = node.y - NODE_RADIUS - 5;
+        const w = ctx.measureText(node.label).width;
+        const labelBottom = node.y - NODE_RADIUS - 5;
         if (x >= node.x - w / 2 - 4 && x <= node.x + w / 2 + 4 &&
             y >= labelBottom - 13 && y <= labelBottom + 3) {
           hit = node.id;
@@ -535,8 +536,8 @@
   SkillGraph.prototype.onWheel = function (event) {
     if (!this.sim || this.panel.hidden || !this.isModal()) { return; }
     event.preventDefault();
-    var unit = event.deltaMode === 1 ? 16 : (event.deltaMode === 2 ? this.canvasH || 400 : 1);
-    var dx = event.deltaX * unit, dy = event.deltaY * unit;
+    const unit = event.deltaMode === 1 ? 16 : (event.deltaMode === 2 ? this.canvasH || 400 : 1);
+    let dx = event.deltaX * unit, dy = event.deltaY * unit;
     if (event.shiftKey && !dx) { dx = dy; dy = 0; }   // Shift+Rad = waagerecht
     this.panX = (this.panX || 0) - dx;
     this.panY = (this.panY || 0) - dy;
@@ -547,9 +548,9 @@
   SkillGraph.prototype.onTouchStart = function (event) {
     if (!this.sim || this.panel.hidden) { return; }
     if (this.isModal() || event.touches.length >= 2) { event.preventDefault(); return; }
-    var t = event.touches[0];
-    var rect = this.canvas.getBoundingClientRect();
-    var hit = this.hitTest(
+    const t = event.touches[0];
+    const rect = this.canvas.getBoundingClientRect();
+    const hit = this.hitTest(
       t.clientX - rect.left - (this.panX || 0),
       t.clientY - rect.top - (this.panY || 0)
     );
@@ -559,7 +560,7 @@
   SkillGraph.prototype.onPointerDown = function (event) {
     if (!this.sim || this.panel.hidden) { return; }
     this.pointers[event.pointerId] = this.canvasPos(event);
-    var count = Object.keys(this.pointers).length;
+    const count = Object.keys(this.pointers).length;
 
     if (count >= 2) {
       // Zwei Finger -> Pan (Karten-Muster). Laufenden Knoten-Drag abbrechen und
@@ -570,8 +571,8 @@
       return;
     }
 
-    var pos = this.pointers[event.pointerId];
-    var hit = this.hitTest(pos.x - (this.panX || 0), pos.y - (this.panY || 0));
+    const pos = this.pointers[event.pointerId];
+    const hit = this.hitTest(pos.x - (this.panX || 0), pos.y - (this.panY || 0));
     if (hit !== null) {
       // Auf einem Knoten -> Knoten ziehen (wie bisher).
       this.dragId = hit;
@@ -596,13 +597,13 @@
 
     // Hover-Cursor (Maus): über einem Knoten -> Klick-Finger, sonst Greif-Hand.
     if (!this.panning && this.dragId === null && event.pointerType === 'mouse') {
-      var hover = this.canvasPos(event);
-      var overNode = this.hitTest(hover.x - (this.panX || 0), hover.y - (this.panY || 0));
+      const hover = this.canvasPos(event);
+      const overNode = this.hitTest(hover.x - (this.panX || 0), hover.y - (this.panY || 0));
       this.canvas.style.cursor = overNode !== null ? 'pointer' : 'grab';
     }
 
     if (this.panning) {
-      var c = this.centroid();
+      const c = this.centroid();
       this.panX = this.panStartPan.x + (c.x - this.panStartCentroid.x);
       this.panY = this.panStartPan.y + (c.y - this.panStartCentroid.y);
       this.clampPan();
@@ -612,15 +613,15 @@
     }
 
     if (this.dragId === null || !this.pointerStart) { return; }
-    var pos = this.canvasPos(event);
+    const pos = this.canvasPos(event);
     if (!this.dragMoved) {
-      var dx = pos.x - this.pointerStart.x;
-      var dy = pos.y - this.pointerStart.y;
+      const dx = pos.x - this.pointerStart.x;
+      const dy = pos.y - this.pointerStart.y;
       if (dx * dx + dy * dy < 25) { return; } // 5px-Schwelle: darunter bleibt es ein Klick
       this.dragMoved = true;
     }
     if (event.cancelable) { event.preventDefault(); }
-    var node = this.nodeById(this.dragId);
+    const node = this.nodeById(this.dragId);
     if (!node) { return; }
     // In Layout-Koordinaten pinnen (Pan herausrechnen); die Sim hält fx/fy fest.
     node.fx = pos.x - (this.panX || 0);
@@ -636,7 +637,7 @@
 
   SkillGraph.prototype.onPointerUp = function (event) {
     delete this.pointers[event.pointerId];
-    var remaining = Object.keys(this.pointers).length;
+    const remaining = Object.keys(this.pointers).length;
 
     if (this.panning) {
       if (remaining >= 2) {
@@ -654,7 +655,7 @@
     // (z.B. pan-y-Scroll) — nur Pointer-State aufräumen, Auswahl unangetastet.
     if (this.dragId !== null && !this.dragMoved && event.type !== 'pointercancel') {
       // Kein echtes Ziehen → als Klick behandeln (Auswahl togglen)
-      var hit = this.dragId;
+      const hit = this.dragId;
       this.setSelection(hit === this.selected ? null : hit);
       this.dispatch();
     }
@@ -670,7 +671,7 @@
     // Skills, die KEIN Knoten sind (Basis-Skills ohne Projektkanten), kann der
     // Graph nicht hervorheben — sie als "keine Auswahl" behandeln, sonst würden
     // alle Knoten ausgegraut (und node.label unten liefe auf undefined).
-    var node = skillId === null ? null : this.nodeById(skillId);
+    const node = skillId === null ? null : this.nodeById(skillId);
     if (skillId !== null && !node) { skillId = null; }
 
     this.selected = skillId;
@@ -679,7 +680,7 @@
         // Platz bleibt reserviert (feste Höhe) — nur der Text wechselt
         this.contextLine.textContent = '';
       } else {
-        var projects = (this.skillProjects && this.skillProjects.get(skillId)) || [];
+        const projects = (this.skillProjects && this.skillProjects.get(skillId)) || [];
         this.contextLine.textContent = projects.length
           ? node.label + ' – gemeinsam im Einsatz bei: ' + projects.map(function (p) { return p.label; }).join(', ')
           : node.label + ' – noch keine Projektzuordnung hinterlegt.';
@@ -706,10 +707,10 @@
   };
 
   // ── Persistent-Shell-Kontrakt (spa-nav.js, siehe README-spa-nav.md) ─────────
-  var instances = [];
+  let instances = [];
 
   function mountGraph(root) {
-    var scope = root || document;
+    const scope = root || document;
     if (typeof window.SkillGraphSim === 'undefined') {
       console.warn('skill-graph: Engine skill-graph-sim.js fehlt — Panel bleibt inaktiv');
       return;

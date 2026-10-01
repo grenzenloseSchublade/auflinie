@@ -10,21 +10,21 @@
 
   // Persistent-Shell-Kontrakt (spa-nav.js): dokumentweite Listener dieses
   // Mounts hängen an heroSignal und werden im Teardown zentral gelöst.
-  var HERO_SEL = '.page__hero--overlay[data-background-image]';
-  var heroController = null;
-  var heroSignal = null;
-  var bgPreloaded = false;
+  const HERO_SEL = '.page__hero--overlay[data-background-image]';
+  let heroController = null;
+  let heroSignal = null;
+  let bgPreloaded = false;
 
-  var HERO_CRT_BOOT_KEY = 'auflinieHeroCrtBoot';
-  var HERO_TUBE_BOOT_NAMES = ['heroTubeBootStark', 'heroTubeBootDezent'];
+  const HERO_CRT_BOOT_KEY = 'auflinieHeroCrtBoot';
+  const HERO_TUBE_BOOT_NAMES = ['heroTubeBootStark', 'heroTubeBootDezent'];
   /** Pause mit Vorhang/Filter vor `page__hero--crt-boot` (ms), 0,9 s — mit `--hero-tube-boot-dur` nicht verwechseln */
-  var HERO_CRT_PREBOOT_DELAY_MS = 900;
+  const HERO_CRT_PREBOOT_DELAY_MS = 900;
   /** Dauer der Tube-Boot-Keyframes (ms), exakt wie `--hero-tube-boot-dur` in `_hero.scss` (unabhängig von Preboot) */
-  var HERO_TUBE_BOOT_DURATION_MS = 3500;
+  const HERO_TUBE_BOOT_DURATION_MS = 3500;
   /** Fallback nur wenn `getComputedStyle` `--hero-crt-mode-flash-dur` nicht liefert (Spiegel zu `_hero.scss`) */
-  var HERO_CRT_MODE_FLASH_MS = 100;
+  const HERO_CRT_MODE_FLASH_MS = 100;
   /** Ziel-FPS für Canvas-Rauschen (Zeitdrossel, weniger CPU/GC als festes RAF-3er-Raster) */
-  var HERO_CRT_NOISE_TARGET_FPS = 10;
+  const HERO_CRT_NOISE_TARGET_FPS = 10;
 
   function readEnableImageCaching() {
     const raw = (document.documentElement.getAttribute('data-enable-image-caching') || '')
@@ -58,7 +58,7 @@
   }
 
   function cancelCrtBootCleanup(overlay) {
-    var state = overlay._crtBootState;
+    const state = overlay._crtBootState;
     if (!state) return;
     if (state.timeoutId) {
       window.clearTimeout(state.timeoutId);
@@ -100,9 +100,9 @@
   }
 
   function syncHeroCrtPowerButton(overlay) {
-    var btn = document.getElementById('hero-crt-power');
+    const btn = document.getElementById('hero-crt-power');
     if (!btn || !overlay) return;
-    var read = overlay.classList.contains('page__hero--crt-read');
+    const read = overlay.classList.contains('page__hero--crt-read');
     btn.setAttribute('aria-pressed', read ? 'false' : 'true');
     btn.setAttribute('aria-label', read ? 'Retro-Ansicht aktivieren' : 'Lesemodus aktivieren');
     btn.setAttribute('title', read ? 'Retro-Ansicht' : 'Lesemodus');
@@ -115,7 +115,7 @@
    */
   function startCrtBootSequence(overlay) {
     abortCrtBootFlow(overlay);
-    var crtLayer = overlay.querySelector('.page__hero-crt-layer');
+    const crtLayer = overlay.querySelector('.page__hero-crt-layer');
     if (!crtLayer) return;
     void crtLayer.offsetWidth;
     overlay.classList.add('page__hero--crt-preboot');
@@ -133,7 +133,7 @@
 
   function scheduleCrtBootCleanup(overlay, crtLayer) {
     cancelCrtBootCleanup(overlay);
-    var bootFinished = false;
+    let bootFinished = false;
     function endBoot() {
       if (bootFinished) return;
       if (!overlay.classList.contains('page__hero--crt-boot')) return;
@@ -145,7 +145,7 @@
       endBoot();
     }
     crtLayer.addEventListener('animationend', onAnimationEnd);
-    var timeoutId = window.setTimeout(endBoot, HERO_TUBE_BOOT_DURATION_MS + 400);
+    const timeoutId = window.setTimeout(endBoot, HERO_TUBE_BOOT_DURATION_MS + 400);
     overlay._crtBootState = {
       timeoutId: timeoutId,
       crtLayer: crtLayer,
@@ -171,15 +171,15 @@
   /** Eine Quelle der Wahrheit: Dauer aus CSS-Variable `--hero-crt-mode-flash-dur` (z. B. `0.1s`) */
   function readHeroCrtFlashDurationMs(overlay) {
     try {
-      var raw = (window.getComputedStyle(overlay).getPropertyValue('--hero-crt-mode-flash-dur') || '')
+      const raw = (window.getComputedStyle(overlay).getPropertyValue('--hero-crt-mode-flash-dur') || '')
         .trim();
       if (!raw) return HERO_CRT_MODE_FLASH_MS;
       if (/ms$/i.test(raw)) {
-        var nMs = parseFloat(raw);
+        const nMs = parseFloat(raw);
         return isNaN(nMs) ? HERO_CRT_MODE_FLASH_MS : Math.max(0, Math.round(nMs));
       }
       if (/s$/i.test(raw)) {
-        var nS = parseFloat(raw);
+        const nS = parseFloat(raw);
         return isNaN(nS) ? HERO_CRT_MODE_FLASH_MS : Math.max(0, Math.round(nS * 1000));
       }
     } catch (err) {
@@ -189,11 +189,11 @@
   }
 
   function bindHomeHeroCrtPowerToggle() {
-    var btn = document.getElementById('hero-crt-power');
+    const btn = document.getElementById('hero-crt-power');
     if (!btn || btn.hasAttribute('data-hero-crt-power-init')) return;
     btn.setAttribute('data-hero-crt-power-init', '');
     btn.addEventListener('click', function() {
-      var overlay = document.querySelector('.page__hero--overlay[data-background-image].loaded');
+      const overlay = document.querySelector('.page__hero--overlay[data-background-image].loaded');
       if (!overlay || !overlay.querySelector('.page__hero-crt-layer')) return;
 
       if (overlay.classList.contains('page__hero--crt-preboot') || overlay.classList.contains('page__hero--crt-boot')) {
@@ -204,7 +204,7 @@
         return;
       }
 
-      var read = overlay.classList.contains('page__hero--crt-read');
+      const read = overlay.classList.contains('page__hero--crt-read');
 
       function applyLesemodus() {
         overlay.classList.remove('page__hero--crt-over-text');
@@ -248,7 +248,7 @@
     if (!ctx) return;
     stopHeroCanvasNoise(overlay);
 
-    var noiseMinIntervalMs = 1000 / HERO_CRT_NOISE_TARGET_FPS;
+    const noiseMinIntervalMs = 1000 / HERO_CRT_NOISE_TARGET_FPS;
 
     if (!overlay._heroCrtNoiseVisibilityAttached) {
       overlay._heroCrtNoiseVisibilityAttached = true;
@@ -278,8 +278,8 @@
         overlay._heroCrtNoiseRafId = 0;
         return;
       }
-      var ts = typeof now === 'number' ? now : performance.now();
-      var lastTs = overlay._heroCrtNoiseLastTs;
+      const ts = typeof now === 'number' ? now : performance.now();
+      const lastTs = overlay._heroCrtNoiseLastTs;
       if (lastTs != null && ts - lastTs < noiseMinIntervalMs) {
         overlay._heroCrtNoiseRafId = requestAnimationFrame(tick);
         return;
@@ -288,14 +288,14 @@
 
       const w = canvas.width;
       const h = canvas.height;
-      var buf = overlay._heroCrtNoiseBuffer;
+      let buf = overlay._heroCrtNoiseBuffer;
       if (!buf || buf.width !== w || buf.height !== h) {
         buf = ctx.createImageData(w, h);
         overlay._heroCrtNoiseBuffer = buf;
       }
       const d = buf.data;
-      for (var i = 0; i < d.length; i += 4) {
-        var v = Math.random() * 255;
+      for (let i = 0; i < d.length; i += 4) {
+        const v = Math.random() * 255;
         d[i] = v;
         d[i + 1] = v;
         d[i + 2] = v;
@@ -318,10 +318,10 @@
     setRandomRollSign(overlay);
     startHeroCanvasNoise(overlay);
 
-    var crtLayer = overlay.querySelector('.page__hero-crt-layer');
+    const crtLayer = overlay.querySelector('.page__hero-crt-layer');
     if (!crtLayer) return;
 
-    var skipBoot;
+    let skipBoot;
     try {
       skipBoot = sessionStorage.getItem(HERO_CRT_BOOT_KEY) === '1';
     } catch (e1) {
@@ -341,7 +341,7 @@
     if (document.readyState === 'complete') {
       kick();
     } else {
-      var listener = function() {
+      const listener = function() {
         window.removeEventListener('load', listener);
         overlay._heroCrtLoadWaitListener = null;
         kick();
@@ -435,9 +435,9 @@
     try { if (sessionStorage.getItem('auflinieHeroCrtPowerHinted') === '1') return; } catch (e) { /* private mode */ }
     if (window._auflinieHeroCrtHintScheduled) return;
     window._auflinieHeroCrtHintScheduled = true;
-    var fire = function () {
+    const fire = function () {
       window.setTimeout(function () {
-        var btn = document.getElementById('hero-crt-power');
+        const btn = document.getElementById('hero-crt-power');
         if (!btn) { window._auflinieHeroCrtHintScheduled = false; return; } // kein Button -> später erneut zulassen
         btn.classList.add('hero-crt-power--hint');
         btn.addEventListener('animationend', function onEnd() {
@@ -453,8 +453,8 @@
 
   // ── Persistent-Shell-Kontrakt (spa-nav.js): Mount bei jedem spa:load ────────
   function mountHero(root) {
-    var scope = root || document;
-    var heroes = scope.querySelectorAll(HERO_SEL);
+    const scope = root || document;
+    const heroes = scope.querySelectorAll(HERO_SEL);
 
     config.enableImageCaching = readEnableImageCaching();
     config.backgroundImage = document.documentElement.getAttribute('data-background-image');
@@ -471,7 +471,7 @@
     heroController = new AbortController();
     heroSignal = heroController.signal;
 
-    var toLoad = [];
+    const toLoad = [];
     Array.prototype.forEach.call(heroes, function(el) {
       el._heroCrtNoiseVisibilityAttached = false;        // Re-Bind an den NEUEN Signal erlauben
       if (el.classList.contains('loaded')) startHeroCanvasNoise(el);  // bfcache/Re-Mount: nur Rauschen an

@@ -26,7 +26,7 @@
 (function () {
   'use strict';
 
-  var instances = [];
+  let instances = [];
 
   function GraphMode(root) {
     this.root = root;
@@ -40,7 +40,7 @@
     this.mode = false;
     this.inView = false;
     this.abort = new AbortController();
-    var signal = { signal: this.abort.signal };
+    const signal = { signal: this.abort.signal };
 
     // ✕ ins Panel injizieren (nur im offenen Sheet sichtbar, CSS)
     this.closeBtn = document.createElement('button');
@@ -69,7 +69,7 @@
     // Aktive Skill-Auswahl mitverfolgen (Event-Vertrag mit skill-graph/skill-chips):
     // Esc-Staffelung — erstes Esc löst nur die Auswahl, zweites schließt das Sheet.
     this.selectedSkill = null;
-    var self = this;
+    const self = this;
     document.addEventListener('auflinie:skill-select', function (event) {
       self.selectedSkill = (event.detail && event.detail.skill) || null;
     }, signal);
@@ -83,7 +83,7 @@
     // Verlässt „Technische Fähigkeiten" den Lesebereich, verschwindet alles — kein
     // Überstehen in den Nachbarabschnitt (Akademischer Werdegang).
     this.rafPending = false;
-    var boundScroll = this.onScroll.bind(this);
+    const boundScroll = this.onScroll.bind(this);
     window.addEventListener('scroll', boundScroll, { passive: true, signal: this.abort.signal });
     window.addEventListener('resize', boundScroll, { passive: true, signal: this.abort.signal });
     this.updateInView();
@@ -104,7 +104,7 @@
 
   GraphMode.prototype.hintFloating = function () {
     if (!window.matchMedia('(prefers-reduced-motion: no-preference)').matches) { return; }
-    var btn = this.toggle;
+    const btn = this.toggle;
     btn.classList.remove('is-hint');
     void btn.offsetWidth;   // Reflow -> Animation startet auch bei erneutem Aktivieren neu
     btn.classList.add('is-hint');
@@ -114,7 +114,7 @@
   GraphMode.prototype.onScroll = function () {
     if (this.rafPending) { return; }
     this.rafPending = true;
-    var self = this;
+    const self = this;
     requestAnimationFrame(function () { self.rafPending = false; self.updateInView(); });
   };
 
@@ -122,8 +122,8 @@
     // Offenes Sheet ist modal (Scroll gesperrt): Sichtbarkeit nicht neu bewerten,
     // sonst könnte ein Resize das offene Sheet unsichtbar schalten.
     if (document.body.classList.contains('graph-open')) { return; }
-    var r = this.section.getBoundingClientRect();
-    var vh = window.innerHeight || document.documentElement.clientHeight || 800;
+    const r = this.section.getBoundingClientRect();
+    const vh = window.innerHeight || document.documentElement.clientHeight || 800;
     // „Im Kapitel" = das Skills-Kapitel überlappt ein zentrales Band
     // [BIND, 1-BIND] des Viewports. BEIDE Ränder gebunden — sonst überschießt
     // das Sheet beim Hochscrollen nach OBEN in die Ausbildung (die im CV ÜBER
@@ -137,15 +137,15 @@
     // Sheet-Oberkante herunter (TOP_LINE ≈ 0.30): verschwindet, sobald die
     // Kapitel-Oberkante dorthin steigt. BOT_LINE bindet die Unterkante fürs
     // Runterscrollen.
-    var TOP_LINE = 0.30;
-    var BOT_LINE = 0.40;
-    var inView = r.top < vh * TOP_LINE && r.bottom > vh * BOT_LINE;
+    const TOP_LINE = 0.30;
+    const BOT_LINE = 0.40;
+    const inView = r.top < vh * TOP_LINE && r.bottom > vh * BOT_LINE;
 
     // Footer-Ride wie Back-to-Top (rAF-gekoppelt über onScroll): weicht dem
     // Seiten-Footer in sinnvollem Abstand aus, statt reinzulaufen. Base 20, GAP 24.
-    var footer = document.querySelector('.page__footer');
+    const footer = document.querySelector('.page__footer');
     if (footer) {
-      var ft = footer.getBoundingClientRect().top;
+      const ft = footer.getBoundingClientRect().top;
       this.toggle.style.setProperty('--graph-float-push', Math.max(0, vh - ft + 24 - 20) + 'px');
     }
 
@@ -162,7 +162,7 @@
     try { if (sessionStorage.getItem('auflinie:graph-activate-hinted')) { return; } } catch (e) { return; }
     if (!window.matchMedia('(prefers-reduced-motion: no-preference)').matches) { return; }
     try { sessionStorage.setItem('auflinie:graph-activate-hinted', '1'); } catch (e) { /* noop */ }
-    var btn = this.activate;
+    const btn = this.activate;
     btn.classList.add('is-hint');
     btn.addEventListener('animationend', function () { btn.classList.remove('is-hint'); }, { once: true });
   };
@@ -172,10 +172,10 @@
   };
 
   GraphMode.prototype.onHidden = function () {
-    var open = !this.panel.hidden;
+    const open = !this.panel.hidden;
     if (open) { this.enterModal(); } else { this.leaveModal(); }
     document.body.classList.toggle('graph-open', open);
-    var self = this;
+    const self = this;
     if (open) {
       requestAnimationFrame(function () { try { self.closeBtn.focus(); } catch (e) { /* noop */ } });
       this.maybeTouchHint();
@@ -195,7 +195,7 @@
 
     this.layer = document.createElement('div');
     this.layer.className = 'skill-graph-layer';
-    var scrim = document.createElement('div');
+    const scrim = document.createElement('div');
     scrim.className = 'skill-graph__scrim';
     scrim.addEventListener('click', this.close.bind(this));   // Light Dismiss
     this.layer.appendChild(scrim);
@@ -206,7 +206,7 @@
     this.panel.setAttribute('aria-modal', 'true');
     this.panel.setAttribute('aria-label', 'Skill-Graph');
 
-    var layer = this.layer;
+    const layer = this.layer;
     this.inerted = Array.prototype.filter.call(document.body.children, function (el) {
       return el !== layer && el.tagName !== 'SCRIPT' && !el.inert;
     });
@@ -236,7 +236,7 @@
     if (!window.matchMedia('(hover: none)').matches) { return; }   // nur Touch-Geräte
     try { if (sessionStorage.getItem('auflinie:graph-touch-hinted')) { return; } } catch (e) { return; }
     try { sessionStorage.setItem('auflinie:graph-touch-hinted', '1'); } catch (e) { /* noop */ }
-    var hint = this.touchHint;
+    const hint = this.touchHint;
     hint.classList.add('is-show');
     this.touchHintTimer = setTimeout(function () { hint.classList.remove('is-show'); }, 4500);
   };
@@ -268,11 +268,11 @@
 
   // ── Persistent-Shell-Kontrakt (spa-nav.js, siehe README-spa-nav.md) ─────────
   function mount(root) {
-    var scope = root || document;
+    const scope = root || document;
     scope.querySelectorAll('[data-skill-graph]').forEach(function (el) {
       if (el.hasAttribute('data-graph-mode-mounted')) { return; }   // idempotent
       el.setAttribute('data-graph-mode-mounted', '');
-      var g = new GraphMode(el);
+      const g = new GraphMode(el);
       if (g.ok) { instances.push(g); }
     });
   }

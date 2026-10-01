@@ -12,14 +12,14 @@
 (function () {
   'use strict';
 
-  var controller = null;
+  let controller = null;
 
   function mount(root) {
-    var scope = root || document;
-    var wrapper = scope.querySelector('.author__urls-wrapper');
+    const scope = root || document;
+    const wrapper = scope.querySelector('.author__urls-wrapper');
     if (!wrapper || wrapper.hasAttribute('data-author-follow-init')) return;
-    var btn = wrapper.querySelector('button');
-    var list = wrapper.querySelector('.author__urls');
+    const btn = wrapper.querySelector('button');
+    const list = wrapper.querySelector('.author__urls');
     if (!btn || !list) return;
     wrapper.setAttribute('data-author-follow-init', '');
 
@@ -33,14 +33,14 @@
 
     // Element-scoped -> stirbt mit dem alten DOM beim Swap, kein Teardown nötig.
     btn.addEventListener('click', function () {
-      var offen = list.classList.toggle('is--visible');
+      const offen = list.classList.toggle('is--visible');
       btn.classList.toggle('open', offen);
       btn.setAttribute('aria-expanded', offen ? 'true' : 'false');
     });
 
     // Dokumentweit -> überlebt den Swap und muss aktiv abgeräumt werden.
     controller = new AbortController();
-    var signal = controller.signal;
+    const signal = controller.signal;
     document.addEventListener('click', function (e) {
       if (!wrapper.contains(e.target)) close();
     }, { signal: signal });

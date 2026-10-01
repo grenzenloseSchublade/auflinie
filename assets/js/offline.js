@@ -15,7 +15,7 @@
   });
 
   // Reload-Button Event Listener
-  var reloadBtn = document.querySelector('.offline-page__reload-btn');
+  const reloadBtn = document.querySelector('.offline-page__reload-btn');
   if (reloadBtn) {
     reloadBtn.addEventListener('click', function() {
       window.location.reload();
@@ -26,7 +26,7 @@
 // Cache-Hinweis nur zeigen, wenn wirklich offline —
 // die Seite ist auch direkt (online) aufrufbar
 (function () {
-  var notice = document.querySelector('.offline-page__cache-notice');
+  const notice = document.querySelector('.offline-page__cache-notice');
   if (notice && navigator.onLine) {
     notice.style.display = 'none';
   }

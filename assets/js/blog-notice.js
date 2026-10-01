@@ -8,18 +8,18 @@
 (function () {
   'use strict';
 
-  var onKeydown = null;
+  let onKeydown = null;
 
   function mount(root) {
-    var scope = root || document;
-    var box = scope.querySelector('#blog-notice');
+    const scope = root || document;
+    const box = scope.querySelector('#blog-notice');
     if (!box || box.hasAttribute('data-blog-notice-init')) return;
     box.setAttribute('data-blog-notice-init', '');
 
-    var key = 'auflinie:blog-notice-dismissed:' + box.getAttribute('data-notice-id');
+    const key = 'auflinie:blog-notice-dismissed:' + box.getAttribute('data-notice-id');
     try { if (localStorage.getItem(key) === '1') { return; } } catch (e) { /* Storage gesperrt: einfach zeigen */ }
 
-    var closeBtn = box.querySelector('#blog-notice-close');
+    const closeBtn = box.querySelector('#blog-notice-close');
     function dismiss() {
       box.hidden = true;
       try { localStorage.setItem(key, '1'); } catch (e) { /* ok */ }

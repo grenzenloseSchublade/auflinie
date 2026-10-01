@@ -25,7 +25,7 @@
 (function (global) {
   'use strict';
 
-  var DEFAULTS = {
+  const DEFAULTS = {
     repulsion: 20000,    // Coulomb-Konstante C (F = C / d²)
     springLength: 100,   // Feder-Ruhelänge in px
     springK: 0.03,       // Federkonstante (Kantengewicht skaliert leicht)
@@ -56,23 +56,23 @@
   SkillGraphSim.prototype.tick = function () {
     if (this.isSettled()) { return false; }
 
-    var opts = this.opts;
-    var nodes = this.nodes;
-    var i;
-    var j;
+    const opts = this.opts;
+    const nodes = this.nodes;
+    let i;
+    let j;
 
     // Repulsion (O(n²) — bei ~20 Knoten unkritisch)
     for (i = 0; i < nodes.length; i++) {
       for (j = i + 1; j < nodes.length; j++) {
-        var a = nodes[i];
-        var b = nodes[j];
-        var dx = b.x - a.x;
-        var dy = b.y - a.y;
-        var distSq = dx * dx + dy * dy;
-        var dist = Math.sqrt(distSq) || 1;
-        var force = (opts.repulsion / Math.max(distSq, 100)) * this.alpha;
-        var fx = (dx / dist) * force;
-        var fy = (dy / dist) * force;
+        const a = nodes[i];
+        const b = nodes[j];
+        const dx = b.x - a.x;
+        const dy = b.y - a.y;
+        const distSq = dx * dx + dy * dy;
+        const dist = Math.sqrt(distSq) || 1;
+        const force = (opts.repulsion / Math.max(distSq, 100)) * this.alpha;
+        const fx = (dx / dist) * force;
+        const fy = (dy / dist) * force;
         a.vx -= fx; a.vy -= fy;
         b.vx += fx; b.vy += fy;
       }
@@ -80,26 +80,26 @@
 
     // Federn entlang der Kanten (Gewicht strafft leicht)
     for (i = 0; i < this.edges.length; i++) {
-      var edge = this.edges[i];
-      var source = nodes[edge.source];
-      var target = nodes[edge.target];
-      var ex = target.x - source.x;
-      var ey = target.y - source.y;
-      var elen = Math.sqrt(ex * ex + ey * ey) || 1;
-      var k = opts.springK * (1 + 0.15 * Math.min(edge.weight - 1, 3));
-      var stretch = (elen - opts.springLength) * k * this.alpha;
-      var sx = (ex / elen) * stretch;
-      var sy = (ey / elen) * stretch;
+      const edge = this.edges[i];
+      const source = nodes[edge.source];
+      const target = nodes[edge.target];
+      const ex = target.x - source.x;
+      const ey = target.y - source.y;
+      const elen = Math.sqrt(ex * ex + ey * ey) || 1;
+      const k = opts.springK * (1 + 0.15 * Math.min(edge.weight - 1, 3));
+      const stretch = (elen - opts.springLength) * k * this.alpha;
+      const sx = (ex / elen) * stretch;
+      const sy = (ey / elen) * stretch;
       source.vx += sx; source.vy += sy;
       target.vx -= sx; target.vy -= sy;
     }
 
     // Zentrums-Gravitation, Integration, Temperatur-Deckel, Rand-Clamp
-    var cx = this.width / 2;
-    var cy = this.height / 2;
-    var maxStep = 0.1 * this.width * this.alpha;
+    const cx = this.width / 2;
+    const cy = this.height / 2;
+    const maxStep = 0.1 * this.width * this.alpha;
     for (i = 0; i < nodes.length; i++) {
-      var node = nodes[i];
+      const node = nodes[i];
       // Per Drag fixierte Knoten (fx/fy) bleiben liegen — sie wirken über
       // Repulsion/Federn weiter auf andere, bewegen sich aber selbst nicht.
       if (node.fx != null && node.fy != null) {
@@ -114,8 +114,8 @@
       node.vx *= opts.velocityDecay;
       node.vy *= opts.velocityDecay;
 
-      var step = Math.sqrt(node.vx * node.vx + node.vy * node.vy);
-      var scale = step > maxStep ? maxStep / step : 1;
+      const step = Math.sqrt(node.vx * node.vx + node.vy * node.vy);
+      const scale = step > maxStep ? maxStep / step : 1;
       node.x += node.vx * scale;
       node.y += node.vy * scale;
 
@@ -128,13 +128,13 @@
   };
 
   SkillGraphSim.prototype.runToEnd = function (maxTicks) {
-    var limit = maxTicks || 400;
+    let limit = maxTicks || 400;
     while (limit-- > 0 && this.tick()) { /* synchron auskühlen */ }
   };
 
   SkillGraphSim.prototype.resize = function (width, height) {
-    var sx = width / this.width;
-    var sy = height / this.height;
+    const sx = width / this.width;
+    const sy = height / this.height;
     this.nodes.forEach(function (node) {
       node.x *= sx;
       node.y *= sy;

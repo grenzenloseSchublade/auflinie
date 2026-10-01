@@ -6,37 +6,37 @@
  */
 (function () {
   'use strict';
-  var SCROLL_THRESHOLD = 888, MIN_RATIO = 1.5, FOOTER_GAP = 24;
-  var controller = null;
+  const SCROLL_THRESHOLD = 888, MIN_RATIO = 1.5, FOOTER_GAP = 24;
+  let controller = null;
 
   function mount(root) {
-    var scope = root || document;
-    var btn = scope.querySelector('.back-to-top');
+    const scope = root || document;
+    const btn = scope.querySelector('.back-to-top');
     if (!btn || btn.hasAttribute('data-back-to-top-init')) return;
     btn.setAttribute('data-back-to-top-init', '');
 
     if (controller) controller.abort();
     controller = new AbortController();
-    var signal = controller.signal;
+    const signal = controller.signal;
 
     function checkVisibility() {
-      var vh = window.innerHeight, ph = document.documentElement.scrollHeight;
+      const vh = window.innerHeight, ph = document.documentElement.scrollHeight;
       btn.classList.toggle('visible', ph > vh * MIN_RATIO && window.scrollY > SCROLL_THRESHOLD);
-      var footer = document.querySelector('.page__footer');
+      const footer = document.querySelector('.page__footer');
       if (footer) {
         // Stufenlos an den Footer koppeln: sobald dessen Oberkante ins Bild
         // kommt, „reitet" der Button FOOTER_GAP darüber hoch — scroll-gekoppelt,
         // kein harter Schwellwert-Sprung. push=0, solange der Footer weit unten ist.
-        var footerTop = footer.getBoundingClientRect().top;
-        var base = parseFloat(getComputedStyle(btn).getPropertyValue('--btt-base-bottom')) || 24;
-        var push = Math.max(0, vh - footerTop + FOOTER_GAP - base);
+        const footerTop = footer.getBoundingClientRect().top;
+        const base = parseFloat(getComputedStyle(btn).getPropertyValue('--btt-base-bottom')) || 24;
+        const push = Math.max(0, vh - footerTop + FOOTER_GAP - base);
         btn.style.setProperty('--btt-footer-push', push + 'px');
       }
     }
     // rAF-gekoppelt statt setTimeout-Throttle: pro Paint-Frame genau EIN Update
     // -> ruckelfreies „Reiten" über dem Footer, auch bei schnellem Scrollen (der
     // Button läuft so gar nicht erst in den Footer und springt dann raus).
-    var rafPending = false;
+    let rafPending = false;
     function onScrollResize() {
       if (rafPending) return;
       rafPending = true;
@@ -48,7 +48,7 @@
       e.preventDefault();
       // Reduced Motion: springen statt gleiten (STYLEGUIDE BEW-4). Live
       // abgefragt, damit ein Umschalten der Systemeinstellung sofort wirkt.
-      var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       if ('scrollBehavior' in document.documentElement.style) window.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' });
       else window.scrollTo(0, 0);
     });

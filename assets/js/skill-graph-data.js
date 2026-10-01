@@ -19,7 +19,7 @@
      * @returns {Object|null}
      */
     parse: function (tag, prefix) {
-      var data;
+      let data;
       try {
         data = JSON.parse(tag.textContent);
       } catch (e) {
@@ -41,16 +41,16 @@
      *          projects = bereinigte Projektliste (für Kanten-Aufbau o.ä.)
      */
     buildSkillProjects: function (projects, opts) {
-      var prefix = (opts && opts.prefix) || 'skill-graph';
-      var knownIds = opts && opts.knownIds;
-      var map = new Map();
-      var cleaned = [];
+      const prefix = (opts && opts.prefix) || 'skill-graph';
+      const knownIds = opts && opts.knownIds;
+      const map = new Map();
+      const cleaned = [];
       projects.forEach(function (project) {
         if (!project || !project.id || !project.label || !Array.isArray(project.skills)) {
           console.warn(prefix + ': Projekt ohne Pflichtfelder übersprungen', project);
           return;
         }
-        var ids = project.skills.filter(function (id) {
+        const ids = project.skills.filter(function (id) {
           if (knownIds && !knownIds.has(id)) {
             console.warn(prefix + ': skill_graph.yml referenziert unbekannten Skill "' + id + '"');
             return false;

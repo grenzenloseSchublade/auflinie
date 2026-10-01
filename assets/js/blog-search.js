@@ -7,20 +7,21 @@
   'use strict';
 
   function mount(root) {
-    var scope = root || document;
-    var input = scope.querySelector('#blog-search-input');
+    const scope = root || document;
+    const input = scope.querySelector('#blog-search-input');
     if (!input || input.hasAttribute('data-blog-search-init')) return;
     input.setAttribute('data-blog-search-init', '');
 
-    var clearBtn = scope.querySelector('#blog-search-clear');
-    var entries = scope.querySelectorAll('#blog-entries .post-item');
-    var emptyMessage = scope.querySelector('#blog-empty-message');
+    const clearBtn = scope.querySelector('#blog-search-clear');
+    const entries = scope.querySelectorAll('#blog-entries .post-item');
+    const emptyMessage = scope.querySelector('#blog-empty-message');
 
     function normalize(v) { return (v || '').toLowerCase().trim(); }
     function applyFilter() {
-      var q = normalize(input.value), n = 0;
+      const q = normalize(input.value);
+      let n = 0;
       entries.forEach(function (item) {
-        var visible = q === '' || (item.getAttribute('data-search') || '').indexOf(q) !== -1;
+        const visible = q === '' || (item.getAttribute('data-search') || '').indexOf(q) !== -1;
         item.style.display = visible ? '' : 'none';
         if (visible) n += 1;
       });
