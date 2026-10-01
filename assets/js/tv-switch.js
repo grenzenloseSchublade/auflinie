@@ -18,6 +18,14 @@
   const COOLDOWN_MS = 6000;
   const BASE = document.documentElement.getAttribute('data-baseurl') || '';
 
+  // Mobil = down(md) wie der Vollbild-Hero (_hero.scss und Critical-CSS in
+  // _layouts/default.html). Gate-Paar, nur gemeinsam ändern (STYLEGUIDE BP-6).
+  // Ohne site-utils.js (altes HTML aus dem Cache): kein CRT, nur Crossfade.
+  function isMobile() {
+    const mq = window.AuflinieUtils && window.AuflinieUtils.mq;
+    return !!(mq && mq.downMd && mq.downMd.matches);
+  }
+
   function normalizePath(p) {
     return p.replace(/\/+$/, '') || '/';
   }
@@ -41,7 +49,7 @@
     // Weiterhin dosiert: Bereichswechsel + Scroll-Top + Cooldown (markiert
     // Kapitel). Firefox kann kein Cross-Doc-VT; reduced-motion schaltet
     // @view-transition ohnehin ab.
-    if (window.innerWidth > 768) return false;
+    if (!isMobile()) return false;
     if (window.scrollY > 4) return false;
     if (!toPath || area(fromPath) === area(toPath)) return false;
     try {

@@ -4,7 +4,9 @@
 // Seiten-spezifische Layout-Korrekturen für die Mandelbrot-Explorer-Seite
 // Ausgelagert aus components/_pages.scss für bessere Organisation
 
-@media (max-width: 768px) {
+@use "abstracts/breakpoints" as *;
+
+@include down(md) {
   .mandelbrot-page .page__inner-wrap {
     padding-left: 0;
     padding-right: 0;
@@ -19,7 +21,7 @@
 // Volle Breite für die Fraktal-Panels auf der Mandelbrot-Seite
 .mandelbrot-page {
   .fractal-panel {
-    @media (max-width: 768px) {
+    @include down(md) {
       border-radius: 0;
       margin-left: 0;
       margin-right: 0;

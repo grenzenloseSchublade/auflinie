@@ -3,6 +3,7 @@
 
 @use "abstracts/tokens" as *;
 @use "abstracts/mixins" as *;
+@use "abstracts/breakpoints" as *;
 @use "components/fractal-panel/tokens" as *;
 
 // -----------------------------------------------------------------------------
@@ -101,7 +102,7 @@
     display: block;
   }
 
-  @media (max-width: 768px) {
+  @include down(md) {
     max-height: 50vh;
   }
 
@@ -210,7 +211,7 @@
     margin-top: $fp-space-3;
   }
 
-  @media (max-width: 500px) {
+  @include down(fp-columns) {
     .nav-columns {
       grid-template-columns: 1fr;
     }
@@ -326,7 +327,7 @@
     }
   }
 
-  @media (max-width: 768px) {
+  @include down(md) {
     .fractal-panel__explanation-box {
       max-height: 60vh;
     }

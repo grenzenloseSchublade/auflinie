@@ -36,7 +36,7 @@ Alle Regeln zu Gestaltung, Code, Sprache, Sicherheit und Arbeitsweise stehen in 
 ## TV-Umschalt-Effekt sichtbar machen (Troubleshooting)
 
 Der Seitenwechsel-Effekt (View Transitions, grüner Phosphor-Blink) erscheint nur, wenn ALLE Bedingungen erfüllt sind:
-- Fensterbreite ≤768px (Vollbild-Hero: Header reicht bis an den unteren Rand — auch im schmal gezogenen Desktop-Fenster)
+- Fensterbreite unter 768px (Vollbild-Hero: Header reicht bis an den unteren Rand — auch im schmal gezogenen Desktop-Fenster)
 - Start auf der Startseite über „Über mich" oder „Fraktale erkunden", ungescrollt
 - Browser: Chrome/Edge 126+ oder Safari 18.2+ (Firefox kann Cross-Document-Transitions noch nicht → normaler Wechsel)
 - **Systemeinstellung „Bewegung reduzieren"/„Animationen entfernen" ist AUS** (Android: Bedienungshilfen bzw. Entwickleroptionen → Animationsmaßstab; iOS: Bedienungshilfen → Bewegung) — der Effekt respektiert `prefers-reduced-motion`

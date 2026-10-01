@@ -2,6 +2,7 @@
 
 @use "abstracts/tokens" as *;
 @use "abstracts/mixins" as *;
+@use "abstracts/breakpoints" as *;
 
 // Positionierungs-Statement unter dem Hero
 // Spalte mittig, Zeilen im Blocksatz. Blocksatz ohne Silbentrennung
@@ -20,7 +21,7 @@
     hyphens: auto;
     text-align: justify;
 
-    @media (max-width: 480px) {
+    @include down(xs) {
       text-align: left;
     }
 
@@ -58,7 +59,7 @@
     line-height: 1.65;
   }
 
-  @media (max-width: 768px) {
+  @include down(md) {
     grid-template-columns: 1fr;
     padding: $space-4;
   }

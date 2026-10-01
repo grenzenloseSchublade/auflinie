@@ -2,6 +2,7 @@
 // Runder, schwebender Button zum Zurückkehren an den Seitenanfang
 
 @use "abstracts/tokens" as *;
+@use "abstracts/breakpoints" as *;
 
 .back-to-top {
   // Positionierung: mittig unten (Nutzerentscheidung — überdeckt zwar
@@ -96,7 +97,7 @@
   }
 
   // Mobile Anpassungen
-  @media (max-width: 767px) {
+  @include down(md) {
     width: 44px;
     height: 44px;
 

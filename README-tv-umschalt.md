@@ -206,8 +206,12 @@ ein offener Drawer slidet trotzdem raus.
   Entscheidung nach `sessionStorage`, ein parser-blockierendes
   Inline-Script in `_includes/head/custom.html` liest sie im `pagereveal`
   (nie auf defer/async umstellen!). Guards: Pfad-Match + 10 s-TTL.
-- Aktiv nur `(max-width: 768px) and (prefers-reduced-motion: no-preference)`;
-  ohne Browser-Support (Firefox) normale Navigation.
+- View Transitions laufen nur unter `(prefers-reduced-motion: no-preference)`
+  (`_view-transition.scss`, `vtGate` in `greedy-navigation.js`). Den
+  CRT-Effekt gibt es nur mobil, also unter 768 px: `tv-switch.js` fragt
+  `AuflinieUtils.mq.downMd`, dieselbe Grenze wie `down(md)` beim
+  Vollbild-Hero (STYLEGUIDE BP-6). Ohne Browser-Support (Firefox) normale
+  Navigation.
 - Offline identisch (Service-Worker-Voll-Precache).
 
 ## Recherche-Quellen (Auswahl)

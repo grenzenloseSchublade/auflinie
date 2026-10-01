@@ -6,6 +6,7 @@
 @use "sass:color";
 @use "abstracts/tokens" as *;
 @use "abstracts/mixins" as *;
+@use "abstracts/breakpoints" as *;
 
 // Stichpunkt-Zeile und Zielgröße der Aufklapper (WCAG 2.5.8, STYLEGUIDE 6.1):
 // Ein einzeiliger <summary> ist 0.85rem × 1.45 = 19,7 px hoch, und die
@@ -195,7 +196,7 @@ $cv-summary-pad: max(0px, calc((24px - #{$cv-summary-line}) / 2));
 }
 
 // Mobile: Rail einspaltig, Zeitraum über dem Eintrag
-@media (max-width: 640px) {
+@include down(content) {
   .cv-entries::before {
     display: none;
   }
@@ -484,7 +485,7 @@ li.cv-skill-chip--breadth {
   border-left: 2px solid $link-color-subtle;
   transition: border-color $duration-base ease;
 
-  @media (max-width: 640px) {
+  @include down(content) {
     height: calc(4 * 1.5em + 0.8rem);
   }
 }

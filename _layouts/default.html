@@ -17,7 +17,8 @@
       Besuchenden (Standard 16 px) statt der Theme-Rampe 18/20/22 px
       (Owner-Entscheidung 1.10.2026). {% endcomment %}
       html{font-size:100%;-webkit-text-size-adjust:100%}
-      /* --masthead-height wie variables/_css-properties.scss, sonst springt der Inhalt (CLS) */
+      /* --masthead-height wie variables/_css-properties.scss, sonst springt der Inhalt (CLS).
+         Breiten wie up(md)/down(md) aus abstracts/_breakpoints.scss, geprüft von scripts/bp-guardrail.sh */
       :root{--masthead-height:74px}
       @media (min-width:768px){:root{--masthead-height:88px}}
       /* padding-top wie html body in components/_masthead.scss, background = Theme-$background-color (Skin dark).
@@ -25,10 +26,9 @@
       body{margin:0;padding-top:var(--masthead-height);background:#252a34}
       /* wie body .masthead in components/_masthead.scss */
       .masthead{position:fixed;top:0;left:0;right:0;height:var(--masthead-height);z-index:1000}
-      /* Hero-Mindesthöhe wie components/_hero.scss. Offene Abweichung: die Mobil-Query
-         greift hier bis einschließlich 768px, in SCSS bis 767.98px (Register R-6) */
+      /* Hero-Mindesthöhe wie components/_hero.scss, mobil = down(md) */
       .page__hero--overlay{position:relative;display:flex;flex-direction:column;justify-content:flex-start;padding-top:8em;min-height:clamp(410px,42vh,520px);background-size:cover;background-position:center}
-      @media (max-width:768px){.page__hero--overlay{min-height:calc(100svh - var(--masthead-height));padding-top:18vh}}
+      @media (max-width:767.98px){.page__hero--overlay{min-height:calc(100svh - var(--masthead-height));padding-top:18vh}}
     </style>
   </head>
 

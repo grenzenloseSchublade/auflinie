@@ -1,0 +1,48 @@
+// =============================================================================
+// Breakpoint-Mixins (Tools-Schicht, kein eigenes CSS)
+// =============================================================================
+// Einzige Stelle, an der Media-Queries mit Breiten entstehen (STYLEGUIDE BP-1).
+// Laden mit `@use "abstracts/breakpoints" as *;`. Werte: $breakpoints in
+// variables/_layout.scss.
+
+// Bereiche sind halboffen, damit an der Grenze genau eine Seite gilt:
+//   @include up(md)          → @media (min-width: 768px)
+//   @include down(md)        → @media (max-width: 767.98px)
+//   @include between(md, lg) → @media (min-width: 768px) and (max-width: 1023.98px)
+// 0.02px statt 1px: Browser runden Breiten bei Zoom und hoher Pixeldichte
+// nicht auf ganze Pixel, eine Lücke von 1px fiele dort zwischen die Bereiche.
+// Prefix-Notation statt Range-Syntax (BP-5, iOS Safari < 16.4).
+@use "sass:map";
+@use "abstracts/tokens" as *;
+
+$-gap: 0.02px;
+
+// Wert eines Breakpoints, z. B. bp(md) = 768px.
+@function bp($name) {
+  @if not map.has-key($breakpoints, $name) {
+    @error "Unbekannter Breakpoint `#{$name}`. Bekannt: #{map.keys($breakpoints)}";
+  }
+
+  @return map.get($breakpoints, $name);
+}
+
+// Ab dem Breakpoint (einschließlich).
+@mixin up($name) {
+  @media (min-width: bp($name)) {
+    @content;
+  }
+}
+
+// Unterhalb des Breakpoints.
+@mixin down($name) {
+  @media (max-width: bp($name) - $-gap) {
+    @content;
+  }
+}
+
+// Ab $lower, unterhalb von $upper.
+@mixin between($lower, $upper) {
+  @media (min-width: bp($lower)) and (max-width: bp($upper) - $-gap) {
+    @content;
+  }
+}

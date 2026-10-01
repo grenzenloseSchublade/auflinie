@@ -3,6 +3,7 @@
 
 @use "abstracts/tokens" as *;
 @use "abstracts/mixins" as *;
+@use "abstracts/breakpoints" as *;
 
 // Aliase auf die geteilten Tokens (variables/_colors.scss, _typography.scss)
 $fp-accent: $link-color;
@@ -28,7 +29,7 @@ $fp-heading: $console-heading;
   padding: $fp-space-4;
   box-shadow: 0 2px 6px $black-a25;
 
-  @media (max-width: 768px) {
+  @include down(md) {
     padding: 10px;
     margin-left: 0;
     margin-right: 0;

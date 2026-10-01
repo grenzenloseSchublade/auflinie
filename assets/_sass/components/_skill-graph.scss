@@ -4,6 +4,7 @@
 
 @use "abstracts/tokens" as *;
 @use "abstracts/mixins" as *;
+@use "abstracts/breakpoints" as *;
 
 .skill-graph {
   margin-top: 1.4rem;
@@ -32,7 +33,7 @@
   margin-top: 0.8rem;
   padding: $space-4;
 
-  @media (max-width: 640px) {
+  @include down(content) {
     padding: 0.6rem;
   }
 }
@@ -118,7 +119,7 @@
   overflow-y: auto;
   margin: 0.7rem 0 0;
 
-  @media (max-width: 640px) {
+  @include down(content) {
     height: calc(4 * 1.5em);
   }
 }

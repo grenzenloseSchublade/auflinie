@@ -2,6 +2,7 @@
 // Teil des Splits von components/_fractal-panel.scss (Umbrella dort)
 
 @use "abstracts/tokens" as *;
+@use "abstracts/breakpoints" as *;
 @use "components/fractal-panel/tokens" as *;
 
 // -----------------------------------------------------------------------------
@@ -15,11 +16,11 @@
   border: 1px solid $surface-tint;
   box-shadow: $shadow-2;
 
-  @media (max-width: 768px) {
+  @include down(md) {
     padding: 14px;
   }
 
-  @media (max-width: 480px) {
+  @include down(xs) {
     padding: $fp-space-3;
     border-radius: 10px;
   }
@@ -50,7 +51,7 @@
 }
 
 // Desktop: 2-Spalten-Grid für Basic-Controls, bei --single auch für Advanced
-@media (min-width: 900px) {
+@include up(md-wide) {
   .fractal-panel__controls-basic {
     display: grid;
     grid-template-columns: 1fr auto;
@@ -138,7 +139,7 @@
     text-align: left;
   }
 
-  @media (max-width: 768px) {
+  @include down(md) {
     flex-wrap: wrap;
     gap: $fp-space-2;
 
@@ -154,7 +155,7 @@
     }
   }
 
-  @media (max-width: 480px) {
+  @include down(xs) {
     padding: $fp-space-2 10px;
   }
 }
@@ -172,7 +173,7 @@
   }
 }
 
-@media (max-width: 768px) {
+@include down(md) {
   .fractal-panel__control-row--colors {
     .fractal-panel__button--intensity {
       padding: 10px;
@@ -278,7 +279,7 @@
     }
   }
 
-  @media (max-width: 768px) {
+  @include down(md) {
     flex: 1 1 100%;
     margin: 0;
     order: 1;

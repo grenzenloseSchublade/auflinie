@@ -2,6 +2,7 @@
 // Teil des Splits von components/_fractal-panel.scss (Umbrella dort)
 
 @use "abstracts/tokens" as *;
+@use "abstracts/breakpoints" as *;
 @use "components/fractal-panel/tokens" as *;
 
 // -----------------------------------------------------------------------------
@@ -29,7 +30,7 @@
   // Mobil: alle fünf Buttons gleichberechtigt als Icon-über-Label-Stack
   // (App-Tab-Bar-Muster) — vorher waren Fokus/Vollbild icon-only 38px,
   // die Gruppe 74px mit Text ("außen doppelt so klein")
-  @media (max-width: 768px) {
+  @include down(md) {
     gap: 6px;
 
     .fractal-panel__button {
@@ -67,7 +68,7 @@
 
   // Mobil: Gruppe auflösen (display: contents) — alle fünf Buttons werden
   // direkte, exakt gleich breite Flex-Spalten der Toolbar
-  @media (max-width: 768px) {
+  @include down(md) {
     display: contents;
   }
 }

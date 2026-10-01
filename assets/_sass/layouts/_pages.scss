@@ -1,6 +1,7 @@
 // Styles für Seiten
 
 @use "abstracts/tokens" as *;
+@use "abstracts/breakpoints" as *;
 
 // Benutzerdefinierte Klasse für volle Breite auf allen Geräten
 .full-width-page {
@@ -21,7 +22,7 @@
     margin-right: 0;
   }
 
-  @media (max-width: 768px) {
+  @include down(md) {
     .page__content {
       margin-left: 0;
       margin-right: 0;

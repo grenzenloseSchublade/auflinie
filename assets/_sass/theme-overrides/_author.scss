@@ -1,4 +1,5 @@
 @use "abstracts/tokens" as *;
+@use "abstracts/breakpoints" as *;
 
 // Autor-Profil (Sidebar/Floating): „Folgen"-Button + Dropdown
 // in der Site-Designsprache statt Theme-Weiß.
@@ -22,7 +23,7 @@
 // Dropdown-Panel NUR im Button-Modus (<1024px) — auf dem Desktop ist
 // .author__urls eine Inline-Liste; die Panel-Box saß dort als verschobener
 // grauer Kasten neben den Einträgen
-@media (max-width: 1023px) {
+@include down(lg) {
   .author__urls {
     background-color: $console-panel-bg;
     border: 1px solid $console-panel-border;

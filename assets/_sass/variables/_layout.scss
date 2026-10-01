@@ -1,3 +1,5 @@
+@use "sass:math";
+
 // Layout-Variablen für das gesamte Projekt
 // Diese Datei enthält Breiten und Layout-bezogene Variablen. Die Skalen für
 // Abstände, Rundungen, Schatten, Ebenen und Motion stehen in _scales.scss.
@@ -20,8 +22,44 @@ $drawer-width: 180px;
 $hover-transform: translateY(-5px); // Transformation beim Hover
 $standard-transition: $duration-moderate ease; // Standard-Übergangseffekt
 
-// Responsive Breakpoints werden aus dem Theme übernommen
-// $small, $medium, $large, $x-large sind bereits definiert
+// Breakpoints (STYLEGUIDE 3.4, BP-1). Jeder Wert ist die ERSTE Breite des
+// größeren Bereichs: up(md) gilt ab 768px, down(md) bis 767.98px. Media-
+// Queries entstehen nur über die Mixins in abstracts/_breakpoints.scss,
+// scripts/bp-guardrail.sh sperrt Zahlen in eigenen @media-Zeilen.
+// Spiegel in JS: assets/js/site-utils.js (AuflinieUtils.mq), im
+// Critical-CSS: _layouts/default.html. Beide prüft dasselbe Skript.
+$bp-drawer: math.div($drawer-width, 0.75); // 240px, ab hier passt der Drawer (75vw) ganz neben das Overlay (SP-4)
+$bp-xs: 480px;
+$bp-fp-columns: 500px; // Fraktal-Panel: Hilfe-Spalten nebeneinander
+$bp-toast: 576px; // Update-Hinweis rechtsbündig (vorher 36em)
+$bp-sm: 600px;
+$bp-content: 640px; // Content-Spalte: CV, Skill-Graph, section-break
+$bp-md: 768px; // mobil darunter, Desktop ab hier
+$bp-md-wide: 900px;
+$bp-lg: 1024px; // TOC als Seitenleiste, Autor-Links inline
+$bp-xl: 1280px;
+
+// Dieselben Werte als Map für bp(), up(), down() und between().
+$breakpoints: (
+  drawer: $bp-drawer,
+  xs: $bp-xs,
+  fp-columns: $bp-fp-columns,
+  toast: $bp-toast,
+  sm: $bp-sm,
+  content: $bp-content,
+  md: $bp-md,
+  md-wide: $bp-md-wide,
+  lg: $bp-lg,
+  xl: $bp-xl,
+);
+
+// Theme-Anbindung: Minimal Mistakes liest dieselbe Skala (seine Werte sind
+// !default). Eine Änderung oben gilt so für Theme und eigenen Code.
+$small: $bp-sm;
+$medium: $bp-md;
+$medium-wide: $bp-md-wide;
+$large: $bp-lg;
+$x-large: $bp-xl;
 
 // Mobiles Tap-Highlight (rechteckiger Overlay-Rahmen beim Antippen).
 // Global abgeschaltet — Tastatur-Fokus bleibt über :focus-visible sichtbar.

@@ -53,17 +53,22 @@
       });
     }
 
+    // Bereich der Theme-Skala (md/lg/xl): an diesen Grenzen ändert das CSS
+    // die Link-Schriftgröße, die Breiten müssen dann neu gemessen werden.
+    // Ohne site-utils.js (altes HTML aus dem Cache) null: dann bei jedem
+    // check() messen, langsamer, aber korrekt.
     function currentBreakpoint() {
-      const winWidth = window.innerWidth || document.documentElement.clientWidth;
-      if (winWidth < 768) return 0;
-      if (winWidth < 1024) return 1;
-      if (winWidth < 1280) return 2;
+      const mq = window.AuflinieUtils && window.AuflinieUtils.mq;
+      if (!mq || !mq.downMd || !mq.downLg || !mq.downXl) return null;
+      if (mq.downMd.matches) return 0;
+      if (mq.downLg.matches) return 1;
+      if (mq.downXl.matches) return 2;
       return 3;
     }
 
     function check() {
       const curBreakpoint = currentBreakpoint();
-      if (curBreakpoint !== lastBreakpoint) {
+      if (curBreakpoint === null || curBreakpoint !== lastBreakpoint) {
         measureLinks();
         lastBreakpoint = curBreakpoint;
       }
@@ -264,7 +269,7 @@
     // View Transition den Exit übernimmt — der pageswap-Snapshot braucht
     // den offenen Zustand, ::view-transition-old(nav-drawer) slidet ihn
     // innerhalb der Transition raus (_view-transition.scss). Nur ohne VT
-    // (Firefox, Desktop >768px, reduced motion) wie früher schließen —
+    // (Firefox, reduced motion) wie früher schließen —
     // fire-and-forget parallel zur nativen Navigation.
     // Die matchMedia-Bedingung spiegelt exakt das @view-transition-Gate
     // aus _view-transition.scss — beide müssen synchron bleiben. Seit dem

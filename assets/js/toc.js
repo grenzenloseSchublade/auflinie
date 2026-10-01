@@ -20,7 +20,8 @@
 
   // site-utils.js liefert die Helfer. Fallback, falls sie fehlen (z. B. altes
   // HTML aus dem HTTP-Cache trifft kurz nach einem Deploy auf neues Skript):
-  // dann ohne Drosselung und ohne Reduced-Motion-Abfrage, aber ohne Absturz.
+  // dann ohne Drosselung und ohne Breakpoints (Verhalten wie auf dem Desktop,
+  // kein Sticky-TOC), aber ohne Absturz.
   function utils() {
     return window.AuflinieUtils || {
       rafThrottle: function (fn) { return fn; },
@@ -30,7 +31,12 @@
     };
   }
 
-  const MOBILE_BREAKPOINT = 1024;
+  // Ohne Sidebar-TOC: unter $bp-lg, Gegenstück down(lg) in _toc.scss.
+  function isBelowLg() {
+    const mq = utils().mq;
+    return !!(mq && mq.downLg && mq.downLg.matches);
+  }
+
   // Spiegel zu variables/_css-properties.scss: --masthead-height (Grundwert
   // in :root). Greift nur, wenn das Token fehlt.
   const MASTHEAD_HEIGHT_FALLBACK_PX = 74;
@@ -71,8 +77,6 @@
     let stickyVisible = false;
     let cachedMastheadHeight = null;
 
-    const isMobile = function () { return window.innerWidth < MOBILE_BREAKPOINT; };
-
     const getMastheadHeight = function () {
       if (cachedMastheadHeight === null) {
         const val = getComputedStyle(document.documentElement).getPropertyValue('--masthead-height').trim();
@@ -83,7 +87,7 @@
 
     // ── Visibility: Sticky-TOC nur mobil + gescrollt + Original-TOC aus dem Bild
     function updateStickyVisibility() {
-      if (!isMobile()) { hideStickyToc(); return; }
+      if (!isBelowLg()) { hideStickyToc(); return; }
       const tocRect = originalToc.getBoundingClientRect();
       const mastheadHeight = getMastheadHeight();
       const tocBelowMasthead = tocRect.bottom < mastheadHeight;
@@ -115,7 +119,7 @@
     // ── Gumshoe (ScrollSpy) ────────────────────────────────────────────────
     function getGumshoeOffset() {
       const mastheadH = getMastheadHeight();
-      const stickyH = (isMobile() && stickyVisible) ? stickyToc.offsetHeight : 0;
+      const stickyH = (isBelowLg() && stickyVisible) ? stickyToc.offsetHeight : 0;
       return mastheadH + stickyH + 20;
     }
 
@@ -141,7 +145,7 @@
 
       document.addEventListener('gumshoeActivate', function (event) {
         const link = event.detail.link;
-        if (link && isMobile()) { updateCurrentHeading(link.textContent.trim()); }
+        if (link && isBelowLg()) { updateCurrentHeading(link.textContent.trim()); }
         if (link) { link.setAttribute('aria-current', 'true'); }
         syncDropdownActive(link);
       }, signal);

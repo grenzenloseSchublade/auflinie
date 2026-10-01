@@ -3,6 +3,7 @@
 
 @use "abstracts/tokens" as *;
 @use "abstracts/mixins" as *;
+@use "abstracts/breakpoints" as *;
 @use "components/fractal-panel/tokens" as *;
 
 // -----------------------------------------------------------------------------
@@ -19,7 +20,7 @@
   flex: 1 1 300px;
   min-width: 260px;
 
-  @media (max-width: 768px) {
+  @include down(md) {
     min-width: 100%;
     flex: 1 1 100%;
   }
@@ -72,18 +73,18 @@
   max-height: 70vh;
   min-height: 320px;
 
-  @media (min-width: 1024px) {
+  @include up(lg) {
     max-height: 75vh;
     min-height: 380px;
   }
 
-  @media (max-width: 768px) {
+  @include down(md) {
     max-height: 65vh;
     min-height: 200px;
   }
 }
 
-@media (max-width: 768px) {
+@include down(md) {
   .fractal-panel--single.is-focus-mode .fractal-panel__canvas {
     max-height: calc(100vh - 140px);
     min-height: clamp(260px, 60vh, 520px);
@@ -94,7 +95,7 @@
   max-height: 60vh;
   min-height: 240px;
 
-  @media (max-width: 768px) {
+  @include down(md) {
     max-height: 55vh;
     min-height: 180px;
   }
@@ -121,7 +122,7 @@
   gap: $fp-space-1;
   pointer-events: none;
 
-  @media (max-width: 600px) {
+  @include down(sm) {
     top: 6px;
     right: 6px;
     gap: 3px;
@@ -152,7 +153,7 @@
     color: $fp-accent;
   }
 
-  @media (max-width: 600px) {
+  @include down(sm) {
     padding: 3px 6px;
     font-size: $fp-fs-2xs;
   }

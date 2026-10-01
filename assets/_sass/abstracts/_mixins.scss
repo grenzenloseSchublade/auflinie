@@ -6,6 +6,7 @@
 // Selektoren, die %section-base erweitern, landen an der Stelle im CSS, an
 // der dieses Modul zum ersten Mal geladen wird (Kaskade, siehe _custom.scss).
 @use "abstracts/tokens" as *;
+@use "abstracts/breakpoints" as *;
 
 // Gemeinsame Basis für Abschnitte
 %section-base {
@@ -60,7 +61,7 @@
     )
     top / 100% 1px no-repeat;
 
-  @media (max-width: 640px) {
+  @include down(content) {
     margin-top: 2.4rem;
     padding-top: 1.8rem;
   }

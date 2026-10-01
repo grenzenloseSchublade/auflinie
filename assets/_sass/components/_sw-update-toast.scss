@@ -5,6 +5,7 @@
 
 @use "abstracts/tokens" as *;
 @use "abstracts/mixins" as *;
+@use "abstracts/breakpoints" as *;
 
 @keyframes sw-update-toast-enter {
   from {
@@ -40,7 +41,7 @@
   pointer-events: none;
   font-family: $sans-serif;
 
-  @media (min-width: 36em) {
+  @include up(toast) {
     justify-content: flex-end;
   }
 }

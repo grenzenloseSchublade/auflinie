@@ -2,24 +2,25 @@
 // =============================================================================
 
 // Mobile: TOC erscheint oberhalb des Contents (Minimal Mistakes Default)
-// Desktop (>= mm.$large): TOC ist sticky in der rechten Sidebar
+// Desktop (ab $bp-lg, up(lg)): TOC ist sticky in der rechten Sidebar
 // NEU: Mobile Sticky TOC Header - erscheint unter Masthead beim Scrollen
 // =============================================================================
 
 @use "abstracts/tokens" as *;
 @use "abstracts/mixins" as *;
+@use "abstracts/breakpoints" as *;
 @use "theme-bridge" as mm;
 
 // =============================================================================
 // MOBILE STICKY TOC HEADER
 // Erscheint unter dem Masthead wenn das Original-TOC aus dem Viewport scrollt.
-// Nur für Viewports ohne rechtsseitig floatendes Sidebar-TOC (< mm.$large).
+// Nur für Viewports ohne rechtsseitig floatendes Sidebar-TOC (down(lg)). Gegenstück in JS: toc.js, AuflinieUtils.mq.downLg.
 // =============================================================================
 .toc-sticky-mobile {
   // Versteckt auf Desktop (Sidebar-TOC floatet rechts)
   display: none;
 
-  @media (max-width: mm.$large - 1) {
+  @include down(lg) {
     display: block;
     position: fixed;
     top: var(--masthead-height);
@@ -219,7 +220,7 @@
 .toc-sticky-overlay {
   display: none;
 
-  @media (max-width: mm.$large - 1) {
+  @include down(lg) {
     display: block;
     position: fixed;
     inset: calc(var(--masthead-height) + 48px) 0 0;
@@ -488,10 +489,10 @@
 }
 
 // =============================================================================
-// DESKTOP STYLES (>= mm.$large: 1024px)
+// DESKTOP STYLES (up(lg), ab 1024px)
 // Kompaktere Darstellung für Sidebar-Sticky-Modus
 // =============================================================================
-@media (min-width: mm.$large) {
+@include up(lg) {
   .toc {
     .nav__title {
       // Größe kommt zentral aus $toc-title-font-size
@@ -538,7 +539,7 @@
 }
 
 // Mobile: Wide-Layout braucht größere Touch-Targets
-@media (max-width: mm.$large - 1) {
+@include down(lg) {
   .wide .toc {
     .nav__title {
       // Größe kommt zentral aus $toc-title-font-size

@@ -1024,7 +1024,11 @@
     }
 
     updateMobileControls() {
-      const isMobile = FractalUtils.isMobileDevice() || window.innerWidth <= 768;
+      // Breite wie down(md) in components/fractal-panel/*.scss. Ohne
+      // site-utils.js (altes HTML aus dem Cache) zählt nur das Gerät.
+      const mq = window.AuflinieUtils && window.AuflinieUtils.mq;
+      const narrow = !!(mq && mq.downMd && mq.downMd.matches);
+      const isMobile = FractalUtils.isMobileDevice() || narrow;
       this.views.forEach((view) => {
         if (view.mobileZoom) view.mobileZoom.style.display = isMobile ? 'flex' : 'none';
       });

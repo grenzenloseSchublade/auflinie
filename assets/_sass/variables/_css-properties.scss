@@ -1,6 +1,7 @@
 // Zentrale CSS Custom Properties (CSS-Variablen)
 // Diese Datei enthält alle :root CSS-Variablen für das gesamte Projekt
 // Konsolidiert aus _masthead.scss und _neon-orbit.scss
+@use "abstracts/breakpoints" as *;
 
 :root {
   // ============================================
@@ -89,7 +90,7 @@
 }
 
 // Desktop: Größere Header-Höhe (moderne Standards: 72-88px)
-@media (min-width: 768px) {
+@include up(md) {
   :root {
     --masthead-height: 88px;
   }
