@@ -1,5 +1,10 @@
 <!-- start custom head snippets -->
 
+{% if page.styleguide %}
+<!-- Styleguide-Ansicht (nie veröffentlicht, STYLEGUIDE.md SG-1) -->
+<link href="{{ '/assets/css/styleguide.css' | relative_url }}" rel="stylesheet">
+{% endif %}
+
 {% if page.fractal_panels %}
 <!-- Fraktal-Panels: CSS der CDN-Libs einmal pro Seite (JS in fractal/deps.html) -->
 <link href="{{ '/assets/vendor/nouislider.min.css' | relative_url }}" rel="stylesheet">

@@ -102,7 +102,7 @@ export default [
     // Playwright-Tests: Node/CommonJS (require). Die Callbacks von
     // page.evaluate/waitForFunction laufen im Browser, daher auch dessen
     // Globals.
-    files: ['tests/**/*.js'],
+    files: ['tests/**/*.js', 'playwright.config.js'],
     languageOptions: {
       ecmaVersion: 2022,
       sourceType: 'commonjs',

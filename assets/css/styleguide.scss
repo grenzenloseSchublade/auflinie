@@ -1,0 +1,111 @@
+---
+# Styleguide-Ansicht: NIE veröffentlicht (STYLEGUIDE.md, SG-1). Gebaut nur mit
+# `jekyll build --unpublished` (lokal und im CI-Review-Job), nie im Deploy.
+published: false
+---
+
+@charset "utf-8";
+
+// Nur Tokens, keine Komponenten: die Komponenten kommen aus main.css, damit die
+// Ansicht genau das zeigt, was live ausgeliefert wird.
+@import "variables";
+
+// Farb-Tokens als Flächen und Textproben. Die Werte kommen direkt aus
+// variables/_colors.scss — ein neues Token muss hier eingetragen werden.
+$sg-colors: (
+  "white": $white,
+  "link-color": $link-color,
+  "link-color-subtle": $link-color-subtle,
+  "link-color-active": $link-color-active,
+  "hover-color": $hover-color,
+  "hover-color-subtle": $hover-color-subtle,
+  "hover-color-text": $hover-color-text,
+  "console-heading": $console-heading,
+  "console-panel-bg": $console-panel-bg,
+  "console-panel-border": $console-panel-border,
+  "fg-muted": $fg-muted,
+  "fg-subtle": $fg-subtle,
+  "border-accent": $border-accent,
+  "surface-tint": $surface-tint,
+);
+
+@each $name, $value in $sg-colors {
+  .sg-swatch--#{$name} { background: $value; }
+  .sg-text--#{$name} { color: $value; }
+}
+
+// Gründe, auf denen Text steht (Kontrastprüfung in tests/visual/contrast.spec.js)
+.sg-bg--page { background: #252a34; } // Seitengrund aus dem Critical CSS (Register R-?, B-F07)
+.sg-bg--panel { background: $console-panel-bg; }
+.sg-bg--nav-hover { background: #252a34; }
+.sg-bg--nav-hover > * { background: rgb(5 217 232 / 10%); } // Nav-Hover-Grund (_masthead.scss)
+
+// Schriftgrößen-Skala
+$sg-font-sizes: (
+  "fs-label-xs": $fs-label-xs,
+  "fs-label": $fs-label,
+  "fs-label-lg": $fs-label-lg,
+  "fs-ui": $fs-ui,
+  "fs-body-sm": $fs-body-sm,
+  "fs-body": $fs-body,
+  "fs-body-lg": $fs-body-lg,
+  "fs-base": $fs-base,
+  "fs-title-sm": $fs-title-sm,
+  "fs-md": $fs-md,
+  "fs-heading-sm": $fs-heading-sm,
+  "fs-title": $fs-title,
+  "fs-heading": $fs-heading,
+);
+
+// p-qualifiziert: die Theme-Regel `.page__content p { font-size: 1em }` würde
+// eine einfache Klasse überstimmen (bekannte Kaskaden-Falle, TYP-Regeln)
+@each $name, $value in $sg-font-sizes {
+  .page__content p.sg-fs--#{$name} { font-size: $value; }
+}
+
+// Raster der Ansicht selbst (bewusst schlicht)
+.sg-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr));
+  gap: 1rem;
+  margin: 0 0 2rem;
+  padding: 0;
+  list-style: none;
+}
+
+.sg-swatch {
+  height: 3rem;
+  border: 1px solid rgb(255 255 255 / 15%);
+  border-radius: 6px;
+}
+
+.sg-label {
+  display: block;
+  margin-top: 0.35rem;
+  font-family: $mono-font-stack;
+  font-size: $fs-label;
+  color: $fg-muted;
+}
+
+.sg-sample {
+  margin: 0;
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+}
+
+.sg-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+  margin: 0 0 2rem;
+}
+
+// Komponenten, die live fixed/overlay sind, hier statisch zeigen
+.sg-static {
+  position: static;
+  transform: none;
+  animation: none;
+}
+
+.page__content p.sg-fs-sample { margin: 0 0 0.4rem; }

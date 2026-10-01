@@ -376,7 +376,7 @@ Buttons:
 | Light-Outline | `.page__hero--overlay .btn--light-outline` | Hero-Actions, weiß gerahmt (DES-6) |
 | Keycap | Fraktal-Toolbar | nur im Fraktal-Panel |
 
-- **KOMP-1** [MUSS · Soll · CI-P4] Zustandsmatrix für jedes interaktive Element: Ruhe · Hover in `(hover: hover)` · `:focus-visible` mit dem globalen Magenta-Ring · Pressed · Ausgewählt (`aria-pressed`, `aria-current`, `.is-active`) · Disabled. Ablage: offen, siehe SG-1 (nie auf der Live-Seite). Bis dahin Review.
+- **KOMP-1** [MUSS · Ist · CI] Zustandsmatrix für jedes interaktive Element: Ruhe · Hover in `(hover: hover)` · `:focus-visible` mit dem globalen Magenta-Ring · Pressed · Ausgewählt (`aria-pressed`, `aria-current`, `.is-active`) · Disabled. Ablage: Styleguide-Ansicht (SG-1 bis SG-3), Check: Screenshot-Vergleich der erzwungenen Zustände.
 - **KOMP-2** [MUSS · Soll · Review] Kein `:focus` als Stil-Selektor außer im globalen Reset `:focus:not(:focus-visible)`. **[Soll]** `btn-role-*` von `&:focus` auf `&:focus-visible` umstellen.
 - **KOMP-3** [MUSS · Ist · Review] Hover-Farbsemantik (Owner, 1. 10. 2026): Navigations-Textlinks (Masthead, Drawer, TOC) hovern in `$hover-color-text` (`#ff2fd2`, dunkelster Ton desselben Magentas mit 4,5:1). `$hover-color-subtle` bleibt Linien und Flächen vorbehalten (FARB-4). Buttons, Karten, Chips hovern über die Cyan-Rahmenstufe. Der Cyan-Hover-Grund der Navigation (`rgb(5 217 232 / 10%)`) bleibt. **Dokumentierte Ausnahme (Owner, 1. 10. 2026):** Auf dem Cyan-Grund erreicht `$hover-color-text` nur 3,68:1. Das gilt ausschließlich im kurzen Hover-Moment, der Ruhezustand ist weiß. Der hellere AA-Ton `#ff63dd` wurde verworfen. Neue Stellen übernehmen die Ausnahme nicht, sie gilt nur für Masthead und Drawer.
 - **KOMP-3a** [MUSS · Ist · Review] Navigations-Fokus ist ein Rahmen, keine Füllung: `outline: 2px solid $hover-color; outline-offset: -3px` (die Nav-Container clippen). Füllung plus gleichfarbiger Text ergab 1,49:1 (FARB-7).
@@ -461,9 +461,11 @@ Anlass: Im Skill-Graphen rutschte die Seite beim Wischen über den Graphen weg (
 
 - **PRINT-1** [SOLL · Soll · Review] Animationen, CRT-Schichten, Power-Button, Overlays und Navigation sind im Druck ausgeblendet. Text druckt schwarz auf weiß. Ist: Regeln in `_hero.scss` und `_skill-graph.scss`.
 
-### 5.5 Styleguide-Ansicht (Entwicklungswerkzeug)
+### 5.5 Styleguide-Ansicht und automatisches Review
 
-- **SG-1** [MUSS · Ist · Review] **Nie veröffentlicht (Owner, 1. 10. 2026).** Eine Styleguide-Ansicht, die Tokens und Komponenten aus dem echten SCSS rendert, ist ein Entwicklungswerkzeug. Sie landet nie im deployten `_site` und nie auf der Live-Seite, auch nicht versteckt per `noindex`. **[Offen]** Ob es sie als rein lokale Seite gibt (nur bei `jekyll serve` bzw. im CI-Testlauf gebaut), wird noch entschieden. Bei Widerspruch gilt dieses Dokument.
+- **SG-1** [MUSS · Ist · CI] **Im Repo, nie veröffentlicht (Owner, 1. 10. 2026).** Die Styleguide-Ansicht `_pages/styleguide.html` (Stylesheet `assets/css/styleguide.scss`) trägt `published: false`. Gebaut wird sie nur mit `jekyll build --unpublished` (lokal `jekyll serve --unpublished`, CI: `_site_review`). Ein CI-Gate bricht ab, wenn sie im deployten `_site` auftaucht.
+- **SG-2** [MUSS · Ist · CI] Die Ansicht zeigt echte Komponenten mit echtem Markup und echten Klassen aus `main.css`, Tokens kommen aus den Sass-Variablen. Jede neue Komponente und jedes neue Farb- oder Schriftgrößen-Token wird dort eingetragen, mit `data-sg-section` und, falls interaktiv, `data-sg-states`.
+- **SG-3** [MUSS · Ist · CI] Automatisches Review (`tests/visual/`, Playwright im Container `mcr.microsoft.com/playwright`, Version wie `@playwright/test`): Screenshot-Vergleich jedes Abschnitts und jedes Zustands, Kontrast jeder Textprobe gegen ihren Grund (`data-sg-min`, Ausnahmen mit Regel-ID), axe-core WCAG 2.2 AA auf den echten Seiten mit Baseline `tests/visual/a11y-known.json` (nur neue Verstöße brechen ab). Gewollte visuelle Änderung: `npm run test:visual:update` im Container, neue Bilder mitcommitten. Die Baseline der bekannten a11y-Befunde darf nur schrumpfen.
 
 ---
 

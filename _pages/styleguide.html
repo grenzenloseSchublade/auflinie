@@ -1,0 +1,140 @@
+---
+# Styleguide-Ansicht: Entwicklungswerkzeug, NIE veröffentlicht (STYLEGUIDE.md,
+# SG-1). published: false hält sie aus dem Deploy-Build. Gebaut wird sie nur mit
+# `jekyll build --unpublished` (lokal: `jekyll serve --unpublished`) und im
+# CI-Review-Job, der sie per Playwright prüft (tests/visual/). Der Build-Job
+# prüft, dass sie nie im ausgelieferten _site landet.
+#
+# Inhalt: echte Komponenten mit echtem Markup und echten Klassen aus main.css,
+# Tokens über assets/css/styleguide.scss. Neue Komponente = hier eintragen.
+layout: single
+title: "Styleguide"
+permalink: /styleguide/
+published: false
+sitemap: false
+author_profile: false
+toc: false
+styleguide: true
+---
+
+<p>Interne Ansicht aller Tokens und Komponenten in ihren Zuständen. Grundlage für das automatische Review (Screenshot-Vergleich, Kontrast, axe). Normativ ist allein <code>STYLEGUIDE.md</code>.</p>
+
+<h2 id="farben">Farben</h2>
+
+<section data-sg-section="farben-flaechen">
+  <ul class="sg-grid">
+    {% assign sg_colors = "white,link-color,link-color-subtle,link-color-active,hover-color,hover-color-subtle,hover-color-text,console-heading,console-panel-bg,console-panel-border,fg-muted,fg-subtle,border-accent,surface-tint" | split: "," %}
+    {% for c in sg_colors %}
+    <li><div class="sg-swatch sg-swatch--{{ c }}"></div><span class="sg-label">${{ c }}</span></li>
+    {% endfor %}
+  </ul>
+</section>
+
+<h3 id="textkontrast">Text auf Gründen</h3>
+
+{% comment %}
+  data-sg-min: geforderter Kontrast (WCAG 2.2 AA: 4,5 Text, 3 große Schrift/UI).
+  data-sg-exception: dokumentierte Owner-Ausnahme (Regel-ID) mit eigenem Mindestwert.
+  Geprüft in tests/visual/contrast.spec.js.
+{% endcomment %}
+<section data-sg-section="textkontrast">
+  {% assign sg_text = "white:4.5,fg-muted:4.5,fg-subtle:4.5,link-color:4.5,link-color-active:4.5,hover-color:4.5,hover-color-text:4.5,console-heading:4.5" | split: "," %}
+  {% assign sg_bgs = "page,panel" | split: "," %}
+  {% for bg in sg_bgs %}
+  <div class="sg-row sg-bg--{{ bg }}" data-sg-bg="{{ bg }}">
+    {% for pair in sg_text %}
+    {% assign p = pair | split: ":" %}
+    <p class="sg-sample sg-text--{{ p[0] }}" data-sg-min="{{ p[1] }}" data-sg-name="{{ p[0] }} auf {{ bg }}">{{ p[0] }}</p>
+    {% endfor %}
+  </div>
+  {% endfor %}
+  <div class="sg-row sg-bg--nav-hover" data-sg-bg="nav-hover">
+    <p class="sg-sample sg-text--hover-color-text" data-sg-min="3" data-sg-exception="KOMP-3" data-sg-name="hover-color-text auf Nav-Hover-Grund">hover-color-text (Nav-Hover)</p>
+  </div>
+</section>
+
+<h2 id="typografie">Typografie</h2>
+
+<section data-sg-section="ueberschriften">
+  <h2>Überschrift H2 (Sektion)</h2>
+  <h3>Überschrift H3</h3>
+  <h4>Überschrift H4</h4>
+  <p>Fließtext – Die Iterationszahl steuert die Detailtiefe. Mehr Iterationen zeigen feinere Strukturen am Rand der Menge, kosten aber Rechenzeit.</p>
+  <p><a href="#typografie">Ein Link im Fließtext</a> und <code>inline code</code>.</p>
+  <blockquote><p>Ein Zitat mit „deutschen Anführungszeichen“ und einem Gedankenstrich – so.</p></blockquote>
+</section>
+
+<section data-sg-section="schriftskala">
+  {% assign sg_fs = "fs-label-xs,fs-label,fs-label-lg,fs-ui,fs-body-sm,fs-body,fs-body-lg,fs-base,fs-title-sm,fs-md,fs-heading-sm,fs-title,fs-heading" | split: "," %}
+  {% for f in sg_fs %}
+  <p class="sg-fs--{{ f }} sg-fs-sample">${{ f }} – Fraktale Welten</p>
+  {% endfor %}
+</section>
+
+<h2 id="buttons">Buttons</h2>
+
+<section data-sg-section="buttons">
+  <div class="sg-row">
+    <a href="#buttons" class="btn btn--primary" data-sg-states="hover,focus-visible">Primär</a>
+    <a href="#buttons" class="btn btn--outline" data-sg-states="hover,focus-visible">Outline</a>
+    <button type="button" class="btn btn--outline" disabled>Deaktiviert</button>
+  </div>
+</section>
+
+<section data-sg-section="keycaps">
+  <div class="fractal-panel">
+    <div class="fractal-panel__toolbar">
+      <button type="button" class="fractal-panel__button" data-sg-states="hover,focus-visible">
+        <span class="icon"><i class="fas fa-crosshairs" aria-hidden="true"></i></span>
+        <span class="btn-text">Fokus</span>
+      </button>
+      <button type="button" class="fractal-panel__button" data-sg-states="hover,focus-visible">
+        <span class="icon"><i class="fas fa-undo" aria-hidden="true"></i></span>
+        <span class="btn-text">Reset</span>
+      </button>
+      <button type="button" class="fractal-panel__button is-active" aria-pressed="true">
+        <span class="icon"><i class="fas fa-tv" aria-hidden="true"></i></span>
+        <span class="btn-text">CRT</span>
+      </button>
+    </div>
+  </div>
+</section>
+
+<h2 id="chips">Skill-Chips</h2>
+
+<section data-sg-section="chips">
+  <div class="cv-skills">
+    <ul class="cv-skills__chips">
+      <li class="cv-skill-chip"><button type="button" class="cv-skill-chip__button" aria-pressed="false" data-sg-states="hover,focus-visible">Python</button></li>
+      <li class="cv-skill-chip is-selected"><button type="button" class="cv-skill-chip__button" aria-pressed="true">Docker</button></li>
+      <li class="cv-skill-chip is-related"><button type="button" class="cv-skill-chip__button" aria-pressed="false">Kubernetes</button></li>
+    </ul>
+  </div>
+</section>
+
+<h2 id="panels">Panels und Hinweise</h2>
+
+<section data-sg-section="panels">
+  <div class="sg-row">
+    <div class="blog-notice__panel sg-static">
+      <p class="blog-notice__title">Hinweis-Titel</p>
+      <p class="blog-notice__text">Hinweistext im Panel – ruhig, kurz, anredefrei.</p>
+      <button type="button" class="btn btn--outline blog-notice__close">Verstanden</button>
+    </div>
+    <div class="sw-update-toast__panel sg-static">
+      <p class="sw-update-toast__headline">Neue Version verfügbar</p>
+      <div class="sw-update-toast__actions">
+        <button type="button" class="sw-update-toast__ghost">Später</button>
+        <button type="button" class="sw-update-toast__primary">Neu laden</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<h2 id="lebenslauf">Lebenslauf-Eintrag</h2>
+
+<section data-sg-section="cv-entry">
+  <ul class="cv-entries">
+    {% include cv/entry.html period="2020–2025" location="Bochum, Deutschland" title="Beispielrolle" org="Beispiel GmbH" description="Kurze Beschreibung mit **Hervorhebung** und einem Satz Kontext." %}
+  </ul>
+</section>

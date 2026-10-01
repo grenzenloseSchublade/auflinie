@@ -1,28 +1,49 @@
-// Playwright-Konfiguration für die SPA-Navigations-Regressionstests (#6).
+// Playwright: SPA-Navigations-Regressionstests (tests/spa-nav.spec.js) und das
+// automatische Style-Guide-Review (tests/visual/: Screenshot-Vergleich der
+// Styleguide-Ansicht, Kontrast, axe-core WCAG 2.2 AA).
 //
-// Voraussetzungen (einmalig / lokal — bewusst NICHT in package.json, damit die
-// npm-Lock/CI unberührt bleibt):
-//   1) npm install -D @playwright/test
-//   2) npx playwright install chromium
-//   3) Seite lokal servieren, z.B.:  bundle exec jekyll serve
-//      -> http://localhost:4000/auflinie/  (baseurl = /auflinie)
-//   4) npx playwright test
-// Basis-URL überschreibbar via BASE_URL (z.B. für ein anderes Port/Setup).
+// Die Seite muss vorher MIT unveröffentlichten Seiten gebaut sein, damit die
+// Styleguide-Ansicht existiert (sie wird nie deployt, STYLEGUIDE.md SG-1):
+//   JEKYLL_ENV=production bundle exec jekyll build --unpublished -d _site_review
+// Der webServer unten liefert _site_review unter /auflinie aus.
+//
+// Screenshots sind plattformabhängig (Schriften, Rendering). Vergleichsbilder
+// deshalb NUR im Playwright-Container erzeugen und prüfen, wie in der CI:
+//   docker run --rm -v "$PWD":/w -w /w mcr.microsoft.com/playwright:v1.63.0-noble \
+//     npx playwright test tests/visual --update-snapshots
+// Basis-URL überschreibbar via BASE_URL, Site-Verzeichnis via SITE_DIR.
 const { defineConfig, devices } = require('@playwright/test');
+
+const PORT = 4100;
+const external = !!process.env.BASE_URL;
 
 module.exports = defineConfig({
   testDir: './tests',
-  timeout: 30_000,
-  expect: { timeout: 7_000 },
+  timeout: 60_000,
+  expect: {
+    timeout: 7_000,
+    // Kleine Toleranz gegen Antialiasing-Rauschen, echte Änderungen bleiben sichtbar
+    toHaveScreenshot: { maxDiffPixelRatio: 0.002, animations: 'disabled', caret: 'hide' },
+  },
+  snapshotPathTemplate: '{testDir}/visual/__screenshots__/{projectName}/{arg}{ext}',
   fullyParallel: true,
-  reporter: 'list',
+  forbidOnly: !!process.env.CI,
+  reporter: process.env.CI ? [['list'], ['html', { open: 'never', outputFolder: 'playwright-report' }]] : 'list',
   use: {
-    baseURL: process.env.BASE_URL || 'http://127.0.0.1:4000',
+    baseURL: process.env.BASE_URL || `http://127.0.0.1:${PORT}`,
     // retain-on-failure statt on-first-retry: ohne konfigurierte retries
     // (Default 0) entstünde bei Fehlschlägen sonst nie ein Trace
     trace: 'retain-on-failure',
+    serviceWorkers: 'block',
+  },
+  webServer: external ? undefined : {
+    command: `node tests/serve.js ${process.env.SITE_DIR || '_site_review'} ${PORT}`,
+    url: `http://127.0.0.1:${PORT}/auflinie/`,
+    reuseExistingServer: !process.env.CI,
   },
   projects: [
-    { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
+    { name: 'spa-nav', testMatch: 'spa-nav.spec.js', use: { ...devices['Desktop Chrome'] } },
+    { name: 'desktop', testMatch: 'visual/**/*.spec.js', use: { ...devices['Desktop Chrome'], viewport: { width: 1280, height: 900 } } },
+    { name: 'mobil', testMatch: 'visual/styleguide.spec.js', use: { ...devices['Pixel 7'] } },
   ],
 });

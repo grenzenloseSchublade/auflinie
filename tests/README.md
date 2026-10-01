@@ -1,54 +1,38 @@
-# SPA-Navigations-Regressionstests (#6)
+# Tests
 
-Headless-Regressionstests (Playwright) für die Persistent-Shell-Navigation
-(`assets/js/spa-nav.js`, siehe [`README-spa-nav.md`](../README-spa-nav.md)).
-Sie nageln die „bricht-nichts"-Invarianten fest, damit künftige Änderungen das
-Fundament nicht heimlich brechen.
+Zwei Gruppen, beide mit Playwright:
 
-> **Status:** Gerüst. Bewusst **nicht** in `package.json`/`package-lock.json`
-> verdrahtet (hält die npm-Lock/CI unberührt) und aus dem Jekyll-Build
-> ausgeschlossen (`_config.yml`). Zum Ausführen einmalig einrichten:
+- **`spa-nav.spec.js`** – Regressionstests der Persistent-Shell-Navigation
+  (`assets/js/spa-nav.js`, siehe [`README-spa-nav.md`](../README-spa-nav.md)).
+- **`visual/`** – automatisches Style-Guide-Review (Regeln: [`STYLEGUIDE.md`](../STYLEGUIDE.md), SG-1 bis SG-3):
+  - `styleguide.spec.js`: Screenshot-Vergleich jedes Abschnitts der Styleguide-Ansicht
+    (`_pages/styleguide.html`, nie veröffentlicht) und jedes erzwungenen Zustands
+    (`data-sg-states`: hover, focus-visible).
+  - `contrast.spec.js`: Kontrast jeder Textprobe (`data-sg-min`) gegen ihren tatsächlichen Grund.
+  - `a11y.spec.js`: axe-core (WCAG 2.2 AA) auf den echten Seiten und der Styleguide-Ansicht.
+    Bekannte Befunde stehen in `visual/a11y-known.json`, nur neue Verstöße brechen ab.
 
-## Einrichten & ausführen
+Alles läuft in der CI im Build-Job (Schritt „Style-Guide-Review“) und blockiert bei Fehlern den Deploy.
 
-### Im Devcontainer (empfohlen)
+## Lokal ausführen
 
-```bash
-# 1) einmalig: Playwright + Chromium + System-Libs (opt-in, nicht in post-create)
-bash .devcontainer/setup-e2e.sh
-
-# 2) Seite servieren (baseurl = /auflinie)
-bundle exec jekyll serve          # -> http://localhost:4000/auflinie/
-
-# 3) Tests (zweites Terminal)
-npm run test:e2e                  # oder: npx playwright test
-```
-
-### Lokal (ohne Devcontainer)
+Screenshots hängen von Schriften und Rendering ab. Deshalb immer im selben
+Container wie die CI (Version = `@playwright/test` in `package.json`):
 
 ```bash
-npm install --no-save @playwright/test   # ohne package.json/Lock zu ändern
-npx playwright install chromium
-bundle exec jekyll serve                 # -> http://localhost:4000/auflinie/
-npm run test:e2e
-#   anderes Setup/Port:
-BASE_URL=http://127.0.0.1:8080 npm run test:e2e
+# 1) Site inkl. Styleguide-Ansicht bauen (kein lokales Ruby: Docker)
+docker run --rm --user "$(id -u):$(id -g)" -e HOME=/tmp -v "$PWD":/srv -w /srv ruby:3.4.8-slim \
+  bash -c "bundle config set --local path vendor/bundle >/dev/null; JEKYLL_ENV=production bundle exec jekyll build --unpublished -d _site_review"
+
+# 2) Tests im Playwright-Container (startet den Server tests/serve.js selbst)
+docker run --rm --user "$(id -u):$(id -g)" -e HOME=/tmp -v "$PWD":/w -w /w --ipc=host \
+  mcr.microsoft.com/playwright:v1.63.0-noble npx playwright test
+
+# Gewollte visuelle Änderung: Vergleichsbilder neu erzeugen und mitcommitten
+#   ... npx playwright test tests/visual --update-snapshots
+# a11y-Baseline neu schreiben (nur bewusst, Diff prüfen, darf nur schrumpfen)
+#   ... npm run test:a11y:baseline
 ```
 
-## Was geprüft wird
-
-- **Verdrahteter Link** (Home → Über mich): Same-Document-**Swap** (window
-  überlebt, kein Voll-Reload), Aktiv-Marker wandert mit, Masthead steht.
-- **Nicht-verdrahteter Link / CDN-Deps** (Mandelbrot): **Voll-Reload**
-  (`needsFullLoad`-Leitplanke).
-- **Modifier-Klick** (Strg/Cmd): wird **nicht** abgefangen.
-- **Zurück** nach Swap: stellt die vorige Seite wieder her.
-- **Ohne JavaScript**: Navigation bleibt nativ (Progressive Enhancement).
-
-## Hinweise
-
-- Selektoren gehen von der aktuellen Navigation (`_data/navigation.yml`) aus —
-  falls sich Nav-Links ändern, ggf. in `spa-nav.spec.js` anpassen.
-- Die View-Transition-/Kanalwechsel-Optik wird hier bewusst **nicht** visuell
-  geprüft (das braucht ein Auge); getestet wird das **Verhalten** (Swap vs.
-  Reload, History, PE).
+Styleguide-Ansicht im Browser: `bundle exec jekyll serve --unpublished`, dann
+<http://localhost:4000/auflinie/styleguide/>.

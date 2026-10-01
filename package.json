@@ -3,7 +3,9 @@
   "private": true,
   "description": "Tooling für die Jekyll-Site (Stylelint, ESLint) — die Site selbst braucht kein Node.",
   "devDependencies": {
+    "@axe-core/playwright": "4.13.0",
     "@eslint/js": "^10.0.1",
+    "@playwright/test": "1.63.0",
     "eslint": "^10.11.0",
     "eslint-plugin-no-unsanitized": "^4.1.5",
     "globals": "^17.13.0",
@@ -14,7 +16,10 @@
   "scripts": {
     "lint:css": "stylelint \"assets/_sass/**/*.scss\"",
     "lint:css:fix": "stylelint --fix \"assets/_sass/**/*.scss\"",
-    "lint:js": "eslint \"assets/js/**/*.js\" tests/*.js",
-    "test:e2e": "playwright test"
+    "lint:js": "eslint \"assets/js/**/*.js\" \"tests/**/*.js\" playwright.config.js",
+    "test:e2e": "playwright test",
+    "test:visual": "playwright test tests/visual",
+    "test:visual:update": "playwright test tests/visual --update-snapshots",
+    "test:a11y:baseline": "UPDATE_A11Y=1 playwright test tests/visual/a11y.spec.js"
   }
 }

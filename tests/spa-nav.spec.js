@@ -30,13 +30,21 @@ test.describe('Persistent-Shell-Navigation — Non-Breaking-Invarianten', () => 
     await expect(page.locator('.masthead')).toBeVisible();
   });
 
-  test('nicht-verdrahteter Link (Mandelbrot, CDN-Deps) macht Voll-Reload', async ({ page }) => {
+  test('nicht-verdrahteter Link (Archiv) macht Voll-Reload', async ({ page }) => {
     await gotoHome(page);
 
-    // Passe den Selektor ggf. an die echte Navigation an, falls kein Mandelbrot-Link.
+    // Seit Phase 2 ist Mandelbrot verdrahtet (spa-nav.js, isWired). Das Archiv
+    // gehört nicht zum Wired-Set und lädt daher voll neu.
+    await page.click('.page__footer a[href$="/archiv/"]');
+    await expect(page).toHaveURL(new RegExp(`${BASE}/archiv/?`));
+    expect(await survivedSwap(page)).toBe(false);                // window frisch -> Voll-Reload
+  });
+
+  test('verdrahteter Link (Mandelbrot) swappt seit Phase 2', async ({ page }) => {
+    await gotoHome(page);
     await page.click('.greedy-nav a[href*="/mandelbrot/"]');
     await expect(page).toHaveURL(new RegExp(`${BASE}/mandelbrot/?`));
-    expect(await survivedSwap(page)).toBe(false);                // window frisch -> Voll-Reload
+    expect(await survivedSwap(page)).toBe(true);
   });
 
   test('Modifier-Klick (Ctrl/Meta) fängt der Swap NICHT ab', async ({ page, context }) => {
