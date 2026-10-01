@@ -321,14 +321,14 @@
         display: flex;
         align-items: center;
 
-        // Hover = Interaktion ⇒ dezentes Magenta über das definierte Token
+        // Hover = Interaktion ⇒ Magenta-Text (AA-Token, siehe _colors.scss)
         &:hover {
-            color: $hover-color-subtle;
+            color: $hover-color-text;
         }
 
         // Touch-Feedback für Mobile
         &:active {
-            color: $hover-color-subtle;
+            color: $hover-color-text;
         }
 
         &:focus-visible {

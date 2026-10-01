@@ -132,7 +132,7 @@
                 }
 
                 &:hover {
-                    color: $hover-color-subtle; // Magenta - Projektfarbe
+                    color: $hover-color-text; // Magenta-Text (AA), siehe _colors.scss
                 }
             }
         }
@@ -291,7 +291,7 @@ body .greedy-nav .visible-links a {
   // Hover-Effekt wie hidden-links
   &:hover,
   &:focus {
-    color: $hover-color-subtle; // Magenta mit etwas weniger Kontrast
+    color: $hover-color-text;
     background: rgb(5 217 232 / 10%);
   }
   
@@ -452,7 +452,7 @@ body .greedy-nav .hidden-links li {
       border-left-color: $link-color-subtle;
       
       a {
-        color: $hover-color-subtle;
+        color: $hover-color-text;
       }
     }
   }
@@ -462,7 +462,7 @@ body .greedy-nav .hidden-links li {
     &:hover a,
     a:hover,
     a:focus {
-      color: $hover-color-subtle;
+      color: $hover-color-text;
     }
   }
 }
@@ -653,5 +653,9 @@ body .greedy-nav__toggle:focus-visible {
 body .greedy-nav .visible-links a:focus-visible,
 body .greedy-nav .hidden-links li a:focus-visible,
 body .masthead__menu-item a:focus-visible {
-    background-color: $hover-color-subtle;
+    // Fokus = Rahmen statt Füllung: die frühere Magenta-Füllung unter
+    // Magenta-Text ergab 1,5:1. Inset, weil die Nav-Container clippen.
+    background-color: transparent;
+    outline: 2px solid $hover-color;
+    outline-offset: -3px;
 }
