@@ -34,6 +34,8 @@ jobs:
         run: npm ci
       - name: Stylelint
         run: npm run lint:css
+      - name: ESLint
+        run: npm run lint:js
       - name: Schriftgrößen-Guardrail (Token-Skala)
         run: bash scripts/fs-guardrail.sh
       - name: Security-Guardrail (Quellcode)
