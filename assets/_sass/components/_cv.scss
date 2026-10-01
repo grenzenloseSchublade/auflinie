@@ -5,6 +5,16 @@
  */
 @use "sass:color";
 
+// Stichpunkt-Zeile und Zielgröße der Aufklapper (WCAG 2.5.8, STYLEGUIDE 6.1):
+// Ein einzeiliger <summary> ist 0.85rem × 1.45 = 19,7 px hoch, und die
+// Aufklapper stehen so dicht, dass auch die Abstands-Ausnahme nicht greift.
+// $cv-summary-pad füllt symmetrisch bis 24 px auf und fällt auf 0, sobald die
+// Zeile ab dem 20-px-Breakpoint ohnehin höher ist. Bullet und Chevron rücken
+// um denselben Wert mit, damit sie auf der Textzeile bleiben.
+$cv-items-line-height: 1.45;
+$cv-summary-line: $cv-items-font-size * $cv-items-line-height;
+$cv-summary-pad: max(0px, calc((24px - #{$cv-summary-line}) / 2));
+
 .cv-section {
   @extend %section-base;
 
@@ -155,7 +165,7 @@
       padding-left: 1rem;
       margin-bottom: 0.2rem;
       font-size: $cv-items-font-size;
-      line-height: 1.45;
+      line-height: $cv-items-line-height;
       color: $fg-muted;
 
       &::before {
@@ -164,6 +174,11 @@
         left: 0;
         color: $link-color;
         font-weight: bold;
+      }
+
+      // Bullet auf der Zeile des aufgepolsterten <summary> halten
+      &:has(> .cv-details)::before {
+        top: $cv-summary-pad;
       }
 
       strong,
@@ -212,6 +227,11 @@
     list-style: none;
     border-radius: 4px;
 
+    // Zielgröße mindestens 24 px (siehe $cv-summary-pad oben). min-height
+    // sichert die 24 px zusätzlich gegen Subpixel-Rundung ab.
+    min-height: 24px;
+    padding-block: $cv-summary-pad;
+
     &::-webkit-details-marker {
       display: none;
     }
@@ -223,7 +243,7 @@
       font-weight: 900;
       position: absolute;
       right: 0.5rem;
-      top: 0.1rem;
+      top: calc(0.1rem + #{$cv-summary-pad});
       color: $card-heading-color;
       font-size: $fs-ui;
       width: 1rem;
