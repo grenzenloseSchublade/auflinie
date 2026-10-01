@@ -1,0 +1,22 @@
+# Dependabot: NUR Versions-Updates für die gepinnten GitHub Actions.
+# Die Actions stehen auf vollen Commit-SHAs (Security-Audit 10/2026), ohne
+# Updates würden die Pins veralten. Sparsam (Free-Plan, Storage-Limit
+# kontoweit): einmal im Monat, alle Updates in EINEM PR, höchstens ein
+# offener PR. Der Workflow läuft nur bei Push auf main und manuell, ein
+# Dependabot-PR kostet also keine Actions-Minuten und keinen Speicher,
+# erst das Mergen löst einen Deploy-Lauf aus.
+# Security-Update-PRs bleiben in den Repo-Einstellungen AUS (Nutzerwunsch,
+# Alerts bleiben an).
+version: 2
+updates:
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+    open-pull-requests-limit: 1
+    groups:
+      actions:
+        patterns:
+          - "*"
+    commit-message:
+      prefix: "ci"
