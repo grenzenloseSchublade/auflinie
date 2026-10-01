@@ -632,7 +632,7 @@ Je Fall genau eine Entscheidung. Gilt für alle Quellen (Markdown, HTML-Includes
 |---|---|---|---|
 | Gedankenstrich | **Geviertstrich mit Leerzeichen „ — “** (Hausstil) | „Daten — und was sie bedeuten“ | gewachsener Stil im Repo. Abweichung von Duden und DIN 5008 (dort „ – “) ist bewusst. Umstellung nur per Owner-Entscheidung, dann site-weit in einem Commit. **[Offen]** |
 | Bis-Strich (Bereich) | Halbgeviert **ohne** Leerzeichen | 10–50 Iterationen, S. 10–15 | Duden |
-| Zeiträume im Lebenslauf | Halbgeviert **mit** Leerzeichen (Owner-Stilelement, 1. 10. 2026) | 2020 – 2025, 2025 – heute | Hausstil |
+| Zeiträume im Lebenslauf | Halbgeviert **mit** Leerzeichen (Owner-Stilelement, 1. 10. 2026) | 2020 – 2025, 2025 – Heute (groß, Owner-Stilelement) | Hausstil |
 | Offenes Ende | „seit 2025“ oder „2025–heute“ (klein) | | Duden |
 | Bindestrich als Strich | **verboten** | ~~Hans Müller - Ingenieur~~ | |
 | Anführungszeichen | „…“, innen ‚…‘ | „Seepferdchen“ | Duden |
