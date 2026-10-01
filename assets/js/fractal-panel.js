@@ -888,7 +888,11 @@
           this.state.useIntense = !this.state.useIntense;
           intensityButton.classList.toggle('is-active', this.state.useIntense);
           intensityButton.setAttribute('aria-pressed', String(this.state.useIntense));
-          setButtonLabel(intensityButton, this.state.useIntense ? 'Intensiv' : 'Subtil');
+          const intensityLabel = this.state.useIntense ? 'Intensiv' : 'Subtil';
+          setButtonLabel(intensityButton, intensityLabel);
+          // Label in Name (WCAG 2.5.3): der zugängliche Name beginnt mit dem
+          // sichtbaren Wort — Pflicht, weil der Text mobil ausgeblendet ist.
+          intensityButton.setAttribute('aria-label', intensityLabel + ' – Farbintensität');
           this.requestRender(null, { preview: true, debounce: 200, reason: 'palette' });
         }, { signal: signal });
       }
@@ -961,8 +965,8 @@
           explanationToggle.setAttribute('aria-expanded', String(isOpen));
           // eslint-disable-next-line no-unsanitized/property -- feste Strings, keine Daten
           explanationToggle.innerHTML = isOpen
-            ? 'Erklärung ausblenden <span class="toggle-icon">▲</span>'
-            : 'Erklärung anzeigen <span class="toggle-icon">▼</span>';
+            ? 'Erklärung ausblenden <span class="toggle-icon" aria-hidden="true">▲</span>'
+            : 'Erklärung anzeigen <span class="toggle-icon" aria-hidden="true">▼</span>';
         }, { signal: signal });
       }
     }

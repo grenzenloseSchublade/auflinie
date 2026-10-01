@@ -23,12 +23,12 @@
   <h3 class="fractal-panel__title">{{ include.title }}</h3>
 
   <div class="fractal-panel__toolbar">
-    <button type="button" class="fractal-panel__button" data-role="focus-mode" title="Fokusmodus: Bedienelemente ausblenden" aria-label="Fokusmodus" aria-pressed="false">
+    <button type="button" class="fractal-panel__button" data-role="focus-mode" title="Fokusmodus: Bedienelemente ausblenden" aria-label="Fokus – Bedienelemente ausblenden" aria-pressed="false">
       <span class="icon"><i class="fas fa-crosshairs" aria-hidden="true"></i></span>
       <span class="btn-text">Fokus</span>
     </button>
     <div class="fractal-panel__toolbar-group">
-      <button type="button" class="fractal-panel__button" data-role="reset" title="{% if fractal_variant == "julia" %}Zoom zurücksetzen{% else %}Zurücksetzen{% endif %}" aria-label="Zurücksetzen">
+      <button type="button" class="fractal-panel__button" data-role="reset" title="{% if fractal_variant == "julia" %}Zoom zurücksetzen{% else %}Zurücksetzen{% endif %}" aria-label="{% if fractal_variant == "julia" %}Reset – Zoom zurücksetzen{% else %}Reset – Ansicht zurücksetzen{% endif %}">
         <span class="icon"><i class="fas fa-undo" aria-hidden="true"></i></span>
         <span class="btn-text">Reset</span>
       </button>
@@ -38,12 +38,12 @@
         <span class="btn-text">Neu</span>
       </button>
       {% endif %}
-      <button type="button" class="fractal-panel__button is-active" data-role="crt-toggle" title="Retro-Bildschirm-Effekt umschalten" aria-label="Retro-Bildschirm-Effekt" aria-pressed="true">
+      <button type="button" class="fractal-panel__button is-active" data-role="crt-toggle" title="Retro-Bildschirm-Effekt umschalten" aria-label="CRT – Retro-Bildschirm-Effekt" aria-pressed="true">
         <span class="icon"><i class="fas fa-tv" aria-hidden="true"></i></span>
         <span class="btn-text">CRT</span>
       </button>
     </div>
-    <button type="button" class="fractal-panel__button" data-role="fullscreen" title="Vollbild" aria-label="Vollbild">
+    <button type="button" class="fractal-panel__button" data-role="fullscreen" title="Vollbild">
       <span class="icon"><i class="fas fa-expand" aria-hidden="true"></i></span>
       <span class="btn-text">Vollbild</span>
     </button>
@@ -73,13 +73,13 @@
             <option value="ultraviolett">Ultraviolett</option>
             <option value="goldgrün">Gold-Grün</option>
         </select>
-        <button type="button" class="fractal-panel__button fractal-panel__button--intensity" data-role="intensity" title="Farbintensität umschalten" aria-label="Farbintensität" aria-pressed="false">
+        <button type="button" class="fractal-panel__button fractal-panel__button--intensity" data-role="intensity" title="Farbintensität umschalten" aria-label="Subtil – Farbintensität" aria-pressed="false">
           <span class="icon"><i class="fas fa-adjust" aria-hidden="true"></i></span>
           <span class="btn-text">Subtil</span>
         </button>
       </div>
       <div class="fractal-panel__advanced-row">
-        <button type="button" class="fractal-panel__button fractal-panel__button--expand" data-role="advanced-toggle" title="Erweiterte Optionen anzeigen" aria-label="Erweiterte Optionen" aria-expanded="false">
+        <button type="button" class="fractal-panel__button fractal-panel__button--expand" data-role="advanced-toggle" title="Erweiterte Optionen anzeigen" aria-expanded="false">
           <span class="icon"><i class="fas fa-sliders-h" aria-hidden="true"></i></span>
           <span class="btn-text">Erweiterte Optionen</span>
           <span class="chevron"><i class="fas fa-chevron-down" aria-hidden="true"></i></span>
@@ -109,7 +109,7 @@
       </div>
       {% endif %}
       <div class="fractal-panel__toggle-row">
-        <button type="button" class="fractal-panel__button fractal-panel__button--compact" data-role="extreme-zoom" title="Extremzoom erlauben" aria-label="Extremzoom" aria-pressed="false">
+        <button type="button" class="fractal-panel__button fractal-panel__button--compact" data-role="extreme-zoom" title="Extremzoom erlauben" aria-pressed="false">
           <span class="icon"><i class="fas fa-bolt" aria-hidden="true"></i></span>
           <span class="btn-text">Extremzoom: Aus</span>
         </button>
@@ -150,8 +150,8 @@
   {% endif %}
 
   <div class="fractal-panel__explanation">
-    <button type="button" class="fractal-panel__explanation-toggle" data-role="explanation-toggle" aria-label="Erklärung ein-/ausblenden" aria-expanded="false">
-      Erklärung anzeigen <span class="toggle-icon">▼</span>
+    <button type="button" class="fractal-panel__explanation-toggle" data-role="explanation-toggle" aria-expanded="false">
+      Erklärung anzeigen <span class="toggle-icon" aria-hidden="true">▼</span>
     </button>
     <div class="fractal-panel__explanation-box" data-role="explanation-box">
       {% if fractal_variant == "julia" %}
