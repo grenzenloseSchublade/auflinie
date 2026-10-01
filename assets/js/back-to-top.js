@@ -7,6 +7,18 @@
  */
 (function () {
   'use strict';
+
+  // site-utils.js liefert die Helfer. Fallback, falls sie fehlen (z. B. altes
+  // HTML aus dem HTTP-Cache trifft kurz nach einem Deploy auf neues Skript):
+  // dann ohne Drosselung und ohne Reduced-Motion-Abfrage, aber ohne Absturz.
+  function utils() {
+    return window.AuflinieUtils || {
+      rafThrottle: function (fn) { return fn; },
+      prefersReducedMotion: function () {
+        return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+      },
+    };
+  }
   const SCROLL_THRESHOLD = 888, MIN_RATIO = 1.5, FOOTER_GAP = 24;
   let controller = null;
 
@@ -37,14 +49,14 @@
     // rAF-gekoppelt statt setTimeout-Throttle: pro Paint-Frame genau EIN Update
     // -> ruckelfreies „Reiten" über dem Footer, auch bei schnellem Scrollen (der
     // Button läuft so gar nicht erst in den Footer und springt dann raus).
-    const onScrollResize = window.AuflinieUtils.rafThrottle(checkVisibility);
+    const onScrollResize = utils().rafThrottle(checkVisibility);
     window.addEventListener('scroll', onScrollResize, { passive: true, signal: signal });
     window.addEventListener('resize', onScrollResize, { passive: true, signal: signal });
     btn.addEventListener('click', function (e) {   // element-scoped -> stirbt mit dem DOM, kein signal nötig
       e.preventDefault();
       // Reduced Motion: springen statt gleiten (STYLEGUIDE BEW-4). Live
       // abgefragt, damit ein Umschalten der Systemeinstellung sofort wirkt.
-      const reduce = window.AuflinieUtils.prefersReducedMotion();
+      const reduce = utils().prefersReducedMotion();
       if ('scrollBehavior' in document.documentElement.style) window.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' });
       else window.scrollTo(0, 0);
     });

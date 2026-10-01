@@ -18,6 +18,18 @@
 (function () {
   'use strict';
 
+  // site-utils.js liefert die Helfer. Fallback, falls sie fehlen (z. B. altes
+  // HTML aus dem HTTP-Cache trifft kurz nach einem Deploy auf neues Skript):
+  // dann ohne Drosselung und ohne Reduced-Motion-Abfrage, aber ohne Absturz.
+  function utils() {
+    return window.AuflinieUtils || {
+      rafThrottle: function (fn) { return fn; },
+      prefersReducedMotion: function () {
+        return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+      },
+    };
+  }
+
   const MOBILE_BREAKPOINT = 1024;
   // Spiegel zu variables/_css-properties.scss: --masthead-height (Grundwert
   // in :root). Greift nur, wenn das Token fehlt.
@@ -151,7 +163,7 @@
       stickyToc.style.setProperty('--toc-progress', progress.toFixed(4));
     }
 
-    window.addEventListener('scroll', window.AuflinieUtils.rafThrottle(function () {
+    window.addEventListener('scroll', utils().rafThrottle(function () {
       updateStickyVisibility();
       updateReadingProgress();
     }), { passive: true, signal: controller.signal });
@@ -265,7 +277,7 @@
       // Projekt-Präfix auflinie: (geteilter github.io-Origin, STYLEGUIDE SEC-6)
       const legacyKey = tocToggle.id ? tocToggle.id.replace(/-toggle$/, '') + '-state' : 'toc-state';
       const storageKey = 'auflinie:' + legacyKey;
-      const prefersReducedMotion = window.AuflinieUtils.prefersReducedMotion();
+      const prefersReducedMotion = utils().prefersReducedMotion();
       let resizeRaf = null;
 
       const updateMaxHeight = function () {
