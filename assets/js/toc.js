@@ -19,6 +19,9 @@
   'use strict';
 
   const MOBILE_BREAKPOINT = 1024;
+  // Spiegel zu variables/_css-properties.scss: --masthead-height (Grundwert
+  // in :root). Greift nur, wenn das Token fehlt.
+  const MASTHEAD_HEIGHT_FALLBACK_PX = 74;
   let controller = null;
   let gumshoeInstance = null;
 
@@ -61,7 +64,7 @@
     const getMastheadHeight = function () {
       if (cachedMastheadHeight === null) {
         const val = getComputedStyle(document.documentElement).getPropertyValue('--masthead-height').trim();
-        cachedMastheadHeight = parseInt(val, 10) || 60;
+        cachedMastheadHeight = parseInt(val, 10) || MASTHEAD_HEIGHT_FALLBACK_PX;
       }
       return cachedMastheadHeight;
     };
