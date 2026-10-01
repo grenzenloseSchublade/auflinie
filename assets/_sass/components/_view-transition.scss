@@ -11,6 +11,7 @@
 // $crt-variante umschaltbar (nur die gewählte wird kompiliert). Details,
 // Timelines und Recherche-Quellen: README-tv-umschalt.md
 /* stylelint-disable selector-pseudo-element-no-unknown, selector-pseudo-class-no-unknown, at-rule-no-unknown */
+@use "sass:list";
 
 // "dezent"      — heutige Struktur, aber smooth (easeOutQuint) + Einschalt-Bloom
 // "linie-punkt" — V-Kollaps -> Linie -> Leuchtpunkt mit Nachglimmen (EMPFOHLEN)
@@ -45,11 +46,11 @@ $glitch-variante: "aus" !default;
 // Tippfehler-Schutz: ein unbekannter Wert würde sonst still eine animation
 // auf nicht existierende Keyframes kompilieren — die neue Seite stünde ab
 // Transitionsbeginn statisch da, der Einschalt-Effekt fehlte kommentarlos.
-@if not index(("dezent" "linie-punkt" "voll" "antenne"), $crt-variante) {
+@if not list.index(("dezent" "linie-punkt" "voll" "antenne"), $crt-variante) {
   @error "Unbekannte $crt-variante: '#{$crt-variante}' (erlaubt: dezent, linie-punkt, voll, antenne)";
 }
 
-@if not index(("aus" "dezent" "deutlich" "schwimmen"), $glitch-variante) {
+@if not list.index(("aus" "dezent" "deutlich" "schwimmen"), $glitch-variante) {
   @error "Unbekannte $glitch-variante: '#{$glitch-variante}' (erlaubt: aus, dezent, deutlich, schwimmen)";
 }
 
@@ -289,12 +290,25 @@ html.vt-capture body::before {
   // neue Seite kommt erst bei 520ms — dazwischen (260-520ms) glimmt der
   // Leuchtpunkt ALLEIN auf schwarzem Grund (bei linie-punkt blüht die
   // Seite schon bei 380ms ins Glimmen hinein und verdeckt es größtenteils)
+  // Werte für linie-punkt, "voll" überschreibt sie im @if darunter (ein
+  // @if statt Sass-if(), das ab Dart Sass 1.95 veraltet ist)
   $voll: $crt-variante == "voll";
-  $out-dur: if($voll, 760ms, 460ms); // Kollaps 0-260ms, danach Punkt-Nachglimmen
+  $out-dur: 460ms; // Kollaps 0-260ms, danach Punkt-Nachglimmen
   $dot-delay: 240ms; // Puls setzt ein, wenn der Punkt „einschlägt"
-  $dot-dur: if($voll, 520ms, 220ms);
-  $on-delay: if($voll, 520ms, 380ms);
-  $on-dur: if($voll, 260ms, 180ms);
+  $dot-dur: 220ms;
+  $on-delay: 380ms;
+  $on-dur: 180ms;
+  $dot-size-peak: 16vmin 11vmin;
+  $dot-size-end: 2vmin 1.4vmin;
+
+  @if $voll {
+    $out-dur: 760ms;
+    $dot-dur: 520ms;
+    $on-delay: 520ms;
+    $on-dur: 260ms;
+    $dot-size-peak: 26vmin 18vmin;
+    $dot-size-end: 3vmin 2vmin;
+  }
 
   html:active-view-transition-type(crt)::view-transition {
     // farb-Ausnahme: CRT-Phosphor-Punkt (Nachglimmen beim Ausschalten)
@@ -426,7 +440,7 @@ html.vt-capture body::before {
     }
 
     20% {
-      background-size: if($voll, 26vmin 18vmin, 16vmin 11vmin);
+      background-size: $dot-size-peak;
     }
 
     @if $voll {
@@ -436,7 +450,7 @@ html.vt-capture body::before {
     }
 
     100% {
-      background-size: if($voll, 3vmin 2vmin, 2vmin 1.4vmin);
+      background-size: $dot-size-end;
     }
   }
 }
