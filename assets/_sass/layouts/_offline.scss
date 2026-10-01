@@ -54,7 +54,8 @@
     // Primär-Rolle des Button-Systems (getönt statt Voll-Cyan)
     @include btn-role-primary;
 
-    padding: $space-2 $space-5;
+    // skala-Ausnahme: px bewusst (SP-2), Knopf der Offline-Seite wie zuvor
+    padding: 10px 20px;
     font-size: $fs-base;
     border-radius: $radius-md;
     cursor: pointer;

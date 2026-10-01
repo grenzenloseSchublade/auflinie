@@ -113,7 +113,9 @@ $hero-z-scroll-cue: 101; // Scroll-Hinweis über der Caption
         pointer-events: none;
         background: $black-a94;
         opacity: 0;
-        transition: opacity $duration-moderate ease-out;
+
+        // skala-Ausnahme: CRT-Choreografie (MO-4), an den Einschaltablauf gekoppelt, nicht an die UI-Skala
+        transition: opacity 0.32s ease-out;
       }
 
       &.page__hero--crt-preboot:not(.page__hero--crt-boot)::after {
