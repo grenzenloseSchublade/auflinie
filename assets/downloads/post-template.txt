@@ -1,0 +1,102 @@
+---
+# Quelle der Download-Vorlage für Blogbeiträge (STYLEGUIDE FM-3).
+# Ausgeliefert wird sie unter /assets/downloads/post-template.md.
+# Warum .txt: Eine .md-Datei mit Front Matter würde Jekyll selbst als Seite
+# nach HTML übersetzen. Eine .txt-Datei wird nicht konvertiert, und der
+# raw-Block gibt die Vorlage Zeichen für Zeichen aus. So beginnt die
+# heruntergeladene Datei direkt mit --- und ist ohne Nacharbeit ein
+# gültiger Beitrag.
+layout: null
+permalink: /assets/downloads/post-template.md
+sitemap: false
+---
+{% raw %}---
+title: "Titel des Beitrags"
+excerpt: "Ein bis zwei Sätze, worum es geht. Erscheint in der Übersicht und als Beschreibung in Suchmaschinen."
+header:
+  overlay_image: /assets/images/background.jpg
+  overlay_filter: 0.5
+  caption: "Zusatzinformation zum Bild, z. B. „Stand: 2026“ – keine Wiederholung des Titels"
+  teaser: /assets/images/background.jpg
+toc: true
+toc_label: "Inhalt"
+toc_icon: "list"
+toc_sticky: true
+toc_collapse: true
+categories:
+  - Blog
+tags:
+  - jekyll
+---
+
+{% comment %}
+Vorlage für einen Blogbeitrag. Speichern als _posts/JJJJ-MM-TT-titel-des-beitrags.md,
+das Datum im Dateinamen ist das Veröffentlichungsdatum. Dann die Felder oben und
+den Text unten ersetzen. Dieser Kommentar erscheint nicht auf der Seite und darf
+stehen bleiben.
+
+- Der Beitrag beginnt ohne Überschrift: Der Titel steht schon im Bild oben,
+  der erste Absatz ist die Einleitung.
+- Enthält der Beitrag Formeln, im Front Matter „mathjax: true“ ergänzen.
+- Anredefrei schreiben, keine Semikolons, deutsche Anführungszeichen „…“.
+{% endcomment %}
+
+Hier steht, worum es in diesem Beitrag geht: das Thema kurz vorstellen und erklären, warum es lesenswert ist. Dieser erste Absatz braucht keine Überschrift, der Titel steht schon oben im Bild.
+
+**Tipp:** Ein interessanter Fakt oder eine Frage am Anfang macht neugierig.
+
+## Was dieser Beitrag vermittelt
+
+Die wichtigsten Punkte, die nach dem Lesen sitzen sollen:
+
+- **Punkt 1:** Was wird erklärt
+- **Punkt 2:** Welches Problem wird gelöst
+- **Punkt 3:** Welche neuen Erkenntnisse gibt es
+
+## Hauptinhalt
+
+### Abschnitt 1: Überschrift anpassen
+
+Hier den ersten wichtigen Aspekt des Themas erklären. Kurze Absätze verbessern die Lesbarkeit.
+
+**Wichtige Hinweise:**
+
+- `##` für Hauptabschnitte verwenden
+- `###` für Unterabschnitte verwenden
+- Absätze kurz halten (höchstens 3–4 Sätze)
+
+### Abschnitt 2: Überschrift anpassen
+
+Weiterer wichtiger Aspekt. Hier passen auch Code-Beispiele gut:
+
+```python
+# Beispiel-Code
+def hallo_welt():
+    print("Hallo aus Jekyll!")
+```
+
+**Code-Tipp:** Drei Backticks (```) verwenden und die Programmiersprache angeben.
+
+## Praktisches Beispiel
+
+Ein konkretes Beispiel oder eine Schritt-für-Schritt-Anleitung:
+
+1. **Schritt 1:** Was ist zu tun
+2. **Schritt 2:** Wie wird es gemacht
+3. **Schritt 3:** Was ist das Ergebnis
+
+## Wichtige Erkenntnisse
+
+> **Zitat-Tipp:** `>` eignet sich für wichtige Aussagen oder Zitate
+
+Hier die wichtigsten Erkenntnisse zusammenfassen.
+
+## Fazit
+
+Zusammenfassung der Hauptpunkte und ein Ausblick auf weitere Themen.
+
+**Weiterführende Links:**
+
+- [Link zu verwandtem Thema](https://example.com)
+- [Interne Querverweise]({{ "/posts/erster-beitrag/" | relative_url }})
+{% endraw %}
