@@ -30,12 +30,16 @@
                     </li>
                     {%- endfor -%}
                 </ul>
-                <button class="greedy-nav__toggle" type="button">
+                {%- comment -%}
+                    Disclosure-Muster (STYLEGUIDE A11Y-2): aria-expanded hält
+                    greedy-navigation.js synchron zum Drawer-Zustand.
+                {%- endcomment -%}
+                <button class="greedy-nav__toggle" type="button" aria-expanded="false" aria-controls="site-nav-drawer">
                     <span class="visually-hidden">{{ site.data.ui-text[site.locale].menu_label | default: "Toggle menu"
                         }}</span>
                     <div class="navicon"></div>
                 </button>
-                <ul class="hidden-links hidden"></ul>
+                <ul id="site-nav-drawer" class="hidden-links hidden"></ul>
             </nav>
         </div>
     </div>

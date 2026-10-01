@@ -125,17 +125,26 @@
       if (e.target === hlinks && e.propertyName === 'transform') releaseMenuOpen();
     }
 
+    // Disclosure-Muster (STYLEGUIDE A11Y-2): aria-expanded folgt an JEDER
+    // Stelle, die .hidden am Drawer umschaltet (öffnen, schließen, instant,
+    // bfcache-Reset) — sonst meldet der Screenreader einen falschen Zustand.
+    function setExpanded(open) {
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    }
+
     function openMenu() {
       cancelRelease(); // erneutes Öffnen während des Slide-Outs abfangen
       document.body.classList.remove('menu-closing'); // falls während des Schließens wieder geöffnet
       hlinks.classList.remove('hidden');
       btn.classList.add('close');
+      setExpanded(true);
       document.body.classList.add('menu-open');
     }
 
     function closeMenu() {
       hlinks.classList.add('hidden');
       btn.classList.remove('close');
+      setExpanded(false);
       // Dim SOFORT mit dem Slide ausblenden — menu-open bleibt für den Scroll-
       // Lock bis Slide-Ende, aber menu-closing fadet den Overlay jetzt schon:
       // Dunkel und Drawer verschwinden gemeinsam, kein nachhängendes Dim.
@@ -154,6 +163,7 @@
       hlinks.style.transition = 'none';
       hlinks.classList.add('hidden');
       btn.classList.remove('close');
+      setExpanded(false);
       document.body.classList.remove('menu-open', 'menu-closing');
       requestAnimationFrame(function() { hlinks.style.transition = ''; });
     }
@@ -198,12 +208,22 @@
       hlinks.style.transition = 'none';
       hlinks.classList.add('hidden');
       btn.classList.remove('close');
+      setExpanded(false);
       document.body.classList.remove('menu-open', 'menu-closing');
       requestAnimationFrame(function() { hlinks.style.transition = ''; });
     });
 
     // Slide-in Menü: kein automatisches Schließen bei mouseleave
     // (nur bei Klick außerhalb oder auf Overlay)
+
+    // Escape schließt den offenen Drawer und gibt den Fokus an den Toggle
+    // zurück (Disclosure-Muster, STYLEGUIDE A11Y-2/OVL-3). Normales closeMenu:
+    // Slide-Out + menu-open-Release nach dem Slide bleiben unverändert.
+    document.addEventListener('keydown', function(e) {
+      if (e.key !== 'Escape' || hlinks.classList.contains('hidden')) return;
+      closeMenu();
+      btn.focus();
+    });
 
     // Click außerhalb des Menüs schließt es (Overlay-Klick)
     document.addEventListener('click', function(e) {
