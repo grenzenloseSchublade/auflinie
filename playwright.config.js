@@ -1,5 +1,6 @@
-// Playwright: SPA-Navigations-Regressionstests (tests/spa-nav.spec.js) und das
-// automatische Style-Guide-Review (tests/visual/: Screenshot-Vergleich der
+// Playwright: SPA-Navigations-Regressionstests (tests/spa-nav.spec.js),
+// Vendor-Regressionstests (tests/vendor.spec.js: MathJax, noUiSlider,
+// Tom Select auf /mandelbrot/) und das automatische Style-Guide-Review (tests/visual/: Screenshot-Vergleich der
 // Styleguide-Ansicht, Kontrast, axe-core WCAG 2.2 AA).
 //
 // Die Seite muss vorher MIT unveröffentlichten Seiten gebaut sein, damit die
@@ -45,6 +46,7 @@ module.exports = defineConfig({
   },
   projects: [
     { name: 'spa-nav', testMatch: 'spa-nav.spec.js', use: { ...devices['Desktop Chrome'] } },
+    { name: 'vendor', testMatch: 'vendor.spec.js', use: { ...devices['Desktop Chrome'], viewport: { width: 1280, height: 900 } } },
     { name: 'desktop', testMatch: 'visual/**/*.spec.js', use: { ...devices['Desktop Chrome'], viewport: { width: 1280, height: 900 } } },
     { name: 'mobil', testMatch: 'visual/styleguide.spec.js', use: { ...devices['Pixel 7'] } },
   ],

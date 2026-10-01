@@ -1,9 +1,13 @@
 # Tests
 
-Zwei Gruppen, beide mit Playwright:
+Drei Gruppen, alle mit Playwright:
 
 - **`spa-nav.spec.js`** – Regressionstests der Persistent-Shell-Navigation
   (`assets/js/spa-nav.js`, siehe [`README-spa-nav.md`](../README-spa-nav.md)).
+- **`vendor.spec.js`** – Prüfung nach jedem Versionswechsel in `assets/vendor/`:
+  MathJax setzt auf `/mandelbrot/` alle Formeln (direkt und nach SPA-Navigation,
+  ohne Seitenfehler und CSP-Verstoß), die noUiSlider-Griffe sind benannt und per
+  Tastatur bedienbar, das Preset (Tom Select) ist wählbar.
 - **`visual/`** – automatisches Style-Guide-Review (Regeln: [`STYLEGUIDE.md`](../STYLEGUIDE.md), SG-1 bis SG-3):
   - `styleguide.spec.js`: Screenshot-Vergleich jedes Abschnitts der Styleguide-Ansicht
     (`_pages/styleguide.html`, nie veröffentlicht) und jedes erzwungenen Zustands
