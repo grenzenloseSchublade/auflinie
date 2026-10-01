@@ -447,7 +447,7 @@ Anlass: Im Skill-Graphen rutschte die Seite beim Wischen über den Graphen weg (
 
 ## 5 Seitenaufbau und Inhaltsmuster
 
-- **SEITE-1** [MUSS · Soll · CI-P3] Hero → Einleitung **ohne** Überschrift → H2-Kapitel. Keine H2 „Einleitung“, „Einführung“ oder eine Wiederholung des Titels. Einleitungen dürfen länger sein, aber nicht detaillierter (7.2).
+- **SEITE-1** [MUSS · Ist · CI-P3] Hero → Einleitung **ohne** Überschrift → H2-Kapitel. Keine H2 „Einleitung“, „Einführung“ oder eine Wiederholung des Titels. Einleitungen dürfen länger sein, aber nicht detaillierter (7.2). Ist seit 1. 10. 2026 auf allen gebauten Seiten, in allen Beiträgen und in der Beitragsvorlage (FM-3).
 - **SEITE-2** [MUSS · Ist · Review] In datengetriebenen Seiten (`_data/cv_content.yml`, `_data/mandelbrot.yml`) markiert `intro: true` die Einleitung. Die Loops in `_pages/cv.md` und `_pages/mandelbrot.md` rendern sie ohne H2 und ohne TOC-Eintrag.
 - **SEITE-3** [MUSS · Soll · Review] Genau ein H1 pro Seite (Hero bzw. `page__title`). Keine Ebene überspringen. Gleiche Komponente = gleiche Ebene. Sidebar (Autor, TOC-Titel) ohne Überschriften-Elemente.
 - **SEITE-4** [MUSS · Soll · Review] Hero-Titel = Seitenname. Excerpt = ein bis zwei warme Sätze mit Punkt (wird Meta-Description). Caption = Statuszeile mit Zusatzinformation, **nie** Titel-Paraphrase (z. B. „Stand: 2026“, „In Echtzeit gerechnet“). Ton-Maßstab ist das Home-Intro (7.2).
@@ -577,7 +577,7 @@ Weitere bewusste Ausnahmen: Fokus des Hero-Power-Buttons beige statt Magenta (Ko
 
 ### 7.2 Ton
 
-Alle Ton-Regeln sind Review-Regeln. Maßstab ist das Home-Intro (`index.html`), zum Beispiel dieser Satz: „Erfahrung nützt aber niemandem, solange sie bei einem selbst bleibt.“ Das Home-Intro enthält selbst noch ein Semikolon. Die Regel ist entschieden (TON-9), **[Offen]** ist nur, wie der Referenztext angepasst wird.
+Alle Ton-Regeln sind Review-Regeln. Maßstab ist das Home-Intro (`index.html`), zum Beispiel dieser Satz: „Erfahrung nützt aber niemandem, solange sie bei einem selbst bleibt.“ Seit 1. 10. 2026 ist auch das Home-Intro frei von Semikolons: Ein Punkt ersetzt das einzige Semikolon, sonst ist der Referenztext unverändert (Beispiel in 7.4).
 
 - **TON-5** [MUSS · Ist · Review] Locker, wissenschaftlich korrekt, präzise. Anspruchsvoll, aber nicht hochgestochen.
 - **TON-6** [MUSS · Ist · Review] Lesertexte (Hero, Einleitungen auf Home, Über mich, Lebenslauf, Blog) warm statt „nerdig“. Erst auf Ton prüfen, dann auf Präzision.
@@ -653,10 +653,10 @@ Je Fall genau eine Entscheidung. Gilt für alle Quellen (Markdown, HTML-Includes
 
 | Fall | Entscheidung | Beispiel | Begründung |
 |---|---|---|---|
-| Gedankenstrich | **Geviertstrich mit Leerzeichen „ — “** (Hausstil) | „Daten — und was sie bedeuten“ | gewachsener Stil im Repo. Abweichung von Duden und DIN 5008 (dort „ – “) ist bewusst. Umstellung nur per Owner-Entscheidung, dann site-weit in einem Commit. **[Offen]** |
+| Gedankenstrich | **Halbgeviertstrich mit Leerzeichen „ – “** (Hausstil, Owner, 1. 10. 2026) | „Daten – und was sie bedeuten“ | Duden, DIN 5008. Site-weit umgestellt, der Geviertstrich „—“ kommt in Lesertexten nicht mehr vor |
 | Bis-Strich (Bereich) | Halbgeviert **ohne** Leerzeichen | 10–50 Iterationen, S. 10–15 | Duden |
 | Zeiträume im Lebenslauf | Halbgeviert **mit** Leerzeichen (Owner-Stilelement, 1. 10. 2026) | 2020 – 2025, 2025 – Heute (groß, Owner-Stilelement) | Hausstil |
-| Offenes Ende | „seit 2025“ oder „2025–heute“ (klein) | | Duden |
+| Offenes Ende | im Fließtext „seit 2025“, als Zeitraum „2025 – Heute“ (groß, mit Leerzeichen wie die Zeiträume im Lebenslauf, Owner-Stilelement, 1. 10. 2026) | | Hausstil, Duden erlaubt auch klein |
 | Bindestrich als Strich | **verboten** | ~~Hans Müller - Ingenieur~~ | |
 | Anführungszeichen | „…“, innen ‚…‘ | „Seepferdchen“ | Duden |
 | Apostroph | ’ (U+2019) | geht’s | Duden |
@@ -922,7 +922,7 @@ Die Seite ist statisch, hat keine Nutzerkonten und keine Formulare. Die realisti
 
 - **FM-1** [SOLL · Soll · Review] Gemeinsame Werte (`layout`, `author_profile`, `header.overlay_image`, `overlay_filter`, `toc_label`, `toc_icon`) in die `defaults` von `_config.yml`. Front Matter enthält nur Abweichungen.
 - **FM-2** [SOLL · Soll · Review] Reihenfolge: `title`, `excerpt`, `permalink`/`date`, `last_modified_at`, `layout`, `header`, `toc*`, Feature-Flags, `categories`, `tags`.
-- **FM-3** [MUSS · Soll · Review] `assets/downloads/post-template.md` ist die Referenz-Vorlage für Beiträge und wird bei jeder Regeländerung nachgezogen. Sie muss selbst ein gültiger Beitrag sein (beginnt mit `---`).
+- **FM-3** [MUSS · Ist · Review] `assets/downloads/post-template.md` ist die Referenz-Vorlage für Beiträge und wird bei jeder Regeländerung nachgezogen. Sie muss selbst ein gültiger Beitrag sein (beginnt mit `---`). Quelle ist `assets/downloads/post-template.txt`: Eine `.md`-Datei mit Front Matter würde Jekyll nach HTML übersetzen, die `.txt`-Quelle gibt die Vorlage per `permalink` und `{% raw %}` unverändert aus. Anleitungen stehen darin als `{% comment %}`, nie als `<!-- -->`.
 
 ### 12.4 YAML und Markdown
 
@@ -1149,7 +1149,7 @@ Stand: Ist-Basis aus dem Kopf. Ein Eintrag verschwindet, sobald der Code die Reg
 | R-19 | HTML-2 | `<div class="masthead">`, `<div id="main" role="main">`, `offline.html` ohne `main` | B-HTML-11 | migrieren |
 | R-20 | 6.5 | CRT, Neon, Logo endlos (2.2.2), Kommentar „HART aktiviert“ in `hero-crt.js` | B-A11Y-11, B-MC-01 | Owner |
 | R-21 | TYP-7 | Laufweiten außerhalb der Skala (`0.04em` in `base/_headings.scss` neben `0.03em` in `layouts/_posts.scss` für `.page__meta`, Mixin-Default `0.07em`) | B-T19 | migrieren |
-| R-22 | TON-2 | Sie-Formen in Theme-Strings und zwei Posts | B-HTML-06 | migrieren |
+| R-22 | TON-2 | erledigt: Theme-Strings über `_data/ui-text.yml`, Posts anredefrei | B-HTML-06 | – |
 | R-23 | DES-8 | `color-scheme` fehlt, `theme-color` `#1a1a1a` (`head/custom.html`) weicht vom Seitengrund ab | B-F24 | migrieren |
 | R-24 | SEC-5c | Cache-Präfix als zweites Literal in `sw-register.js` | B-JS-24 | migrieren |
 | R-25 | SPA-5 | E2E-Test erwartet Voll-Reload bei `/mandelbrot/` | B-D02 | migrieren |
@@ -1250,3 +1250,4 @@ Prozess und Doku:
 |---|---|
 | 2026-10-01 | Erste Fassung. Kritik-Runde eingearbeitet: Status- und Durchsetzungsangaben je Regel, Register bekannter Abweichungen, Sicherheitsabschnitt integriert, Owner-Prozessregeln, Performance, Bilder, Links, Formulare, SEO, Druck, Browser-Matrix. |
 | 2026-10-01 | JS-2 per ESLint durchgesetzt (`no-var`, `prefer-const`), Register R-14 auf zwei Dateien verkleinert. JS-18: `site-utils.js` mit `prefersReducedMotion` und `rafThrottle` angelegt. |
+| 2026-10-01 | Texte: Gedankenstrich „ – “ und „2025 – Heute“ (groß) als Owner-Entscheidungen in TYPO-2 übernommen. SEITE-1 und FM-3 auf Ist (Beiträge und Vorlage ohne Einleitungs-Überschrift, Vorlage ohne verschachtelten Kommentar), Home-Intro ohne Semikolon (7.2), R-22 erledigt. |
