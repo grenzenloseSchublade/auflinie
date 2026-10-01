@@ -720,7 +720,7 @@ Theme-Updates bleiben heikel: Neue Versionen können Inkompatibilitäten mitbrin
 
 **Mittelfristige Entwicklungen (6–18 Monate):**
 - **Feature-Erweiterungen**: Neue interaktive Elemente und Funktionen
-- **Performance-Monitoring**: Umfassende Analytics und Monitoring
+- **Performance-Monitoring**: Ladezeiten und Build-Dauer regelmäßig messen
 - **Content-Strategie**: Erweiterte Content-Typen und -Formate
 - **Community-Building**: Interaktion mit Lesern und Feedback-Integration
 
@@ -807,7 +807,7 @@ Bei Static Site Generators allgemein zeichnen sich Trends ab: schnellere Builds 
 
 Die Browser bringen neue APIs, bessere Werkzeuge zum Messen der Performance, strengere Sicherheitsstandards, bessere Barrierefreiheit und mehr Möglichkeiten für Progressive Web Apps mit Offline-Funktion und App-Charakter.
 
-Für die eigene Weiterentwicklung gibt es einen groben Fahrplan. Kurzfristig (0–12 Monate) geht es um weitere Performance-Arbeit an Build und Auslieferung, mehr Inhalte und interaktive Elemente, bessere Sichtbarkeit in Suchmaschinen, eine noch angenehmere Bedienung und eine Auswertung der Nutzung.
+Für die eigene Weiterentwicklung gibt es einen groben Fahrplan. Kurzfristig (0–12 Monate) geht es um weitere Performance-Arbeit an Build und Auslieferung, mehr Inhalte und interaktive Elemente, bessere Sichtbarkeit in Suchmaschinen und eine noch angenehmere Bedienung.
 
 Mittelfristig (1–3 Jahre) kommen neue interaktive Elemente und Funktionen dazu, ein Blick auf die Performance im laufenden Betrieb, neue Inhaltsformate, mehr Austausch mit Lesenden samt ihren Rückmeldungen und die Anbindung externer Dienste und Datenquellen.
 
