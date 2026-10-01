@@ -20,11 +20,13 @@ $mono-font-stack: ui-monospace, "Cascadia Mono", "Segoe UI Mono", "Menlo", "Mona
 // =============================================================================
 // Schriftgrößen-Token-Skala (site-weit, Juli 2026)
 // =============================================================================
-// rem-Semantik: html font-size wächst per Theme-Breakpoint 16→18→20→22px
-// (768/1024/1280, tmp/…/_reset.scss) — rem-Tokens skalieren mit dem Viewport.
+// rem-Semantik: 1rem = Browser-Grundschrift (Standard 16px). Die Theme-Rampe
+// 18/20/22px (768/1024/1280, tmp/…/_reset.scss) ist WIRKUNGSLOS: das Critical
+// CSS in _layouts/default.html setzt html{font-size:100%} nach main.css
+// (Entscheidung 1.10.2026, respektiert die Browser-Einstellung).
 // Die Skala ist bewusst cluster-treu zu den gewachsenen Ist-Werten (statt
 // der Lehrbuch-Skala 0.75/0.875/1/…, die ~30 sichtbare Änderungen erzwänge).
-// SYNC-PFLICHT: Critical-CSS in _layouts/default.html (html 16px,
+// SYNC-PFLICHT: Critical-CSS in _layouts/default.html (html 100%,
 // site-title 1.8em, page__title 2em) muss bei Änderungen an $site-title-
 // font-size bzw. der Basis manuell nachgezogen werden.
 // KASKADEN-FALLE: Theme setzt .page__content p/li direkt auf 1em — Tokens

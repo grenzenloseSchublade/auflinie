@@ -4,7 +4,7 @@
 {%- assign page_title = page.title | default: site.title | replace: '|', '&#124;' -%}
 
 {%- comment -%} Verwende seo_title aus Frontmatter wenn vorhanden
-  (deckt auch die Startseite ab — page.seo_title steht in index.html) {%- endcomment -%}
+  (deckt auch die Startseite ab – page.seo_title steht in index.html) {%- endcomment -%}
 {%- if page.seo_title -%}
   {%- assign seo_title = page.seo_title -%}
 {%- elsif page_title contains site.title -%}

@@ -539,7 +539,7 @@
     if (!announcer) announcer = document.getElementById('spa-route-announcer');
     if (!announcer) return;
     announcer.textContent = '';                           // leeren -> identische Titel re-announcen
-    setTimeout(function () { announcer.textContent = title + ' — geladen'; }, 150);
+    setTimeout(function () { announcer.textContent = title + ' – geladen'; }, 150);
   }
 
   // ── §1 Scroll anwenden (immer OHNE smooth — reduced-motion-Primaernutzer) ────

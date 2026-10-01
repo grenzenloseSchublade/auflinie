@@ -9,13 +9,13 @@
         Seit vielen Jahren baue ich KI-Software, von der ersten Idee bis in den laufenden Betrieb. Am Anfang steht dabei immer die gleiche Frage: Welches Problem haben die Menschen eigentlich, für die das Ganze gedacht ist?
         <br> <br>
         Gearbeitet habe ich in Forschung und Industrie, in Teams jeder Größe. So ist nach und nach das **Full-Stack**-Handwerk dazugekommen, von Frontend über DevOps bis MLOps. Am wohlsten fühle ich mich aber im **Backend**.
-        Was mich fasziniert, ist der Weg — man startet mit einer Idee und einer Problembeschreibung, arbeitet sich durch komplexe Algorithmik und kommt am Ende zu einer Lösung, die Prozesse oder den Alltag spürbar vereinfacht und (teil-)automatisiert.
+        Was mich fasziniert, ist der Weg – man startet mit einer Idee und einer Problembeschreibung, arbeitet sich durch komplexe Algorithmik und kommt am Ende zu einer Lösung, die Prozesse oder den Alltag spürbar vereinfacht und (teil-)automatisiert.
 
 
 - section: "Berufserfahrung"
   icon: "briefcase"
   experiences:
-    - position: "Senior Consultant — Data & Analytics"
+    - position: "Senior Consultant – Data & Analytics"
       company: "Sopra Steria SE"
       location: "Hamburg, Deutschland"
       period: "2025 - Heute"
@@ -26,18 +26,18 @@
         selbst konzipieren und umsetzen.
       expandable: true
       responsibilities:
-        - text: "**Lead** für zwei bis drei Use Cases — von der Aufgabenverteilung bis zur eigenen Umsetzung"
+        - text: "**Lead** für zwei bis drei Use Cases – von der Aufgabenverteilung bis zur eigenen Umsetzung"
           subitems:
             - "Fachliche Verantwortung von der Konzeption bis in den produktiven Betrieb"
             - "Schnitt und Verteilung der Arbeitspakete im Team, dazu eigene Implementierung der Kernkomponenten"
             - "Software-Architektur und Konzeption des Graphschemas (Datenmodell des Wissensgraphen)"
             - "Datenverarbeitungspipeline mit LLMs und Anbindung von KI-Diensten (Azure AI / OpenAI) auf Azure"
             - "Aufbau der vernetzten Wissensbasis als **Wissensgraph** (Neo4j)"
-        - text: "**Lead** für einen wiederverwendbaren Parser zur Strukturerkennung und -erhaltung — laufend, projektübergreifend"
+        - text: "**Lead** für einen wiederverwendbaren Parser zur Strukturerkennung und -erhaltung – laufend, projektübergreifend"
           subitems:
             - "Erkennt und erhält die Struktur heterogener Dokumentformate (etwa EU-Formex-XML) und wird über mehrere Use Cases hinweg eingesetzt"
             - "Als eigenständiges Vorhaben angelegt, weil die Strukturerkennung in mehreren Projekten dasselbe Kernproblem ist"
-        - text: "Eigenständiges Projekt für eine **öffentliche Behörde** — Backend zur automatisierten Verarbeitung juristischer Inhalte im Formularwesen"
+        - text: "Eigenständiges Projekt für eine **öffentliche Behörde** – Backend zur automatisierten Verarbeitung juristischer Inhalte im Formularwesen"
           subitems:
             - "Python-Pipeline, die Gesetzesdokumente strukturiert und semantisch im Wissensgraph verknüpft"
             - "Orchestrierung der Verarbeitungsschritte mit **Dagster**"
@@ -52,7 +52,7 @@
       period: "2020 - 2025"
       description: >-
         Konzeption und Entwicklung von Softwarelösungen auf Basis eigenentwickelter Deep-Learning-Modelle,
-        die Geschäftsprozesse der Kunden automatisieren — von der Machbarkeitsstudie bis in den produktiven Betrieb.
+        die Geschäftsprozesse der Kunden automatisieren – von der Machbarkeitsstudie bis in den produktiven Betrieb.
       expandable: true # Standard ist true
 
       # Reihenfolge: Highlights zuerst, generische/soziale Blöcke ans Ende.
@@ -93,7 +93,7 @@
           subitems:
             # Datierung bewusst ohne Jahreszahl (ca. 2019–2021); die Architektur
             # verortet die Arbeit fachlich ohnehin selbst. Transfer Learning bestätigt (Aug. 2026).
-            - "Aufbau einer betriebsfertigen Text-to-Speech-Pipeline aus **Tacotron 2** — Encoder und Decoder erzeugen aus dem Text Mel-Spektrogramme — und **WaveNet** als Vocoder für die Sprachausgabe"
+            - "Aufbau einer betriebsfertigen Text-to-Speech-Pipeline aus **Tacotron 2** – Encoder und Decoder erzeugen aus dem Text Mel-Spektrogramme – und **WaveNet** als Vocoder für die Sprachausgabe"
             - "Synthese deutscher Sprache, für die es zu der Zeit keine verfügbaren Modelle gab"
             - "Erhebung eigener Sprachdaten, da die öffentlich verfügbaren Datensätze für das Training nicht ausreichten"
             - "Entwicklung von Algorithmen zur Erkennung, Verifikation und Bereinigung von Qualitätsmängeln in den erhobenen Sprachaufnahmen"
@@ -148,7 +148,7 @@
       company: "opta data Institut e.V."
       location: "Essen, Deutschland"
       period: "2018 - 2020"
-      description: "Computer-Vision-Algorithmen und Prototypen für die Prozessautomatisierung — von der mobilen Belegerfassung bis zu Machbarkeitsstudien."
+      description: "Computer-Vision-Algorithmen und Prototypen für die Prozessautomatisierung – von der mobilen Belegerfassung bis zu Machbarkeitsstudien."
       expandable: false
       responsibilities:
         # [FRONTEND & BACKEND]
@@ -178,7 +178,7 @@
       period: "2015 - 2018"
       description: "Schwerpunkt: Eingebettete Systeme <br> Abschlussnote: <strong>Sehr Gut</strong>"
       achievements:
-        - 'Masterarbeit: „Erkennung handgeschriebener Worte mittels CNN / BiRNN für eingebettete Systeme“ — Note: <strong>Ausgezeichnet</strong>'
+        - 'Masterarbeit: „Erkennung handgeschriebener Worte mittels CNN / BiRNN für eingebettete Systeme“ – Note: <strong>Ausgezeichnet</strong>'
         - "Vertiefung an der Schnittstelle von Machine Learning und eingebetteten Systemen"
 
     - degree: "B. Sc. Elektro- und Informationstechnik"
@@ -187,18 +187,18 @@
       period: "2012 - 2015"
       description: "Grundlagenstudium"
       achievements:
-        - 'Bachelorarbeit: „Elektrische Charakterisierung einer Halbleiter-Nanostruktur“ — Note: <strong>Sehr Gut</strong>'
+        - 'Bachelorarbeit: „Elektrische Charakterisierung einer Halbleiter-Nanostruktur“ – Note: <strong>Sehr Gut</strong>'
 
 - section: "Technische Fähigkeiten"
   icon: "laptop-code"
   # Themen-Gruppen mit Kontextzeile: pro Gruppe Kern-Skills (core) und dahinter
-  # die ergänzende Breite (breadth) — keine Level-Rangordnung, nur eine dezente
+  # die ergänzende Breite (breadth) – keine Level-Rangordnung, nur eine dezente
   # visuelle Zweiteilung. Chips sind interaktiv (Klick zeigt Verbindungen über
   # gemeinsame Projekte, siehe _data/skill_graph.yml, docs/README-skill-feature.md);
   # generische Basis-Skills (git, docker …) sind dort bewusst kantenlos (foundations).
   skill_groups:
     - group: "Machine Learning & Data"
-      context: "Entwicklung, Training und Deployment eigener Modelle — von Computer Vision bis GenAI"
+      context: "Entwicklung, Training und Deployment eigener Modelle – von Computer Vision bis GenAI"
       core:
         - "Python"
         - "TensorFlow"

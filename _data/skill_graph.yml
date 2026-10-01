@@ -4,13 +4,13 @@
 # Schema v1:
 #   version:     Schema-Version (Pflicht; das JS prüft sie und degradiert stumm)
 #   foundations: Basis-Skills (generische Dev-Infra), die in fast jedem Projekt
-#                stecken. BEWUSST ohne Projektkanten — sonst werden sie zu Hubs
+#                stecken. BEWUSST ohne Projektkanten – sonst werden sie zu Hubs
 #                und ein Klick leuchtet den halben Graphen an. Das JS zeigt beim
 #                Klick eine eigene "Basis-Werkzeug"-Meldung statt einer Projektliste.
 #   projects:    Liste der Projekte, die (Signature-)Skills verbinden
 #     id:        stabiler kebab-case-Schlüssel (Pflicht, nie umbenennen)
 #     label:     Anzeigename für die Kontextzeile (Pflicht)
-#     skills:    Liste von Skill-IDs — nur die PROJEKT-DEFINIERENDEN Skills
+#     skills:    Liste von Skill-IDs – nur die PROJEKT-DEFINIERENDEN Skills
 #                (Signature), nicht jede Nutzung; Basis-Skills gehören hier NICHT rein.
 #
 # Skill-IDs = slugify(Chip-Name) aus cv_content.yml → skill_groups (core + breadth),
@@ -19,7 +19,7 @@
 # Das JS warnt in der Konsole, wenn eine ID keinen Chip im DOM trifft.
 #
 # Kanten Skill↔Skill entstehen im JS implizit über gemeinsame Projekte (Gewicht
-# = Anzahl) — hier bewusst KEINE redundanten Kantenlisten pflegen.
+# = Anzahl) – hier bewusst KEINE redundanten Kantenlisten pflegen.
 # =============================================================================
 version: 1
 

@@ -8,11 +8,11 @@
     crt            – CRT-Intensität ("dezent" | "stark"), Default dezent
     zoom_in_label  – aria-label des +-Buttons
     zoom_out_label – aria-label des −-Buttons
-  Alle interaktiven Elemente werden über data-role vom Panel-JS gefunden —
+  Alle interaktiven Elemente werden über data-role vom Panel-JS gefunden –
   bewusst keine IDs, damit mehrere Panels pro Seite kollisionsfrei sind.
 {% endcomment %}
 <div class="fractal-panel__canvas-frame" data-role="canvas-frame" data-canvas-key="{{ include.key }}">
-  <canvas class="fractal-panel__canvas" data-role="canvas" width="960" height="540" tabindex="0" role="img" aria-label="{{ include.label }} — interaktiv. Tastatur: Pfeiltasten verschieben, Plus/Minus zoomen, 0 setzt die Ansicht zurück."></canvas>
+  <canvas class="fractal-panel__canvas" data-role="canvas" width="960" height="540" tabindex="0" role="img" aria-label="{{ include.label }} – interaktiv. Tastatur: Pfeiltasten verschieben, Plus/Minus zoomen, 0 setzt die Ansicht zurück."></canvas>
   {% include crt-overlay.html intensity=include.crt %}
   <div class="fractal-panel__zoom-box" data-role="zoom-box" aria-hidden="true"></div>
   <div class="fractal-panel__hud" data-role="hud" aria-hidden="true">

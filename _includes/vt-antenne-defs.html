@@ -12,15 +12,15 @@
   A = 1 in der Karten-Matrix ist Pflicht: sonst verfälscht Premultiplied-
   Alpha die Displacement-Werte. sRGB hält die Noise-Werte ungegammat.
 
-  Alle Stufen sind STATISCH (kein animiertes feTurbulence — CPU-Doktrin,
+  Alle Stufen sind STATISCH (kein animiertes feTurbulence – CPU-Doktrin,
   siehe _crt-overlay.scss); die Keyframes springen per step-end zwischen
   den url(#vtAntenneN)-Referenzen. Der Seed variiert pro Stufe, damit jeder
-  Sprung auch die Wellenform wechselt — die Störung wirkt lebendig.
+  Sprung auch die Wellenform wechselt – die Störung wirkt lebendig.
 
   Cross-Doc View Transitions rendern old- UND new-Snapshot im NEUEN
   Dokument: die Defs müssen daher auf JEDER Zielseite stehen (dieses
   Include hängt in _layouts/default.html direkt nach <body>) und werden
-  bewusst IMMER ausgegeben — Liquid kennt die SCSS-Variantenwahl nicht,
+  bewusst IMMER ausgegeben – Liquid kennt die SCSS-Variantenwahl nicht,
   und unreferenzierte Filter kosten nichts (werden nie evaluiert).
 
   Stufen: id | displacement-scale | schnee-alpha | seed

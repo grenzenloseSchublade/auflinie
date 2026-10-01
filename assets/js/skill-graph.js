@@ -656,8 +656,8 @@
       } else {
         var projects = (this.skillProjects && this.skillProjects.get(skillId)) || [];
         this.contextLine.textContent = projects.length
-          ? node.label + ' — gemeinsam im Einsatz bei: ' + projects.map(function (p) { return p.label; }).join(', ')
-          : node.label + ' — noch keine Projektzuordnung hinterlegt.';
+          ? node.label + ' – gemeinsam im Einsatz bei: ' + projects.map(function (p) { return p.label; }).join(', ')
+          : node.label + ' – noch keine Projektzuordnung hinterlegt.';
       }
     }
     if (this.initialized && !this.panel.hidden) { this.render(); }

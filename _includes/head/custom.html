@@ -74,12 +74,12 @@
 {% if site.background_image %}
 <link rel="preload" as="image" href="{{ site.background_image | relative_url }}">
 {% endif %}
-<!-- Speculation Rules: Prerender interner Links (Chromium) — macht zusätzlich
+<!-- Speculation Rules: Prerender interner Links (Chromium) – macht zusätzlich
      zum SW-Cache auch das RENDERN der Zielseite instant; /mandelbrot/ wegen
      Worker-/MathJax-Last ausgenommen; andere Browser ignorieren das folgenlos.
      Drawer-Links ausgenommen: der Prerender startete sonst mitten im
      Drawer-Exit (moderate feuert ab Chrome 138 schon nach Scroll-Stopp)
-     und stahl dem Compositor die CPU — der SW-Voll-Precache macht die
+     und stahl dem Compositor die CPU – der SW-Voll-Precache macht die
      Drawer-Ziele ohnehin instant.
      Wired-Set (/, /about/, /cv/, /posts/*) komplett ausgenommen: diese Ziele
      fängt spa-nav.js als SPA-Swap ab (preventDefault) -> ein Prerender würde
@@ -116,7 +116,7 @@
     "@id": "{{ page.url | absolute_url }}"
   },
   {% comment %} seo_title zuerst; page.title kann Markup tragen (Startseiten-
-  Neon-Spans) — strip_html, sonst landet escapter HTML-Müll in der headline {% endcomment %}
+  Neon-Spans) – strip_html, sonst landet escapter HTML-Müll in der headline {% endcomment %}
   "headline": "{{ page.seo_title | default: page.title | default: site.title | markdownify | strip_html | strip_newlines | escape }}",
   "description": "{{ page.excerpt | default: site.description | strip_html | strip_newlines | truncate: 160 | escape }}",
   {% if page.header.overlay_image or site.og_image %}

@@ -90,7 +90,7 @@ sections:
           Fraktale wie die Mandelbrot-Menge überschreiten diese einfache Kategorisierung, da ihre Randstruktur die Eigenschaften einer Fläche annimmt,
           ohne diese allerdings vollständig auszufüllen.
           <br>
-          Die Randkurve besitzt eine Hausdorff-Dimension von etwa $2$ und verdeutlicht damit ihre hohe Komplexität.
+          Ihr Rand hat die Hausdorff-Dimension exakt $2$ – das hat Mitsuhiro Shishikura 1998 bewiesen. Eine Grenzlinie ist damit so komplex wie eine Fläche.
           Die fraktale Dimension quantifiziert die Skalierungsinvarianz solch komplexer Gebilde und ist ein wesentliches Werkzeug zur Charakterisierung von Fraktalen.<br>
           Die Berechnung und theoretische Einordnung fraktaler Dimensionen ist Gegenstand aktueller mathematischer Forschung.<br>
 
@@ -106,7 +106,7 @@ sections:
         darunter Kopien der Gesamtmenge und wiederkehrende Muster wie "Seepferdchen" und "Elefantenrüssel".
       
       - **Fraktale Dimension:**
-        Die Hausdorff-Dimension der Randkurve liegt nahe $2$ und verdeutlicht damit die enorme Komplexität der Struktur.
+        Der Rand hat die Hausdorff-Dimension exakt $2$ (Shishikura 1998) und verdeutlicht damit die enorme Komplexität der Struktur.
         Mathematisch gesehen reicht die fraktale Dimension über die klassische Topologie hinaus und ist ein Gegenstand aktueller Forschungsarbeit.
 
       - **Universalität:**

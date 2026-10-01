@@ -12,7 +12,7 @@
   damit head/custom.html das CSS und scripts.html die JS-Deps laden.
 {% endcomment %}
 {% unless page.fractal_panels %}
-<!-- fractal/panel.html: WARNUNG — page.fractal_panels fehlt im Front Matter; Slider/Select/Renderer-Skripte werden nicht geladen. -->
+<!-- fractal/panel.html: WARNUNG – page.fractal_panels fehlt im Front Matter; Slider/Select/Renderer-Skripte werden nicht geladen. -->
 {% endunless %}
 {% assign fractal_variant = include.variant | default: "julia" %}
 {% assign fractal_crt = include.crt | default: "dezent" %}
@@ -104,7 +104,7 @@
           <option value="standard" data-real="-0.70" data-imag="0.27" selected>Standard (-0.70, 0.27)</option>
           <option value="seepferdchen" data-real="-0.78" data-imag="-0.11">Seepferdchen (-0.78, -0.11)</option>
           <option value="blitz" data-real="-0.835" data-imag="-0.2321">Blitz (-0.84, -0.23)</option>
-          <option value="dendrit" data-real="0.285" data-imag="0.01">Dendrit (0.29, 0.01)</option>
+          <option value="dendrit" data-real="0" data-imag="1">Dendrit (0, 1)</option>
         </select>
       </div>
       {% endif %}

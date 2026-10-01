@@ -93,7 +93,7 @@ Die SEO-Optimierung und Metadaten-Verwaltung ist ein weiterer Stärkebereich des
 
 Die erweiterten Customization-Optionen bieten umfangreiche Anpassungsmöglichkeiten. Das Skin-System bietet verschiedene vorgefertigte Farbschemata wie Dark, Light und Aqua, während multiple Layout-Varianten für verschiedene Content-Typen verfügbar sind. Die flexible Navigation unterstützt Dropdown-Menüs und Breadcrumbs, und konfigurierbare Sidebar-Elemente wie Archiv, Tags und Kategorien ermöglichen individuelle Anpassungen. Anpassbare Footer-Bereiche mit Links und Informationen vervollständigen die Customization-Optionen.
 
-Die Performance-Optimierungen sind ein weiterer wichtiger Aspekt des Themes. Optimiertes CSS/JS-Bundling und Minimierung sorgen für schnelle Ladezeiten, während Lazy Loading das verzögerte Laden von Bildern für bessere Performance ermöglicht. Inline-Critical-CSS sorgt für schnelleres First Paint, und die automatische Bildgrößen-Anpassung samt WebP-Unterstützung rundet die Performance-Optimierungen ab. Einen Service Worker bringt das Theme dagegen nicht mit — die Offline-Funktionalität dieser Website ist ein Eigenbau (mehr dazu in Kapitel III).
+Die Performance-Optimierungen sind ein weiterer wichtiger Aspekt des Themes. Optimiertes CSS/JS-Bundling und Minimierung sorgen für schnelle Ladezeiten, während Lazy Loading das verzögerte Laden von Bildern für bessere Performance ermöglicht. Inline-Critical-CSS sorgt für schnelleres First Paint, und die automatische Bildgrößen-Anpassung samt WebP-Unterstützung rundet die Performance-Optimierungen ab. Einen Service Worker bringt das Theme dagegen nicht mit – die Offline-Funktionalität dieser Website ist ein Eigenbau (mehr dazu in Kapitel III).
 
 Die detaillierte Community- und Support-Analyse des Minimal Mistakes Themes zeigt eine außergewöhnlich hohe Qualität und Aktivität. Die Dokumentationsqualität ist beeindruckend mit über 200 Seiten detaillierter Dokumentation, die alle Aspekte des Themes abdecken. Praktische Code-Beispiele für alle Features und Customizations erleichtern die Implementierung, während Video-Tutorials Schritt-für-Schritt-Anleitungen für häufige Aufgaben bieten. Eine umfassende FAQ-Sektion beantwortet häufige Fragen und Problemstellungen, und detaillierte Migration-Guides unterstützen bei Updates und Theme-Wechseln.
 
@@ -117,7 +117,7 @@ Die finale Entscheidung für Minimal Mistakes basierte auf der Kombination aus u
 
 Die Einrichtung einer produktiven Entwicklungsumgebung war ein kritischer Schritt für den Erfolg des Projekts. Die gewählte Lösung kombiniert moderne Container-Technologie mit bewährten Entwicklungstools für eine optimale Developer Experience.
 
-Die umfassende Installation und Konfiguration der Dependencies bildet das Fundament für eine produktive Entwicklungsumgebung. Die Ruby-Version ist über die `.ruby-version` auf 3.4.8 festgelegt, damit lokale Umgebung, Dev Container und CI identisch bauen. Für lokales Version-Management bietet rbenv eine elegante Lösung, die verschiedene Ruby-Versionen parallel verwalten kann — im Alltag übernimmt diese Aufgabe allerdings der Dev Container.
+Die umfassende Installation und Konfiguration der Dependencies bildet das Fundament für eine produktive Entwicklungsumgebung. Die Ruby-Version ist über die `.ruby-version` auf 3.4.8 festgelegt, damit lokale Umgebung, Dev Container und CI identisch bauen. Für lokales Version-Management bietet rbenv eine elegante Lösung, die verschiedene Ruby-Versionen parallel verwalten kann – im Alltag übernimmt diese Aufgabe allerdings der Dev Container.
 
 Die Bundler-Installation und Konfiguration ist ein kritischer Schritt für das Dependency-Management. Bundler fungiert als Ruby Dependency Manager und ermöglicht reproduzierbare Builds durch die Gemfile.lock. Die Konfiguration für Deployment-Modus und das Ausschließen von Development- und Test-Dependencies sorgt für optimale Build-Performance in Produktionsumgebungen.
 
@@ -245,7 +245,7 @@ auflinie/
 │   │                              #   julia-/mandelbrot-worker, hero-crt, tv-switch,
 │   │                              #   sw-register, blog-search u. a.
 │   ├── vendor/                    # Selbst gehostete Bibliotheken (tom-select,
-│   │                              #   nouislider, gumshoe) — vormals CDN
+│   │                              #   nouislider, gumshoe) – vormals CDN
 │   ├── webfonts/                  # Font-Awesome-Subset (pyftsubset, woff2)
 │   ├── images/                    # background.jpg, mandelbrot-preview.jpg, Logo.svg
 │   └── downloads/post-template.md # Blog-Template zum Download
@@ -384,12 +384,12 @@ Die Custom-Komponenten umfassen spezielle Styling für den Fraktal-Canvas mit Ak
 Die Fraktal-Visualisierungen sind als geteilte Panel-Komponente organisiert: Markup in `_includes/fractal/panel.html`, Rendering-Logik in `assets/js/fractal-renderer.js` und `fractal-panel.js`, Berechnung in Web Workern (`julia-worker.js`, `mandelbrot-worker.js`). Die Seiten binden davon nur dünne Wrapper ein:
 
 ```liquid
-{% raw %}<!-- _includes/julia-interactive.html — dünner Wrapper um das geteilte Panel -->
+{% raw %}<!-- _includes/julia-interactive.html – dünner Wrapper um das geteilte Panel -->
 {% include fractal/panel.html variant="julia" id="julia-container"
    title="Interaktive Julia-Menge" crt="dezent" %}{% endraw %}
 ```
 
-Die gesamte Panel-Kette (inklusive der selbst gehosteten Bibliotheken nouislider und tom-select) lädt nur auf Seiten, die im Front Matter `fractal_panels: true` setzen — alle anderen Seiten bleiben JavaScript-leicht.
+Die gesamte Panel-Kette (inklusive der selbst gehosteten Bibliotheken nouislider und tom-select) lädt nur auf Seiten, die im Front Matter `fractal_panels: true` setzen – alle anderen Seiten bleiben JavaScript-leicht.
 
 **Navigation und Menüstruktur:**
 ```yaml
@@ -424,13 +424,13 @@ Die strukturierten Daten und YAML-Konfiguration in der `cv_content.yml` organisi
 
 **Asset-Management und Optimierung:**
 
-Das Asset-Management folgt dem Prinzip „selbst hosten statt CDN": Font Awesome liegt als per pyftsubset generiertes Subset (nur die tatsächlich genutzten Icons) in `assets/webfonts/`, die Bibliotheken der Fraktal-Panels (tom-select, nouislider, gumshoe) in `assets/vendor/`. Damit entfallen externe Abhängigkeiten und die Seite bleibt vollständig offline-fähig — einzige verbleibende externe Quelle ist MathJax. Bilder werden nicht über eine generische Pipeline skaliert, sondern einzeln von Hand optimiert (etwa `background.jpg` und das per Skript gerenderte `mandelbrot-preview.jpg`, jeweils als komprimiertes JPEG unter 250 KB).
+Das Asset-Management folgt dem Prinzip „selbst hosten statt CDN": Font Awesome liegt als per pyftsubset generiertes Subset (nur die tatsächlich genutzten Icons) in `assets/webfonts/`, die Bibliotheken der Fraktal-Panels (tom-select, nouislider, gumshoe) in `assets/vendor/`. Damit entfallen externe Abhängigkeiten und die Seite bleibt vollständig offline-fähig – einzige verbleibende externe Quelle ist MathJax. Bilder werden nicht über eine generische Pipeline skaliert, sondern einzeln von Hand optimiert (etwa `background.jpg` und das per Skript gerenderte `mandelbrot-preview.jpg`, jeweils als komprimiertes JPEG unter 250 KB).
 
 **Performance-Optimierungen und Caching:**
 
 **Service Worker für Offline-Funktionalität (Eigenbau):**
 
-Der Service Worker verfolgt eine App-Shell-Strategie: Beim Installieren wird die komplette Site vorab gecacht — die Seitenliste generiert Jekyll per Liquid direkt in die Datei, statische Assets stehen in einer gepflegten Liste. Seitenwechsel sind danach netzunabhängig.
+Der Service Worker verfolgt eine App-Shell-Strategie: Beim Installieren wird die komplette Site vorab gecacht – die Seitenliste generiert Jekyll per Liquid direkt in die Datei, statische Assets stehen in einer gepflegten Liste. Seitenwechsel sind danach netzunabhängig.
 
 ```javascript
 // service-worker.js (Auszug)
@@ -442,7 +442,7 @@ const CACHE_URLS = [
 ];
 ```
 
-Die Registrierung übernimmt `assets/js/sw-register.js`: Sie ist per `data-enable-service-worker`-Attribut schaltbar und zeigt bei neuen Versionen einen Update-Toast statt eines blockierenden Dialogs — „Jetzt laden" aktiviert den wartenden Worker (`SKIP_WAITING`) und lädt erst nach dem `controllerchange` neu, damit kein Mischzustand aus altem DOM und neuem Cache entsteht. Frische kommt über den Cache-Versionsstempel: Jeder Build erzeugt einen neuen Cache-Namen, alte Caches werden beim Aktivieren aufgeräumt.
+Die Registrierung übernimmt `assets/js/sw-register.js`: Sie ist per `data-enable-service-worker`-Attribut schaltbar und zeigt bei neuen Versionen einen Update-Toast statt eines blockierenden Dialogs – „Jetzt laden" aktiviert den wartenden Worker (`SKIP_WAITING`) und lädt erst nach dem `controllerchange` neu, damit kein Mischzustand aus altem DOM und neuem Cache entsteht. Frische kommt über den Cache-Versionsstempel: Jeder Build erzeugt einen neuen Cache-Namen, alte Caches werden beim Aktivieren aufgeräumt.
 
 **Build-Optimierungen:**
 ```yaml
@@ -486,6 +486,7 @@ header:
 excerpt: "Kurze Zusammenfassung (wird in der Übersicht angezeigt)"
 ---
 -->
+```
 
 Die automatisierte Content-Erstellung wurde durch ein Bash-Script für neue Blogbeiträge implementiert. Das Script nimmt einen Titel als Parameter, generiert automatisch ein Datum und einen Dateinamen, und erstellt eine neue Markdown-Datei mit vorgefertigtem Front Matter und Grundstruktur. Diese Automatisierung beschleunigt den Content-Erstellungsprozess erheblich und gewährleistet konsistente Strukturierung aller Blogbeiträge.
 
@@ -532,7 +533,7 @@ Das Build-Performance-Monitoring ermöglicht kontinuierliche Optimierung durch M
 
 **Asset-Handling und Optimierung:**
 
-Statt einer generischen Bildoptimierungs-Pipeline setzt die Website auf wenige, gezielt optimierte Bilder: Das Hero-Hintergrundbild und das Mandelbrot-Vorschaubild der Startseite sind handkomprimierte JPEGs (Ziel: unter 250 KB), Logo und Favicons liegen als SVG bzw. PNG vor. Bei einer Handvoll Bilder schlägt Kuratieren jede Automatisierung — die Pipeline-Komplexität (WebP-Varianten, responsive Größen, srcset) stünde in keinem Verhältnis zum Nutzen.
+Statt einer generischen Bildoptimierungs-Pipeline setzt die Website auf wenige, gezielt optimierte Bilder: Das Hero-Hintergrundbild und das Mandelbrot-Vorschaubild der Startseite sind handkomprimierte JPEGs (Ziel: unter 250 KB), Logo und Favicons liegen als SVG bzw. PNG vor. Bei einer Handvoll Bilder schlägt Kuratieren jede Automatisierung – die Pipeline-Komplexität (WebP-Varianten, responsive Größen, srcset) stünde in keinem Verhältnis zum Nutzen.
 
 **JavaScript-Performance-Optimierung:**
 
@@ -660,7 +661,7 @@ assets/
 
 **Asset-Versionierung und Caching:**
 
-Cache-Busting läuft nicht über Query-Parameter oder Config-Felder, sondern über den Service Worker: Der Cache-Name enthält einen Build-Zeitstempel (per Liquid aus `site.time`), sodass jeder Deploy einen frischen Cache erzeugt und alte Caches beim Aktivieren aufgeräumt werden. Die Sass-Kompilierung mit `style: compressed` übernimmt Jekyll selbst — eine separate Minifizierungs-Pipeline für CSS/JS existiert bewusst nicht.
+Cache-Busting läuft nicht über Query-Parameter oder Config-Felder, sondern über den Service Worker: Der Cache-Name enthält einen Build-Zeitstempel (per Liquid aus `site.time`), sodass jeder Deploy einen frischen Cache erzeugt und alte Caches beim Aktivieren aufgeräumt werden. Die Sass-Kompilierung mit `style: compressed` übernimmt Jekyll selbst – eine separate Minifizierungs-Pipeline für CSS/JS existiert bewusst nicht.
 
 ### 4.3 Kritische Reflexion und Empfehlungen
 
@@ -670,7 +671,7 @@ Die umfassende Bewertung der gewählten Lösung zeigt, dass die Kombination aus 
 
 Die Minimal Mistakes Theme-Vorteile überzeugten durch professionelle Qualität mit hochwertigem Design ohne Custom-Entwicklung, umfangreiche Customization-Optionen für alle gewünschten Anpassungen und perfekte responsive Darstellung auf allen Geräten. Die SEO-Optimierung mit automatischen Meta-Tags und strukturierten Daten sowie optimierte Asset-Delivery und Lazy Loading für bessere Performance rundeten die Theme-Vorteile ab.
 
-Die GitHub Pages Integration bot nahtlose Integration ohne zusätzliche Konfiguration, kostenloses Hosting ohne laufende Kosten für Hosting und CDN, automatische Deployments bei jedem Git-Push und automatische Bereitstellung und Erneuerung von SSL-Zertifikaten. Das GitHub-Pages-CDN sorgte für globale Performance mit minimalen Latenzzeiten — Drittanbieter-CDNs für Bibliotheken und Fonts wurden dagegen bewusst abgelöst: Vendor-Skripte und das Font-Awesome-Subset liegen selbst gehostet im Repository, einzig MathJax lädt noch extern.
+Die GitHub Pages Integration bot nahtlose Integration ohne zusätzliche Konfiguration, kostenloses Hosting ohne laufende Kosten für Hosting und CDN, automatische Deployments bei jedem Git-Push und automatische Bereitstellung und Erneuerung von SSL-Zertifikaten. Das GitHub-Pages-CDN sorgte für globale Performance mit minimalen Latenzzeiten – Drittanbieter-CDNs für Bibliotheken und Fonts wurden dagegen bewusst abgelöst: Vendor-Skripte und das Font-Awesome-Subset liegen selbst gehostet im Repository, einzig MathJax lädt noch extern.
 
 Die Markdown-Workflow-Vorteile ermöglichten einfache Content-Erstellung ohne technische Expertise, vollständige Nachverfolgbarkeit aller Änderungen durch Versionierung, einfache Zusammenarbeit durch Git-Workflow und Portabilität der Inhalte unabhängig von der Plattform. Die strukturierten, menschenlesbaren Inhalte sorgten für optimale Wartbarkeit.
 
@@ -860,4 +861,4 @@ Die langfristigen Perspektiven (3+ Jahre) umfassen Technologie-Evaluation mit Be
 - **Internationalization**: Mehrsprachige Unterstützung und Lokalisierung
 - **Content-Recommendation**: Intelligente Empfehlungssysteme für verwandte Inhalte
 
-Was bleibt als Schlussgedanke: Die Integration der Fraktal-Visualisierungen zeigt, dass auch anspruchsvolle interaktive Anforderungen in statischen Websites realisierbar sind — Web Workers, Canvas-APIs und moderne JavaScript-Features ermöglichen eine Erfahrung, die weit über die klassische statische Seite hinausgeht, ohne deren Stärken (Performance, Stabilität, Kostenfreiheit) aufzugeben. Die dokumentierten Entscheidungen und Lessons Learned taugen damit als Referenz für ähnliche Projekte.
+Was bleibt als Schlussgedanke: Die Integration der Fraktal-Visualisierungen zeigt, dass auch anspruchsvolle interaktive Anforderungen in statischen Websites realisierbar sind – Web Workers, Canvas-APIs und moderne JavaScript-Features ermöglichen eine Erfahrung, die weit über die klassische statische Seite hinausgeht, ohne deren Stärken (Performance, Stabilität, Kostenfreiheit) aufzugeben. Die dokumentierten Entscheidungen und Lessons Learned taugen damit als Referenz für ähnliche Projekte.

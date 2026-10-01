@@ -9,10 +9,12 @@
     <style>
       /* Basis-Layout für sofortige Darstellung */
       *,*::before,*::after{box-sizing:border-box}
-      {% comment %} SYNC-PFLICHT: html 16px (FOUC-Basis), .site-title 1.8em und
-      .page__title 2em spiegeln Werte aus assets/_sass/ (variables/_typography.scss,
-      _masthead.scss, Theme) — bei Änderung dort hier manuell nachziehen. {% endcomment %}
-      html{font-size:16px;-webkit-text-size-adjust:100%}
+      {% comment %} Grundschrift 100 % = Browser-Einstellung der Besuchenden (Standard
+      16 px). Steht NACH main.css und überstimmt damit bewusst die Theme-Rampe
+      18/20/22 px (Entscheidung 1.10.2026, vorher fest 16px). SYNC-PFLICHT:
+      .site-title 1.8em und .page__title 2em spiegeln Werte aus assets/_sass/
+      (variables/_typography.scss, _masthead.scss, Theme). {% endcomment %}
+      html{font-size:100%;-webkit-text-size-adjust:100%}
       /* Masthead-Höhe: identisch zu variables/_css-properties.scss (74px mobil / 88px ab 768px),
          sonst springt der Inhalt beim Laden von main.css (CLS) */
       :root{--masthead-height:74px}
@@ -41,7 +43,7 @@
 
   <body class="layout--{{ page.layout | default: layout.layout }}{% if page.classes or layout.classes %}{{ page.classes | default: layout.classes | join: ' ' | prepend: ' ' }}{% endif %}" dir="{% if site.rtl %}rtl{% else %}ltr{% endif %}">
     {% comment %} Muss am Body-ANFANG stehen: pagereveal feuert zur ersten
-    Render-Gelegenheit, u.U. vor Parse-Ende — die View-Transition-Filter
+    Render-Gelegenheit, u.U. vor Parse-Ende – die View-Transition-Filter
     (url(#vtAntenneN)) brauchen die Defs dann bereits im DOM. {% endcomment %}
     {% include_cached vt-antenne-defs.html %}
     {% include_cached skip-links.html %}
@@ -74,7 +76,7 @@
     
     <!-- Offline-Benachrichtigung (Steuerung: assets/js/sw-register.js) -->
     <div id="offline-notification" class="offline-notification" role="status" hidden>
-      Gerade offline — einige Inhalte könnten nicht verfügbar sein.
+      Gerade offline – einige Inhalte könnten nicht verfügbar sein.
     </div>
   </body>
 </html> 

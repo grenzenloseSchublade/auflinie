@@ -80,11 +80,11 @@
       var roleEl = document.createElement('span');
       roleEl.className = 'cv-skills__selection-rolle';
       if (projects.length) {
-        roleEl.textContent = ' — gemeinsam im Einsatz bei';
+        roleEl.textContent = ' – gemeinsam im Einsatz bei';
       } else if (kind === 'foundation') {
-        roleEl.textContent = ' — Basis-Werkzeug, quer durch fast alle Projekte im Einsatz.';
+        roleEl.textContent = ' – Basis-Werkzeug, quer durch fast alle Projekte im Einsatz.';
       } else {
-        roleEl.textContent = ' — Teil des Werkzeugkastens, ohne feste Projektzuordnung.';
+        roleEl.textContent = ' – Teil des Werkzeugkastens, ohne feste Projektzuordnung.';
       }
       contextLine.appendChild(roleEl);
 

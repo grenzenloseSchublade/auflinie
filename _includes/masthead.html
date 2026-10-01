@@ -5,13 +5,13 @@
         <div class="masthead__menu">
             <nav id="site-nav" class="greedy-nav">
                 {% unless logo_path == empty %}
-                <a class="site-logo" href="{{ '/' | relative_url }}" aria-label="Startseite — {{ site.masthead_title | default: site.title }}">
+                <a class="site-logo" href="{{ '/' | relative_url }}" aria-label="Startseite – {{ site.masthead_title | default: site.title }}">
                     {%- comment -%} Inline statt <img>, damit die Magenta-Pfade das Röhren-Flackern bekommen {%- endcomment -%}
                     {% include logo.svg %}
                 </a>
                 {% endunless %}
                 {%- comment -%}
-                    Bewusst schlichter Text auf ALLEN Seiten — der Neon-Schriftzug
+                    Bewusst schlichter Text auf ALLEN Seiten – der Neon-Schriftzug
                     lebt ausschließlich im Hero (page__hero.html). Früher baute eine
                     page.url-Bedingung nur auf der Startseite Neon-Markup ein: der
                     Masthead sah dadurch je nach Seite anders aus.

@@ -1,6 +1,6 @@
 ---
 title: "Die Welt der Fraktale"
-excerpt: "Unendliche Muster aus einer einzigen Formel — interaktiv erkundbar, direkt im Browser."
+excerpt: "Unendliche Muster aus einer einzigen Formel – interaktiv erkundbar, direkt im Browser."
 permalink: /mandelbrot/
 layout: single
 author_profile: true
