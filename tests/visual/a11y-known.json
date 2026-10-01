@@ -1,0 +1,43 @@
+{
+  "/": [
+    "color-contrast | .page__footer-copyright",
+    "color-contrast | a[href$=\"jekyllrb.com\"]",
+    "color-contrast | a[rel=\"nofollow\"]:nth-child(2)"
+  ],
+  "about/": [
+    "color-contrast | .page__footer-copyright",
+    "color-contrast | a[href$=\"jekyllrb.com\"]",
+    "color-contrast | a[rel=\"nofollow\"]:nth-child(2)"
+  ],
+  "cv/": [
+    "color-contrast | .page__footer-copyright",
+    "color-contrast | a[href$=\"jekyllrb.com\"]",
+    "color-contrast | a[rel=\"nofollow\"]:nth-child(2)",
+    "target-size | li:nth-child(7) > details > summary",
+    "target-size | li:nth-child(8) > details > summary",
+    "target-size | li:nth-child(9) > details > summary"
+  ],
+  "posts/": [
+    "color-contrast | .page__footer-copyright",
+    "color-contrast | a[href$=\"jekyllrb.com\"]",
+    "color-contrast | a[rel=\"nofollow\"]:nth-child(2)"
+  ],
+  "mandelbrot/": [
+    "aria-input-field-name | div[aria-valuemax=\"1000.0\"]",
+    "aria-input-field-name | div[aria-valuemax=\"500.0\"]",
+    "color-contrast | .page__footer-copyright",
+    "color-contrast | a[href$=\"jekyllrb.com\"]",
+    "color-contrast | a[rel=\"nofollow\"]:nth-child(2)"
+  ],
+  "styleguide/": [
+    "color-contrast | .cv-entry__location",
+    "color-contrast | .page__footer-copyright",
+    "color-contrast | a[href$=\"jekyllrb.com\"]",
+    "color-contrast | a[rel=\"nofollow\"]:nth-child(2)"
+  ],
+  "404.html": [
+    "color-contrast | .page__footer-copyright",
+    "color-contrast | a[href$=\"jekyllrb.com\"]",
+    "color-contrast | a[rel=\"nofollow\"]:nth-child(2)"
+  ]
+}

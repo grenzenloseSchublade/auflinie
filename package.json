@@ -20,6 +20,6 @@
     "test:e2e": "playwright test",
     "test:visual": "playwright test tests/visual",
     "test:visual:update": "playwright test tests/visual --update-snapshots",
-    "test:a11y:baseline": "UPDATE_A11Y=1 playwright test tests/visual/a11y.spec.js"
+    "test:a11y:baseline": "UPDATE_A11Y=1 playwright test tests/visual/a11y.spec.js --project=desktop --workers=1"
   }
 }
