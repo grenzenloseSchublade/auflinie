@@ -1,4 +1,7 @@
 ---
+# Depubliziert 1. 10. 2026 (INH-4, Audit B-COPY-05): Demo-Beitrag ohne
+# Inhalt für Lesende. Im Review-Build (--unpublished) bleibt er sichtbar.
+published: false
 title: "Mein erster Blogbeitrag"
 date: 2025-02-15
 last_modified_at: 2025-02-15
