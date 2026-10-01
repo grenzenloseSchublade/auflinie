@@ -149,6 +149,7 @@ exclude:
   - playwright.config.js
   - scripts/ # Lint-/Analyse-Werkzeuge, gehören nicht auf die Seite
   - CONTRIBUTING.md
+  - STYLEGUIDE.md # Regelwerk, nie deployen (Owner-Entscheidung, SG-1)
   - .sass-cache/
   - .jekyll-cache/
   - gemfiles/
