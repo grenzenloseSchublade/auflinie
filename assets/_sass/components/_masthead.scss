@@ -534,13 +534,13 @@ body .greedy-nav__toggle:hover {
 
 // Hover der Hamburger-Balken: Das Theme färbt sie mit
 // mix(#000, $primary-color, 25 %) und gewinnt per Spezifität gegen die
-// Ruhe-Regel unten. Eigener Wert aus der Cyan-Familie, kräftiger als
-// $link-color-subtle (FARB-10). Nicht im .close-Zustand: dort ist der
-// mittlere Balken transparent und das X bleibt dezent.
+// Ruhe-Regel unten. Nav-Hover ist Magenta (Owner, KOMP-3): derselbe Ton wie
+// die Nav-Links im Hover. Nicht im .close-Zustand: dort ist der mittlere
+// Balken transparent und das X bleibt dezent.
 body .greedy-nav__toggle:not(.close):hover .navicon,
 body .greedy-nav__toggle:not(.close):hover .navicon::before,
 body .greedy-nav__toggle:not(.close):hover .navicon::after {
-  background: $cyan-a75;
+  background: $hover-color-text;
 }
 
 body .navicon {
