@@ -577,7 +577,7 @@
     // Hero-Bild und brauchen mehr Abhebung als Meta-Zeile und Buttons
     .page__title,
     .page__lead {
-      text-shadow: 2px 2px 4px rgb(0 0 0 / 80%);
+      text-shadow: 2px 2px 4px $black-a80;
     }
 
     // Meta-Zeile (Datum + Lesezeit) klar vom Lead-Text absetzen: die
