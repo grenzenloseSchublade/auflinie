@@ -106,14 +106,14 @@ def build(src_dir):
         got = sha256(path)
         if got != digest:
             sys.exit(f'{src}: SHA-256 {got} passt nicht zur gepinnten Quelle {digest}')
-        font = TTFont(path)
+        font = TTFont(path, recalcTimestamp=False)
         font = instancer.instantiateVariableFont(
             font, {'wdth': 100, 'wght': WGHT}, updateFontNames=False)
         # Neu laden: der Instancer hinterlässt gvar halb geladen, subset stolpert sonst
         buf = io.BytesIO()
         font.save(buf)
         buf.seek(0)
-        font = TTFont(buf)
+        font = TTFont(buf, recalcTimestamp=False)
         # Geschützter Bindestrich -> normaler Bindestrich
         for table in font['cmap'].tables:
             if table.isUnicode():
