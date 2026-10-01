@@ -5,6 +5,8 @@
  * für das Hintergrundbild und dessen Caching-Optimierungen.
  */
 
+@use "abstracts/tokens" as *;
+
 // Grundlegende Stile für die Hero-Komponente
 .page__hero {
   position: relative;

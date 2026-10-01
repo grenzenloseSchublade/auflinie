@@ -1,6 +1,10 @@
 // Fractal Panel — Info-Panel, Erklärbereich, CRT-off, Fokus- und Vollbild-Zustände
 // Teil des Splits von components/_fractal-panel.scss (Umbrella dort)
 
+@use "abstracts/tokens" as *;
+@use "abstracts/mixins" as *;
+@use "components/fractal-panel/tokens" as *;
+
 // -----------------------------------------------------------------------------
 // Info-Panel (nur --dual, sichtbar bei erweiterten Optionen)
 // -----------------------------------------------------------------------------

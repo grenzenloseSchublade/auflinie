@@ -1,6 +1,8 @@
 // Back to Top Button
 // Runder, schwebender Button zum Zurückkehren an den Seitenanfang
 
+@use "abstracts/tokens" as *;
+
 .back-to-top {
   // Positionierung: mittig unten (Nutzerentscheidung — überdeckt zwar
   // punktuell Text, aber alles bleibt scrollbar)

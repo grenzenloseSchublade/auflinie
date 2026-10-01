@@ -5,6 +5,8 @@
 // Ausgelagert aus components/_cards.scss für klare Trennung zwischen
 // eigenen Komponenten und Theme-Überschreibungen
 
+@use "abstracts/tokens" as *;
+
 // Blogbeiträge auf der Startseite
 .entries-grid {
   display: flow-root; // schließt die Float-Fläche der .grid__item ab

@@ -3,6 +3,8 @@
 // =============================================================================
 // Styles für die Offline-Fallback-Seite des Service Workers
 @use "sass:color";
+@use "abstracts/tokens" as *;
+@use "abstracts/mixins" as *;
 
 .offline-page {
   text-align: center;

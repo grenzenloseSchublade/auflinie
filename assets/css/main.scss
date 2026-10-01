@@ -1,15 +1,13 @@
---- 
-# Only the main Sass file needs front matter (the dashes are enough) 
---- 
+---
+# Only the main Sass file needs front matter (the dashes are enough)
+---
 
 @charset "utf-8";
 
-// Eigene Variablen importieren (vor dem Theme)
-@import "variables";
-
-// Theme importieren - nach den Variablen, aber vor eigenen Styles
-@import "minimal-mistakes/skins/{{ site.minimal_mistakes_skin | default: 'default' }}";
-@import "minimal-mistakes";
-
-// Eigene Styles importieren (nach dem Theme)
-@import "custom";
+// Ladereihenfolge = Kaskade: :root-Custom-Properties, Theme, eigene Styles.
+// Eigener Code ist ein Modulbaum (@use/@forward, STYLEGUIDE.md 9.1).
+// @import gibt es nur noch in der Theme-Brücke, weil Minimal Mistakes
+// selbst @import nutzt.
+@use "variables/css-properties";
+@use "theme-bridge";
+@use "custom";

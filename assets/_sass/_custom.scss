@@ -1,60 +1,64 @@
 // =============================================================================
 // Zentrale Datei für alle benutzerdefinierten Styles
 // =============================================================================
-// Diese Datei importiert alle Komponenten, Layouts und Theme-Overrides
-// in der korrekten Reihenfolge nach Minimal Mistakes Best Practices
+// Lädt alle Partials mit CSS-Ausgabe als Module. Die Reihenfolge hier ist die
+// Kaskade: Jedes Modul erscheint im CSS an der Stelle, an der es zum ersten
+// Mal geladen wird. Tokens (abstracts/tokens) erzeugen kein CSS, jede Datei
+// lädt per @use selbst, was sie braucht.
 
 // =============================================================================
-// 1. Basis-Styles (Animationen, Accessibility-Grundlagen)
+// 1. Basis-Styles (Animationen, Accessibility-Grundlagen, Elemente)
 // =============================================================================
-@import "base/animations";
-@import "base/accessibility";
-@import "base/icons";
+@use "base/animations";
+@use "base/accessibility";
+@use "base/icons";
+
+// Mixins erzeugen kein CSS, der Platzhalter %section-base aber schon (die
+// Selektoren, die ihn erweitern). Dieses @use legt die Stelle fest, solange
+// keine Datei darüber die Mixins lädt.
+@use "abstracts/mixins";
+@use "base/headings";
+@use "base/content-accents";
 
 // =============================================================================
-// 2. Gemeinsame Komponenten (Mixins, Placeholders) - ZUERST
+// 2. Neon-Effekte (Keyframes und Basis-Styles)
 // =============================================================================
-@import "components/shared-components";
-@import "base/headings";
-@import "base/content-accents";
+@use "components/neon-base";
 
 // =============================================================================
-// 3. Neon-Effekte (Keyframes und Basis-Styles)
+// 3. Komponenten (eigene UI-Elemente)
 // =============================================================================
-@import "components/neon-base";
+@use "components/toc";
+@use "components/buttons";
+@use "components/masthead";
+@use "components/neon-orbit";
+@use "components/hero";
+@use "components/about";
+@use "components/cv";
+@use "components/pages";
+@use "components/back-to-top";
+@use "components/footer";
+@use "components/sw-update-toast";
+@use "components/blog-notice";
+@use "components/crt-overlay";
+@use "components/view-transition";
+@use "components/fractal-panel";
+@use "components/skill-graph";
 
 // =============================================================================
-// 4. Komponenten (eigene UI-Elemente)
+// 4. Layouts (Seiten-spezifische Strukturen)
 // =============================================================================
-@import "components/toc";
-@import "components/buttons";
-@import "components/masthead";
-@import "components/neon-orbit";
-@import "components/hero";
-@import "components/about";
-@import "components/cv";
-@import "components/pages";
-@import "components/back-to-top";
-@import "components/footer";
-@import "components/sw-update-toast";
-@import "components/blog-notice";
-@import "components/crt-overlay";
-@import "components/view-transition";
-@import "components/fractal-panel";
-@import "components/skill-graph";
+@use "layouts/home";
+@use "layouts/posts";
+
+// Namensraum nötig: components/pages trägt schon den Standardnamen „pages“
+@use "layouts/pages" as layout-pages;
+@use "layouts/mandelbrot";
+@use "layouts/offline";
 
 // =============================================================================
-// 5. Layouts (Seiten-spezifische Strukturen)
+// 5. Theme-Overrides (Minimal Mistakes Theme-Anpassungen)
 // =============================================================================
-@import "layouts/home";
-@import "layouts/posts";
-@import "layouts/pages";
-@import "layouts/mandelbrot";
-@import "layouts/offline";
-
-// =============================================================================
-// 6. Theme-Overrides (Minimal Mistakes Theme-Anpassungen)
-// =============================================================================
-@import "theme-overrides/archive";
-@import "theme-overrides/syntax";
-@import "theme-overrides/author";
+@use "theme-overrides/archive";
+@use "theme-overrides/syntax";
+@use "theme-overrides/author";

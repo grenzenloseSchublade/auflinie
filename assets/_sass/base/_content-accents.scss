@@ -4,6 +4,8 @@
 // (Recherche: Sekundär-Neon für Auswahl/Hervorhebung/Momente — nicht für
 // Fließtext; Hintergründe zählen nur über den Textkontrast darauf.)
 
+@use "abstracts/tokens" as *;
+
 // Editorialer Textmarker
 .page__content mark {
   background: $magenta-a18;

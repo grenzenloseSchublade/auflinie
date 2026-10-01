@@ -8,7 +8,8 @@ published: false
 
 // Nur Tokens, keine Komponenten: die Komponenten kommen aus main.css, damit die
 // Ansicht genau das zeigt, was live ausgeliefert wird.
-@import "variables";
+@use "abstracts/tokens" as *;
+@use "variables/css-properties";
 
 // Farb-Tokens als Flächen und Textproben. Die Werte kommen direkt aus
 // variables/_colors.scss — ein neues Token muss hier eingetragen werden.

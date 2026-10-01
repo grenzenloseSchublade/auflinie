@@ -1,5 +1,8 @@
 // Seiten-spezifische Styles und gemeinsame Helfer
 
+@use "abstracts/tokens" as *;
+@use "abstracts/mixins" as *;
+
 // Einheitlicher Sprungmarken-Offset für Anker, TOC, Skip-Links und Fokus
 // (WCAG 2.4.11, STYLEGUIDE 6.1): EIN scroll-padding am Viewport statt
 // scroll-margin pro Zieltyp. Wirkt auf jedes Scroll-into-View — Hash-Sprung,

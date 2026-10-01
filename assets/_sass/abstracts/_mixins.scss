@@ -1,4 +1,11 @@
-// Gemeinsame Komponenten und Mixins (sitewide genutzt)
+// =============================================================================
+// Mixins und Platzhalter (Tools-Schicht, site-weit)
+// =============================================================================
+// Kein eigenes CSS: Ausgabe entsteht erst beim @include bzw. @extend.
+// Laden mit `@use "abstracts/mixins" as *;`. Ausnahme Platzhalter: Die
+// Selektoren, die %section-base erweitern, landen an der Stelle im CSS, an
+// der dieses Modul zum ersten Mal geladen wird (Kaskade, siehe _custom.scss).
+@use "abstracts/tokens" as *;
 
 // Gemeinsame Basis für Abschnitte
 %section-base {

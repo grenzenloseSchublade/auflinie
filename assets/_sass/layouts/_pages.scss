@@ -1,5 +1,7 @@
 // Styles für Seiten
 
+@use "abstracts/tokens" as *;
+
 // Benutzerdefinierte Klasse für volle Breite auf allen Geräten
 .full-width-page {
   .page {

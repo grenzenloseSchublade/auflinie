@@ -1,5 +1,8 @@
 // Styles für die Startseite
 
+@use "abstracts/tokens" as *;
+@use "abstracts/mixins" as *;
+
 // Positionierungs-Statement unter dem Hero
 // Spalte mittig, Zeilen im Blocksatz. Blocksatz ohne Silbentrennung
 // reißt Löcher in die Wortabstände, daher hyphens zwingend (lang="de-DE"

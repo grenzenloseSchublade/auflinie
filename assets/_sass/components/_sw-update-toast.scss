@@ -3,6 +3,10 @@
 // Kompakte einzeilige Panel-Karte in der Site-Designsprache
 // =============================================================================
 
+@use "abstracts/tokens" as *;
+@use "abstracts/mixins" as *;
+@use "theme-bridge" as mm;
+
 $sw-toast-z: 10020;
 
 @keyframes sw-update-toast-enter {
@@ -37,7 +41,7 @@ $sw-toast-z: 10020;
   justify-content: center;
   padding: 0 max(0.75rem, env(safe-area-inset-right, 0)) max(0.75rem, env(safe-area-inset-bottom, 0)) max(0.75rem, env(safe-area-inset-left, 0));
   pointer-events: none;
-  font-family: $sans-serif;
+  font-family: mm.$sans-serif;
 
   @media (min-width: 36em) {
     justify-content: flex-end;
@@ -141,7 +145,7 @@ $sw-toast-z: 10020;
   max-width: calc(100% - 2.5rem);
   padding: 0.6rem 1.25rem;
   color: $white-a92;
-  font-family: $sans-serif;
+  font-family: mm.$sans-serif;
   font-size: $fs-body;
   box-shadow: 0 10px 30px $black-a40;
 

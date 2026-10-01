@@ -1,6 +1,9 @@
 // Fractal Panel — Toolbar und Buttons (inkl. Modifier, .btn-text)
 // Teil des Splits von components/_fractal-panel.scss (Umbrella dort)
 
+@use "abstracts/tokens" as *;
+@use "components/fractal-panel/tokens" as *;
+
 // -----------------------------------------------------------------------------
 // Toolbar
 // -----------------------------------------------------------------------------

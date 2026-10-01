@@ -2,20 +2,24 @@
 // =============================================================================
 
 // Mobile: TOC erscheint oberhalb des Contents (Minimal Mistakes Default)
-// Desktop (>= $large): TOC ist sticky in der rechten Sidebar
+// Desktop (>= mm.$large): TOC ist sticky in der rechten Sidebar
 // NEU: Mobile Sticky TOC Header - erscheint unter Masthead beim Scrollen
 // =============================================================================
+
+@use "abstracts/tokens" as *;
+@use "abstracts/mixins" as *;
+@use "theme-bridge" as mm;
 
 // =============================================================================
 // MOBILE STICKY TOC HEADER
 // Erscheint unter dem Masthead wenn das Original-TOC aus dem Viewport scrollt.
-// Nur für Viewports ohne rechtsseitig floatendes Sidebar-TOC (< $large).
+// Nur für Viewports ohne rechtsseitig floatendes Sidebar-TOC (< mm.$large).
 // =============================================================================
 .toc-sticky-mobile {
   // Versteckt auf Desktop (Sidebar-TOC floatet rechts)
   display: none;
 
-  @media (max-width: $large - 1) {
+  @media (max-width: mm.$large - 1) {
     display: block;
     position: fixed;
     top: var(--masthead-height);
@@ -55,8 +59,8 @@
   background: transparent;
   border: none;
   cursor: pointer;
-  font-family: $sans-serif-narrow;
-  color: $text-color;
+  font-family: mm.$sans-serif-narrow;
+  color: mm.$text-color;
   text-align: left;
 
   // Kein Akzent-Balken mehr — schlichtes Mono-Label (Rail-Design)
@@ -174,7 +178,7 @@
 .toc-sticky-mobile__menu {
   margin: 0.5rem 1rem;
   width: auto;
-  font-size: $type-size-5;
+  font-size: mm.$type-size-5;
 
   a {
     padding: 0.75rem 1.25rem;
@@ -215,7 +219,7 @@
 .toc-sticky-overlay {
   display: none;
 
-  @media (max-width: $large - 1) {
+  @media (max-width: mm.$large - 1) {
     display: block;
     position: fixed;
     inset: calc(var(--masthead-height) + 48px) 0 0;
@@ -242,8 +246,8 @@
 // eine durchlaufende dezente Rail, aktives Segment + Text cyan,
 // Hover magenta (Interaktion), keine Trenner, kein Bold.
 .toc {
-  font-family: $sans-serif-narrow;
-  color: $text-color;
+  font-family: mm.$sans-serif-narrow;
+  color: mm.$text-color;
 
   // Theme-Basisregel (Panel mit Rahmen/Schatten) explizit zurücksetzen —
   // Weglassen reicht nicht, die Theme-Deklarationen scheinen sonst durch
@@ -484,10 +488,10 @@
 }
 
 // =============================================================================
-// DESKTOP STYLES (>= $large: 1024px)
+// DESKTOP STYLES (>= mm.$large: 1024px)
 // Kompaktere Darstellung für Sidebar-Sticky-Modus
 // =============================================================================
-@media (min-width: $large) {
+@media (min-width: mm.$large) {
   .toc {
     .nav__title {
       // Größe kommt zentral aus $toc-title-font-size
@@ -534,7 +538,7 @@
 }
 
 // Mobile: Wide-Layout braucht größere Touch-Targets
-@media (max-width: $large - 1) {
+@media (max-width: mm.$large - 1) {
   .wide .toc {
     .nav__title {
       // Größe kommt zentral aus $toc-title-font-size
@@ -544,7 +548,7 @@
   }
 
   .wide .toc__menu {
-    font-size: $type-size-5;
+    font-size: mm.$type-size-5;
 
     a {
       padding: 0.75rem 1rem;

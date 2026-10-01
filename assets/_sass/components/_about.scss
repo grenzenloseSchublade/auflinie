@@ -3,6 +3,9 @@
 // Die Karten-Grids (Interessen/Skills/Zitate) entfielen mit dem Umbau
 // auf erzählende Abschnitte.
 
+@use "abstracts/tokens" as *;
+@use "abstracts/mixins" as *;
+
 // Epigraph am Abschnittsanfang: keine Karte, nur Hairline und Zurückhaltung
 .section-epigraph {
   margin: 0.4rem 0 1.6rem;

@@ -1,3 +1,5 @@
+@use "abstracts/tokens" as *;
+
 // Syntax-Highlighting-Feinschliff (Palette kommt aus variables/_colors.scss)
 div.highlighter-rouge,
 figure.highlight {

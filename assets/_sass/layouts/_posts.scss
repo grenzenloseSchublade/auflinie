@@ -7,6 +7,9 @@
 // (der frühere globale .page__content-h1/h2/h3-Farbblock hat die
 // Akzent-Header-Farben aller Komponenten überschrieben)
 
+@use "abstracts/tokens" as *;
+@use "abstracts/mixins" as *;
+
 // Beitragsliste (/posts/): Karten im Panel-Stil statt roher Linkliste
 .post-card-list {
   .post-item {

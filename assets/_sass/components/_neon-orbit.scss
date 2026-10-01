@@ -1,6 +1,8 @@
 // Orbit-Animationen für die Neon-Umlaut-Punkte (ausgelagert)
 // CSS Custom Properties sind zentral in _variables/_css-properties.scss definiert
 
+@use "abstracts/tokens" as *;
+
 // Spiral-Start: Punkte starten von ihrer ECHTEN Position und spiralen zum Orbit
 // --neon-orbit-center-y verschiebt den Orbit vertikal (höher = Punkte weiter oben)
 @keyframes neonOrbitRampBefore {

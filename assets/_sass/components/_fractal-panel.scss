@@ -16,8 +16,11 @@
 // Aufgeteilt in Teildateien (Juli 2026) — Reihenfolge trägt die Kaskade:
 // _tokens zuerst ($fp-*-Aliase, Basis), _states zuletzt (Fokus/Vollbild
 // überstimmen Toolbar/Controls/Canvas bei teils gleicher Spezifität).
-@import "fractal-panel/tokens";
-@import "fractal-panel/toolbar";
-@import "fractal-panel/controls";
-@import "fractal-panel/canvas";
-@import "fractal-panel/states";
+// Die Teildateien laden _tokens selbst per @use (für die $fp-*-Aliase).
+// Sein CSS (Block, Titel) erscheint trotzdem nur einmal, hier an erster
+// Stelle, weil ein Modul nur beim ersten Laden ausgegeben wird.
+@use "components/fractal-panel/tokens";
+@use "components/fractal-panel/toolbar";
+@use "components/fractal-panel/controls";
+@use "components/fractal-panel/canvas";
+@use "components/fractal-panel/states";

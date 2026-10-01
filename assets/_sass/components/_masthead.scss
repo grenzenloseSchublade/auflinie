@@ -2,6 +2,9 @@
 // Hinweis: Neon-Keyframes und Basis-Styles wurden nach _neon-base.scss ausgelagert
 // Diese Datei enthält nur noch Header/Navigation-spezifische Styles
 
+@use "abstracts/tokens" as *;
+@use "abstracts/mixins" as *;
+
 // Logo im Header größer und mit Transparenz
 .site-logo img {
   // Neon-Schein entlang der Logo-Linien (drop-shadow folgt der SVG-Kontur);

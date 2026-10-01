@@ -21,6 +21,8 @@
 // KEYFRAMES: Umlaut Punkt-Flicker
 // =============================================================================
 
+@use "abstracts/tokens" as *;
+
 /// Flicker-Animation A für den ersten Umlaut-Punkt (::before)
 /// Erzeugt unregelmäßiges Flackern mit Glow-Effekt
 @keyframes neonUmlautFlickerA {

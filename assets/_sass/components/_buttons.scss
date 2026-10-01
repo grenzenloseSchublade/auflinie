@@ -1,5 +1,8 @@
 // Styles für Buttons und interaktive Elemente
 
+@use "abstracts/tokens" as *;
+@use "abstracts/mixins" as *;
+
 // Kategorie-Buttons
 .category-buttons {
   display: flex;

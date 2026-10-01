@@ -12,6 +12,7 @@
 // Timelines und Recherche-Quellen: README-tv-umschalt.md
 /* stylelint-disable selector-pseudo-element-no-unknown, selector-pseudo-class-no-unknown, at-rule-no-unknown */
 @use "sass:list";
+@use "abstracts/tokens" as *;
 
 // "dezent"      — heutige Struktur, aber smooth (easeOutQuint) + Einschalt-Bloom
 // "linie-punkt" — V-Kollaps -> Linie -> Leuchtpunkt mit Nachglimmen (EMPFOHLEN)

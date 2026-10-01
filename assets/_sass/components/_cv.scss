@@ -4,6 +4,8 @@
  * tastatur- und screenreader-zugänglich, kein JavaScript nötig.
  */
 @use "sass:color";
+@use "abstracts/tokens" as *;
+@use "abstracts/mixins" as *;
 
 // Stichpunkt-Zeile und Zielgröße der Aufklapper (WCAG 2.5.8, STYLEGUIDE 6.1):
 // Ein einzeiliger <summary> ist 0.85rem × 1.45 = 19,7 px hoch, und die
@@ -41,7 +43,7 @@ $cv-summary-pad: max(0px, calc((24px - #{$cv-summary-line}) / 2));
 }
 
 // Kapitelgrenzen ZWISCHEN Sektionen (nicht vor der ersten/Intro):
-// site-weites Muster, siehe section-break in _shared-components.scss
+// site-weites Muster, siehe section-break in abstracts/_mixins.scss
 .cv-section + .cv-section {
   @include section-break;
 }

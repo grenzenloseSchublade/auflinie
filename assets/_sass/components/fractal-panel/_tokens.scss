@@ -1,6 +1,9 @@
 // Fractal Panel — Token-Aliase und Panel-Basis (Block, Titel)
 // Teil des Splits von components/_fractal-panel.scss (Umbrella dort)
 
+@use "abstracts/tokens" as *;
+@use "abstracts/mixins" as *;
+
 // Aliase auf die geteilten Tokens (variables/_colors.scss, _typography.scss)
 $fp-accent: $link-color;
 $fp-mono: $mono-font-stack;

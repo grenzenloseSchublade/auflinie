@@ -1,0 +1,17 @@
+// =============================================================================
+// Theme-Brücke: einzige @import-Stelle für Minimal Mistakes
+// =============================================================================
+// Das Theme nutzt noch @import und liest seine Konfiguration aus globalen
+// !default-Variablen ($link-color, $base00 …). `@use … as *` legt die Tokens
+// in den Scope, den die importierten Theme-Dateien sehen. Damit greifen
+// unsere Werte vor den Theme-Defaults, genau wie vorher mit @import.
+// Eigene Partials erreichen Theme-Variablen über `@use "theme-bridge" as mm;`
+// (mm.$large). Das Theme-CSS entsteht nur beim ersten Laden in main.scss.
+// Skin fest auf "dark": Partials laufen nicht durch Liquid, der Schlüssel
+// minimal_mistakes_skin in _config.yml wirkt deshalb nicht mehr.
+// Fällt weg, sobald das Theme auf @use umstellt (STYLEGUIDE.md SCSS-4).
+@use "abstracts/tokens" as *;
+/* stylelint-disable at-rule-disallowed-list -- Theme ist @import-basiert (SCSS-4) */
+@import "minimal-mistakes/skins/dark";
+@import "minimal-mistakes";
+/* stylelint-enable at-rule-disallowed-list */

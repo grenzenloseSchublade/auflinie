@@ -1,3 +1,6 @@
+@use "abstracts/tokens" as *;
+@use "abstracts/mixins" as *;
+
 // Einmal-Hinweis-Dialog auf der Blog-Seite (z.B. Sommerpause) —
 // Markup/Verhalten: _includes/blog-notice.html
 .blog-notice {

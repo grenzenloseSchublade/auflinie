@@ -12,6 +12,9 @@
 // nie. So kapern diese Regeln keine Komponenten-Farben (der frühere globale
 // .page__content-h3-Farbblock hat genau das getan).
 
+@use "abstracts/tokens" as *;
+@use "abstracts/mixins" as *;
+
 .page__content > h2 {
   // Kapitelgrenze site-weit: Beige-Trenner + Luft (section-break) übernimmt
   // die Gliederung — die H2 steht ohne Unterstreichung (eine Linie pro Grenze)

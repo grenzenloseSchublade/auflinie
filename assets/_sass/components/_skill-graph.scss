@@ -2,6 +2,9 @@
 // Markup: _includes/cv/skill-graph.html, Logik: assets/js/skill-graph.js
 // (+ DOM-freie Engine skill-graph-sim.js). Die Chip-Liste bleibt kanonisch.
 
+@use "abstracts/tokens" as *;
+@use "abstracts/mixins" as *;
+
 .skill-graph {
   margin-top: 1.4rem;
 }

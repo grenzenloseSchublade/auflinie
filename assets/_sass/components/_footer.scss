@@ -1,3 +1,5 @@
+@use "abstracts/tokens" as *;
+
 // Footer: Chrome-Labels in der Konsolen-Designsprache
 .page__footer {
   border-top: 1px solid $console-panel-border;
