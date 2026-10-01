@@ -139,7 +139,7 @@ Kontrastwerte nach WCAG 2.x, Alpha auf den jeweiligen Grund komponiert, nachger
 | Seite | `#252a34` | MM-Dark-Skin, kein Repo-Token (Soll: `$background-color` explizit setzen) |
 | Panel | `#1a1c20` | `$console-panel-bg` |
 | Panel-Hover | `#20242a` | `$console-panel-bg-hover` |
-| Drawer | `rgb(15 15 20)` | Literal in `_masthead.scss` (Soll: Token) |
+| Drawer | `#0f0f14` | `$drawer-bg` |
 
 Text- und Akzent-Tokens (Kontrast auf Seite · Panel · Drawer):
 
@@ -150,7 +150,7 @@ Text- und Akzent-Tokens (Kontrast auf Seite · Panel · Drawer):
 | `$fg-muted` | Weiß 80 % | Fließtext auf Panels | 9,70 | 11,26 | 12,28 | ja |
 | `$fg-subtle` | Weiß 55 % | Meta, Labels | 5,43 | 5,98 | 6,23 | ja (Untergrenze) |
 | `$link-color` | `#05d9e8` | Interaktion, Item-Titel | 8,29 | 9,83 | 11,01 | ja |
-| `$card-heading-color` | `#05d9e8` | Karten-Titel (Soll: Alias auf `$link-color`) | 8,29 | 9,83 | 11,01 | ja |
+| `$card-heading-color` | `#05d9e8` | Karten-Titel (Alias auf `$link-color`) | 8,29 | 9,83 | 11,01 | ja |
 | `$link-color-active` | Cyan 60 % | Aktiver TOC-Eintrag | **3,91** | 4,29 | 4,51 | Offen (6.4), Register R-1 |
 | `$link-color-rail` | Cyan 60 % | Aktives Rail-Segment | 3,91 | 4,29 | 4,51 | nein (Fläche) |
 | `$border-accent` | Cyan 55 % | Karten-Akzentrand | 3,50 | 3,83 | 3,97 | nein (UI ≥ 3:1 erfüllt) |
@@ -160,7 +160,7 @@ Text- und Akzent-Tokens (Kontrast auf Seite · Panel · Drawer):
 | `$hover-color-subtle` | `rgb(255 29 206 / 60%)` | Linien, Marker | 2,26 | 2,51 | 2,67 | **nein** |
 | `$hover-color-text` | `#ff2fd2` | Magenta als Textfarbe (Hover, Active) | 4,51 | 5,35 | 5,46 | ja (knapp, dunkelster AA-Ton) |
 | `$console-heading` | `#eacfb4` | Beige-Akzent | 9,65 | 11,44 | 12,82 | ja |
-| `$selection-bg` / `$selection-text` | `#ff00ff` / `#000000` | `::selection` | – | – | – | ja |
+| `$selection-bg` / `$selection-text` | `#ff00ff` / `#000000` | `::selection` (Aliase auf `$hover-color` / `$black`) | – | – | – | ja |
 | `$base0e` | `#ff79c6` | Syntax-Keywords | 6,03 | 7,15 | 8,01 | ja |
 
 Das Theme-Token `$text-color` (`#eaeaea`) wird vom Critical-CSS überstimmt (Register R-5). Maßgeblich ist der gerenderte Wert.
@@ -171,30 +171,53 @@ Flächen und Linien:
 |---|---|---|
 | `$console-panel-bg` | `#1a1c20` | Panel-Grund (dunkler als die Seite) |
 | `$console-panel-bg-hover` | `#20242a` | Panel-Hover |
-| `$console-panel-border` | Weiß 8 % | Hairline, Panel-Rahmen |
-| `$surface-tint` | Weiß 6 % | dezente Aufhellung, Divider |
+| `$console-panel-border` | Weiß 8 % (`$white-a08`) | Hairline, Panel-Rahmen |
+| `$surface-tint` | Weiß 6 % (`$white-a06`) | dezente Aufhellung, Divider |
 | `$background-dark` | `#1a1a1a` | nur Back-to-Top (Soll: in der Flächen-Skala aufgehen) |
+| `$drawer-bg` | `#0f0f14` | Nav-Drawer, voll deckend |
+| `$crt-screen-bg` | `#10141a` | Röhren-Schwarz der CRT-Seitenwechsel (`_view-transition.scss`) |
+| `$ink` | `#0a0e12` | kühles Fast-Schwarz, nur über Stufen (`$ink-a35`, `-a45`, `-a55`: Hero-Buttons, Footer, Hero-Caption, Blog-Hinweis) |
+| `$console-panel-bg-a96`, `-a98` | Panel-Ton 96 / 98 % | mobile TOC-Leisten |
+| `$console-heading-a50` | Beige 50 % | Kapitel-Hairline (`section-break`), Motto-Linien |
+| `$raised-bg-from`, `-to`, `-from-hover`, `-to-hover` | Grau 95 / 98 % | Verlauf der Fraktal-Erklärkarte |
+| `$float-panel-bg`, `-strong` | `rgb(34 34 34 / 90%)`, `/ 95%` | schwebende Panels im Fraktal-Vollbild |
+| `$hud-bg` | `rgb(8 10 14 / 78%)` | Mess-Chips über dem Fraktal-Canvas |
+| `$inset-panel-bg` | `rgb(20 21 24 / 97%)` | Skill-Erklärfeld im CV |
+| `$control-bg`, `-hover` | `#202329`, `#262a31` | Fraktal-Toolbar-Buttons |
+| `$slider-track-bg`, `$slider-handle-bg`, `$slider-connect-blue` | `#111318`, `#1f2228`, `#4aa3ff` | noUiSlider (das Blau ist kein Palettenton, Audit B-F23) |
+| `$cyan-pale`, `$red-pale` | `#d1f7ff`, `#ffd1d1` | Titel im Fraktal-Erklärtext, Fehlertext auf dem Canvas |
+| `$gray-12` … `$gray-93` | `#1e1e1e` … `#eeeeee` (Zahl = HSL-Helligkeit) | Fraktal-Panel, CV-Nebentext, Offline-Seite |
 
 Regeln:
 
-- **FARB-1** [MUSS · Soll · CI-P2] Farbliterale stehen nur in `variables/_colors.scss`. Komponenten-Tokens (`fractal-panel/_tokens.scss` und künftige) zeigen nur auf globale Tokens (siehe SCSS-8). Braucht eine Komponente einen neuen Ton, kommt er zuerst als globales Token nach `_colors.scss`. Ausnahmen nur mit `farb-Ausnahme`-Marker (CRT-Phosphor, Fraktal-Paletten als Daten).
+- **FARB-1** [MUSS · Ist · CI] Farbliterale stehen nur in `variables/_colors.scss`. Komponenten-Tokens (`fractal-panel/_tokens.scss` und künftige) zeigen nur auf globale Tokens (siehe SCSS-8). Braucht eine Komponente einen neuen Ton, kommt er zuerst als globales Token nach `_colors.scss`. Ausnahmen nur mit `farb-Ausnahme`-Marker (CRT-Phosphor, Neon-Flackern, Fraktal-Paletten als Daten): `// farb-Ausnahme: Grund` direkt über der Deklaration (gilt für die ganze, auch mehrzeilige Deklaration) oder `// farb-Ausnahme: [Block] Grund` … `// farb-Ausnahme-Ende` um einen Effekt-Abschnitt. `scripts/color-guardrail.sh` prüft `assets/_sass` außerhalb von `variables/`. Markiert sind heute: CRT-Overlay, CRT-Raster, Rollbalken, Korn, Power-Symbol und Phosphor im Hero, Phosphor und Scanlines in `_view-transition.scss`, der Neon-Block in `_neon-base.scss` und der Logo-Selektor `[stroke="#f0c"]`. Die Neon-Custom-Properties in `variables/_css-properties.scss` sind Effektwerte unter `variables/` (Markenton offen, B-F09).
 - **FARB-2** [MUSS · Soll · CI-P2] Text erreicht 4,5:1, großer Text (ab 24 px oder ab 18,66 px fett) 3:1, UI-Grafik und Fokus 3:1, und zwar in **allen** Zuständen, gemessen auf dem tatsächlichen Grund. Jeder Kontrastwert in einem Token-Kommentar nennt seinen Grund („4,51:1 auf Drawer“).
 - **FARB-3** [MUSS · Soll · Review] Informationstragender Text nie unter `$fg-subtle` (55 %). Werte von 25 bis 40 % nur für rein dekorative Glyphen (z. B. Footer-Trenner).
 - **FARB-4** [MUSS · Soll · Review] `-subtle`-Tokens sind für Linien, Marker und Flächen. Nie als Textfarbe, nie als einziges Erkennungsmerkmal eines Controls.
-- **FARB-5** [MUSS · Soll · CI-P2] Niemals ein Token mit eingebautem Alpha in `rgba()` geben. Sass ersetzt den Alpha-Kanal, multipliziert ihn nicht (Beispiel: `rgba($console-panel-border, 0.7)` wird zu 70 % Weiß).
-- **FARB-6** [MUSS · Soll · CI-P1] Keine Ad-hoc-Abstufung `rgba($hover-color, 0.x)`. Benannte Abstufungen verwenden oder neu anlegen (Owner-Regel vom 8. Juli 2026).
+- **FARB-5** [MUSS · Ist · CI] Niemals ein Token mit eingebautem Alpha in `rgba()` geben. Sass ersetzt den Alpha-Kanal, multipliziert ihn nicht (Beispiel: `rgba($console-panel-border, 0.7)` wird zu 70 % Weiß). Der Guardrail erkennt Alpha-Tokens auch über Aliase. Die einzige Fundstelle (`.guide-banner`) steht seit 1. 10. 2026 auf `$white-a70`, dem bisher gerenderten Wert.
+- **FARB-6** [MUSS · Ist · CI] Keine Ad-hoc-Abstufung `rgba($hover-color, 0.x)`. Benannte Abstufungen (`$magenta-aNN`) verwenden oder in `_colors.scss` neu anlegen (Owner-Regel vom 8. Juli 2026). Der Guardrail lässt dafür keinen Ausnahme-Marker zu.
 - **FARB-7** [MUSS · Soll · Review] Fokus- und Hover-Zustand nehmen Vorder- und Hintergrund nie aus demselben Token.
-- **FARB-8** [MUSS · Soll · CI-P1] Farb**literale** in der Notation `rgb(r g b / a%)`, Hex lang und klein, keine Farbnamen außer `transparent`, `currentColor`, `inherit`. Gilt auch für JS-Strings, Inline-Styles und das Critical-CSS. Sass-Funktionen auf Tokens (`rgba($link-color, 0.6)`) dürfen Dezimal-Alpha nutzen.
-- **FARB-9** [SOLL · Soll · Review] Gleicher Wert = Alias, nie zweites Literal (`$card-heading-color: $link-color`, `$selection-bg: $hover-color`, `$base00: $console-panel-bg`).
+- **FARB-8** [MUSS · Soll · CI-P1] Farb**literale** in der Notation `rgb(r g b / a%)`, Hex lang und klein, keine Farbnamen außer `transparent`, `currentColor`, `inherit`. Gilt auch für JS-Strings, Inline-Styles und das Critical-CSS. Sass-Funktionen auf Tokens (`rgba($link-color, 0.6)`) dürfen Dezimal-Alpha nutzen. In `assets/_sass` erfüllt und per `color-guardrail.sh` geprüft (Notation in `variables/`, Farbnamen überall). Offen bleiben Critical-CSS (R-6), der zweite Style-Block in `head/custom.html` (R-31) und Palettenwerte in JS (B-F19).
+- **FARB-9** [SOLL · Ist · CI] Gleicher Wert = Alias, nie zweites Literal (`$card-heading-color: $link-color`, `$selection-bg: $hover-color`, `$base00: $console-panel-bg`). Der Guardrail meldet textgleiche Literale in `_colors.scss`. Wertgleiche in anderer Schreibweise (`#ffffff` gegen `rgb(255 255 255)`) fallen nur im Review auf.
 - **FARB-10** [SOLL · Soll · Review] MM-Variablen, die die Palette beeinflussen, werden explizit gesetzt: `$primary-color` (heute leckt Theme-Teal `#00adb5` in Fokus-Glow und Pagination), `$background-color`, `$text-color`.
 
-**[Soll]** Zwei-Ebenen-Modell nach W3C DTCG (Primitive → Rollen-Tokens), benannte Alpha-Skalen statt freier Weiß- und Cyan-Stufen:
+**[Ist seit 1. 10. 2026]** Alpha-Stufen als Primitive. Jede Stufe heißt `$<familie>-aNN` (NN = Deckkraft in Prozent) und ist aus der **deckenden** Grundfarbe abgeleitet (FARB-5). Die Stufen bilden genau die Werte ab, die bei der Migration im Einsatz waren. Die Migration war optisch neutral, das gebaute CSS ist bytegleich. Eine neue Stufe kommt nur dazu, wenn keine vorhandene passt.
+
+| Familie | Grundfarbe | Stufen (NN) | Rollen-Aliase |
+|---|---|---|---|
+| `$cyan-aNN` | `$link-color` | 00 · 08 · 10 · 12 · 15 · 16 · 20 · 22 · 25 · 26 · 30 · 35 · 40 · 45 · 50 · 55 · 60 · 70 · 75 · 80 · 85 | `$link-color-subtle` = a40, `$border-accent` = a55, `$border-accent-hover` = a35, `$link-color-active` und `-rail` = a75 |
+| `$magenta-aNN` | `$hover-color` | 08 · 15 · 18 · 20 · 22 · 30 · 35 · 55 · 75 | keine (nur Interaktions-Momente, DES-3) |
+| `$white-aNN` | `$white` | 00 · 02 · 03 · 04 · 05 · 06 · 08 · 10 · 12 · 14 · 15 · 18 · 20 · 25 · 32 · 40 · 45 · 50 · 55 · 60 · 62 · 65 · 70 · 78 · 80 · 82 · 85 · 88 · 90 · 92 · 95 | `$fg-muted` = a80, `$fg-subtle` = a55, `$console-panel-border` = a08, `$surface-tint` = a06 |
+| `$black-aNN` | `$black` | 10 · 20 · 25 · 30 · 35 · 40 · 45 · 50 · 55 · 60 · 68 · 70 · 75 · 78 · 94 · 95 | `$selection-text` = `$black` |
+| `$ink-aNN` | `$ink` | 35 · 45 · 55 | keine |
+
+**[Soll]** Rollen-Ebene nach W3C DTCG (Primitive → Rollen-Tokens): Komponenten nutzen Rollen statt Stufen, die Stufen schrumpfen auf eine kleine Skala. Zusammenlegen ändert Werte, ist also eine sichtbare Änderung, die der Owner nach Vorher/Nachher-Vergleich freigibt (PROZ-1). Zielbild:
 
 | Skala | Stufen |
 |---|---|
 | Weiß auf Dunkel | `$fg` 95 % · `$fg-muted` 80 % · `$fg-subtle` 55 % · `$line-strong` 15 % · `$surface-hover` 10 % · `$line` 8 % · `$surface-tint` 6 % |
 | Cyan | Wash 10 % · Linie 40 % (`$link-color-subtle`) · Akzent 55 % (`$border-accent`) · Text-Aktiv ab 70 % |
-| Flächen | Seite · Panel · Raised · Overlay/Drawer · Scrim · CRT-Grund (`#10141a`) |
+| Flächen | Seite · Panel · Raised · Overlay/Drawer · Scrim · CRT-Grund (`$crt-screen-bg`) |
 
 **[Offen]** Palettenfragen: Marken-Magenta (`#ff00ff` oder `#ff00cc`), zweites Marken-Cyan `#00ffff` im Neon, Status-Farben ja oder nein. Siehe Audit B-F09.
 
@@ -1035,6 +1058,7 @@ Kein SemVer (eine Website hat keine öffentliche API). Ein `CHANGELOG.md` im For
 |---|---|---|
 | Stylelint (`npm run lint:css`) | CI `lint` | SCSS-Regeln laut `.stylelintrc.json` |
 | `scripts/fs-guardrail.sh` | CI `lint` | TYP-1 |
+| `scripts/color-guardrail.sh` | CI `lint` | FARB-1, FARB-5, FARB-6, FARB-8 (SCSS), FARB-9 |
 | `scripts/security-guardrail.sh` | CI `lint` | SEC-4, SEC-5, SEC-7, SEC-8 |
 | `jekyll build --strict_front_matter` | CI `build` | Front Matter |
 | `scripts/csp-check.py _site` | CI `build` | SEC-3, SEC-4 |
@@ -1059,7 +1083,6 @@ Kein SemVer (eine Website hat keine öffentliche API). Ein `CHANGELOG.md` im For
 | 2 | Stylelint `scss/dollar-variable-pattern` kebab-case | SCSS-7 |
 | 2 | Stylelint `keyframes-name-pattern: ^[a-z][a-z0-9]*(-[a-z0-9]+)*$` (nach Umbenennung des Bestands) | SCSS-7 |
 | 2 | Workflow `node-version-file: .nvmrc`, `cache-version` aus `.ruby-version` | DOC-7 |
-| 2 | `scripts/color-guardrail.sh` (Literale außerhalb `variables/` ohne `farb-Ausnahme`, Alpha-auf-Alpha-Falle) | FARB-1, FARB-5 |
 | 2 | `scripts/bp-guardrail.sh` (`@media` mit Zahlen außerhalb `variables/`) | BP-1 |
 | 2 | Token-Kontrast-Skript (Paare Vordergrund, Grund, Mindestwert, Alpha komponiert) | FARB-2, 6.4 |
 | 2 | Critical-CSS-Sync-Check (Inline-Block gegen Tokens, verbietet `html{font-size}`, `body{font-family}`, `body{color}`) | CRIT-1 |
@@ -1110,8 +1133,8 @@ Stand: Ist-Basis aus dem Kopf. Ein Eintrag verschwindet, sobald der Code die Reg
 | R-4 | FARB-3 | Labels in 40 bis 45 % Weiß, u. a. `.page__meta` in `base/_headings.scss` | B-F04 | migrieren |
 | R-5 | CRIT-1, TYP-8, 1.4.4 | Critical-CSS: `html{font-size:16px}`, `body{color:#e8e6e3; font-family:…}`, `.site-title` `bold` | B-T1, B-T2 | Owner (Root-Größe), dann migrieren |
 | R-6 | FARB-8, CRIT-1 | Critical-CSS: `rgba(37,42,52,0.95)`, `backdrop-filter:blur(5px)` | B-F22 | migrieren |
-| R-7 | FARB-1, SCSS-8 | `fractal-panel/_tokens.scss`: `$fp-slider-handle: #4aa3ff`, `$fp-accent-soft: rgb(5 217 232 / 15%)` | B-F23 | migrieren |
-| R-8 | FARB-1 | Cyan- und Weiß-Literale in Komponenten | B-F08, B-F10 | migrieren |
+| R-7 | FARB-1, SCSS-8 | erledigt 1. 10. 2026: `$fp-slider-handle` zeigt auf `$slider-connect-blue`, `$fp-accent-soft` auf `$cyan-a15`. Offen ist nur, ob das Blau `#4aa3ff` in die Palette gehört | B-F23 | Owner (Ton) |
+| R-8 | FARB-1 | erledigt 1. 10. 2026: alle Literale in `assets/_sass` außerhalb von `variables/` auf Stufen-Tokens, Effektwerte markiert (FARB-1), CI-Check `color-guardrail.sh` | B-F08, B-F10, B-SCSS-03, B-SCSS-04 | – |
 | R-9 | BP-1, BP-2, BP-6 | `max-width: 768px`-Queries, `tv-switch.js` `innerWidth > 768` | B-BP-01 | migrieren als Gate-Paar |
 | R-10 | Z-1 | Fixierte Overlays in `#main` (TOC, Back-to-Top, Skill-Graph, Blog-Notice) | B-LAY-05 | Owner (Mounting oder `$intro-transition`) |
 | R-11 | MO-1 | `transition: 0.3s` in `_masthead.scss`, Theme-`$global-transition` | B-MO-01 | migrieren |
