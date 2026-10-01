@@ -28,8 +28,6 @@
     let numOfItems = 0;
     let breakWidths = [];
     let lastBreakpoint = null;
-    let closingTime = 3000; // 3 Sekunden
-    let timer;
 
     function addWidth(w) {
       if (typeof w !== 'number' || Number.isNaN(w)) return;
@@ -41,7 +39,6 @@
     function measureLinks() {
       numOfItems = 0;
       breakWidths = [];
-      // closingTime wird NICHT mehr hier überschrieben (Bug behoben)
 
       const vChildren = Array.from(vlinks.children);
       vChildren.forEach((child) => addWidth(outerWidth(child)));

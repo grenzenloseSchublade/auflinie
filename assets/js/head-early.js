@@ -17,7 +17,7 @@
   var KEY = 'tv-switch:state';
   window.addEventListener('pagereveal', function (e) {
     if (!e.viewTransition) return;
-    var raw = null;
+    var raw;
     try {
       raw = sessionStorage.getItem(KEY);
       if (raw !== null) sessionStorage.removeItem(KEY);

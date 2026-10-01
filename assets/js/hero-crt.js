@@ -321,7 +321,7 @@
     var crtLayer = overlay.querySelector('.page__hero-crt-layer');
     if (!crtLayer) return;
 
-    var skipBoot = false;
+    var skipBoot;
     try {
       skipBoot = sessionStorage.getItem(HERO_CRT_BOOT_KEY) === '1';
     } catch (e1) {
@@ -424,24 +424,6 @@
    */
   function extractImageUrl(element) {
     return element.getAttribute('data-background-image');
-  }
-  
-  /**
-   * Hintergrundbilder cachen
-   */
-  function cacheBackgroundImages() {
-    // Alle Elemente mit data-background-image-Attribut finden
-    const heroElements = document.querySelectorAll('.page__hero--overlay[data-background-image]');
-    
-    if (heroElements.length > 0) {
-      applyBackgroundImages(heroElements);
-    }
-    
-    // Globales Hintergrundbild aus der Konfiguration cachen, falls vorhanden
-    if (config.backgroundImage) {
-      preloadImage(config.backgroundImage)
-        .catch(error => console.error(error));
-    }
   }
   
   // Einmaliger, dezenter Hinweis-Puls auf den CRT-Power-Button (~1.2s nach dem
