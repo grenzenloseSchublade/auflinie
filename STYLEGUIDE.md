@@ -959,6 +959,7 @@ Die Seite ist statisch, hat keine Nutzerkonten und keine Formulare. Die realisti
 - **SEC-8a** [MUSS · Soll · CI-P2] Dateien unter `assets/vendor` sind unveränderte Upstream-Dateien. Ihre Prüfsummen stehen in `assets/vendor/SHA384SUMS`.
 - **SEC-8b** [SOLL · Soll · Review] `Gemfile.lock` mit `CHECKSUMS`-Abschnitt. Ungenutzte Theme-Assets stehen in `exclude`. Devcontainer ohne weitergereichten Host-Token, Image per Digest.
 - **SEC-8c** [KANN · Offen · CI-P3] `bundle-audit check --update` und `npm audit --audit-level=high` als Warnung in einem bestehenden Job, nur unter den Bedingungen von SEC-7b und GIT-6 (keine zusätzlichen Trigger, kein Artefakt-Speicher).
+- **SEC-8d** [SOLL · Ist · Review] Vendor-Bibliotheken werden nur aktualisiert, wenn der Changelog Fixes für Bedienung, Barrierefreiheit oder Sicherheit enthält, die unsere Nutzung betreffen (Owner 1. 10. 2026). Ein Wechsel übernimmt nur die heute ausgelieferten Dateien unverändert aus dem offiziellen npm-Paket, führt die Version im README-Abschnitt „Komponenten Dritter“ nach und muss `tests/vendor.spec.js` bestehen, der in der CI läuft (Formeln auf `/mandelbrot/` direkt und nach SPA-Navigation, Slider, Preset, keine Konsolenfehler, kein CSP-Verstoß).
 
 ### 11.9 Externe Links und Ressourcen
 
@@ -1339,3 +1340,4 @@ Prozess und Doku:
 | 2026-10-01 | Inhalte: TYPO-2 erlaubt „&“ als Stilelement in kurzen Labels (Owner), Token-Zeile `$about-motto-font-size` entfernt, R-35 (tote Kaskaden-Werte, B-T3) erledigt. Demo-Beitrag nach INH-4 depubliziert. |
 | 2026-10-01 | Skalen: `variables/_scales.scss` mit Abstands-, Radius-, Schatten-, Ebenen- und Motion-Tokens auf Ist (3.3, 3.5 bis 3.7), exakte Literale migriert, `skala-Ausnahme`-Marker (GOV-5) und Ratchet `scale-guardrail.sh` (16.1), Rest in R-35. |
 | 2026-10-01 | Breakpoints: Token-Set `$bp-*` mit den Mixins `up()`, `down()` und `between()`, JS über `AuflinieUtils.mq`, BP-1 und BP-2 auf Ist mit `bp-guardrail.sh`. Grenze überall halboffen, 768 px und 1024 px gehören jetzt zum größeren Bereich (Hero im Critical-CSS eingeschlossen). R-6 und R-9 erledigt. |
+| 2026-10-01 | Abhängigkeiten: SEC-8d neu (Vendor-Updates nur bei relevanten Fixes, Prüfung über `tests/vendor.spec.js`), MathJax auf 4.1.3, Gems per `bundle update`. |
