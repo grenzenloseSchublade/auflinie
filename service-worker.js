@@ -106,7 +106,7 @@ self.addEventListener('install', event => {
 });
 
 // Update-Steuerung: Der neue Worker wartet, bis der Nutzer im Update-Toast
-// "Jetzt laden" wählt (sw-register.js sendet dann SKIP_WAITING).
+// "Neu laden" wählt (sw-register.js sendet dann SKIP_WAITING).
 self.addEventListener('message', event => {
   if (event.data && event.data.type === 'SKIP_WAITING') {
     self.skipWaiting();

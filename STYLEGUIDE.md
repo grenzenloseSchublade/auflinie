@@ -615,7 +615,7 @@ Alle Ton-Regeln sind Review-Regeln. Maßstab ist das Home-Intro (`index.html`), 
 | Technik | Front Matter, Dev Container, CI/CD, KI (im Fließtext) |
 | Marken | LinkedIn, Spring Boot, Docker Compose, pip, scikit-learn, Vue.js |
 
-**Entschieden (Owner, 1. 10. 2026):** „Reset“ und „Preset“ sind eingedeutschte UI-Wörter und bleiben. Gleiche Aktion, gleiches Wort: Der Zurücksetzen-Button heißt sichtbar überall „Reset“ (Fraktal-Panel, Skill-Graph), zugänglicher Name und Tooltip „Zurücksetzen“. „Zurücksetzen“ passt nicht in die Keycap-Buttons. Der Navigationspunkt bleibt „Mandelbrot“.
+**Entschieden (Owner, 1. 10. 2026):** „Reset“ und „Preset“ sind eingedeutschte UI-Wörter und bleiben. Gleiche Aktion, gleiches Wort: Der Zurücksetzen-Button heißt sichtbar überall „Reset“ (Fraktal-Panel, Skill-Graph), Der zugängliche Name beginnt mit dem sichtbaren Wort (WCAG 2.5.3 Label in Name): „Reset – Ansicht zurücksetzen“, Tooltip „Zurücksetzen“. „Zurücksetzen“ passt nicht in die Keycap-Buttons. Der Navigationspunkt bleibt „Mandelbrot“.
 
 - **GLOS-1** [MUSS · Ist · Review] Neue Begriffe werden hier ergänzt, bevor sie live gehen.
 

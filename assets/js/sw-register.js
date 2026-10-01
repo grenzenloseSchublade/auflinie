@@ -15,7 +15,7 @@
   
   /**
    * Zeigt ein visuelles Update-Toast statt eines blockierenden confirm().
-   * "Jetzt laden" aktiviert den wartenden Worker (SKIP_WAITING) und lädt die
+   * "Neu laden" aktiviert den wartenden Worker (SKIP_WAITING) und lädt die
    * Seite erst nach dem controllerchange neu — so gibt es keinen Mischzustand
    * aus altem DOM und neuem Cache.
    */

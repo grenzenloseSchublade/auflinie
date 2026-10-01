@@ -442,7 +442,7 @@ const CACHE_URLS = [
 ];
 ```
 
-Die Registrierung übernimmt `assets/js/sw-register.js`: Sie ist per `data-enable-service-worker`-Attribut schaltbar und zeigt bei neuen Versionen einen Update-Toast statt eines blockierenden Dialogs – „Jetzt laden“ aktiviert den wartenden Worker (`SKIP_WAITING`) und lädt erst nach dem `controllerchange` neu, damit kein Mischzustand aus altem DOM und neuem Cache entsteht. Frische kommt über den Cache-Versionsstempel: Jeder Build erzeugt einen neuen Cache-Namen, alte Caches werden beim Aktivieren aufgeräumt.
+Die Registrierung übernimmt `assets/js/sw-register.js`: Sie ist per `data-enable-service-worker`-Attribut schaltbar und zeigt bei neuen Versionen einen Update-Toast statt eines blockierenden Dialogs – „Neu laden“ aktiviert den wartenden Worker (`SKIP_WAITING`) und lädt erst nach dem `controllerchange` neu, damit kein Mischzustand aus altem DOM und neuem Cache entsteht. Frische kommt über den Cache-Versionsstempel: Jeder Build erzeugt einen neuen Cache-Namen, alte Caches mit dem eigenen Präfix werden beim Aktivieren aufgeräumt.
 
 **Build-Optimierungen:**
 ```yaml
