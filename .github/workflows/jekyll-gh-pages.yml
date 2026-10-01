@@ -42,6 +42,8 @@ jobs:
         run: bash scripts/color-guardrail.sh
       - name: Skalen-Guardrail (Ratchet für Abstände, Radien, Schatten, Ebenen, Motion)
         run: bash scripts/scale-guardrail.sh
+      - name: Breakpoint-Guardrail (Mixins, JS-Spiegel, Critical-CSS)
+        run: bash scripts/bp-guardrail.sh
       - name: Security-Guardrail (Quellcode)
         run: bash scripts/security-guardrail.sh
       - name: SCSS-Format (Einrückung, Endleerzeichen)
