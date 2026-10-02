@@ -1,7 +1,7 @@
 ---
 ---
 /**
- * Service Worker für Offline-Caching
+ * service-worker.js — Service Worker für Offline-Caching (Liquid-Template, eigene Caches mit Projekt-Präfix)
  * 
  * Dieser Service Worker ist verantwortlich für das Caching wichtiger Ressourcen,
  * insbesondere des Hintergrundbildes, um die Ladezeit zu verbessern und

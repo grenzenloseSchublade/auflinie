@@ -1,5 +1,5 @@
 /**
- * SkillGraphSim — DOM-freie Force-Layout-Engine (Stufe 2 des Skill-Features)
+ * skill-graph-sim.js — SkillGraphSim, DOM-freie Force-Layout-Engine (Stufe 2 des Skill-Features)
  *
  * Zuständigkeit: reine Physik. Nimmt Knoten (mit Startpositionen) und
  * gewichtete Kanten, bewegt die Positionen pro tick() einen Schritt weiter

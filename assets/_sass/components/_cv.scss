@@ -115,7 +115,7 @@ $cv-z-selection-info: 6;
     font-family: $mono-font-stack;
     font-variant-numeric: tabular-nums;
     font-size: $fs-label-lg;
-    letter-spacing: 0.03em;
+    letter-spacing: $tracking-meta;
     color: $cyan-a85;
     white-space: nowrap;
   }
@@ -509,7 +509,7 @@ li.cv-skill-chip--breadth {
 .cv-language__level {
   font-family: $mono-font-stack;
   font-size: $fs-label-lg; // 0.68→0.78 (K7/K8, A11y: informationstragend)
-  letter-spacing: 0.04em;
+  letter-spacing: $tracking-legacy-cv-level;
   color: $fg-subtle; // FARB-3 (vorher 45 %, 4,44:1)
   border-left: 1px solid $white-a15;
   padding-left: $space-2;

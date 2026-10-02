@@ -1,0 +1,10 @@
+# Laufweite als Literal statt $tracking-* (TYP-7)
+guardrail: scale
+expect: 1
+grep: VERSTOSS tracking
+file: assets/_sass/components/_footer.scss
+mode: append
+---
+.footer-fixture {
+  letter-spacing: 0.05em;
+}

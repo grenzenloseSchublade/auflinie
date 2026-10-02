@@ -106,6 +106,8 @@ $tracking-legacy-page-meta: 0.04em; // .page__meta auf Seiten, Ziel $tracking-me
 $tracking-legacy-footer-nav: 0.05em; // Footer-Navigation
 $tracking-legacy-mono-label: 0.07em; // Default von mono-label(), Ziel $tracking-label
 $tracking-legacy-fp-button: 0.04em; // Fraktal-Toolbar, Button-Text mobil
+$tracking-legacy-cv-level: 0.04em; // CV-Sprachniveau (Mono-Label), Ziel $tracking-meta
+$tracking-legacy-graph-hint: 0.02em; // Skill-Graph-Touch-Hinweis (Mono)
 // Fraktal-Panel in px wie $fp-fs-* (bei 12px entspricht das 0.025em bzw. 0.042em)
 $fp-tracking-legacy-hint: 0.3px; // Gesten-Hinweis unter dem Canvas
 $fp-tracking-legacy-label: 0.5px; // Regler-Beschriftungen

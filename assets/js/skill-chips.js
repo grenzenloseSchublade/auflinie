@@ -1,5 +1,5 @@
 /**
- * Skill-Chips — Klick-Hervorhebung (Stufe 1 des Skill-Features)
+ * skill-chips.js — Klick-Hervorhebung (Stufe 1 des Skill-Features)
  *
  * Zuständigkeit: macht die Chip-Liste auf /cv/ interaktiv. Klick auf einen
  * Skill hebt alle über gemeinsame Projekte verbundenen Skills hervor und

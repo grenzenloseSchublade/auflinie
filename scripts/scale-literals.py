@@ -15,6 +15,7 @@ Kategorien (je Kategorie eine Zahl im Ratchet):
   shadow         box-shadow-Deklarationen mit Zahlenwerten (je Deklaration,
                  none und reine Token zählen nicht)
   z-index        Zahlen in z-index (je Deklaration)
+  tracking       Zahlen in letter-spacing (Laufweiten nur über $tracking-*, TYP-7)
   duration       Zeitliterale ungleich 0 in transition* und animation* (je Literal)
   easing         cubic-bezier() und steps() in transition* und animation*
   transition-all transition mit all oder ohne Eigenschaft (MO-1, je Deklaration)
@@ -50,7 +51,7 @@ import sys
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 SASS = ROOT / "assets" / "_sass"
-CATEGORIES = ["spacing", "radius", "shadow", "z-index", "duration", "easing", "transition-all"]
+CATEGORIES = ["spacing", "radius", "shadow", "z-index", "duration", "easing", "transition-all", "tracking"]
 
 SPACING_PROP = re.compile(
     r"^(margin|padding|gap|row-gap|column-gap|scroll-margin|scroll-padding)(-[a-z-]+)?$"
@@ -281,7 +282,7 @@ def scan_file(path):
         value = re.sub(r"\s*!important$", "", value)
         mk = line in marked
         base = dict(file=rel, line=line, prop=prop, decl=value, marked=mk)
-        if SPACING_PROP.match(prop) or RADIUS_PROP.match(prop) or prop in ("box-shadow", "z-index") \
+        if SPACING_PROP.match(prop) or RADIUS_PROP.match(prop) or prop in ("box-shadow", "z-index", "letter-spacing") \
                 or MOTION_PROP.match(prop):
             for ref in sorted(set(VAR_REF.findall(value))):
                 r = resolve(ref, rel, line)
@@ -312,6 +313,11 @@ def scan_value(base, prop, value, via=None):
     elif prop == "z-index":
         if NUM.search(value):
             yield dict(base, cat="z-index", value=tag(value))
+    elif prop == "letter-spacing":
+        # Laufweiten nur über $tracking-* (TYP-7)
+        for nm in NUM.finditer(value):
+            if nonzero(nm.group(1)):
+                yield dict(base, cat="tracking", value=tag(nm.group(0)))
     elif MOTION_PROP.match(prop):
         for tm in TIME.finditer(value):
             if nonzero(tm.group(1)):
