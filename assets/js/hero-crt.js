@@ -412,7 +412,7 @@
             enhanceHeroCrtAfterLoad(element);
           })
           .catch(error => {
-            console.error(error);
+            console.error('hero-crt: Hero-Bild nicht ladbar', error);
             // Fallback-Hintergrund, wenn das Bild nicht geladen werden kann.
             // Die Farbe kommt aus _hero.scss ($background-dark, JS-9).
             element.classList.add('is-image-failed');
@@ -437,7 +437,7 @@
   // STYLEGUIDE 6.5): Die Klasse wird trotzdem gesetzt, animationend feuert nach
   // 0.01ms und räumt sie wieder ab.
   function schedulePowerHint() {
-    try { if (sessionStorage.getItem('auflinieHeroCrtPowerHinted') === '1') return; } catch (e) { /* private mode */ }
+    try { if (sessionStorage.getItem('auflinie:hero-crt:power-hinted') === '1') return; } catch (e) { /* noop: Storage gesperrt (privater Modus) */ }
     if (window._auflinieHeroCrtHintScheduled) return;
     window._auflinieHeroCrtHintScheduled = true;
     const fire = function () {
@@ -449,7 +449,7 @@
           btn.classList.remove('hero-crt-power--hint');
           btn.removeEventListener('animationend', onEnd);
         });
-        try { sessionStorage.setItem('auflinieHeroCrtPowerHinted', '1'); } catch (e) { /* private mode */ }
+        try { sessionStorage.setItem('auflinie:hero-crt:power-hinted', '1'); } catch (e) { /* noop: Storage gesperrt (privater Modus) */ }
       }, 1200);
     };
     if (document.readyState === 'complete') fire();

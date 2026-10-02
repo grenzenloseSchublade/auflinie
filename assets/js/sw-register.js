@@ -133,7 +133,7 @@
               });
             })
             .catch(error => {
-              console.error('ServiceWorker-Registrierung fehlgeschlagen:', error);
+              console.error('sw-register: ServiceWorker-Registrierung fehlgeschlagen', error);
             });
         }
       });

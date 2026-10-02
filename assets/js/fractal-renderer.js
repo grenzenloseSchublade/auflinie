@@ -32,8 +32,12 @@
     return Math.max(min, Math.min(max, value));
   }
 
+  // Eingabeart statt Gerätename (JS-11): Touch als primäre Eingabe zählt
+  // als mobil. Deckt auch iPads mit Desktop-UA ab, Laptops mit Touchscreen
+  // bleiben Desktop (primärer Zeiger ist Maus oder Touchpad). Der Name bleibt,
+  // fractal-panel.js liest ihn über FractalUtils.
   function isMobileDevice() {
-    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    return !!(window.matchMedia && window.matchMedia('(pointer: coarse)').matches);
   }
 
   function formatZoomLevel(level) {
@@ -51,7 +55,7 @@
       this.canvas = options.canvas;
       this.ctx = this.canvas ? this.canvas.getContext('2d') : null;
       if (!this.ctx) {
-        console.warn('FractalRenderer: Canvas context not available');
+        console.warn('fractal-renderer: Canvas-Kontext nicht verfügbar');
         return;
       }
       this.loadingIndicator = options.loadingIndicator || null;
@@ -320,7 +324,7 @@
           };
 
           worker.onerror = (error) => {
-            console.error('Worker-Fehler:', error);
+            console.error('fractal-renderer: Worker-Fehler', error);
             if (this.loadingIndicator) this.loadingIndicator.style.display = 'none';
             this.isRendering = false;
             this.activeWorkers.forEach(w => w.terminate());
@@ -338,9 +342,9 @@
         this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
         this.ctx.fillStyle = '#dddddd';
         this.ctx.font = '16px sans-serif';
-        this.ctx.fillText('Web Worker nicht verfuegbar.', 20, 32);
+        this.ctx.fillText('Web Worker nicht verfügbar.', 20, 32);
         this.ctx.fillText('Bitte einen modernen Browser nutzen.', 20, 54);
-        console.warn('Web Worker nicht verfuegbar - Rendering deaktiviert.');
+        console.warn('fractal-renderer: Web Worker nicht verfügbar, Rendering deaktiviert');
       }
     }
 
