@@ -173,6 +173,7 @@ exclude:
   - Lebenslauf-soprasteria/ # VERTRAULICH: Arbeitsdokumente, nie in den Build/Deploy (auch in .gitignore)
   - tests/ # Playwright-Regressionstests (#6) — nicht deployen
   - playwright.config.js
+  - eslint.config.mjs # Lint-Konfiguration, gehört nicht auf die Seite
   - scripts/ # Lint-/Analyse-Werkzeuge, gehören nicht auf die Seite
   - CONTRIBUTING.md
   - STYLEGUIDE.md # Regelwerk, nie deployen (Owner-Entscheidung, SG-1)
