@@ -113,3 +113,68 @@ test.describe('Persistent-Shell-Navigation — Non-Breaking-Invarianten', () => 
     await ctx.close();
   });
 });
+
+// spaModule-Kontrakt (spa-module.js, Register R-17): jedes über
+// window.spaModule registrierte Modul mountet beim Erstaufbau genau EINMAL.
+// Mit spa-nav.js über das initiale spa:load (root = .initial-content), ohne
+// spa-nav.js über den PE-Fallback (root = document). Ein Init-Skript fängt die
+// Zuweisung von window.spaModule ab und zählt die mount-Aufrufe je Modul.
+async function trackSpaModuleMounts(page) {
+  await page.addInitScript(() => {
+    window.__spaMounts = [];
+    let impl;
+    Object.defineProperty(window, 'spaModule', {
+      configurable: true,
+      get() { return impl; },
+      set(fn) {
+        impl = function (opts) {
+          const calls = [];
+          window.__spaMounts.push(calls);
+          const mount = opts.mount;
+          return fn(Object.assign({}, opts, {
+            mount(root) {
+              calls.push(root === document ? 'document' : (root && root.className) || String(root));
+              return mount(root);
+            },
+          }));
+        };
+      },
+    });
+  });
+}
+const spaMounts = (page) => page.evaluate(() => window.__spaMounts);
+
+test.describe('spaModule-Kontrakt — genau ein Mount pro Modul', () => {
+  test('Erstaufbau mit spa-nav.js: nur das initiale spa:load mountet', async ({ page }) => {
+    await trackSpaModuleMounts(page);
+    await page.goto(`${BASE}/posts/`);
+    await page.waitForFunction(() => window.__spaNavActive === true, null, { timeout: 7000 });
+    await page.waitForTimeout(300);
+    const mounts = await spaMounts(page);
+    expect(mounts.length).toBeGreaterThan(0);                   // blog-notice.js ist registriert
+    for (const calls of mounts) expect(calls).toEqual(['initial-content']);
+  });
+
+  test('ohne spa-nav.js: der PE-Fallback mountet einmal auf document', async ({ page }) => {
+    await trackSpaModuleMounts(page);
+    await page.route('**/assets/js/spa-nav.js', (route) => route.abort());
+    await page.goto(`${BASE}/posts/`);
+    await page.waitForTimeout(300);
+    expect(await page.evaluate(() => window.__spaNavActive)).toBeFalsy();
+    const mounts = await spaMounts(page);
+    expect(mounts.length).toBeGreaterThan(0);
+    for (const calls of mounts) expect(calls).toEqual(['document']);
+  });
+
+  test('Swap auf eine Seite mit neuem Modul-Skript: ein Mount über spa:load', async ({ page }) => {
+    await trackSpaModuleMounts(page);
+    await gotoHome(page);
+    expect(await spaMounts(page)).toEqual([]);                  // Startseite: kein spaModule-Nutzer
+    await page.click('.greedy-nav .visible-links a[href$="/posts/"]');
+    await expect(page).toHaveURL(new RegExp(`${BASE}/posts/?$`));
+    expect(await survivedSwap(page)).toBe(true);
+    await expect.poll(async () => (await spaMounts(page)).length).toBeGreaterThan(0);
+    await page.waitForTimeout(300);
+    for (const calls of await spaMounts(page)) expect(calls).toEqual(['initial-content']);
+  });
+});
