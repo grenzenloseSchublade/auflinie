@@ -18,7 +18,7 @@ layout: default
   {% endunless %}
 {% endif %}
 
-<div id="main" role="main">
+<main id="main">
   {% include sidebar.html %}
 
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork"{% if page.locale %} lang="{{ page.locale }}"{% endif %}>
@@ -81,4 +81,4 @@ layout: default
   {% endif %}
 
   {% include back-to-top.html %}
-</div> 
+</main> 
