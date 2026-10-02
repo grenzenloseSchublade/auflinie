@@ -2,8 +2,15 @@
   Lokales Override: eigene Kopf-Snippets (Theme-Platzhalter head/custom.html),
   eingebunden von _layouts/default.html direkt nach head.html.
   Seitenabhängiges nur über Front-Matter-Flags (STYLEGUIDE LIQ-4):
-  styleguide, fractal_panels, mathjax, person_schema.
+  noindex, styleguide, fractal_panels, mathjax, person_schema.
 {% endcomment %}
+
+{% if page.noindex %}
+{% comment %} Interne Seiten (STYLEGUIDE SEC-12): noindex: true im Front Matter,
+     dazu sitemap: false. Nie per Disallow in robots.txt, sonst sieht der
+     Crawler das noindex nie. {% endcomment %}
+<meta name="robots" content="noindex, nofollow">
+{% endif %}
 
 {% if page.styleguide %}
 {% comment %} Styleguide-Ansicht (nie veröffentlicht, STYLEGUIDE.md SG-1) {% endcomment %}
