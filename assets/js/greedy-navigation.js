@@ -2,6 +2,12 @@
  * greedy-navigation.js — Masthead-Navigation als Vanilla-GreedyNav (nach
  * lukejacksonn/GreedyNav): hält so viele Links wie möglich sichtbar in der
  * Leiste und verschiebt den Überlauf ins Drawer-Menü.
+ *
+ * Herkunft: ohne jQuery umgeschrieben nach GreedyNav.js in der Fassung des
+ * Themes Minimal Mistakes (assets/js/plugins/jquery.greedy-navigation.js).
+ * GreedyNav.js: https://github.com/lukejacksonn/GreedyNav
+ * Copyright (c) 2015 Luke Jackson, MIT-Lizenz
+ * (https://opensource.org/licenses/MIT). Übersicht: THIRD-PARTY-NOTICES.md
  */
 (function() {
   'use strict';

@@ -177,6 +177,7 @@ exclude:
   - scripts/ # Lint-/Analyse-Werkzeuge, gehören nicht auf die Seite
   - CONTRIBUTING.md
   - STYLEGUIDE.md # Regelwerk, nie deployen (Owner-Entscheidung, SG-1)
+  - THIRD-PARTY-NOTICES.md # Repo-Doku wie README und LICENSE, gehört nicht auf die Seite
   - .sass-cache/
   - .jekyll-cache/
   - gemfiles/

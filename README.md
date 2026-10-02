@@ -459,13 +459,4 @@ Leitgedanke: Wissen soll weitergegeben und weiterverwendet werden. Deshalb ist d
 
 ### Komponenten Dritter
 
-Diese Bestandteile behalten ihre eigenen Lizenzen:
-
-- [Minimal Mistakes](https://github.com/mmistakes/minimal-mistakes) 4.28.1 (Theme, per `remote_theme` auf den Commit gepinnt; überschriebene Includes in `_includes/` und `_layouts/` basieren darauf) – MIT, © Michael Rose
-- MathJax 4.1.3 mit Schrift NewCM 4.1.3 (`assets/vendor/mathjax`, `assets/vendor/mathjax-newcm-font`, npm `mathjax` und `@mathjax/mathjax-newcm-font`) – Apache 2.0
-- Tom Select 2.4.1 (`assets/vendor/tom-select.*`) – Apache 2.0
-- noUiSlider 15.7.1 (`assets/vendor/nouislider.*`) – MIT
-- Gumshoe 5.1.2 (`assets/vendor/gumshoe.min.js`) – MIT, © Chris Ferdinandi
-- Font Awesome Free (Subset in `assets/webfonts/`) – Fonts SIL OFL 1.1, Icons CC BY 4.0
-- Ubuntu Font Family 0.869 (Textschrift, Subset `assets/webfonts/ubuntu-latin-*.woff2`, umbenannt in „Ubuntu derivative auflinie“) – [Ubuntu Font Licence 1.0](assets/webfonts/UBUNTU-FONT-LICENCE.txt), © Canonical Ltd. Ubuntu und Canonical sind Marken von Canonical Ltd. Erzeugt mit `scripts/ubuntu-font-subset.py`
-
+Theme, Bibliotheken und Schriften von Dritten behalten ihre eigenen Lizenzen. Die vollständige Liste mit Version, Herkunft und Lizenz steht in [`THIRD-PARTY-NOTICES.md`](THIRD-PARTY-NOTICES.md).
