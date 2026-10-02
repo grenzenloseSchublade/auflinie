@@ -112,6 +112,30 @@
   letter-spacing: $tracking;
 }
 
+// Auswahl-Konsole des Skill-Features: eingesenkte Anzeigefläche (dunkler als
+// die Umgebung, linke Hairline als einziger harter Rand) mit FESTER Höhe und
+// internem Scrollen, damit ein Auswahlwechsel nie das Layout verschiebt.
+// Eine Quelle für die Konsole über den Chips (_cv.scss) und die Info-Leiste
+// im Graph-Sheet (_skill-graph.scss). Die Höhe rechnet mit 1.5em je Zeile,
+// der Aufrufer sichert line-height daher mit einem p-qualifizierten Selektor.
+@mixin selection-console($lines: 3, $lines-narrow: 4) {
+  font-size: $fs-body-sm;
+  line-height: 1.5;
+  color: $fg-muted;
+  box-sizing: border-box;
+  height: calc(#{$lines} * 1.5em + 0.8rem);
+  overflow-y: auto;
+  padding: $space-2 $space-3;
+  background: $inset-panel-bg;
+  border-radius: $radius-md;
+  border-left: 2px solid $link-color-subtle;
+  transition: border-color $duration-base ease;
+
+  @include down(content) {
+    height: calc(#{$lines-narrow} * 1.5em + 0.8rem);
+  }
+}
+
 // Sektions-Header: ruhige weiße Überschrift mit Hairline
 // (Balken und Beige entfielen auf Nutzerwunsch — Struktur kommt von
 // Größe, Hairline und Abstand, nicht von Farbe)

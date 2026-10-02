@@ -1,9 +1,11 @@
 /**
- * Skill-Feature — gemeinsame, DOM-freie Helfer (Muster: skill-graph-sim.js).
+ * skill-graph-data.js — gemeinsame Helfer des Skill-Features.
  *
  * Vorher lebten parseData und der Skill→Projekte-Map-Aufbau als wortgleiche
- * Kopien in skill-chips.js und skill-graph.js. Der Persistent-Shell-Helfer
- * (window.spaModule) liegt sitewide in spa-module.js.
+ * Kopien in skill-chips.js und skill-graph.js. renderSelection schreibt die
+ * Auswahl-Anzeige (Konsole über den Chips, Info-Leiste im Graph-Sheet) und
+ * braucht dafür als einziger Helfer das DOM (document.createElement). Der
+ * Persistent-Shell-Helfer (window.spaModule) liegt sitewide in spa-module.js.
  *
  * Ladereihenfolge: per defer VOR skill-chips.js bzw. skill-graph*.js
  * (_includes/scripts.html).
@@ -64,6 +66,48 @@
         cleaned.push({ project: project, ids: ids });
       });
       return { map: map, projects: cleaned };
+    },
+
+    /**
+     * Auswahl-Anzeige im Konsolen-Format schreiben: Skill als Mono-Label,
+     * Rolle, darunter die Projekte mit „ · “-Trennern. EINE Quelle für die
+     * Konsole über den Chips (skill-chips.js) und die Info-Leiste im Graph-
+     * Sheet (skill-graph.js), damit beide exakt gleich aussehen und lesen.
+     * Aufbau per DOM-Knoten (kein innerHTML mit Datenwerten, SEC-1); aria-live
+     * am Ziel liest die Region als einen zusammenhängenden Satz vor.
+     * @param {Element} el        Ziel (Inhalt wird ersetzt)
+     * @param {string}  label     Anzeigename des Skills
+     * @param {Array<{label: string}>} projects  Projekte des Skills
+     * @param {string}  kind      'foundation' (Basis-Werkzeug) oder 'plain'
+     */
+    renderSelection: function (el, label, projects, kind) {
+      el.textContent = '';
+
+      const labelEl = document.createElement('span');
+      labelEl.className = 'cv-skills__selection-skill';
+      labelEl.textContent = label;
+      el.appendChild(labelEl);
+
+      const roleEl = document.createElement('span');
+      roleEl.className = 'cv-skills__selection-rolle';
+      if (projects.length) {
+        roleEl.textContent = ' – gemeinsam im Einsatz bei';
+      } else if (kind === 'foundation') {
+        roleEl.textContent = ' – Basis-Werkzeug, quer durch fast alle Projekte im Einsatz.';
+      } else {
+        roleEl.textContent = ' – Teil des Werkzeugkastens, ohne feste Projektzuordnung.';
+      }
+      el.appendChild(roleEl);
+
+      if (projects.length) {
+        el.appendChild(document.createElement('br'));
+        const listEl = document.createElement('span');
+        listEl.className = 'cv-skills__selection-projekte';
+        listEl.textContent = projects.map(function (project) {
+          return project.label;
+        }).join(' · ');
+        el.appendChild(listEl);
+      }
     }
   };
 

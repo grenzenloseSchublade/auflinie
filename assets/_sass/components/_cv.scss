@@ -466,14 +466,13 @@ li.cv-skill-chip--breadth {
 // wie die interaktiven Chips und konkurrierte mit ihnen — Chips sind die
 // Akteure/erhaben, die Anzeige ist die Bühne/zurückgesetzt). Kein Rahmen,
 // die linke Hairline bleibt der einzige harte Rand; feste Höhe gegen
-// Layout-Sprünge.
+// Layout-Sprünge. Optik aus dem Mixin selection-console (dieselbe Fläche
+// trägt die Info-Leiste im Graph-Sheet).
 // Bei aktiver Auswahl wechselt die Hairline auf Magenta (Interaktionszustand).
 // p-qualifiziert (0,2,1): sichert line-height gegen die Absatz-Regel — die
 // feste Höhe rechnet mit 1.5em pro Zeile
 .cv-skills p.cv-skills__selection-info {
-  font-size: $fs-body-sm;
-  line-height: 1.5;
-  color: $fg-muted;
+  @include selection-console;
 
   // Immer sticky: die Auswahl-Konsole bleibt beim Scrollen durchs Kapitel oben
   // sichtbar (unabhängig vom Graph). Opaker Grund + z-index, damit die Chips
@@ -481,29 +480,15 @@ li.cv-skill-chip--breadth {
   position: sticky;
   top: calc(var(--masthead-height) + var(--sticky-toc-height) + 8px);
   z-index: $cv-z-selection-info;
-
-  // FESTE Höhe (3 Zeilen, mobil 4) + internes Scrollen: der Textwechsel
-  // beim Skill-Klick darf das Layout unter keinen Umständen verschieben
-  box-sizing: border-box;
-  height: calc(3 * 1.5em + 0.8rem);
-  overflow-y: auto;
   margin: 0 0 $space-4;
-  padding: $space-2 $space-3;
-  background: $inset-panel-bg;
-  border-radius: $radius-md;
-  border-left: 2px solid $link-color-subtle;
-  transition: border-color $duration-base ease;
-
-  @include down(content) {
-    height: calc(4 * 1.5em + 0.8rem);
-  }
 }
 
 .cv-skills.has-selection .cv-skills__selection-info {
   border-left-color: $hover-color-subtle;
 }
 
-// Strukturierte Auswahl-Anzeige (skill-chips.js renderContext): Skill-Name
+// Strukturierte Auswahl-Anzeige (SkillGraphData.renderSelection, Konsole und
+// Info-Leiste im Graph-Sheet): Skill-Name
 // in der Mono-Formensprache der Gruppen-Titel, aber heller (er ist der
 // Fokus der Anzeige); Projektliste eine Stufe heller als der muted-Grundton
 .cv-skills__selection-skill {
