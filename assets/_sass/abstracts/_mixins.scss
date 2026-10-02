@@ -102,7 +102,7 @@
 // eine Stelle statt handgepflegter Prefix-Paare pro Komponente.
 @mixin backdrop-blur($px) {
   backdrop-filter: blur($px);
-  -webkit-backdrop-filter: blur($px);   // stylelint-disable-line property-no-vendor-prefix
+  -webkit-backdrop-filter: blur($px);
 }
 
 @mixin mono-label($size: $fs-label, $tracking: $tracking-legacy-mono-label) {

@@ -10,7 +10,6 @@
 // EFFEKT-VARIANTEN: drei Ausbaustufen des Röhren-Ausschaltens, per
 // $crt-variante umschaltbar (nur die gewählte wird kompiliert). Details,
 // Timelines und Recherche-Quellen: README-tv-umschalt.md
-/* stylelint-disable selector-pseudo-element-no-unknown, selector-pseudo-class-no-unknown, at-rule-no-unknown */
 @use "sass:list";
 @use "abstracts/tokens" as *;
 
@@ -1044,7 +1043,7 @@ html.vt-capture body::before {
   ::view-transition-new(*) {
     // !important bewusst: harter Gürtel gegen jede (auch künftige) Animation
     // auf den VT-Pseudo-Elementen unter reduzierter Bewegung (WCAG 2.3.3).
-    // stylelint-disable-next-line declaration-no-important
+    // stylelint-disable-next-line declaration-no-important -- harter Gürtel unter reduzierter Bewegung (WCAG 2.3.3)
     animation: none !important;
   }
 }

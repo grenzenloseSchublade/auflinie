@@ -5,7 +5,6 @@
 // diese Glyphen reduziert und werden self-hosted (funktioniert auch offline).
 // Neu generieren: Icon-Klassen inventarisieren (grep fa- über _site) und die
 // Listen in der Sitzungs-Doku bzw. diesem Kommentar erweitern.
-// stylelint-disable
 
 @font-face {
   font-family: "Font Awesome 6 Free";
@@ -47,6 +46,7 @@
   text-rendering: auto;
 }
 
+/* stylelint-disable font-family-no-missing-generic-family-keyword -- Icon-Font, für die Private-Use-Zeichen gibt es keinen sinnvollen generischen Ersatz (wie im Font-Awesome-Original) */
 .fa,
 .fas,
 .fa-solid {
@@ -65,6 +65,7 @@
   font-family: "Font Awesome 6 Brands";
   font-weight: 400;
 }
+/* stylelint-enable font-family-no-missing-generic-family-keyword */
 
 .fa-fw {
   text-align: center;
