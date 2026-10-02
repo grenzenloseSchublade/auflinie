@@ -9,7 +9,7 @@
 // -----------------------------------------------------------------------------
 // EFFEKT-VARIANTEN: drei Ausbaustufen des Röhren-Ausschaltens, per
 // $crt-variante umschaltbar (nur die gewählte wird kompiliert). Details,
-// Timelines und Recherche-Quellen: README-tv-umschalt.md
+// Timelines und Recherche-Quellen: docs/features/tv-umschalt.md
 @use "sass:list";
 @use "abstracts/tokens" as *;
 
@@ -33,7 +33,7 @@ $crt-variante: "antenne" !default;
 // ::view-transition-new(root) durch Bloom-Öffnung plus Störungs-Abklingen —
 // das Bild „rastet ein". Nur die gewählte Variante wird kompiliert.
 // Wirkt in den Varianten dezent/linie-punkt/voll; bei "antenne" ohne
-// Wirkung. Details: README-tv-umschalt.md
+// Wirkung. Details: docs/features/tv-umschalt.md
 // "aus"       — Röhren-Warm-up (crt-on-warmup, 1600ms: Bild klappt auf,
 //               steht erst dunkel/blass/UNSCHARF und minimal kleiner da und
 //               fährt träge hoch — kalte Kathode, Fokus-Drift, Geometrie-

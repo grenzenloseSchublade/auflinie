@@ -7,8 +7,8 @@
 # Hero-em-System, TOC-em-Hierarchie, Scroll-Cue-Glyphe).
 #
 # Nutzung: scripts/fs-guardrail.sh   (Exit 0 = sauber, 1 = Verstoß)
-# Läuft im Lint-Job der CI. Hintergrund: README-tv-umschalt.md /
-# Token-Migration (variables/_typography.scss, Kommentarkopf).
+# Läuft im Lint-Job der CI. Hintergrund: Token-Migration
+# (variables/_typography.scss, Kommentarkopf).
 set -u
 cd "$(dirname "$0")/.."
 

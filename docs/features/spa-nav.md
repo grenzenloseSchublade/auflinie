@@ -7,10 +7,10 @@ das ist **DOM-Realität**, kein View-Transition-Trick. Löst insbesondere
 Firefox + `prefers-reduced-motion`, wo der frühere VT-basierte „stehende
 Header" versagte (voller Reload).
 
-Umgesetzt in [`assets/js/spa-nav.js`](assets/js/spa-nav.js) — Vanilla, keine
+Umgesetzt in [`assets/js/spa-nav.js`](../../assets/js/spa-nav.js) — Vanilla, keine
 Dependency, CSP-`'self'`-konform, **progressive enhancement**.
 
-Verwandt: [`README-tv-umschalt.md`](README-tv-umschalt.md) (Cross-Document-VT /
+Verwandt: [`tv-umschalt.md`](tv-umschalt.md) (Cross-Document-VT /
 CRT — bleibt als Kür erhalten und ist von diesem Fundament unabhängig).
 
 ---
@@ -130,10 +130,10 @@ document → 'spa:load'    detail: { root, url, initial }  // NACH Content + Scr
 })();
 ```
 
-Vorbilder im Repo: [`back-to-top.js`](assets/js/back-to-top.js) (window-Listener
-via AbortController), [`blog-search.js`](assets/js/blog-search.js) (rein
-element-scoped, kein Teardown), [`hero-crt.js`](assets/js/hero-crt.js) /
-[`neon-orbit-toggle.js`](assets/js/neon-orbit-toggle.js) (Observer/rAF/Timer +
+Vorbilder im Repo: [`back-to-top.js`](../../assets/js/back-to-top.js) (window-Listener
+via AbortController), [`blog-search.js`](../../assets/js/blog-search.js) (rein
+element-scoped, kein Teardown), [`hero-crt.js`](../../assets/js/hero-crt.js) /
+[`neon-orbit-toggle.js`](../../assets/js/neon-orbit-toggle.js) (Observer/rAF/Timer +
 `pageshow`-Remount).
 
 ---
@@ -148,7 +148,7 @@ einer **externen, an `spa:load` gebundenen** Datei liegen oder als solche
 umgebaut werden, bevor die Seite verdrahtet wird.
 
 > Konkret offen: die TOC-Initialisierung in
-> [`_includes/toc-wrapper.html`](_includes/toc-wrapper.html) ist ein großes
+> [`_includes/toc-wrapper.html`](../../_includes/toc-wrapper.html) ist ein großes
 > Inline-Script — es muss vor dem Verdrahten von `/cv/` in ein `spa:load`-Modul
 > überführt werden (sonst TOC nach Swap tot). Siehe Task „CV verdrahten".
 
