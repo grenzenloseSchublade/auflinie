@@ -1054,7 +1054,7 @@
     }
   }
 
-  // ── Persistent-Shell-Kontrakt (spa-nav.js, siehe README-spa-nav.md) ─────────
+  // ── Persistent-Shell-Kontrakt (spa-nav.js, siehe docs/features/spa-nav.md) ─────────
   // mount idempotent (Mounted-Attribut), teardown fährt Worker, Observer und
   // TomSelect-Instanzen über destroy() herunter — sonst rechneten verwaiste
   // Panels nach einem Content-Swap weiter.

@@ -40,7 +40,7 @@
 
   // Dosierung: CRT nur bei Ortswechsel (Bereichsgrenze), oben gescrollt
   // und höchstens einmal pro Cooldown — der Effekt markiert Kapitel,
-  // nicht jeden Klick (Nutzer-Entscheidung, siehe README-tv-umschalt.md)
+  // nicht jeden Klick (Nutzer-Entscheidung, siehe docs/features/tv-umschalt.md)
   function crtAllowed(fromPath, toPath) {
     // NUR mobil: der Kanalwechsel betrifft die GANZE Seite und wirkt nur
     // stimmig, wenn das Hero-Bild den Viewport füllt (mobil). Auf Desktop (mehr

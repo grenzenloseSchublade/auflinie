@@ -2,7 +2,7 @@
  * spa-module.js — Persistent-Shell-Kontrakt als sitewide Helfer.
  *
  * Registriert ein Seiten-Modul am SPA-Lebenszyklus (spa-nav.js, siehe
- * README-spa-nav.md) in einem Aufruf: mount auf spa:load /
+ * docs/features/spa-nav.md) in einem Aufruf: mount auf spa:load /
  * pageshow(persisted) / PE-Fallback, teardown auf spa:unload.
  * mount muss idempotent sein (Mounted-Attribut beim Aufrufer).
  *
@@ -19,7 +19,7 @@
     document.addEventListener('spa:unload', function () { opts.teardown(); });
     window.addEventListener('pageshow', function (e) { if (e.persisted) { opts.mount(document); } });
 
-    // PE-Fallback wie README-spa-nav.md (Regel 6): erst zur DOMContentLoaded-
+    // PE-Fallback wie docs/features/spa-nav.md (Regel 6): erst zur DOMContentLoaded-
     // bzw. complete-Zeit prüfen. Defer-Skripte laufen im Zustand 'interactive',
     // bevor spa-nav.js als letztes Defer-Skript __spaNavActive setzt. Eine
     // Prüfung auf 'loading' feuerte dort sofort und mountete jedes Modul

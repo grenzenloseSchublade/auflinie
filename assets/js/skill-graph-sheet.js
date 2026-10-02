@@ -183,7 +183,7 @@
     if (this.touchHint && this.touchHint.parentNode) { this.touchHint.parentNode.removeChild(this.touchHint); }
   };
 
-  // ── Persistent-Shell-Kontrakt (spa-nav.js, siehe README-spa-nav.md) ─────────
+  // ── Persistent-Shell-Kontrakt (spa-nav.js, siehe docs/features/spa-nav.md) ─────────
   function mount(root) {
     const scope = root || document;
     scope.querySelectorAll('[data-skill-graph]').forEach(function (el) {

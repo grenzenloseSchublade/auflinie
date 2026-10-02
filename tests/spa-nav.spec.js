@@ -1,5 +1,5 @@
 // Regressionstests für die Persistent-Shell-Navigation (spa-nav.js).
-// Nageln die "bricht-nichts"-Invarianten fest — siehe README-spa-nav.md.
+// Nageln die "bricht-nichts"-Invarianten fest — siehe docs/features/spa-nav.md.
 // Ausführen: siehe playwright.config.js / tests/README.md.
 //
 // Trick zum Erkennen "Swap vs. Voll-Reload": ein Marker am window. Ein

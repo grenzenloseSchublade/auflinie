@@ -1062,7 +1062,7 @@
     }
   };
 
-  // ── Persistent-Shell-Kontrakt (spa-nav.js, siehe README-spa-nav.md) ─────────
+  // ── Persistent-Shell-Kontrakt (spa-nav.js, siehe docs/features/spa-nav.md) ─────────
   let instances = [];
 
   function mountGraph(root) {

@@ -438,12 +438,12 @@
   // 0.01ms und räumt sie wieder ab.
   function schedulePowerHint() {
     try { if (sessionStorage.getItem('auflinie:hero-crt:power-hinted') === '1') return; } catch (e) { /* noop: Storage gesperrt (privater Modus) */ }
-    if (window._auflinieHeroCrtHintScheduled) return;
-    window._auflinieHeroCrtHintScheduled = true;
+    if (window.__auflinieHeroCrtHintScheduled) return;
+    window.__auflinieHeroCrtHintScheduled = true;
     const fire = function () {
       window.setTimeout(function () {
         const btn = document.getElementById('hero-crt-power');
-        if (!btn) { window._auflinieHeroCrtHintScheduled = false; return; } // kein Button -> später erneut zulassen
+        if (!btn) { window.__auflinieHeroCrtHintScheduled = false; return; } // kein Button -> später erneut zulassen
         btn.classList.add('hero-crt-power--hint');
         btn.addEventListener('animationend', function onEnd() {
           btn.classList.remove('hero-crt-power--hint');

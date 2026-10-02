@@ -27,7 +27,7 @@ excerpt: "Wie ein Beitrag auf dieser Website entsteht, vom Entwurf in Markdown b
 
 Dieser Beitrag zeigt, wie ein Blogbeitrag auf dieser Website entsteht: welche Technik dahintersteckt, wie eine Beitragsdatei aufgebaut ist und worauf es beim Schreiben ankommt. Er ist als Leitfaden gedacht und soll den Einstieg leichter machen.
 
-Wer sich mit dem Thema schon auskennt, kann direkt das <a href="{{ "assets/downloads/post-template.md" | relative_url }}" download="post-template.md" style="text-decoration: underline;">Template <i class="fas fa-download" style="margin-left: 0.35em;"></i></a> herunterladen und losschreiben. Es enthält alles, was ein Blogbeitrag braucht: Front Matter, Gliederung und kurze Hinweise.
+Wer sich mit dem Thema schon auskennt, kann direkt das <a href="{{ "assets/downloads/post-template.md" | relative_url }}" download="post-template.md" style="text-decoration: underline;">Template <i class="fas fa-download" style="margin-left: 0.35em;" aria-hidden="true"></i></a> herunterladen und losschreiben. Es enthält alles, was ein Blogbeitrag braucht: Front Matter, Gliederung und kurze Hinweise.
 
 ## Technischer Aufbau
 
@@ -53,7 +53,7 @@ YAML legt die Metadaten fest, vor allem im Front Matter am Anfang jeder Markdown
 
 Für einen Blogbeitrag reicht eine Markdown-Datei mit passendem Front Matter. Die Datei folgt einem festen Schema. Damit der Anfang leichter fällt, gibt es ein Template, das die nötigen Metadaten und die Gliederung schon enthält. Die folgenden Abschnitte zeigen, wie es aufgebaut ist und welche Elemente es enthält.
 <div style="text-align: center">
-  <a href="{{ "assets/downloads/post-template.md" | relative_url }}" class="btn btn--primary btn--medium" download="post-template.md"><i class="fas fa-download"></i> Template herunterladen</a>
+  <a href="{{ "assets/downloads/post-template.md" | relative_url }}" class="btn btn--primary btn--medium" download="post-template.md"><i class="fas fa-download" aria-hidden="true"></i> Template herunterladen</a>
 </div>
 
 ### Syntaktischer Aufbau

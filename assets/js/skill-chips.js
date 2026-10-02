@@ -17,7 +17,7 @@
  * - Die Auswahl-Optik lebt vollständig im CSS (Zustände: .has-selection am
  *   Container, .is-selected/.is-related am Chip).
  *
- * Persistent-Shell-Kontrakt (spa-nav.js, siehe README-spa-nav.md): mount auf
+ * Persistent-Shell-Kontrakt (spa-nav.js, siehe docs/features/spa-nav.md): mount auf
  * spa:load (idempotent), teardown auf spa:unload. Der Container-Click ist
  * element-scoped (stirbt mit dem DOM); die zwei DOKUMENTWEITEN Listener
  * (keydown, auflinie:skill-select) hängen an einem AbortController und werden

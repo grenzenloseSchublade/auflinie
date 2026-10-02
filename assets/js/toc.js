@@ -2,7 +2,7 @@
  * toc.js — Sticky-Mobile-Header, Gumshoe-ScrollSpy, Dropdown, optionales Collapse.
  *
  * Externalisiert aus dem früheren Inline-Script in _includes/toc-wrapper.html
- * und an den Persistent-Shell-Kontrakt (spa-nav.js, siehe README-spa-nav.md)
+ * und an den Persistent-Shell-Kontrakt (spa-nav.js, siehe docs/features/spa-nav.md)
  * gebunden: mount auf spa:load, teardown auf spa:unload. Alle dokument-/
  * fensterweiten Listener (window scroll/resize, document keydown/gumshoe*) und
  * die Gumshoe-Instanz hängen an einem AbortController bzw. werden im Teardown

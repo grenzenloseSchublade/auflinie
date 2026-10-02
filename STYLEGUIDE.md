@@ -2,7 +2,7 @@
 
 Version 2026-10-02 · Stand: 2. Oktober 2026 · Gilt für: Repo `auflinie` (Jekyll, Remote-Theme Minimal Mistakes, Dart Sass über jekyll-sass-converter, Versionen in `Gemfile.lock`, `_config.yml` und `package-lock.json`)
 
-Ist-Angaben wurden gegen Commit `848efe2` erhoben, bis `4adea55` nachgeführt und am 2. 10. 2026 gegen den Code-Stand `75c23c0` abgeglichen: jede Regel mit Status Soll oder Offen und jeder Registereintrag am Code geprüft, erfüllte Regeln auf Ist, erledigte Einträge aus dem Register (Abschnitt 17), neu gefundene Abweichungen eingetragen. Ausgenommen sind die Skill-Graph-Regeln, die eine laufende Überarbeitung neu fasst (Hinweis in 4.4). Bei jedem neuen Ist-Stand werden die Ist-Sätze und das Register neu geprüft und dieser Satz aktualisiert.
+Ist-Angaben wurden gegen Commit `848efe2` erhoben, bis `4adea55` nachgeführt und am 2. 10. 2026 gegen den Code-Stand `75c23c0` abgeglichen, am Abend nach dem Abbau der Code-Einträge des Registers nachgeführt: jede Regel mit Status Soll oder Offen und jeder Registereintrag am Code geprüft, erfüllte Regeln auf Ist, erledigte Einträge aus dem Register (Abschnitt 17), neu gefundene Abweichungen eingetragen. Ausgenommen sind die Skill-Graph-Regeln, die eine laufende Überarbeitung neu fasst (Hinweis in 4.4). Bei jedem neuen Ist-Stand werden die Ist-Sätze und das Register neu geprüft und dieser Satz aktualisiert.
 
 Dieses Dokument ist die **einzige normative Quelle** für Gestaltung, Code, Sprache, Sicherheit und Arbeitsweise im Repo. Es kodifiziert die Entscheidungen des Owners (Abschnitt 1.7) und verlinkt externe Standards. Einzelbefunde, Messwerte und der Ist-Zustand stehen im Audit-Bericht `docs/audits/2026-10-01-audit.md`, die Sicherheitsbefunde in `docs/audits/2026-10-01-security.md`. Beide Berichte sind Momentaufnahmen vom 1. 10. 2026 und nicht normativ. Was seither behoben ist, steht nur hier, nicht im Bericht.
 
@@ -199,7 +199,7 @@ Regeln:
 - **FARB-5** [MUSS · Ist · CI] Niemals ein Token mit eingebautem Alpha in `rgba()` geben. Sass ersetzt den Alpha-Kanal, multipliziert ihn nicht (Beispiel: `rgba($console-panel-border, 0.7)` wird zu 70 % Weiß). Der Guardrail erkennt Alpha-Tokens auch über Aliase. Die einzige Fundstelle (`.guide-banner`) steht seit 1. 10. 2026 auf `$white-a70`, dem bisher gerenderten Wert.
 - **FARB-6** [MUSS · Ist · CI] Keine Ad-hoc-Abstufung `rgba($hover-color, 0.x)`. Benannte Abstufungen (`$magenta-aNN`) verwenden oder in `_colors.scss` neu anlegen (Owner-Regel vom 8. Juli 2026). Der Guardrail lässt dafür keinen Ausnahme-Marker zu.
 - **FARB-7** [MUSS · Soll · Review] Fokus- und Hover-Zustand nehmen Vorder- und Hintergrund nie aus demselben Token.
-- **FARB-8** [MUSS · Soll · CI-P1] Farb**literale** in der Notation `rgb(r g b / a%)`, Hex lang und klein, keine Farbnamen außer `transparent`, `currentColor`, `inherit`. Gilt auch für JS-Strings, Inline-Styles und das Critical-CSS. Sass-Funktionen auf Tokens (`rgba($link-color, 0.6)`) dürfen Dezimal-Alpha nutzen. In `assets/_sass` und im Critical-CSS erfüllt, in `assets/_sass` per `color-guardrail.sh` geprüft (Notation in `variables/`, Farbnamen überall). Den zweiten Style-Block in `head/custom.html` gibt es nicht mehr. Offen bleiben Farbwerte in JS (R-53).
+- **FARB-8** [MUSS · Soll · CI-P1] Farb**literale** in der Notation `rgb(r g b / a%)`, Hex lang und klein, keine Farbnamen außer `transparent`, `currentColor`, `inherit`. Gilt auch für JS-Strings, Inline-Styles und das Critical-CSS. Sass-Funktionen auf Tokens (`rgba($link-color, 0.6)`) dürfen Dezimal-Alpha nutzen. In `assets/_sass` und im Critical-CSS erfüllt, in `assets/_sass` per `color-guardrail.sh` geprüft (Notation in `variables/`, Farbnamen überall). Den zweiten Style-Block in `head/custom.html` gibt es nicht mehr. Die JS-Farbwerte sind seit 2. 10. umgestellt, offen nur noch `skill-graph.js` (Skill-Graph-Überarbeitung). Systemfarben (`Canvas`, `CanvasText`, `Highlight`) stehen nur im Forced-Colors-Block (A11Y-6).
 - **FARB-9** [SOLL · Ist · CI] Gleicher Wert = Alias, nie zweites Literal (`$card-heading-color: $link-color`, `$selection-bg: $hover-color`, `$base00: $console-panel-bg`). Der Guardrail meldet textgleiche Literale in `_colors.scss`. Wertgleiche in anderer Schreibweise (`#ffffff` gegen `rgb(255 255 255)`) fallen nur im Review auf.
 - **FARB-10** [SOLL · Soll · Review] MM-Variablen, die die Palette beeinflussen, werden explizit gesetzt: `$primary-color`, `$background-color`, `$text-color`. Ist seit 1. 10. 2026: `$primary-color: $link-color` (Rollen-Token in `_colors.scss`, Abnehmerliste im Kommentar). Sichtbar davon nur der Fokus-Schein des Blog-Suchfelds (`input:focus`, jetzt Cyan statt Teal) und der Hover der Hamburger-Balken. Den setzt `components/_masthead.scss` selbst auf `$hover-color-text` (Nav-Hover Magenta, KOMP-3), weil die Theme-Regel `mix(#000, $primary-color, 25 %)` die eigene Ruhe-Regel per Spezifität schlägt. Offen: `$background-color` und `$text-color` kommen weiter aus dem Skin (R-72).
 
@@ -499,7 +499,7 @@ Buttons:
 
 - **ICON-1** [MUSS · Ist · Review] Icons nur aus dem Font-Awesome-Subset (TYP-12) oder als Inline-SVG. Keine Icon-CDNs.
 - **ICON-2** [SOLL · Soll · Review] Icon-Größen relativ zum Text: `1em` im Fließtext, `0.85em` in Überschriften (`accent-header`), feste px nur im Fraktal-Panel (`$fp-fs-icon`).
-- **ICON-3** [MUSS · Soll · Review] Dekorative Icons tragen `aria-hidden="true"` (A11Y-3). Ein Icon ohne Text braucht einen zugänglichen Namen am Button oder Link. Bestand: R-62.
+- **ICON-3** [MUSS · Soll · Review] Dekorative Icons tragen `aria-hidden="true"` (A11Y-3). Ein Icon ohne Text braucht einen zugänglichen Namen am Button oder Link.
 - **ICON-4** [MUSS · Ist · Review] Das Logo kommt aus `_includes/logo.svg` (inline im Masthead). Die Neon-Wortmarke ist Marke und darf Magenta tragen (DES-3).
 - **[Offen]** Mindestgröße und Schutzraum der Wortmarke, Marken-Magenta (3.1), Umgang mit `assets/images/Logo.svg` und `WebSite_Logo_3.png` (Dateinamen verletzen NAME-1, R-71). `WebSite_Logo_3.png` ist zugleich das Site-Vorschaubild (SEO-3).
 
@@ -618,11 +618,11 @@ Ziel: **WCAG 2.2 AA** als freiwillige Selbstverpflichtung. Rechtsrahmen: Das B
 ### 6.2 Muster
 
 - **A11Y-1** [MUSS · Soll · Review] Toggle-Buttons: entweder festes Label plus `aria-pressed`/`aria-expanded` oder wechselndes Aktions-Label ohne State-Attribut. Nie beides.
-- **A11Y-2** [MUSS · Soll · CI] Disclosure, Dropdown, Drawer, Sheet folgen einem Muster: Button mit `aria-expanded` und `aria-controls`, Escape schließt und gibt den Fokus an den Auslöser zurück, beim Öffnen wandert der Fokus hinein. Mit Scrim oder Scroll-Sperre wird der Hintergrund `inert`. Drawer und Skill-Graph-Sheet erfüllen das Muster, `tests/visual/invariants.spec.js` prüft beide. Das TOC-Dropdown schließt per Escape und gibt den Fokus zurück, das Autor-Folgen-Dropdown noch nicht (R-62). Der Drawer setzt den Fokus nur beim Öffnen per Tastatur (`click` mit `detail === 0`) auf den ersten Link. Bei Maus und Touch bleibt er am Toggle, weil mobil schon `:focus` die Drawer-Links magenta färbt (Register R-32).
-- **A11Y-3** [MUSS · Soll · Review] Dekorative Icons (`<i class="fa…">`, SVG, Glyphen ▲▼✕) tragen `aria-hidden="true"`, Inline-SVG zusätzlich `focusable="false"`. Bestand: R-62.
-- **A11Y-4** [MUSS · Soll · Review] Für versteckten Text nur `.visually-hidden`. Bestand: R-62.
+- **A11Y-2** [MUSS · Soll · CI] Disclosure, Dropdown, Drawer, Sheet folgen einem Muster: Button mit `aria-expanded` und `aria-controls`, Escape schließt und gibt den Fokus an den Auslöser zurück, beim Öffnen wandert der Fokus hinein. Mit Scrim oder Scroll-Sperre wird der Hintergrund `inert`. Drawer und Skill-Graph-Sheet erfüllen das Muster, `tests/visual/invariants.spec.js` prüft beide. Das TOC-Dropdown schließt per Escape und gibt den Fokus zurück, das Autor-Folgen-Dropdown ebenso (`author-follow.js` setzt `aria-controls` selbst, weil das Markup aus dem Theme kommt). Beim Öffnen wandert der Fokus dort nicht hinein (R-74). Der Drawer setzt den Fokus nur beim Öffnen per Tastatur (`click` mit `detail === 0`) auf den ersten Link. Bei Maus und Touch bleibt er am Toggle, weil mobil schon `:focus` die Drawer-Links magenta färbt (Register R-32).
+- **A11Y-3** [MUSS · Soll · Review] Dekorative Icons (`<i class="fa…">`, SVG, Glyphen ▲▼✕) tragen `aria-hidden="true"`, Inline-SVG zusätzlich `focusable="false"`.
+- **A11Y-4** [MUSS · Soll · Review] Für versteckten Text nur `.visually-hidden`.
 - **A11Y-5** [MUSS · Ist · CI-P4] SPA-Navigation verhält sich wie ein Seitenwechsel: Fokus auf `#main`, `document.title`, `aria-current`, Ansage über `#spa-route-announcer` (umgesetzt in `spa-nav.js`).
-- **A11Y-6** [SOLL · Soll · Review] Forced-Colors-Block in `base/_accessibility.scss` (fehlt noch, R-62). Fokus nie allein über `box-shadow`.
+- **A11Y-6** [SOLL · Soll · Review] Forced-Colors-Block in `base/_accessibility.scss` (Selektoren mit `:root`-Präfix, weil die Datei vor den Komponenten lädt). Fokus nie allein über `box-shadow`.
 
 ### 6.3 Bewegung
 
@@ -651,7 +651,7 @@ Ziel: **WCAG 2.2 AA** als freiwillige Selbstverpflichtung. Rechtsrahmen: Das B
 - **2.3.1 (Level A):** Die aktive Variante `antenne` liegt nach Codeanalyse unter der Schwelle. Die Varianten `dezent`, `linie-punkt`, `voll` sind ungemessen und dürfen ohne Test nach BEW-5 nicht Standard werden.
 - **Entschieden (Owner, 1. 10. 2026):** Kein separater Bewegungs-Schalter, kein gespeicherter Lesemodus auf allen Hero-Seiten, kein Anhalten nach 5 s. Die Seite ist damit formal nicht WCAG-2.2-A-konform (2.2.2). Das ist eine dokumentierte Ausnahme und wird nicht erneut als Fix vorgeschlagen. Neu bewertet wird nur, wenn sich der Charakter der Seite ändert.
 - Harte Grenze bleibt 2.3.1: Jeder neue Flacker-, Glitch- oder Blitzeffekt wird vorher nach BEW-5 gemessen.
-- Das Aufglimmen des Power-Buttons ist auf `no-preference` gegatet (Owner-Entscheidung): Der Kill-Switch nimmt den Hinweis-Puls unter `reduce` heraus. Die Kommentare in `hero-crt.js` und `components/_hero.scss` sagen „HART aktiviert“, das ist falsch (Register R-20).
+- Das Aufglimmen des Power-Buttons ist auf `no-preference` gegatet (Owner-Entscheidung): Der Kill-Switch nimmt den Hinweis-Puls unter `reduce` heraus.
 
 Weitere bewusste Ausnahmen: Fokus des Hero-Power-Buttons beige statt Magenta (Kontrast auf dem Foto), Blocksatz im Home-Intro (1.4.8 ist AAA).
 
@@ -662,7 +662,7 @@ Weitere bewusste Ausnahmen: Fokus des Hero-Power-Buttons beige statt Magenta (Ko
 ### 7.1 Anrede
 
 - **TON-1** [MUSS · Ist · CI-P3] Anredefrei. Aussagesatz oder Infinitiv („Die Iterationszahl steuert die Detailtiefe“, „Bild speichern“).
-- **TON-2** [MUSS · Soll · CI-P3] **Nie „Sie“**, auch nicht in Theme-Strings (eigener `de-DE`-Block in `_data/ui-text.yml`, erfüllt) und nicht in der Repo-Doku. Bestand: R-69.
+- **TON-2** [MUSS · Soll · CI-P3] **Nie „Sie“**, auch nicht in Theme-Strings (eigener `de-DE`-Block in `_data/ui-text.yml`, erfüllt) und nicht in der Repo-Doku.
 - **TON-3** [SOLL · Ist · Review] „Du“ nur bei unvermeidbarer direkter Bedienansprache.
 - **TON-4** [SOLL · Ist · Review] Ich-Stimme für Persönliches.
 
@@ -740,7 +740,7 @@ Alle Ton-Regeln sind Review-Regeln. Maßstab ist das Home-Intro (`index.html`), 
 Je Fall genau eine Entscheidung. Gilt für alle Quellen (Markdown, HTML-Includes, YAML, JS-Strings) und für diesen Guide.
 
 - **TYPO-1** [MUSS · Soll · CI-P3] Zeichen werden direkt als Unicode getippt (Bestand: R-65). Entities nur für HTML-Syntaxzeichen (`&amp;`, `&lt;`, `&gt;`, `&quot;`) und für unsichtbare Zeichen, die im Editor nicht unterscheidbar sind (`&nbsp;` für U+00A0, `&#8239;` für U+202F). Grundlage: W3C i18n.
-- **TYPO-2** [MUSS · Soll · CI-P3] Die Tabelle gilt für Lesertexte und Doku. Gedankenstrich, Zeiträume und „Heute“ sind site-weit umgesetzt, Bestand: R-59, R-65.
+- **TYPO-2** [MUSS · Soll · CI-P3] Die Tabelle gilt für Lesertexte und Doku. Gedankenstrich, Zeiträume und „Heute“ sind site-weit umgesetzt, Bestand: R-65.
 
 | Fall | Entscheidung | Beispiel | Begründung |
 |---|---|---|---|
@@ -816,7 +816,7 @@ Ein neues Token kommt in die passende Datei unter `variables/` und ist danach ü
 
 - **SCSS-5** [MUSS · Soll · CI-P2] Klassen BEM in kebab-case: `block__element--modifier`. `--modifier` = statische Variante aus Markup. `is-*`/`has-*` = Laufzeitzustand aus JS.
 - **SCSS-6** [MUSS · Soll · Review] Keine neuen eigenen Elemente in MM-Namensräumen (`page__`, `masthead__`, `archive__`, `toc__`).
-- **SCSS-7** [MUSS · Ist · CI] Variablen, Mixins, Platzhalter, Custom Properties und Keyframes in kebab-case. Keyframes mit Block-Präfix (`neon-orbit-ramp-before`, `toc-slide-in-from-bottom`), nur die allgemeinen `fade-in`/`fade-out` in `base/_animations.scss` haben keinen Block. Beim Umbenennen JS-Referenzen mitziehen (`hero-crt.js` liest die Tube-Boot-Namen). Stylelint prüft Keyframes (`keyframes-name-pattern`), Mixins und Custom Properties (Standard-Config). `scss/dollar-variable-pattern` ist aus, der Bestand an Variablen ist trotzdem kebab-case.
+- **SCSS-7** [MUSS · Ist · CI] Variablen, Mixins, Platzhalter, Custom Properties und Keyframes in kebab-case. Keyframes mit Block-Präfix (`neon-orbit-ramp-before`, `toc-slide-in-from-bottom`), nur das allgemeine `fade-in` in `base/_animations.scss` hat keinen Block. Beim Umbenennen JS-Referenzen mitziehen (`hero-crt.js` liest die Tube-Boot-Namen). Stylelint prüft Keyframes (`keyframes-name-pattern`), Mixins und Custom Properties (Standard-Config). `scss/dollar-variable-pattern` ist aus, der Bestand an Variablen ist trotzdem kebab-case.
 - **SCSS-8** [MUSS · Ist · CI-P2] Komponenten-Tokens tragen das Block-Präfix (`$fp-*`) und zeigen nur auf globale Tokens (FARB-1). Erfüllt in `fractal-panel/_tokens.scss`, Farbliterale fängt `color-guardrail.sh`.
 - **SCSS-20** [MUSS · Ist · Review] Bezeichner sind englisch, mit diesen Ausnahmen: fachliche Varianten-Namen der Choreografien (`$crt-variante`, `$glitch-variante` und ihre Werte wie `antenne`), deutsche Daten- und Paletten-Schlüssel, die sichtbaren Text spiegeln. Neue deutsche Bezeichner nur in diesen Gruppen. Kommentare deutsch (SCSS-14).
 
@@ -834,7 +834,7 @@ Ein neues Token kommt in die passende Datei unter `variables/` und ist danach ü
 - **SCSS-15** [SOLL · Soll · Review] Dateikopf: Banner `// ===`, Titel, Zweck, Zeilen `Markup:` / `JS:` / `Tokens:`.
 - **SCSS-16** [MUSS · Soll · Review] Kommentare erklären das Warum des Ist-Zustands. Werthistorie (`// vorher 3.5rem`) gehört in die Commit-Message. A11y- und Owner-Gründe bleiben im Kommentar.
 - **SCSS-17** [MUSS · Soll · Review] Keine auskommentierten Alternativwerte, keine toten Selektoren, keine px-Umrechnungen an em- oder rem-Werten.
-- **SCSS-18** [MUSS · Soll · CI-P1] `stylelint-disable` regelgenau, mit ` -- Begründung`, Blöcke mit `stylelint-enable` schließen. Generierte Dateien über `ignoreFiles`. Bestand: R-66.
+- **SCSS-18** [MUSS · Soll · CI-P1] `stylelint-disable` regelgenau, mit ` -- Begründung`, Blöcke mit `stylelint-enable` schließen. Generierte Dateien über `ignoreFiles`.
 - **SCSS-19** [MUSS · Ist · CI] 2 Leerzeichen nach Klammertiefe, LF, abschließender Zeilenumbruch, kein Leerzeichen am Zeilenende. Editor: `.editorconfig`, Check: `scripts/scss-format.py` (mit `--fix` korrigieren). **[Soll · Review]** `@include` vor den Deklarationen.
 
 ### 9.5 Critical-CSS
@@ -903,7 +903,7 @@ Ein neues Token kommt in die passende Datei unter `variables/` und ist danach ü
 - **SPA-2** [MUSS · Soll · Review] `mount(root)` sucht nur in `root || document`, bricht ohne Wurzel ab, setzt den Marker `data-<modul>-mounted` und bricht einen alten Controller vor dem Neubinden ab.
 - **SPA-3** [MUSS · Soll · Review] `teardown()` räumt alle `window`- und `document`-Listener, Observer, Timer, rAF und Worker ab. Timer-Callbacks prüfen `signal.aborted`.
 - **SPA-4** [MUSS · Ist · CI] Kein `<script>` in Includes oder Layouts, die in `.initial-content` rendern. Inline-Skripte laufen nach einem `innerHTML`-Swap nicht. Ausnahme: Datenblöcke (`application/json`, `application/ld+json`) und `speculationrules` (SEC-4).
-- **SPA-5** [MUSS · Ist · Review] Wer das Wired-Set (`isWired` in `spa-nav.js`) oder `needsFullLoad` ändert, passt im selben Commit `tests/spa-nav.spec.js`, `tests/README.md`, `README-spa-nav.md` und die Speculation-Rules-Ausschlüsse (SEO-5) an.
+- **SPA-5** [MUSS · Ist · Review] Wer das Wired-Set (`isWired` in `spa-nav.js`) oder `needsFullLoad` ändert, passt im selben Commit `tests/spa-nav.spec.js`, `tests/README.md`, `docs/features/spa-nav.md` und die Speculation-Rules-Ausschlüsse (SEO-5) an.
 - **SPA-6** [SOLL · Ist · Review] Der PE-Fallback prüft erst zur `DOMContentLoaded`-Zeit, weil `spa-nav.js` als letztes Defer-Skript `__spaNavActive` setzt. Muster wie im README: `readyState === 'complete'` → sofort, sonst `DOMContentLoaded`. Ein Test auf `'loading'` reicht nicht: Defer-Skripte laufen im Zustand `interactive`, der Fallback feuerte dort sofort und mountete jedes Modul ein zweites Mal. `spa-module.js` folgt dem Muster seit 2. 10. 2026, `tests/spa-nav.spec.js` zählt die `mount`-Aufrufe. `spa-nav.js` selbst darf `'loading'` prüfen, weil es als Letztes lädt.
 
 ### 10.3 Navigation und Übergänge
@@ -922,12 +922,12 @@ Owner-Lehren aus der TV-Umschalt-Architektur. Sie werden nicht wieder eingebaut.
 - **JS-8** [MUSS · Soll · Review] Werte, die CSS besitzt (Dauern, Höhen, Breakpoints, Farben), liest JS per `getComputedStyle(…).getPropertyValue('--token')`. Fallbacks gleichen dem Token, Kommentar `// Spiegel zu <datei>: --token`. Ausnahme Breakpoints: `AuflinieUtils.mq` (BP-2).
 - **JS-9** [MUSS · Soll · Review] Keine Design-Farben im JS. DOM-Optik über Klassen, Canvas über CSS-Kanal-Tokens. Fraktal-Paletten sind Daten und ausgenommen.
 - **JS-10** [MUSS · Soll · Review] Fachliche Zahlen als `CONSTANT_CASE` mit Einheit (`_MS`, `_PX`) am Modulkopf.
-- **JS-11** [MUSS · Soll · CI-P2] Feature-Detection vor Plattform-APIs. Kein UA-Sniffing, Eingabeart über `matchMedia('(pointer: coarse)')`. Bestand: R-59.
+- **JS-11** [MUSS · Soll · CI-P2] Feature-Detection vor Plattform-APIs. Kein UA-Sniffing, Eingabeart über `matchMedia('(pointer: coarse)')`.
 - **JS-12** [MUSS · Soll · Review] Scroll- und Resize-Handler `passive` und rAF-gedrosselt.
 - **JS-13** [MUSS · Soll · Review] Storage-Zugriffe in `try/catch` mit sinnvollem Fallback (SEC-6).
-- **JS-14** [MUSS · Soll · CI-P2] Kein `console.log` (erfüllt). `console.warn` und `console.error` im Format `'<dateiname>: <Meldung>'`. Leere `catch`-Blöcke mit `/* noop: Grund */`. Bestand: R-59.
+- **JS-14** [MUSS · Soll · CI-P2] Kein `console.log` (erfüllt). `console.warn` und `console.error` im Format `'<dateiname>: <Meldung>'`. Leere `catch`-Blöcke mit `/* noop: Grund */`.
 - **JS-15** [MUSS · Soll · Review] Benennung: camelCase, PascalCase für Klassen und Namespaces, `CONSTANT_CASE` für Modulkonstanten, Booleans mit `is`/`has`/`should`, Lebenszyklus `mount`/`teardown`, Instanzen `destroy`.
-- **JS-16** [SOLL · Soll · Review] Namensräume: Events `auflinie:<thema>` (Bestand `spa:*` bleibt), Storage-Keys `auflinie:<modul>:<zweck>`, interne Brücken `window.__auflinie*`. Bestehende Keys erst bei Berührung migrieren, sonst verlieren Besucher Zustände. Bestand: R-59.
+- **JS-16** [SOLL · Soll · Review] Namensräume: Events `auflinie:<thema>` (Bestand `spa:*` bleibt), Storage-Keys `auflinie:<modul>:<zweck>`, interne Brücken `window.__auflinie*`. Bestehende Keys erst bei Berührung migrieren, sonst verlieren Besucher Zustände.
 - **JS-17** [MUSS · Soll · Review] Worker: dünner Wrapper plus Kern per `importScripts`, Messages `{ requestId, …params }` mit Echo, Ergebnisse als Transferables. Mehrzweck-Kanäle (Service Worker) als `{ type: 'SCREAMING_SNAKE', … }`.
 - **JS-18** [SOLL · Soll · Review] Logik, die zum zweiten Mal gebraucht wird, wandert in einen gemeinsamen Helfer: `assets/js/site-utils.js` mit Namespace `window.AuflinieUtils`, in `_includes/scripts.html` als **erstes** Skript geladen, vor `toc.js` und `spa-module.js`. Skripte aus dem `<head>` laufen davor und nutzen die Helfer nicht. **[Ist]** Die Datei existiert mit `prefersReducedMotion`, `rafThrottle` (Nutzer `toc.js`, `back-to-top.js`) und `mq` (Breakpoints, BP-2, Nutzer `toc.js`, `tv-switch.js`, `greedy-navigation.js`, `fractal-panel.js`). **[Soll]** `baseUrl` und `cssDurationMs` (MO-5) fehlen noch.
 - **JS-19** [MUSS · Soll · CI-P1] Formatierung: 2 Leerzeichen (auch in Workern), einfache Anführungszeichen, Semikolons, LF, kein Leerzeichen am Zeilenende. Einzeilige Guards ohne Klammern erlaubt.
@@ -945,7 +945,7 @@ Die Seite ist statisch, hat keine Nutzerkonten und keine Formulare. Die realisti
 
 ### 11.2 Liquid-Ausgabe
 
-- **SEC-2** [MUSS · Soll · CI-P2] Werte innerhalb von `<script>` (auch `application/json` und `application/ld+json`) werden als `{{ wert | jsonify | replace: '</', '<\/' }}` ausgegeben, ohne umgebende Anführungszeichen. Jekylls `jsonify` maskiert `</` nicht. Keine Liquid-Werte in JavaScript-String-Literalen. Konfiguration gelangt als `data-*`-Attribut an `<html>`. Freitext aus Front Matter und `_data` in HTML-Text mit `| escape` (SOLL), gewollter Rich-Text mit `| markdownify`. Der Skill-Graph-Datenblock folgt dem Muster, das JSON-LD in `head/custom.html` noch nicht (R-63).
+- **SEC-2** [MUSS · Soll · CI-P2] Werte innerhalb von `<script>` (auch `application/json` und `application/ld+json`) werden als `{{ wert | jsonify | replace: '</', '<\/' }}` ausgegeben, ohne umgebende Anführungszeichen. Jekylls `jsonify` maskiert `</` nicht. Keine Liquid-Werte in JavaScript-String-Literalen. Konfiguration gelangt als `data-*`-Attribut an `<html>`. Freitext aus Front Matter und `_data` in HTML-Text mit `| escape` (SOLL), gewollter Rich-Text mit `| markdownify`. Der Skill-Graph-Datenblock folgt dem Muster, das JSON-LD in `head/custom.html` ebenso.
 
 ### 11.3 Content Security Policy
 
@@ -980,10 +980,10 @@ Die Seite ist statisch, hat keine Nutzerkonten und keine Formulare. Die realisti
 ### 11.8 Abhängigkeiten, Theme und Vendor-Dateien
 
 - **SEC-8** [MUSS · Ist · CI] `remote_theme` ist auf eine Commit-SHA gepinnt (Check: `scripts/security-guardrail.sh`). Installationen laufen über Lockfiles (`npm ci`, `bundle install` gegen `Gemfile.lock`), auch in `.devcontainer/*.sh`.
-- **SEC-8a** [MUSS · Soll · CI-P2] Dateien unter `assets/vendor` sind unveränderte Upstream-Dateien. Ihre Prüfsummen stehen in `assets/vendor/SHA384SUMS` (fehlt noch, R-68).
-- **SEC-8b** [SOLL · Soll · Review] `Gemfile.lock` mit `CHECKSUMS`-Abschnitt (fehlt noch, R-68). Ungenutzte Theme-Assets stehen in `exclude`. Devcontainer ohne weitergereichten Host-Token, Image per Digest.
+- **SEC-8a** [MUSS · Soll · CI-P2] Dateien unter `assets/vendor` sind unveränderte Upstream-Dateien. Ihre Prüfsummen stehen in `assets/vendor/SHA384SUMS` (Format von `sha384sum`, Pfade relativ, `LC_ALL=C` sortiert, in `exclude`). Prüfen: `cd assets/vendor && sha384sum -c --strict --quiet SHA384SUMS`. Neu erzeugen: `find . -type f ! -name SHA384SUMS -printf '%P\n' | LC_ALL=C sort | xargs -d '\n' sha384sum > SHA384SUMS`.
+- **SEC-8b** [SOLL · Soll · Review] `Gemfile.lock` mit `CHECKSUMS`-Abschnitt (`bundle lock --add-checksums`). Ungenutzte Theme-Assets stehen in `exclude` (Bestand: R-75). Devcontainer ohne weitergereichten Host-Token, Image per Digest.
 - **SEC-8c** [KANN · Offen · CI-P3] `bundle-audit check --update` und `npm audit --audit-level=high` als Warnung in einem bestehenden Job, nur unter den Bedingungen von SEC-7b und GIT-6 (keine zusätzlichen Trigger, kein Artefakt-Speicher).
-- **SEC-8d** [SOLL · Ist · Review] Vendor-Bibliotheken werden nur aktualisiert, wenn der Changelog Fixes für Bedienung, Barrierefreiheit oder Sicherheit enthält, die unsere Nutzung betreffen (Owner 1. 10. 2026). Ein Wechsel übernimmt nur die heute ausgelieferten Dateien unverändert aus dem offiziellen npm-Paket, führt die Version im README-Abschnitt „Komponenten Dritter“ nach und muss `tests/vendor.spec.js` bestehen, der in der CI läuft (Formeln auf `/mandelbrot/` direkt und nach SPA-Navigation, Slider, Preset, keine Konsolenfehler, kein CSP-Verstoß).
+- **SEC-8d** [SOLL · Ist · Review] Vendor-Bibliotheken werden nur aktualisiert, wenn der Changelog Fixes für Bedienung, Barrierefreiheit oder Sicherheit enthält, die unsere Nutzung betreffen (Owner 1. 10. 2026). Ein Wechsel übernimmt nur die heute ausgelieferten Dateien unverändert aus dem offiziellen npm-Paket, führt die Version in `THIRD-PARTY-NOTICES.md` nach, erzeugt `assets/vendor/SHA384SUMS` neu (SEC-8a) und muss `tests/vendor.spec.js` bestehen, der in der CI läuft (Formeln auf `/mandelbrot/` direkt und nach SPA-Navigation, Slider, Preset, keine Konsolenfehler, kein CSP-Verstoß).
 
 ### 11.9 Externe Links und Ressourcen
 
@@ -1001,7 +1001,7 @@ Die Seite ist statisch, hat keine Nutzerkonten und keine Formulare. Die realisti
 
 ### 11.12 Veröffentlichung und Indexierung
 
-- **SEC-12** [MUSS · Soll · CI-P3] Interne Seiten tragen `sitemap: false` und `noindex: true`. `head/custom.html` rendert daraus `<meta name="robots" content="noindex, nofollow">` (zu bauen, R-68). Kein `Disallow` in `robots.txt`, ein gesperrter Crawler sieht das `noindex` nie. `_site` enthält nur erwartete Pfade (SOLL).
+- **SEC-12** [MUSS · Soll · CI-P3] Interne Seiten tragen `sitemap: false` und `noindex: true`. `head/custom.html` rendert daraus `<meta name="robots" content="noindex, nofollow">` (heute `404.html` und `offline.html`). Kein `Disallow` in `robots.txt`, ein gesperrter Crawler sieht das `noindex` nie. `_site` enthält nur erwartete Pfade (SOLL).
 
 ---
 
@@ -1018,9 +1018,9 @@ Die Seite ist statisch, hat keine Nutzerkonten und keine Formulare. Die realisti
 
 - **LIQ-1** [MUSS · Soll · Review] Jedes eigene Include beginnt mit einem `{% comment %}`-Docblock: Zweck, Einbindungsort, `Parameter:` mit Typ, Werten und Default. Theme-Overrides vermerken „Lokales Override: Grund“.
 - **LIQ-2** [MUSS · Soll · Review] Parameter in snake_case, Zugriff `include.x | default: …`.
-- **LIQ-3** [MUSS · Soll · Review] Interne URLs immer `{{ '/pfad/' | relative_url }}` mit führendem Slash. Kein `{{ site.baseurl }}/…`-Verketten (Ausnahme: Speculation-Rules-Pattern). Bestand: R-61.
-- **LIQ-4** [MUSS · Soll · Review] Seitenspezifisches JS und CSS nur über Front-Matter-Flags (`blog_search`, `fractal_panels`, `mathjax`, `toc`, `skill_graph.enabled`), nie über `page.url ==`. Bestand: R-61.
-- **LIQ-5** [MUSS · Soll · CI-P3] Entwickler-Notizen als `{% comment %}`, nicht als `<!-- -->` (die gehen an jeden Besucher). Bestand: R-61.
+- **LIQ-3** [MUSS · Soll · Review] Interne URLs immer `{{ '/pfad/' | relative_url }}` mit führendem Slash. Kein `{{ site.baseurl }}/…`-Verketten (Ausnahme: Speculation-Rules-Pattern).
+- **LIQ-4** [MUSS · Soll · Review] Seitenspezifisches JS und CSS nur über Front-Matter-Flags (`blog_search`, `fractal_panels`, `mathjax`, `toc`, `skill_graph.enabled`, `header.crt_power`, `neon_name`, `site_schema`, `person_schema`, `noindex`), nie über `page.url ==`. Erlaubt bleibt der Vergleich für die Aktiv-Markierung im Menü (`masthead.html`), er lädt kein JS oder CSS.
+- **LIQ-5** [MUSS · Soll · CI-P3] Entwickler-Notizen als `{% comment %}`, nicht als `<!-- -->` (die gehen an jeden Besucher). Ausnahmen: die Konfigurationswarnung in `fractal/panel.html` (soll im Quelltext sichtbar sein) und Kommentare aus nicht überschriebenen Theme-Includes (Lizenzkopf aus `copyright.html`, Platzhalter aus `footer/custom.html`, Autorenprofil). Ein CI-Grep nimmt sie aus.
 - **LIQ-6** [SOLL · Soll · Review] 2 Leerzeichen, Liquid-Ausgaben nicht über Zeilen umbrechen, Variablen englisch in snake_case, Liquid-Strings in einfachen, HTML-Attribute in doppelten Anführungszeichen, `{%- -%}` nur paarweise in Attribut-, Listen- und `<head>`-Kontexten.
 - **LIQ-7** [MUSS · Soll · Review] Kein Markup im `title` (Name im DOM korrekt schreiben, Effekte per CSS oder `aria-hidden`-Spans).
 
@@ -1061,13 +1061,13 @@ Dokumentation (Diátaxis):
 - **DOC-3** [MUSS · Soll · Review] Ändert ein Commit dokumentiertes Verhalten, Werte, das Wired-Set, Tests oder CI, ändert er Doku und Tests mit.
 - **DOC-4** [SOLL · Soll · Review] Feature-Dokus nach Vorlage: Zweck in einem Satz, „Stand: Monat Jahr“, Dateien-Tabelle, Verhaltens-Garantien, Verifikation nach Änderungen, bekannte Grenzen.
 - **DOC-5** [SOLL · Soll · Review] Feature-Dokus nach `docs/` in kebab-case ohne README-Präfix (`docs/features/spa-nav.md`), Entscheidungen als ADR in `docs/entscheidungen/NNNN-titel.md` (Nygard: Kontext, Entscheidung, Konsequenzen). Verweise im Code im selben Commit umstellen. Bestand: R-69.
-- **DOC-6** [MUSS · Soll · CI-P3] Doku anredefrei, nie „Sie“. Deutsche Anführungszeichen, Code-Fences mit Sprache, Typografie nach Abschnitt 8. Bestand: R-69.
-- **DOC-7** [MUSS · Soll · CI-P2] Je Werkzeug genau eine Versionsquelle: `.ruby-version`, `Gemfile.lock`, `.nvmrc` (neu), `package-lock.json`. Doku und Workflow nennen die Datei, nicht die Nummer (Workflow: `node-version-file`, `cache-version` aus der Versionsdatei abgeleitet). Bestand: R-69.
+- **DOC-6** [MUSS · Soll · CI-P3] Doku anredefrei, nie „Sie“. Deutsche Anführungszeichen, Code-Fences mit Sprache, Typografie nach Abschnitt 8.
+- **DOC-7** [MUSS · Soll · CI-P2] Je Werkzeug genau eine Versionsquelle: `.ruby-version`, `Gemfile.lock`, `.nvmrc`, `package-lock.json`. Doku und Workflow nennen die Datei, nicht die Nummer (Workflow: `node-version-file`, `cache-version` aus der Versionsdatei abgeleitet). Bestand: R-69.
 
 ### 13.1 Lizenzen und Fremdcode
 
-- **LIZ-1** [MUSS · Soll · Review] Fremdcode trägt im Dateikopf Herkunft und Lizenz (Beispiel `greedy-navigation.js`: „nach lukejacksonn/GreedyNav“, Lizenz fehlt, R-28). Vendor-Dateien behalten ihren Lizenzkopf.
-- **LIZ-2** [MUSS · Soll · Review] `THIRD-PARTY-NOTICES.md` (zu bauen) listet Theme, Vendor-Bibliotheken (MathJax, noUiSlider, Tom Select, Gumshoe) und Fonts (Font Awesome Free, NewCM, Ubuntu mit Ubuntu Font Licence 1.0) mit Lizenz. Bis dahin stehen sie im README-Abschnitt „Komponenten Dritter“, vollständig mit Version bis auf GreedyNav (R-28).
+- **LIZ-1** [MUSS · Soll · Review] Fremdcode trägt im Dateikopf Herkunft und Lizenz (Beispiel `greedy-navigation.js`: GreedyNav.js, © 2015 Luke Jackson, MIT). Vendor-Dateien behalten ihren Lizenzkopf.
+- **LIZ-2** [MUSS · Soll · Review] `THIRD-PARTY-NOTICES.md` listet Theme, Vendor-Bibliotheken (MathJax, noUiSlider, Tom Select, Gumshoe) und Fonts (Font Awesome Free, NewCM, Ubuntu mit Ubuntu Font Licence 1.0) mit Lizenz. Jede Angabe nennt ihren Beleg, nur indirekt belegte sind markiert. Der README-Abschnitt „Komponenten Dritter“ verweist auf die Datei.
 - **Entschieden (1. 10. 2026):** `LICENSE` (MIT) für den Code, CC BY 4.0 für die Wissens-Texte (Beiträge, Fraktal-Erklärungen, Downloads). Die Aufteilung und Ausnahmen (Hintergrundbild mit Adobe-Stock-Lizenz) stehen im README-Abschnitt „Lizenz“.
 
 ---
@@ -1196,7 +1196,6 @@ Kein SemVer (eine Website hat keine öffentliche API). Ein `CHANGELOG.md` im For
 | 2 | Stylelint `selector-max-specificity: "0,4,2"` | SCSS-9 |
 | 2 | Stylelint `selector-class-pattern` für BEM plus `is-`/`has-` | SCSS-5 |
 | 2 | Stylelint `scss/dollar-variable-pattern` kebab-case | SCSS-7 |
-| 2 | Workflow `node-version-file: .nvmrc`, `cache-version` aus `.ruby-version` | DOC-7 |
 | 2 | Token-Kontrast-Skript (Paare Vordergrund, Grund, Mindestwert, Alpha komponiert) | FARB-2, 6.4 |
 | 2 | Critical-CSS-Sync-Check (Inline-Block gegen Tokens, verbietet `body{font-family}`, `body{color}` und jedes `html{font-size}` außer `100%`), dazu `style`-Attribute in Templates | CRIT-1, CRIT-3 |
 | 2 | ESLint-Regeln zusätzlich zur bestehenden Config (16.1): `strict`, `eqeqeq`, `no-console` mit warn/error, `no-restricted-properties` gegen `navigator.userAgent`, `no-eval`, `no-implied-eval`, `no-new-func`, `no-script-url` | JS-3, JS-11, JS-14, SEC-1 |
@@ -1241,9 +1240,7 @@ Stand: Abgleich vom 2. 10. 2026 (Kopf). Ein Eintrag verschwindet, sobald der C
 |---|---|---|---|---|
 | R-10 | Z-1 | Fixierte Overlays im Stacking-Kontext von `#main`: Sticky-TOC, Back-to-Top (`_layouts/single.html`), Blog-Hinweis. (Der schwebende Skill-Graph-Knopf ist seit 2. 10. entfallen.) | B-LAY-05 | Owner (am `<body>` mounten oder `$intro-transition: none`) |
 | R-11 | MO-1 | Theme-`$global-transition` (`all 0.2s ease-in-out`) ist nicht überschrieben, das Theme-CSS enthält weiter `transition: all`. Im eigenen SCSS keins mehr | B-MO-01 | Code (eigener Durchgang, ändert Theme-CSS an vielen Stellen, Vorher/Nachher) |
-| R-20 | 6.5, SCSS-16 | Kommentar „HART aktiviert — ignoriert reduced-motion“ am Power-Hinweis in `hero-crt.js` (`schedulePowerHint`) und `components/_hero.scss` (`&--hint`) ist falsch: der Kill-Switch nimmt den Puls unter `reduce` heraus. Die Endlos-Animationen selbst sind eine Owner-Ausnahme (6.5), kein Registerfall | B-A11Y-11, B-MC-01 | Code (Kommentar) |
 | R-21 | TYP-7 | Laufweiten außerhalb der Skala stehen als `$tracking-legacy-*` und `$fp-tracking-legacy-*` mit Ziel in `variables/_typography.scss` (seit 2. 10. keine Literale mehr, CI: `scale-guardrail.sh` Kategorie `tracking`). Offen nur die Angleichung an die Skala, sichtbar | B-T6 | Owner |
-| R-28 | LIZ-1, LIZ-2 | `greedy-navigation.js` nennt GreedyNav als Vorlage ohne Lizenz, GreedyNav fehlt in „Komponenten Dritter“. `THIRD-PARTY-NOTICES.md` nicht gebaut (Liste im README). `LICENSE` existiert seit 1. 10. | B-D25 | Code |
 | R-32 | OVL-4, A11Y-2 | Drawer: modal (Scrim, Scroll-Sperre, `inert`), aber ohne `role="dialog"` und `aria-modal`. Fokus wandert nur beim Öffnen per Tastatur hinein, weil mobil `:focus` die Links magenta färbt | B-A11Y-05 | Owner |
 | R-33 | 2.5.7 | Fraktal-Pan nur per Ziehen (rechte Maustaste, Leertaste), Zwei-Finger-Geste oder Pfeiltasten am fokussierten Canvas. Für Zeiger fehlt eine Alternative ohne Ziehen | B-A11Y-09 | Owner (sichtbare Pan-Buttons?) |
 | R-34 | SCSS-4 | Seit der `@use`-Migration erweitert das Theme-`@extend` (`.comment__date { @extend .page__meta }`) nur noch Theme-Regeln. Die eigenen `.page__meta`-Regeln gelten nicht für `.comment__date`. Kommentare sind aus, das Element kommt auf keiner Seite vor | – | Owner-Freigabe 1. 10. 2026, beim Einschalten von Kommentaren nachziehen |
@@ -1251,27 +1248,23 @@ Stand: Abgleich vom 2. 10. 2026 (Kopf). Ein Eintrag verschwindet, sobald der C
 | R-50 | SCSS-10 | Minimal Mistakes 4.28.1 setzt `.page__content :first-child { margin-top: 0 }` (PR #5103, gemeint war nur das erste Inhaltselement neben der TOC). Die Regel trifft jedes erste Kind in der Tiefe. Gegenmittel mit Spiegelwerten in `theme-overrides/_first-child.scss`, H2-Probe in `assets/css/styleguide.scss`. Wer einen gespiegelten Wert ändert, zieht ihn dort nach | – | upstream melden, Datei entfernen, sobald das Theme die Regel auf direkte Kinder begrenzt |
 | R-51 | 3.1.2 (6.1) | Minimal Mistakes 4.28.1 schreibt englische `aria-label` fest ins Markup. Deutsch überschrieben: `skip-links.html`, `post_pagination.html`, Masthead. Offen: `paginator-v2.html` („Pagination“), erscheint erst ab dem siebten Beitrag (`per_page: 6`) | – | Owner: beim ersten Blättern überschreiben oder upstream `ui-text`-Keys anregen |
 | R-52 | FARB-2, FARB-3, FARB-4 (1.4.11) | Hamburger-Balken (`_masthead.scss`) und Back-to-Top (Rand, Icon, `_back-to-top.scss`) nur in `$link-color-subtle`, 2,50 bis 2,63:1 als UI-Grafik (6.4). Platzhalter im Fraktal-Preset-Feld `$white-a50` (`fractal-panel/_controls.scss`, 5,0:1, unter `$fg-subtle`) | B-F06 | Owner (sichtbar) |
-| R-53 | FARB-8 | Farbwerte in JS: Fallbacks in `neon-orbit-toggle.js` in `rgba(…, 0.85)`-Notation, Paletten in `fractal-renderer.js` teils mit großem Hex (Daten nach JS-9, nur die Notation zählt), Fehler-Fallback `backgroundColor = '#1a1a1a'` in `hero-crt.js`. Dazu SCSS-7: das Keyframe `fade-out` in `base/_animations.scss` ist ungenutzt | B-F19 | Code |
 | R-54 | TYP-3, TYP-8 | `$fs-label-xs` (10,9 px) für funktionalen Text: Button-Text der Fraktal-Toolbar mobil (`fractal-panel/_toolbar.scss`), Copyright-Zeile im Footer. `font-weight: bold` in `_about.scss`, `fractal-panel/_states.scss` (2×) und `_cv.scss` | – | TYP-3: Owner (sichtbar), TYP-8: Code (`bold` = `700`), `_cv.scss`: Track |
 | R-55 | BP-3, BP-4 | Von 59 `:hover`-Stellen stehen 6 in `@media (hover: hover)`. 40 `down()` gegen 9 `up()` | – | Code bei Berührung (unter BP-6) |
 | R-56 | KOMP-2, KOMP-4 | `:focus` als Stil-Selektor in `btn-role-primary` und `btn-role-outline` (`abstracts/_mixins.scss`), `_back-to-top.scss`, `_masthead.scss` (2×), `fractal-panel/_controls.scss` (2×). Mixin `focus-ring()` fehlt | – | Code mit Vorher/Nachher (der Fokusstil nach Mausklick entfällt sichtbar) |
 | R-57 | KOMP-5, MO-6 | `animationend` ohne Filter auf `animationName`: Power-Hinweis in `hero-crt.js`, Graph-Hinweise in `skill-graph-sheet.js` | – | Code, Track |
 | R-58 | SPA-1, SPA-2, BEW-1a | Handgerollter `spa:load`-Kontrakt statt `spaModule`: `toc.js`, `back-to-top.js`, `hero-crt.js`, `author-follow.js`, `neon-orbit-toggle.js`, `blog-search.js`, `mathjax-typeset.js`. Lokale Reduced-Motion-Abfragen statt `AuflinieUtils.prefersReducedMotion` in `spa-nav.js`, `greedy-navigation.js` und den Track-Dateien | B-JS-03 | Code bei Berührung, Track |
-| R-59 | JS-11, JS-14, JS-16, TYPO-2 | UA-Sniffing (`isMobile` über `navigator.userAgent`) in `fractal-renderer.js`. `console`-Meldungen ohne Dateinamen-Präfix in `fractal-renderer.js` (4×) und `sw-register.js`. Storage-Key `auflinieHeroCrtPowerHinted` (sessionStorage, `hero-crt.js`) ohne Schema `auflinie:<modul>:<zweck>`. Sichtbarer Canvas-Text „Web Worker nicht verfuegbar.“ in `fractal-renderer.js` | – | Code |
 | R-60 | HTML-1, HTML-2, SEITE-3, 4.1.2 | `<button>` ohne `type` in `_includes/back-to-top.html` und `offline.html`. `<div class="navicon">` im Burger-Button (kein Phrasing Content). TOC-Titel als `<h4>` in der Sidebar (`toc-wrapper.html`), bei `toc_collapse` innerhalb eines `<button>`. `role="region"` ohne Überschrift im Hero von `/` | – | Code (TOC-Titel und Navicon: Optik prüfen) |
-| R-61 | LIQ-3, LIQ-4, LIQ-5 | `{{ site.baseurl }}/…` verkettet in `index.html`, `404.html`, `_pages/about.md`, `head/custom.html`. `page.url ==` in `page__hero.html`, `seo.html`, `scripts.html`, `head/custom.html`. HTML-Kommentare `<!-- -->` in zehn Includes und Layouts (u. a. `masthead.html`, `scripts.html`, `single.html`, `default.html`), sie stehen im ausgelieferten HTML | – | Code |
-| R-62 | A11Y-2, A11Y-3, A11Y-4, A11Y-6, ICON-3 | Autor-Folgen-Dropdown (`author-follow.js`) ohne `aria-controls`, Escape gibt den Fokus nicht an den Auslöser zurück. Icons ohne `aria-hidden` in `toc-wrapper.html` (2×) und `_pages/posts.md`. `.sr-only` in `archive-single.html`. Forced-Colors-Block fehlt | – | Code |
-| R-63 | SEC-2 | JSON-LD in `head/custom.html`: Werte als `"{{ … \| escape }}"` in Anführungszeichen statt `jsonify`, und `jsonify` ohne `replace: '</', '<\/'` | I8 (Security-Bericht) | Code |
 | R-64 | CRIT-3, YAML-2, MD-1 | `style`-Attribute in `vt-antenne-defs.html`, `page__hero.html` (Theme-Option `overlay_color`) und `_data/mandelbrot.yml`. `>-`-Folding und `<br>` in `_data/cv_content.yml` und `_data/mandelbrot.yml`. Zwei Code-Fences ohne Sprache in „Erstellung dieser Website“ | – | Code, Inhalt |
 | R-65 | TYPO-1, TYPO-2, COPY-2, COPY-4, FACH-1 | Entities in `footer.html` (`&copy;`, `&ouml;`), `fractal/panel.html` (`&auml;`, `&middot;`, Pfeile) und `fractal/canvas.html`. „Berechne…“ ohne Leerzeichen vor der Auslassung. Note „Sehr Gut“ groß (`cv_content.yml`). Leerzustand der Blog-Suche ohne Hinweis, was hilft. Fachaussagen in `_data/mandelbrot.yml` ohne Quellenkommentar (z. B. Hausdorff-Dimension, Shishikura 1998) | – | Inhalt (Owner liest Texte gegen) |
-| R-66 | SCSS-14, SCSS-18 | `/* */`-Dateiköpfe in `_hero.scss` und `_cv.scss`. `stylelint-disable` ohne Begründung: pauschal in `base/_icons.scss`, in `_view-transition.scss` und `abstracts/_mixins.scss` | – | Code, `_cv.scss`: Track |
+| R-66 | SCSS-14 | `/* */`-Dateikopf in `_cv.scss` | – | Track |
 | R-67 | SEO-2, SEO-3, SEITE-6 | Excerpts unter 70 Zeichen: Über mich (59), Archiv (44), Blog (69). Site-Vorschaubild `WebSite_Logo_3.png` ist 600 × 600 px statt 1200 × 630 px (Motiv offen). `blog_notice` „Sommerpause“ auf `/posts/` ohne Ablaufdatum, das Include kennt keins | – | Owner |
-| R-68 | SEC-8a, SEC-8b, SEC-12 | `assets/vendor/SHA384SUMS` fehlt. `Gemfile.lock` ohne `CHECKSUMS`. Kein `robots`-Meta, `404.html` und `offline.html` ohne `noindex` | – | Code |
-| R-69 | TON-2, DOC-5, DOC-6, DOC-7 | „Sie“-Anrede in `README.md` und `README_DEV.md`. Feature-Dokus mit README-Präfix im Root bzw. in `docs/` (`README-spa-nav.md`, `README-tv-umschalt.md`, `docs/README-skill-feature.md`). `.nvmrc` fehlt, der Workflow nennt `node-version: "22"` und `cache-version` als Zahl | – | Code (Doku), Skill-Feature-Doku: Track |
+| R-69 | DOC-5, DOC-7 | Skill-Feature-Doku noch als `docs/README-skill-feature.md`. Zweite Versionsquellen: `.devcontainer/devcontainer.json` (Ruby als Zahl, Node `lts`) und `post-create.sh` (Bundler-Version), dazu ist `.devcontainer/README.md` veraltet (rbenv, Kompilieren) | – | Code (Dev Container, eigene Runde), Skill-Feature-Doku: Track |
 | R-70 | LINK-3 | `target="_blank"` ohne Hinweis auf den neuen Tab: GitHub-Links in `_pages/about.md` und `_pages/posts.md`, `archive-single.html`, `single.html` (`page.link`), Beispiel im Beitrag „Blogbeitrag erstellen“ | – | Owner (gleicher Tab oder Hinweis) |
 | R-71 | NAME-1 | `assets/images/Logo.svg`, `assets/images/WebSite_Logo_3.png` (4.1) | – | Owner |
 | R-72 | FARB-10 | `$background-color` und `$text-color` kommen weiter aus dem Dark-Skin, gespiegelt in `$page-bg` und `$body-text-color` | B-F25 | Code (Theme-Ableitungen vorher und nachher vergleichen) |
 | R-73 | IMG-7 | `assets/images/QUELLEN.md` fehlt. Die Lizenz des Hintergrundbilds steht nur im README-Abschnitt „Lizenz“ | – | Owner (Quellen nennen), dann Code |
+| R-74 | A11Y-2 | Autor-Folgen-Dropdown (`author-follow.js`): beim Öffnen wandert der Fokus nicht in die Liste. Die Liste folgt im DOM direkt auf den Button, Tab erreicht sie sofort | – | Code |
+| R-75 | SEC-8b | Ungenutzte Theme-Skripte landen in `_site/assets/js/` (`main.min.js` mit jQuery, `vendor/jquery`, `lunr/`, `plugins/`), keine Seite lädt sie. Kandidaten für `exclude`, vorher Service-Worker-Precache und SPA-Reconcile prüfen | – | Code |
 
 ---
 
@@ -1372,3 +1365,4 @@ Prozess und Doku:
 | 2026-10-01 | Skalen Stufe B: Literale auf die Skalen gerundet (höchstens 4 px), Fraktal-Halbschritte, Ring- und Glow-Familie, lokale Ebenen benannt, Guardrails zählen lokale Variablen und prüfen Block-Marker, Templates und berechnete Breakpoints, Negativtests `tests/guardrails/`, R-35 auf em-Rest. |
 | 2026-10-02 | Abgleich mit dem Code (Stand `75c23c0`), Status vorher → nachher: Ist 100 → 129, Soll 174 → 144, Offen 3 → 4. Auf Ist: GOV-3, GOV-4, GOV-5, GOV-7, GOV-8, DES-8, MO-2, MO-7, SEO-4, BEW-2, BEW-4, TON-1, TON-9, COPY-5, TYPO-3, SCSS-7, SCSS-8, CRIT-1, CRIT-2, JS-2, JS-3, SPA-6, SEC-5a, SEC-5c, SEC-10, DOC-1, GIT-1, GIT-2, GIT-3, GIT-7. Zurück auf Soll, weil der Code sie nicht erfüllt: KOMP-5. Auf Offen: SEC-10a (Datenschutzerklärung), dazu die Owner-Entscheidung „kein Impressum“ (11.10). Übernommen: Grundschrift `html{font-size:100%}` (CRIT-1, 6.1), CRT/Neon endlos als entschiedene Ausnahme (6.5), Lizenz entschieden (13.1), Hinweis zur Skill-Graph-Überarbeitung (4.4). Register 36 → 34 Einträge: 24 entfernt, davon 21 vom Code erfüllt (R-1, R-3 bis R-6, R-8, R-9, R-12 bis R-15, R-17 bis R-19, R-22 bis R-26, R-29, R-31), dazu R-2 (Owner-Ausnahme, steht in KOMP-3), R-7 (Rest ist eine Palettenfrage, 3.1) und R-27 (bewusst viewport-fix, 6.1). R-10, R-16, R-20, R-21, R-28 und R-35 auf den Stand gebracht. Neu R-52 bis R-73 für Abweichungen, die der Abgleich gefunden hat. Hinweis: R-35 war am 1. 10. doppelt vergeben (zuerst tote Kaskaden-Werte, dann Skalen-Rest), die Nummer bleibt beim Skalen-Rest. 16.1 um Playwright, Styleguide-Gate und SEC-5c ergänzt, 16.2 um Erledigtes gekürzt. |
 | 2026-10-02 | Skill-Graph: OVL-2 (Mausrad zoomt auch im Graphen, Pinch, Zoom-Knöpfe), OVL-3 (Esc-Staffelung in der Capture-Phase), `$graph-sheet-width` neu, `$z-graph-float`, `$glow-hint*` und `$shadow-float` entfallen mit Aktivieren-Schritt und schwebendem Öffner, SEC-1-Ausnahme `skill-graph-sheet.js` entfällt, R-10 und 16.2 nachgeführt. |
+| 2026-10-02 | Register-Abbau (Weg „Code“): erledigt und entfernt R-20, R-28, R-53, R-59, R-61, R-62, R-63, R-68. R-66 auf den `_cv.scss`-Rest, R-69 auf Skill-Feature-Doku und Dev Container gekürzt. Neu R-74 (Fokus beim Öffnen des Autor-Dropdowns) und R-75 (ungenutzte Theme-Skripte im Build). LIQ-4 um die neuen Flags ergänzt, LIQ-5 um die Ausnahmen, SEC-8a um Prüf- und Erzeugungsbefehl, SEC-8d und LIZ-2 auf `THIRD-PARTY-NOTICES.md`, Feature-Dokus unter `docs/features/`. |
