@@ -92,6 +92,12 @@ $hero-z-scroll-cue: 101; // Scroll-Hinweis über der Caption
         z-index: $hero-z-placeholder;
       }
 
+      // Bild nicht ladbar (hero-crt.js setzt is-image-failed): dunkler Grund
+      // statt leerer Fläche
+      &.is-image-failed {
+        background-color: $background-dark;
+      }
+
       // Fade-In-Animation, wenn das Bild geladen ist
       &.loaded {
         &::before {

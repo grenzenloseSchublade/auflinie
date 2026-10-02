@@ -378,11 +378,11 @@
     const mode = (element.getAttribute('data-crt-intensity') || 'stark').toString().trim().toLowerCase();
     if (mode === 'stark') {
       return (
-        'linear-gradient(180deg, rgba(32,30,48,0.38) 0%, rgba(190,160,175,0.07) 38%, rgba(150,175,195,0.07) 72%, rgba(25,25,35,0.14) 100%), '
+        'linear-gradient(180deg, rgb(32 30 48 / 38%) 0%, rgb(190 160 175 / 7%) 38%, rgb(150 175 195 / 7%) 72%, rgb(25 25 35 / 14%) 100%), '
       );
     }
     return (
-      'linear-gradient(180deg, rgba(28,26,42,0.22) 0%, rgba(180,150,170,0.04) 42%, rgba(145,170,188,0.045) 100%), '
+      'linear-gradient(180deg, rgb(28 26 42 / 22%) 0%, rgb(180 150 170 / 4%) 42%, rgb(145 170 188 / 4.5%) 100%), '
     );
   }
 
@@ -413,8 +413,9 @@
           })
           .catch(error => {
             console.error(error);
-            // Fallback-Hintergrund anwenden, wenn das Bild nicht geladen werden kann
-            element.style.backgroundColor = '#1a1a1a';
+            // Fallback-Hintergrund, wenn das Bild nicht geladen werden kann.
+            // Die Farbe kommt aus _hero.scss ($background-dark, JS-9).
+            element.classList.add('is-image-failed');
           });
       }
     });

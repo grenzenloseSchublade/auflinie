@@ -32,7 +32,7 @@ function runFractalChunkJob(data, config) {
     const maxIterations = Number.isFinite(data.maxIterations) ? data.maxIterations : 200;
     const colorPalette = Array.isArray(data.colorPalette) && data.colorPalette.length >= 2
         ? data.colorPalette
-        : ['#000764', '#206BCB', '#EDFFFF', '#FFB847', '#FB0C00'];
+        : ['#000764', '#206bcb', '#edffff', '#ffb847', '#fb0c00'];
 
     const imageData = new ImageData(width, endY - startY);
     const iterationChunk = includeIterationData

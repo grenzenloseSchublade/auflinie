@@ -59,27 +59,27 @@
       );
       style.setProperty(
         "--neon-umlaut-dot-glow-strong-before",
-        getVar(scope, "--neon-umlaut-accent-glow-before") || "rgba(0, 255, 255, 0.85)"
+        getVar(scope, "--neon-umlaut-accent-glow-before") || "rgb(0 255 255 / 85%)"
       );
       style.setProperty(
         "--neon-umlaut-dot-glow-mid-before",
-        getVar(scope, "--neon-umlaut-accent-glow-mid-before") || "rgba(0, 255, 255, 0.7)"
+        getVar(scope, "--neon-umlaut-accent-glow-mid-before") || "rgb(0 255 255 / 70%)"
       );
       style.setProperty(
         "--neon-umlaut-dot-glow-soft-before",
-        getVar(scope, "--neon-umlaut-accent-glow-soft-before") || "rgba(0, 255, 255, 0.5)"
+        getVar(scope, "--neon-umlaut-accent-glow-soft-before") || "rgb(0 255 255 / 50%)"
       );
       style.setProperty(
         "--neon-umlaut-dot-glow-strong-after",
-        getVar(scope, "--neon-umlaut-accent-glow-after") || "rgba(255, 0, 204, 0.85)"
+        getVar(scope, "--neon-umlaut-accent-glow-after") || "rgb(255 0 204 / 85%)"
       );
       style.setProperty(
         "--neon-umlaut-dot-glow-mid-after",
-        getVar(scope, "--neon-umlaut-accent-glow-mid-after") || "rgba(255, 0, 204, 0.7)"
+        getVar(scope, "--neon-umlaut-accent-glow-mid-after") || "rgb(255 0 204 / 70%)"
       );
       style.setProperty(
         "--neon-umlaut-dot-glow-soft-after",
-        getVar(scope, "--neon-umlaut-accent-glow-soft-after") || "rgba(255, 0, 204, 0.5)"
+        getVar(scope, "--neon-umlaut-accent-glow-soft-after") || "rgb(255 0 204 / 50%)"
       );
       return;
     }

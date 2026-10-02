@@ -21,19 +21,6 @@
   }
 }
 
-/// Fade-Out Animation
-/// @example
-///   animation: fade-out 0.3s ease-out forwards;
-@keyframes fade-out {
-  from {
-    opacity: 1;
-  }
-
-  to {
-    opacity: 0;
-  }
-}
-
 /// Feines Flimmern nur auf dem Phosphor-Punkt-Raster (::after), nicht global auf dem Layer
 /// Weniger Keyframes als früher: weniger filter-Neuberechnungen pro Umlauf, Look bleibt subtil
 @keyframes hero-crt-phosphor-flicker {
