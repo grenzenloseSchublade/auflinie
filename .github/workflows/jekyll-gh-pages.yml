@@ -65,7 +65,7 @@ jobs:
         uses: ruby/setup-ruby@14594264cd68ce8a2345dd349bc3d138a4ef85c8 # v1.327.0
         with:
           bundler-cache: true
-          cache-version: ruby-3.4.8-bundler-4
+          cache-version: ruby-3.4.11-bundler-4
       - name: Setup Pages
         uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6
       - name: Build site

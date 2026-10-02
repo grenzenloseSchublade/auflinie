@@ -15,7 +15,7 @@ Diese Website kombiniert Jekyll mit dem Minimal Mistakes Theme, um eine ansprech
 ## Installation und Einrichtung
 
 Die Site nutzt **Jekyll 4** mit dart-sass. Die Ruby-Version ist in `.ruby-version` gepinnt
-(aktuell 3.4.8) und mit der CI abgestimmt. Am einfachsten ist der mitgelieferte Dev Container
+(aktuell 3.4.11) und mit der CI abgestimmt. Am einfachsten ist der mitgelieferte Dev Container
 (siehe `.devcontainer/`), der Ruby, Bundler und alle Gems automatisch einrichtet.
 
 Manuelles Setup:

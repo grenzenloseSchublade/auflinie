@@ -33,7 +33,7 @@ Container wie die CI (Version = `@playwright/test` in `package.json`):
 
 ```bash
 # 1) Site inkl. Styleguide-Ansicht bauen (kein lokales Ruby: Docker)
-docker run --rm --user "$(id -u):$(id -g)" -e HOME=/tmp -v "$PWD":/srv -w /srv ruby:3.4.8-slim \
+docker run --rm --user "$(id -u):$(id -g)" -e HOME=/tmp -v "$PWD":/srv -w /srv ruby:3.4.11-slim \
   bash -c "bundle config set --local path vendor/bundle >/dev/null; JEKYLL_ENV=production bundle exec jekyll build --unpublished -d _site_review"
 
 # 2) Tests im Playwright-Container (startet den Server tests/serve.js selbst)

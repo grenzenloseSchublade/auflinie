@@ -117,7 +117,7 @@ Am Ende sprach für Minimal Mistakes die Mischung aus Funktionsumfang, Qualität
 
 Eine gute Entwicklungsumgebung spart später viel Zeit. Die gewählte Lösung verbindet Container mit bewährten Werkzeugen.
 
-Grundlage sind feste Versionen. Die Datei `.ruby-version` legt Ruby 3.4.8 fest, damit lokale Umgebung, Dev Container und CI identisch bauen. Mehrere Ruby-Versionen ließen sich lokal mit rbenv parallel verwalten – im Alltag übernehmen das aber der Dev Container oder ein Docker-Container mit genau dieser Ruby-Version.
+Grundlage sind feste Versionen. Die Datei `.ruby-version` legt Ruby 3.4.11 fest, damit lokale Umgebung, Dev Container und CI identisch bauen. Mehrere Ruby-Versionen ließen sich lokal mit rbenv parallel verwalten – im Alltag übernehmen das aber der Dev Container oder ein Docker-Container mit genau dieser Ruby-Version.
 
 Die Ruby-Abhängigkeiten verwaltet Bundler. Die `Gemfile.lock` hält die genauen Versionen fest und macht Builds reproduzierbar. Die Testwerkzeuge, etwa html-proofer, stehen in einer eigenen Gruppe im `Gemfile`.
 
@@ -132,7 +132,7 @@ Das Einrichten ist kurz: Repository klonen, ins Verzeichnis wechseln, `bundle in
   "name": "Jekyll & Node",
   "image": "mcr.microsoft.com/devcontainers/python:3.11",
   "features": {
-    "ghcr.io/devcontainers/features/ruby:1": { "version": "3.4.8" },
+    "ghcr.io/devcontainers/features/ruby:1": { "version": "3.4.11" },
     "ghcr.io/devcontainers/features/node:1": { "version": "lts" },
     "ghcr.io/devcontainers/features/github-cli:1": {}
   },
@@ -151,7 +151,7 @@ Das Einrichten ist kurz: Repository klonen, ins Verzeichnis wechseln, `bundle in
 }
 ```
 
-Technisch steht die Umgebung auf Ruby 3.4.8, Bundler und der `Gemfile.lock`. Jekyll 4.4 bringt über jekyll-sass-converter 3 das aktuelle Dart Sass mit, Liquid setzt Layouts und Inhalte zusammen. Der Parser kramdown übersetzt Markdown und reicht Formeln an MathJax weiter, was gerade bei technischen Inhalten hilft.
+Technisch steht die Umgebung auf Ruby 3.4.11, Bundler und der `Gemfile.lock`. Jekyll 4.4 bringt über jekyll-sass-converter 3 das aktuelle Dart Sass mit, Liquid setzt Layouts und Inhalte zusammen. Der Parser kramdown übersetzt Markdown und reicht Formeln an MathJax weiter, was gerade bei technischen Inhalten hilft.
 
 Im Alltag helfen ein paar eingebaute Werkzeuge. LiveReload lädt den Browser bei jeder Änderung neu, Jekyll kompiliert SCSS beim Bauen zu komprimiertem CSS. Eine eigene Asset-Pipeline gibt es nicht: JavaScript wird weder gebündelt noch minimiert, Bilder werden von Hand optimiert.
 
@@ -249,7 +249,7 @@ auflinie/
 │   ├── webfonts/                  # Font-Awesome-Subset (pyftsubset, woff2)
 │   ├── images/                    # background.jpg, mandelbrot-preview.jpg, Logo.svg
 │   └── downloads/post-template.md # Blog-Template zum Download
-├── .devcontainer/                 # Dev-Container (python:3.11 + Ruby 3.4.8 Feature)
+├── .devcontainer/                 # Dev-Container (python:3.11 + Ruby 3.4.11 Feature)
 ├── .github/workflows/             # CI: Lint, Build, Style-Guide-Review, Deploy
 ├── scripts/                       # Prüfskripte (Guardrails, CSP-Prüfung)
 ├── tests/                         # Playwright-Tests und Style-Guide-Review
