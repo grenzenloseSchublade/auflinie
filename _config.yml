@@ -187,6 +187,7 @@ exclude:
   - vendor/cache/
   - vendor/gems/
   - vendor/ruby/
+  - assets/vendor/SHA384SUMS # Prüfsummen der Vendor-Dateien (STYLEGUIDE SEC-8a), nur für die Prüfung
   - "*.sublime-project"
   - "*.sublime-workspace"
   - assets/js/_main.js
