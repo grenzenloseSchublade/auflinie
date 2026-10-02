@@ -1,0 +1,3 @@
+/* Nur für toHaveScreenshot (tests/visual/styleguide.spec.js, stylePath):
+   fest positionierte Elemente, deren Lage von der Scrollposition abhängt. */
+.back-to-top { visibility: hidden !important; }

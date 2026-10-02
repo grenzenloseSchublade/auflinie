@@ -115,8 +115,3 @@ $sg-font-sizes: (
 // solchen Elementen den oberen Abstand (Register R-50), die Probe behält ihn
 // wie bisher: Theme-Basis h1–h6 `margin: 2em 0 0.5em`, (0,3,1) > (0,2,0)
 .page__content [data-sg-section] > h2:first-child { margin-top: 2em; }
-
-// Back-to-Top schwebt fest im Viewport und lag je nach Scrollposition über
-// einem Abschnitt im Screenshot-Vergleich (seit dem Skill-Graph-Abschnitt
-// über „panels“). Hier ohne Belang, also aus.
-body .back-to-top { display: none; }

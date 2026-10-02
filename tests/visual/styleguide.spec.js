@@ -8,6 +8,10 @@
 const { test, expect } = require('@playwright/test');
 
 const URL = '/auflinie/styleguide/';
+// Nur während der Aufnahme: Back-to-Top schwebt fest im Viewport und läge je
+// nach Scrollposition über einem Abschnitt. Die Seite selbst bleibt
+// unverändert, die Komponente ist dort weiter zu sehen.
+const SHOT = { stylePath: require('path').join(__dirname, 'screenshot.css') };
 
 async function open(page) {
   await page.goto(URL, { waitUntil: 'load' });
@@ -20,7 +24,7 @@ test('Styleguide-Abschnitte unverändert', async ({ page }) => {
     (els) => els.map((el) => el.getAttribute('data-sg-section')));
   expect(names.length).toBeGreaterThan(0);
   for (const name of names) {
-    await expect(page.locator(`[data-sg-section="${name}"]`)).toHaveScreenshot(`${name}.png`);
+    await expect(page.locator(`[data-sg-section="${name}"]`)).toHaveScreenshot(`${name}.png`, SHOT);
   }
 });
 
@@ -40,7 +44,7 @@ test('Komponenten-Zustände unverändert', async ({ page }) => {
     const states = (await el.getAttribute('data-sg-states')).split(',').map((s) => s.trim());
     for (const state of states) {
       await cdp.send('CSS.forcePseudoState', { nodeId: nodeIds[i], forcedPseudoClasses: state === 'focus-visible' ? ['focus', 'focus-visible'] : [state] });
-      await expect(el).toHaveScreenshot(`${section}-${i}-${state}.png`);
+      await expect(el).toHaveScreenshot(`${section}-${i}-${state}.png`, SHOT);
       await cdp.send('CSS.forcePseudoState', { nodeId: nodeIds[i], forcedPseudoClasses: [] });
     }
   }
