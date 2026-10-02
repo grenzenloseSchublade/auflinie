@@ -134,3 +134,30 @@ textarea:focus-visible {
   outline-offset: 4px;
   box-shadow: $shadow-ring-focus-soft;
 }
+
+// ============================================
+// Accessibility: Forced Colors (STYLEGUIDE A11Y-6)
+// ============================================
+// Im Kontrastmodus (Windows) ersetzt der Browser alle Farben durch
+// Systemfarben und verwirft box-shadow und text-shadow. Was nur über
+// Hintergrund oder Schatten sichtbar ist, braucht hier einen Ersatz.
+// Highlight und CanvasText sind CSS-Systemfarben, keine Farbnamen im Sinne
+// von FARB-8. Sie stehen nur in diesem Block.
+// Diese Datei lädt vor den Komponenten. Das :root vor den Selektoren hebt
+// die Spezifität über die Komponenten-Regeln, ohne !important.
+@media (forced-colors: active) {
+  // Fokus nur über Rand und box-shadow (outline: none in der Komponente):
+  // ohne Ersatz wäre er im Kontrastmodus unsichtbar
+  :root .back-to-top:focus-visible,
+  :root .fractal-panel__slider.noUi-target .noUi-handle:focus-visible {
+    outline: 2px solid Highlight;
+    outline-offset: 2px;
+  }
+
+  // Die Umlaut-Punkte im Neon-Namen sind Flächen mit Hintergrundfarbe. Der
+  // Kontrastmodus setzt sie auf die Grundfarbe, aus „Müller“ würde „Muller“.
+  :root .neon-umlaut::before,
+  :root .neon-umlaut::after {
+    background: CanvasText;
+  }
+}

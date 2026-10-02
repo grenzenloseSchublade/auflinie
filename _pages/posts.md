@@ -53,7 +53,7 @@ read_time: false
 </div>
 
 <div id="blog-empty-message" class="notice notice--warning blog-empty-message">
-  <p><i class="fas fa-exclamation-circle"></i> Keine Beiträge für diese Suche gefunden.</p>
+  <p><i class="fas fa-exclamation-circle" aria-hidden="true"></i> Keine Beiträge für diese Suche gefunden.</p>
 </div>
 
 {% include paginator.html %}
