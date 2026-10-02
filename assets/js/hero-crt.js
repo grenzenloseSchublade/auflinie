@@ -1,8 +1,11 @@
 /**
- * Image Caching Script
- * 
- * Dieses Skript implementiert effizientes Caching für Hintergrundbilder
- * und andere wichtige Ressourcen auf der Website.
+ * hero-crt.js — Overlay-Hero: Hintergrundbild und CRT-Effekt.
+ *
+ * Lädt das Bild aus data-background-image vor und setzt es samt
+ * Retro-Verlauf, danach steuert es den CRT-Effekt (Einschalt-Sequenz,
+ * Canvas-Rauschen, Power-Knopf für den Lesemodus mit Hinweis-Puls).
+ * Am Persistent-Shell-Kontrakt (spa:load/spa:unload, PE-Fallback). Nur auf
+ * Seiten mit Overlay-Hero geladen (_includes/scripts.html).
  */
 
 (function() {

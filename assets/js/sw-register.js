@@ -1,6 +1,6 @@
 /**
- * Service Worker Registration Script
- * 
+ * sw-register.js — Registrierung des Service Workers.
+ *
  * Dieses Skript registriert den Service Worker, der für das Caching von Ressourcen
  * und die Offline-Funktionalität der Website verantwortlich ist.
  */

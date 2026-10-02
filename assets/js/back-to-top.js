@@ -1,5 +1,6 @@
 /**
- * Back to Top Button — an den Persistent-Shell-Kontrakt (spa-nav.js) gebunden.
+ * back-to-top.js — Back-to-Top-Button, an den Persistent-Shell-Kontrakt
+ * (spa-nav.js) gebunden.
  * window scroll/resize sind dokumentweit -> MÜSSEN im Teardown gelöst werden
  * (via AbortController), sonst zeigt der Listener nach einem Swap auf ein
  * entferntes .back-to-top und stapelt sich pro Besuch.

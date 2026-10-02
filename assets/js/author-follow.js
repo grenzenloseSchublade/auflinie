@@ -1,6 +1,6 @@
-/*
- * Folgen-Dropdown im Autor-Profil: Vanilla-Ersatz für den entfernten
- * jQuery-Toggle des Themes (main.min.js wird nicht mehr geladen).
+/**
+ * author-follow.js — Folgen-Dropdown im Autor-Profil: Vanilla-Ersatz für den
+ * entfernten jQuery-Toggle des Themes (main.min.js wird nicht mehr geladen).
  * Toggelt .is--visible auf .author__urls; schließt bei Außenklick/Escape.
  *
  * An den Persistent-Shell-Kontrakt (spa-nav.js) gebunden: das Autor-Markup

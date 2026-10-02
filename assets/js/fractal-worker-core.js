@@ -1,10 +1,12 @@
-// Gemeinsamer Rechenkern für die Fraktal-Worker (mandelbrot-worker.js,
-// julia-worker.js). Beide iterieren z = z² + c über denselben Pixel-Chunk —
-// der einzige Unterschied ist die Initialisierung: Mandelbrot startet z bei 0
-// und nimmt c aus den Pixel-Koordinaten, Julia startet z bei den Pixel-
-// Koordinaten mit konstantem c. Vorher lebte die Schleife als Kopie in beiden
-// Workern und war bereits auseinandergedriftet (NaN-Härtung nur bei Julia).
-// Läuft im Worker-Scope via importScripts (nach fractal-color-utils.js).
+/**
+ * fractal-worker-core.js — gemeinsamer Rechenkern für die Fraktal-Worker
+ * (mandelbrot-worker.js, julia-worker.js). Beide iterieren z = z² + c über denselben Pixel-Chunk —
+ * der einzige Unterschied ist die Initialisierung: Mandelbrot startet z bei 0
+ * und nimmt c aus den Pixel-Koordinaten, Julia startet z bei den Pixel-
+ * Koordinaten mit konstantem c. Vorher lebte die Schleife als Kopie in beiden
+ * Workern und war bereits auseinandergedriftet (NaN-Härtung nur bei Julia).
+ * Läuft im Worker-Scope via importScripts (nach fractal-color-utils.js).
+ */
 /* exported runFractalChunkJob */
 
 /**

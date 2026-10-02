@@ -1,7 +1,7 @@
 /**
- * MathJax unter der Persistent-Shell (spa-nav.js): nach einem Content-Swap
- * die Formeln des NEUEN Inhalts setzen, beim Wegtauschen die internen
- * Referenzen auf das alte DOM lösen.
+ * mathjax-typeset.js — MathJax unter der Persistent-Shell (spa-nav.js): nach
+ * einem Content-Swap die Formeln des NEUEN Inhalts setzen, beim Wegtauschen
+ * die internen Referenzen auf das alte DOM lösen.
  *
  * Bewusst die SYNCHRONE API (MathJax.typeset) statt typesetPromise:
  * in MathJax 4.1 bleibt die interne Promise-Kette (startup.promise /

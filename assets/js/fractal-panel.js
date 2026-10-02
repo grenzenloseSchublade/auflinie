@@ -1,5 +1,5 @@
 /**
- * Fractal Panel — gemeinsames UI-Modul der interaktiven Fraktal-Panels.
+ * fractal-panel.js — gemeinsames UI-Modul der interaktiven Fraktal-Panels.
  *
  * Ersetzt die Inline-Scripts von julia-interactive.html und
  * mandelbrot-julia-explorer.html. Ein Panel wird über sein Wurzelelement

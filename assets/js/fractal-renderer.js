@@ -1,4 +1,4 @@
-/* Gemeinsamer Renderer fuer Mandelbrot/Julia-Visualisierungen */
+/** fractal-renderer.js — gemeinsamer Renderer für Mandelbrot-/Julia-Visualisierungen */
 (function() {
   'use strict';
 

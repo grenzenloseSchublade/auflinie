@@ -1,6 +1,7 @@
-/*
- * Vanilla GreedyNav based on lukejacksonn/GreedyNav
- * Keeps visible links in the navbar and moves overflow to hidden menu.
+/**
+ * greedy-navigation.js — Masthead-Navigation als Vanilla-GreedyNav (nach
+ * lukejacksonn/GreedyNav): hält so viele Links wie möglich sichtbar in der
+ * Leiste und verschiebt den Überlauf ins Drawer-Menü.
  */
 (function() {
   'use strict';

@@ -1,8 +1,9 @@
 /**
- * Blog-Hinweis (Markup: _includes/blog-notice.html) — am Persistent-Shell-
- * Kontrakt (window.spaModule). Früher Inline-Skript im Include: das lief nach
- * einem SPA-Swap nie (innerHTML führt <script> nicht aus) und verstieß gegen
- * die CSP ohne 'unsafe-inline' (Security-Audit 10/2026, I10).
+ * blog-notice.js — Blog-Hinweis (Markup: _includes/blog-notice.html), am
+ * Persistent-Shell-Kontrakt (window.spaModule). Früher Inline-Skript im
+ * Include: das lief nach einem SPA-Swap nie (innerHTML führt <script> nicht
+ * aus) und verstieß gegen die CSP ohne 'unsafe-inline' (Security-Audit
+ * 10/2026, I10).
  * Einmaligkeit pro Besucher über localStorage (Schlüssel je Hinweis-id).
  */
 (function () {

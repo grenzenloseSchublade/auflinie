@@ -11,6 +11,8 @@
  *     sessionStorage.
  */
 (function () {
+  'use strict';
+
   const root = document.documentElement;
   root.className = root.className.replace(/\bno-js\b/g, '') + ' js ';
 

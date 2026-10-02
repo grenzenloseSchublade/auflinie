@@ -1,5 +1,6 @@
 /**
- * Blog-Suche/Filter — an den Persistent-Shell-Kontrakt (spa-nav.js) gebunden.
+ * blog-search.js — Blog-Suche/Filter, an den Persistent-Shell-Kontrakt
+ * (spa-nav.js) gebunden.
  * Rein element-scoped (input/clear sterben mit dem alten DOM) -> kein Teardown,
  * nur idempotent gegen Doppel-Init. Läuft initial UND nach jedem Swap.
  */

@@ -1,5 +1,5 @@
 /**
- * TOC — Sticky-Mobile-Header, Gumshoe-ScrollSpy, Dropdown, optionales Collapse.
+ * toc.js — Sticky-Mobile-Header, Gumshoe-ScrollSpy, Dropdown, optionales Collapse.
  *
  * Externalisiert aus dem früheren Inline-Script in _includes/toc-wrapper.html
  * und an den Persistent-Shell-Kontrakt (spa-nav.js, siehe README-spa-nav.md)

@@ -1,5 +1,5 @@
 /**
- * MathJax-Konfiguration — als eigene Datei (statt inline im Head), damit
+ * mathjax-config.js — MathJax-Konfiguration, als eigene Datei (statt inline im Head), damit
  * spa-nav.js sie beim Seitentausch nachladen kann: der Script-Reconcile
  * überträgt nur script[src], keine Inline-Blöcke. Muss VOR
  * vendor/mathjax/tex-chtml.js laden (defer erhält die Reihenfolge, der

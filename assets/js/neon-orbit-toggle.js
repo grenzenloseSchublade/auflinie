@@ -1,4 +1,15 @@
+/**
+ * neon-orbit-toggle.js — Neon-Schriftzug im Startseiten-Hero: Klicks oder
+ * Enter/Leertaste auf .neon-orbit-trigger steuern die Umlaut-Punkte
+ * (Orbit, Farbwechsel, Scatter, Zustand je .neon-name). Pausiert die
+ * Dauer-Animationen außerhalb des Viewports (Klasse neon-paused). Am
+ * Persistent-Shell-Kontrakt (spa:load/spa:unload, PE-Fallback). Nur auf der
+ * Startseite geladen (_includes/scripts.html), Keyframes in
+ * components/_neon-base.scss und components/_neon-orbit.scss.
+ */
 (() => {
+  'use strict';
+
   const clickWindowMs = 350;
   const stateByScope = new WeakMap();
 

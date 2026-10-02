@@ -1,11 +1,11 @@
-/*
- * Cross-Document View Transitions — Zustandsübergabe (alte Seite).
+/**
+ * tv-switch.js — Cross-Document View Transitions, Zustandsübergabe (alte Seite).
  *
  * Types propagieren NICHT automatisch zum neuen Dokument: pageswap
  * schreibt die Entscheidung (CRT bei scrollY≈0, Drawer offen?) nach
- * sessionStorage; das Inline-Script in _includes/head/custom.html liest
- * sie im pagereveal der Zielseite und setzt dort die Types. Ohne Eintrag
- * oder ohne Browser-Support: UA-Default-Crossfade bzw. normale Navigation.
+ * sessionStorage; assets/js/head-early.js liest sie im pagereveal der
+ * Zielseite und setzt dort die Types. Ohne Eintrag oder ohne Browser-Support:
+ * UA-Default-Crossfade bzw. normale Navigation.
  * Der Masthead steht dabei immer (eigener Snapshot, _view-transition.scss).
  */
 (function () {
