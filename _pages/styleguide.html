@@ -112,6 +112,29 @@ styleguide: true
   </div>
 </section>
 
+<h2 id="skill-graph">Skill-Graph</h2>
+
+{% comment %}
+  Öffner unter den Chips, Kopfleiste und Info-Leiste des Graph-Sheets
+  (_includes/cv/skill-graph.html). Statisch, ohne Canvas und ohne Skript.
+{% endcomment %}
+<section data-sg-section="graph-kopf">
+  <div class="skill-graph">
+    <button type="button" class="skill-graph__open" aria-expanded="false" data-sg-states="hover,focus-visible">Als Graph anzeigen</button>
+    <div class="skill-graph__panel">
+      <div class="skill-graph__head">
+        <div class="skill-graph__tools">
+          <button type="button" class="skill-graph__tool skill-graph__tool--icon" aria-label="− Verkleinern"><span aria-hidden="true">−</span></button>
+          <button type="button" class="skill-graph__tool skill-graph__tool--icon" aria-label="+ Vergrößern"><span aria-hidden="true">+</span></button>
+          <button type="button" class="skill-graph__tool" aria-label="Einpassen – ganzen Graphen zeigen" data-sg-states="hover,focus-visible">Einpassen</button>
+          <button type="button" class="skill-graph__tool skill-graph__reset" aria-label="Reset – Ansicht zurücksetzen"><i class="fas fa-undo" aria-hidden="true"></i> Reset</button>
+        </div>
+      </div>
+      <p class="skill-graph__info is-active"><span class="cv-skills__selection-skill">Python</span><span class="cv-skills__selection-rolle"> – gemeinsam im Einsatz bei</span><br><span class="cv-skills__selection-projekte">Beispielprojekt A · Beispielprojekt B · Beispielprojekt C</span></p>
+    </div>
+  </div>
+</section>
+
 <h2 id="panels">Panels und Hinweise</h2>
 
 <section data-sg-section="panels">

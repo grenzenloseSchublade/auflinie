@@ -1,7 +1,8 @@
 // Automatisches Style-Guide-Review, Teil 4: Bedien-Invarianten aus
 // STYLEGUIDE.md 6.2 und 4.4 (A11Y-2, OVL-3, OVL-4, WCAG 2.4.3/2.4.7).
 // Prüft Verhalten, nicht Aussehen: Fokusführung, aria-expanded, inert,
-// Escape und Light Dismiss an Drawer und Skill-Graph-Sheet, dass kein
+// Escape und Light Dismiss an Drawer und Skill-Graph-Sheet, Info-Leiste,
+// Einpassen und Zoom im Skill-Graphen, dass kein
 // unsichtbares Element den Tastaturfokus bekommt, und die Breakpoint-Grenzen
 // 767/768 und 1023/1024 (STYLEGUIDE 3.4).
 const { test, expect } = require('@playwright/test');
@@ -77,42 +78,114 @@ test.describe('Drawer per Zeiger (A11Y-2, OVL-3)', () => {
   });
 });
 
-test.describe('Skill-Graph-Sheet (OVL-3, OVL-4)', () => {
-  async function openSheet(page) {
-    await page.locator('[data-role="graph-activate"]').click();
-    const opener = page.locator('[data-role="graph-toggle"]');
-    await opener.scrollIntoViewIfNeeded();
-    await expect(opener).toBeVisible();
-    await opener.click();
-    const panel = page.locator('[data-role="graph-panel"]');
-    await expect(panel).toHaveAttribute('role', 'dialog');
-    await expect(panel).toHaveAttribute('aria-modal', 'true');
-    return { opener, panel };
-  }
+// Skill-Graph: ein Knopf „Als Graph anzeigen“ öffnet das modale Sheet direkt
+// (seit 2. 10. 2026, vorher Aktivieren + schwebender Öffner). Reduced Motion
+// rechnet das Layout synchron vor, Ansicht und Knotenlage sind dann sofort
+// stabil. Der Maßstab steht als data-zoom am Canvas, die Zahl der Knoten
+// außerhalb bzw. angeschnitten als data-outside (skill-graph.js publishView).
+async function openSheet(page, before) {
+  await page.goto('/auflinie/cv/', { waitUntil: 'load' });
+  if (before) await before();
+  const opener = page.locator('[data-role="graph-toggle"]');
+  await opener.scrollIntoViewIfNeeded();
+  await expect(opener).toHaveText('Als Graph anzeigen');
+  await opener.click();
+  const panel = page.locator('[data-role="graph-panel"]');
+  await expect(panel).toHaveAttribute('role', 'dialog');
+  await expect(panel).toHaveAttribute('aria-modal', 'true');
+  const canvas = page.locator('[data-role="canvas"]');
+  await expect(canvas).toHaveAttribute('data-zoom', /\d/);
+  return { opener, panel, canvas };
+}
 
-  test('Escape schließt, Fokus zurück zum Öffner, Hintergrund wieder frei', async ({ page }) => {
-    await page.goto('/auflinie/cv/', { waitUntil: 'load' });
-    await page.locator('[data-role="graph-activate"]').scrollIntoViewIfNeeded();
+const zoomOf = async (canvas) => Number(await canvas.getAttribute('data-zoom'));
+
+test.describe('Skill-Graph-Sheet (OVL-3, OVL-4)', () => {
+  test.use({ contextOptions: { reducedMotion: 'reduce' } });
+
+  test('ein Knopf öffnet, Escape schließt, Fokus zurück zum Knopf', async ({ page }) => {
     const { opener, panel } = await openSheet(page);
+    await expect(page.locator('[data-role="graph-activate"], .skill-graph__floating, .wip-badge')).toHaveCount(0);
     await expect(page.locator('.skill-graph__sheet-close')).toBeFocused();
     expect(await page.evaluate(() => document.querySelector('.initial-content').inert)).toBe(true);
 
     await page.keyboard.press('Escape');
     await expect(panel).not.toHaveAttribute('role', 'dialog');
     await expect(opener).toBeFocused();
+    await expect(opener).toHaveAttribute('aria-expanded', 'false');
     expect(await page.evaluate(() => document.querySelector('.initial-content').inert)).toBe(false);
   });
 
+  test('✕ schließt, Fokus zurück zum Knopf', async ({ page }) => {
+    const { opener, panel } = await openSheet(page);
+    await page.locator('.skill-graph__sheet-close').click();
+    await expect(panel).not.toHaveAttribute('role', 'dialog');
+    await expect(opener).toBeFocused();
+  });
+
   test('Light Dismiss über den Scrim', async ({ page }) => {
-    await page.goto('/auflinie/cv/', { waitUntil: 'load' });
-    await page.locator('[data-role="graph-activate"]').scrollIntoViewIfNeeded();
     const { panel } = await openSheet(page);
-    const scrim = page.locator('.skill-graph__scrim');
-    const box = await scrim.boundingBox();
-    // oberhalb des Sheets (68vh hoch, unten angedockt)
-    await page.mouse.click(box.x + box.width / 2, box.y + box.height * 0.2);
+    const box = await panel.boundingBox();
+    // Scrim oberhalb des Sheets (unten angedockt)
+    await page.mouse.click(box.x + box.width / 2, box.y / 2);
     await expect(panel).not.toHaveAttribute('role', 'dialog');
     expect(await page.evaluate(() => document.querySelector('.initial-content').inert)).toBe(false);
+  });
+
+  test('Info-Leiste zeigt nach Knotenklick Skill und Projekte, Esc gestaffelt', async ({ page }) => {
+    // Chip vor dem Öffnen wählen: das Sheet öffnet mit Python in der Mitte
+    const { panel, canvas } = await openSheet(page, () =>
+      page.locator('.cv-skill-chip__button[data-skill="python"]').click());
+    const info = page.locator('[data-role="graph-context"]');
+    await expect(info.locator('.cv-skills__selection-skill')).toHaveText('Python');
+
+    // Erstes Esc löst nur die Auswahl, das Sheet bleibt offen
+    await page.keyboard.press('Escape');
+    await expect(info).toHaveText('Ein Klick auf einen Skill zeigt verwandte Skills und gemeinsame Projekte.');
+    await expect(info).not.toHaveClass(/is-active/);
+    await expect(panel).toHaveAttribute('role', 'dialog');
+
+    // Klick auf den Knoten in der Canvas-Mitte (dort liegt Python)
+    await canvas.click();
+    await expect(info.locator('.cv-skills__selection-skill')).toHaveText('Python');
+    await expect(info.locator('.cv-skills__selection-rolle')).toHaveText(' – gemeinsam im Einsatz bei');
+    await expect(info.locator('.cv-skills__selection-projekte')).toContainText(' · ');
+    await expect(info).toHaveClass(/is-active/);
+    // Gleicher Inhalt wie die Konsole über den Chips (ein Renderer)
+    const konsole = await page.locator('[data-role="skill-context"]').innerHTML();
+    expect(await info.innerHTML()).toBe(konsole);
+  });
+
+  for (const vp of [{ name: 'Desktop', size: { width: 1280, height: 900 } }, { name: 'mobil', size: MOBIL }]) {
+    test.describe(vp.name, () => {
+      test.use({ viewport: vp.size });
+
+      test('Einpassen: ohne Auswahl alle Knoten im Bild', async ({ page }) => {
+        const { canvas } = await openSheet(page);
+        const zoom = await zoomOf(canvas);
+        expect(zoom).toBeGreaterThanOrEqual(0.6);
+        expect(zoom).toBeLessThanOrEqual(1);
+        // Greift die Untergrenze 0.6 nicht, liegt alles samt Labels im Bild
+        if (zoom > 0.601) expect(await canvas.getAttribute('data-outside')).toBe('0');
+      });
+    });
+  }
+
+  test('Zoom-Knöpfe ändern den Maßstab, Einpassen stellt ihn wieder her', async ({ page }) => {
+    const { canvas } = await openSheet(page);
+    const fit = await zoomOf(canvas);
+    await page.getByRole('button', { name: /^\+ Vergrößern/ }).click();
+    expect(await zoomOf(canvas)).toBeGreaterThan(fit);
+    await page.getByRole('button', { name: /^− Verkleinern/ }).click();
+    await page.getByRole('button', { name: /^− Verkleinern/ }).click();
+    expect(await zoomOf(canvas)).toBeLessThan(fit);
+    await page.getByRole('button', { name: /^Einpassen/ }).click();
+    expect(await zoomOf(canvas)).toBeCloseTo(fit, 3);
+    // Tastatur bei Fokus im Sheet: + vergrößert, 0 passt ein
+    await page.keyboard.press('+');
+    expect(await zoomOf(canvas)).toBeGreaterThan(fit);
+    await page.keyboard.press('0');
+    expect(await zoomOf(canvas)).toBeCloseTo(fit, 3);
   });
 });
 
