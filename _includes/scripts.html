@@ -4,16 +4,16 @@
   - Gumshoe standalone (ScrollSpy für TOC)
 {% endcomment %}
 
-<!-- Gemeinsame Helfer (window.AuflinieUtils, STYLEGUIDE JS-18): als ERSTES
+{% comment %} Gemeinsame Helfer (window.AuflinieUtils, STYLEGUIDE JS-18): als ERSTES
      Skript, vor allen Nutzern (toc.js, back-to-top.js, Breakpoints in
-     tv-switch.js, greedy-navigation.js, fractal-panel.js) -->
+     tv-switch.js, greedy-navigation.js, fractal-panel.js) {% endcomment %}
 <script src="{{ '/assets/js/site-utils.js' | relative_url }}" defer></script>
 
 {% if page.toc %}
-<!-- Gumshoe ScrollSpy (standalone, kein jQuery) – nur auf Seiten mit TOC -->
+{% comment %} Gumshoe ScrollSpy (standalone, kein jQuery) – nur auf Seiten mit TOC {% endcomment %}
 <script src="{{ '/assets/vendor/gumshoe.min.js' | relative_url }}" defer></script>
-<!-- TOC-Verhalten (Sticky-Mobile, ScrollSpy-Anbindung, Dropdown, Collapse) –
-     externalisiert aus toc-wrapper.html, an spa:load gebunden. NACH gumshoe. -->
+{% comment %} TOC-Verhalten (Sticky-Mobile, ScrollSpy-Anbindung, Dropdown, Collapse) –
+     externalisiert aus toc-wrapper.html, an spa:load gebunden. NACH gumshoe. {% endcomment %}
 <script src="{{ '/assets/js/toc.js' | relative_url }}" defer></script>
 {% endif %}
 
@@ -31,47 +31,47 @@
 {% include analytics.html %}
 {% include /comments-providers/scripts.html %}
 
-<!-- Service Worker (global) -->
+{% comment %} Service Worker (global) {% endcomment %}
 <script src="{{ '/assets/js/sw-register.js' | relative_url }}" defer></script>
 
-<!-- Persistent-Shell-Kontrakt (window.spaModule) – sitewide, VOR allen
+{% comment %} Persistent-Shell-Kontrakt (window.spaModule) – sitewide, VOR allen
      Modulen, die sich am SPA-Lebenszyklus registrieren (Skill-Feature,
-     Fraktal-Panels) -->
+     Fraktal-Panels) {% endcomment %}
 <script src="{{ '/assets/js/spa-module.js' | relative_url }}" defer></script>
 
 {% if page.header.overlay_image %}
-<!-- Hero-Hintergrund + CRT-Effekt: nur auf Seiten mit Overlay-Hero -->
+{% comment %} Hero-Hintergrund + CRT-Effekt: nur auf Seiten mit Overlay-Hero {% endcomment %}
 <script src="{{ '/assets/js/hero-crt.js' | relative_url }}" defer></script>
 {% endif %}
 
 {% if page.blog_search %}
-<!-- Blog-Suche/Filter: Flag im Front Matter – der frühere URL-Vergleich
-     (page.url == "/posts/") griff mit Paginierung nicht, die Suche fehlte live -->
+{% comment %} Blog-Suche/Filter: Flag im Front Matter – der frühere URL-Vergleich
+     (page.url == "/posts/") griff mit Paginierung nicht, die Suche fehlte live {% endcomment %}
 <script src="{{ '/assets/js/blog-search.js' | relative_url }}" defer></script>
 {% endif %}
 
 {% if page.blog_notice.enabled %}
-<!-- Blog-Hinweis (Markup: _includes/blog-notice.html), am spaModule-Kontrakt -->
+{% comment %} Blog-Hinweis (Markup: _includes/blog-notice.html), am spaModule-Kontrakt {% endcomment %}
 <script src="{{ '/assets/js/blog-notice.js' | relative_url }}" defer></script>
 {% endif %}
 
-{% if page.url == "/" %}
-<!-- Neon-Namenseffekt: nur Startseite -->
+{% if page.neon_name %}
+{% comment %} Neon-Namenseffekt: Flag neon_name im Front Matter (heute nur Startseite) {% endcomment %}
 <script src="{{ '/assets/js/neon-orbit-toggle.js' | relative_url }}" defer></script>
 {% endif %}
 
 {% if page.skill_graph.enabled or page.skill_graph.stage2 %}
-<!-- Interaktives Skill-Feature (CV): Flag im Front Matter, Muster blog_search -->
-<!-- Gemeinsamer Daten-Helfer VOR den Modulen -->
+{% comment %} Interaktives Skill-Feature (CV): Flag im Front Matter, Muster blog_search {% endcomment %}
+{% comment %} Gemeinsamer Daten-Helfer VOR den Modulen {% endcomment %}
 <script src="{{ '/assets/js/skill-graph-data.js' | relative_url }}" defer></script>
 <script src="{{ '/assets/js/skill-chips.js' | relative_url }}" defer></script>
 {% endif %}
 
 {% if page.skill_graph.stage2 %}
-<!-- Skill-Graph-Panel: Engine vor UI, defer erhält die Reihenfolge -->
+{% comment %} Skill-Graph-Panel: Engine vor UI, defer erhält die Reihenfolge {% endcomment %}
 <script src="{{ '/assets/js/skill-graph-sim.js' | relative_url }}" defer></script>
 <script src="{{ '/assets/js/skill-graph.js' | relative_url }}" defer></script>
-<!-- Präsentations-Wrapper: modales Sheet (ändert den Graph-Kern nicht) -->
+{% comment %} Präsentations-Wrapper: modales Sheet (ändert den Graph-Kern nicht) {% endcomment %}
 <script src="{{ '/assets/js/skill-graph-sheet.js' | relative_url }}" defer></script>
 {% endif %}
 
@@ -85,9 +85,9 @@
   {% endfor %}
 {% endif %}
 
-<!-- Back-to-Top: aus single.html hierher gezogen (lag sonst IN .initial-content
-     und wäre nach einem Swap inertes Markup). Selbst-guardend (.back-to-top). -->
+{% comment %} Back-to-Top: aus single.html hierher gezogen (lag sonst IN .initial-content
+     und wäre nach einem Swap inertes Markup). Selbst-guardend (.back-to-top). {% endcomment %}
 <script src="{{ '/assets/js/back-to-top.js' | relative_url }}" defer></script>
 
-<!-- Persistent-Shell-Navigation (Phase 1): additiv, Full-Reload-Fallback, als Letztes -->
+{% comment %} Persistent-Shell-Navigation (Phase 1): additiv, Full-Reload-Fallback, als Letztes {% endcomment %}
 <script src="{{ '/assets/js/spa-nav.js' | relative_url }}" defer></script> 

@@ -31,7 +31,7 @@
 erlaubt keine Inline-Skripte. Bewusst ohne defer/async (vor dem ersten Render). {% endcomment %}
 <script src="{{ '/assets/js/head-early.js' | relative_url }}"></script>
 
-<!-- For all browsers -->
+{% comment %} For all browsers {% endcomment %}
 <link rel="stylesheet" href="{{ '/assets/css/main.css' | relative_url }}">
 {% comment %} Font Awesome: self-hosted Subset (assets/_sass/base/_icons.scss + assets/webfonts/) statt 100-KB-CDN-Komplett-CSS {% endcomment %}
 <link rel="preload" href="{{ '/assets/webfonts/fa-solid-900-subset.woff2' | relative_url }}" as="font" type="font/woff2" crossorigin>

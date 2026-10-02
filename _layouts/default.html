@@ -5,7 +5,7 @@
     {% include head.html %}
     {% include head/custom.html %}
     
-    <!-- Critical CSS: Layout-Stabilisatoren für den ersten Viewport -->
+    {% comment %} Critical CSS: Layout-Stabilisatoren für den ersten Viewport {% endcomment %}
     <style>
       {% comment %} Regeln (STYLEGUIDE CRIT-1, CRIT-2): Der Block steht NACH dem
       main.css-Link und gewinnt deshalb jeden Gleichstand. Er hält nur
@@ -65,7 +65,7 @@
     {% comment %} Bewusst NICHT include_cached: scripts.html lädt seitenabhängig (page.fractal_panels u.a.) {% endcomment %}
     {% include scripts.html %}
     
-    <!-- Offline-Benachrichtigung (Steuerung: assets/js/sw-register.js) -->
+    {% comment %} Offline-Benachrichtigung (Steuerung: assets/js/sw-register.js) {% endcomment %}
     <div id="offline-notification" class="offline-notification" role="status" hidden>
       Gerade offline – einige Inhalte könnten nicht verfügbar sein.
     </div>

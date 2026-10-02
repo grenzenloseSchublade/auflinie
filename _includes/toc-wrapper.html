@@ -19,7 +19,7 @@
 {% assign toc_id = toc_id_source | slugify | prepend: "toc-" %}
 {% assign toc_label = page.toc_label | default: site.data.ui-text[site.locale].toc_label | default: "Inhalt" %}
 
-<!-- Mobile Sticky TOC Header (nur auf Mobile sichtbar) -->
+{% comment %} Mobile Sticky TOC Header (nur auf Mobile sichtbar) {% endcomment %}
 <div id="toc-sticky-mobile" class="toc-sticky-mobile" aria-hidden="true">
   <button id="toc-sticky-toggle" class="toc-sticky-mobile__toggle" type="button" aria-expanded="false" aria-controls="toc-sticky-dropdown">
     <span class="toc-sticky-mobile__label">{{ toc_label }}</span>

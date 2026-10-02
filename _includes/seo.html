@@ -1,4 +1,4 @@
-<!-- begin _includes/seo.html -->
+{% comment %} begin _includes/seo.html {% endcomment %}
 {%- assign title_separator = site.title_separator | default: '-' -%}
 
 {%- assign page_title = page.title | default: site.title | replace: '|', '&#124;' -%}
@@ -142,7 +142,9 @@
   <link rel="next" href="{{ paginator.next_page_path | absolute_url }}">
 {% endif %}
 
-{% if page.url == '/' %}
+{% comment %} Theme-Schema (Person/Organisation der Site): Flag site_schema im
+Front Matter, heute nur index.html (STYLEGUIDE LIQ-4) {% endcomment %}
+{% if page.site_schema %}
   {% include schema.html %}
 {% endif %}
 
@@ -164,4 +166,4 @@
 {% if site.baidu_site_verification %}
   <meta name="baidu-site-verification" content="{{ site.baidu_site_verification }}">
 {% endif %}
-<!-- end _includes/seo.html -->
+{% comment %} end _includes/seo.html {% endcomment %}

@@ -28,7 +28,10 @@ selbst liegen, sonst rendert der Hero data-background-image="" + CRT-Markup. {% 
   {% assign hero_crt = "stark" %}
 {% endunless %}
 
-<div class="page__hero{% if page.header.overlay_color or page.header.overlay_image %}--overlay{% endif %}{% if page.url == "/" and page.header.overlay_image %} page__hero--crt-over-text{% endif %}"
+{% comment %} Startseiten-Hero über Front-Matter-Flags statt URL-Vergleich
+(STYLEGUIDE LIQ-4): header.crt_power legt die CRT-Ebenen über den Text und
+zeigt den Lesemodus-Schalter, neon_name setzt den Neon-Namenseffekt. {% endcomment %}
+<div class="page__hero{% if page.header.overlay_color or page.header.overlay_image %}--overlay{% endif %}{% if page.header.crt_power and page.header.overlay_image %} page__hero--crt-over-text{% endif %}"
   {% if page.header.overlay_color %}style="background-color: {{ page.header.overlay_color | default: 'transparent' }};"{% endif %}
   {% if overlay_img_path %}
   data-background-image="{{ overlay_img_path }}"
@@ -54,7 +57,7 @@ selbst liegen, sonst rendert der Hero data-background-image="" + CRT-Markup. {% 
   <div class="page__hero-crt-roll" aria-hidden="true"></div>
   <canvas class="page__hero-crt-noise" width="160" height="160" aria-hidden="true"></canvas>
   </div>
-  {% if page.url == "/" %}
+  {% if page.header.crt_power %}
   <div class="page__hero-crt-power-wrap" role="region" aria-label="Lesemodus und Retro-Ansicht (Startseite)">
     <button type="button" id="hero-crt-power" class="hero-crt-power" aria-pressed="true" aria-label="Lesemodus aktivieren" title="Lesemodus">
       {%- comment -%} Power-Glyphe: gleicher Pfad wie Heroicons „power“ (Outline, MIT) – klassisches IEC-ähnliches Ein-Symbol {%- endcomment -%}
@@ -73,7 +76,7 @@ selbst liegen, sonst rendert der Hero data-background-image="" + CRT-Markup. {% 
       paginator.page }}{% endunless %}
       {% else %}
       {% assign hero_title = page.title | default: site.title %}
-      {% if page.url == "/" and hero_title contains "Müller" %}
+      {% if page.neon_name and hero_title contains "Müller" %}
         {% unless hero_title contains "neon-umlaut" %}
         {% assign hero_title = hero_title | replace: "Hans Müller", "<span class='neon-name'><span class='neon-glow'>H<span class='neon-orbit-trigger' role='button' tabindex='0' aria-label='Orbit starten'>a</span>ns M<span class='neon-umlaut' aria-label='ü'>u</span>ller</span></span>" %}
         {% assign hero_title = hero_title | replace: "Hans", "<span class='neon-name'><span class='neon-glow'>H<span class='neon-orbit-trigger' role='button' tabindex='0' aria-label='Orbit starten'>a</span>ns</span></span>" %}

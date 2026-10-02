@@ -6,12 +6,15 @@ author_profile: false
 header:
   overlay_image: /assets/images/background.jpg
   overlay_filter: 0.5
+  crt_power: true # CRT über dem Text + Lesemodus-Schalter (page__hero.html)
   actions:
     - label: "Über mich"
       url: "/about/"
     - label: "Fraktale erkunden"
       url: "/mandelbrot/"
 excerpt: "Mathematik und Technik stecken voller Schönheit. Hier wird sie sichtbar – in Projekten, Experimenten und Gedanken."
+neon_name: true # Neon-Namenseffekt (page__hero.html, neon-orbit-toggle.js)
+site_schema: true # Theme-JSON-LD der Site (seo.html)
 ---
 
 <section class="home-intro">
@@ -37,7 +40,7 @@ excerpt: "Mathematik und Technik stecken voller Schönheit. Hier wird sie sichtb
 </section>
 
 <section class="fractal-showcase" id="fraktale">
-  <a class="fractal-showcase__media" href="{{ site.baseurl }}/mandelbrot/" aria-label="Zur interaktiven Fraktal-Erkundung">
+  <a class="fractal-showcase__media" href="{{ '/mandelbrot/' | relative_url }}" aria-label="Zur interaktiven Fraktal-Erkundung">
     <img src="{{ '/assets/images/mandelbrot-preview.jpg' | relative_url }}"
          alt="Ausschnitt der Mandelbrot-Menge mit spiralförmigen Ausläufern"
          loading="lazy" width="1920" height="1080">
@@ -49,7 +52,7 @@ excerpt: "Mathematik und Technik stecken voller Schönheit. Hier wird sie sichtb
       und Julia-Mengen direkt im Browser – hineinzoomen, Parameter verändern und die
       Strukturen entdecken, die dabei sichtbar werden.
     </p>
-    <a href="{{ site.baseurl }}/mandelbrot/" class="btn btn--primary">Fraktale erkunden</a>
+    <a href="{{ '/mandelbrot/' | relative_url }}" class="btn btn--primary">Fraktale erkunden</a>
   </div>
 </section>
 
@@ -62,5 +65,5 @@ excerpt: "Mathematik und Technik stecken voller Schönheit. Hier wird sie sichtb
 </div>
 
 <div class="text-center">
-  <a href="{{ site.baseurl }}/posts/" class="btn btn--primary">Alle Beiträge anzeigen</a>
+  <a href="{{ '/posts/' | relative_url }}" class="btn btn--primary">Alle Beiträge anzeigen</a>
 </div>
