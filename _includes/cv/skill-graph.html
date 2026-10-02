@@ -9,6 +9,8 @@
   inline auf (Progressive Enhancement).
   Kopfleiste: zugängliche Namen beginnen mit dem sichtbaren Text (WCAG 2.5.3,
   STYLEGUIDE 7.7 „Reset“).
+  Canvas tabindex="-1": nicht in der Tab-Reihenfolge, aber ein Klick hält den
+  Fokus im Dialog (sonst fiele er auf <body>, Tasten +/−/0 wirkungslos).
 {% endcomment %}
 <div class="skill-graph" data-skill-graph>
   <button type="button" class="skill-graph__open" data-role="graph-toggle"
@@ -30,8 +32,8 @@
     </div>
     <p class="skill-graph__info" data-role="graph-context" aria-live="polite">Ein Klick auf einen Skill zeigt verwandte Skills und gemeinsame Projekte.</p>
     <div class="skill-graph__canvas-wrap" data-role="canvas-wrap">
-      <canvas data-role="canvas" role="img"
-              aria-label="Netzdiagramm der Skills, verbunden über gemeinsame Projekte. Die vollständigen Informationen stehen in der Skill-Liste des Lebenslaufs."></canvas>
+      <canvas data-role="canvas" role="img" tabindex="-1"
+              aria-label="Netzdiagramm der Skills, verbunden über gemeinsame Projekte. Auswahl und gemeinsame Projekte stehen in der Leiste darüber, die vollständige Liste im Lebenslauf."></canvas>
     </div>
   </div>
 </div>

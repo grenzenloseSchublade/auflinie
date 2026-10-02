@@ -15,8 +15,9 @@ Die Skill-Chips auf `/cv/` sind erkundbar:
   gemeinsame Projekte (Kantendeckkraft = Gewicht). Klick auf Knoten wählt
   aus; die Auswahl ist mit der Chip-Liste synchronisiert, die Info-Leiste
   oben im Sheet zeigt sie im Format der Konsole (Skill, Rolle, Projekte).
-  Ansicht: Einpassen beim Öffnen, Zoom per Pinch, Mausrad, Knöpfe
-  („−“, „+“, „Einpassen“) und Tasten `+`/`−`/`0`, Pan per Ziehen.
+  Ansicht: Einpassen beim Öffnen (auch mit Auswahl, kein Zentrieren), Zoom
+  per Pinch, Mausrad, Knöpfe („−“, „+“, „Einpassen“) und Tasten
+  `+`/`−`/`0`, Pan per Ziehen. Der Graph bewegt sich nie von selbst.
 
 Die statische Chip-Liste bleibt immer die kanonische, vollständige
 Darstellung (auch für Screenreader und Druck); alles Interaktive ist
@@ -101,11 +102,20 @@ noch Canvas — sie nimmt `{nodes, edges, width, height}` und bewegt Positionen
 **Ansicht (seit Oktober 2026):** Bildschirm = Layout × `scale` + `pan`. Render,
 Hit-Test, Rand-Pfeile und Knoten-Ziehen rechnen über dieselben Helfer
 (`toScreen`/`toLayout`). Zoom skaliert Abstände voll, Knoten und Schrift
-gedämpft (`glyphScale`, 0.85 bis 1.3). Einpassen nie unter 0.6 (darunter
-überlappen Labels systematisch), nie über 1.0. Die Engine-Option `aspect`
-lässt die Wolke das Format der Fläche annehmen (breit am Desktop, hoch am
-Telefon). `data-zoom` und `data-outside` am Canvas machen die Ansicht für
-Tests lesbar.
+gedämpft (`glyphScale`, 0.92 bis 1.3, Schrift also mindestens ≈ 10 px).
+Einpassen nie unter 0.6 (darunter überlappen Labels systematisch), nie über
+1.0. Beim Öffnen und bei Reset rechnet `settle()` das Layout synchron zu
+Ende (`runToEnd`), danach wird EINMAL eingepasst. Die Kamera folgt dem
+Layout nie, eine Auswahl wird nur hervorgehoben, wo sie liegt
+(Owner-Korrektur 2. 10. 2026). Nur eine Größenänderung der Fläche passt neu
+ein, solange niemand Zoom oder Lage verändert hat. Die Engine-Option
+`aspect` lässt die Wolke das Format der Fläche annehmen (breit am Desktop,
+hoch am Telefon). Ein neues Format nach Drehen oder Fenster-Änderung gilt
+erst ab dem nächsten Reset, damit ein kleiner Knoten-Drag nicht die ganze
+Wolke umordnet. Labels stehen über dem Knoten, sonst darunter, sonst
+seitlich (nur, wenn sie dort ganz in die Fläche passen). `data-zoom`,
+`data-outside` und `data-sel-x`/`data-sel-y` (Lage des gewählten Knotens)
+am Canvas machen die Ansicht für Tests lesbar.
 
 **Bewusste Später-Liste** (Stand Juli 2026, Zoom + Pan + Drag erledigt):
 Projekt-Knoten und
@@ -115,12 +125,15 @@ Toggles, Kantengewichts-Legende, Anker-Links in die Berufserfahrung.
 ## Verhaltens-Garantien (bei Änderungen erhalten!)
 
 - **A11y:** Chips sind echte `<button>`s mit `aria-pressed`; Kontextzeilen
-  sind `aria-live="polite"`; das Canvas ist `role="img"` und nicht
-  fokussierbar — Tastatur läuft über die Chip-Liste und die beschrifteten
-  Kopfleisten-Knöpfe. Keine Information nur per Hover.
-- **`prefers-reduced-motion`:** Die Simulation wird synchron vorgerechnet
-  (`runToEnd()`) und als Standbild gezeichnet; ein `change`-Listener schaltet
-  live um.
+  sind `aria-live="polite"`; das Canvas ist `role="img"` mit
+  `tabindex="-1"` — nicht in der Tab-Reihenfolge, aber ein Klick hält den
+  Fokus im Dialog (Tasten `+`/`−`/`0` wirken weiter). Tastatur läuft über
+  die Chip-Liste und die beschrifteten Kopfleisten-Knöpfe, die an den
+  Zoom-Grenzen `aria-disabled` tragen. Keine Information nur per Hover.
+- **`prefers-reduced-motion`:** Beim Öffnen und bei Reset wird das Layout
+  ohnehin synchron vorgerechnet. Unter Reduced Motion setzt zusätzlich das
+  Knoten-Ziehen den Knoten direkt, ohne Nachschwingen; ein `change`-Listener
+  schaltet live um.
 - **Animation endet von selbst** (< 5 s Auskühlung, WCAG 2.2.2) und stoppt
   bei `visibilitychange` und beim Zuklappen des Panels.
 - **Farbdisziplin:** Magenta (`$hover-color`) markiert ausschließlich

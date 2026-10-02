@@ -19,16 +19,18 @@
  * und Knoten-Ziehen rechnen über dieselben Helfer (toScreen/toLayout). Zoom
  * skaliert die Abstände voll, Knoten und Schrift nur gedämpft (glyphScale):
  * so bleiben Labels beim Herauszoomen lesbar, beim Hineinzoomen entzerren
- * sich dichte Bereiche. Beim Öffnen: ohne Auswahl alle Knoten einpassen
- * (nicht kleiner als FIT_MIN), mit Auswahl den Skill zentriert in
- * Normalgröße — nur so weit kleiner, dass seine verwandten Skills auf die
- * Fläche passen (Telefon), ebenfalls nicht unter FIT_MIN. Solange niemand eingreift, folgt die Kamera dem auskühlenden
- * Layout, die erste eigene Geste übernimmt. Keine animierten Kamerafahrten
- * (Reduced Motion braucht darum keinen Sonderweg).
+ * sich dichte Bereiche. Beim Öffnen (auch mit Auswahl) und bei Reset wird
+ * das Layout synchron zu Ende gerechnet und dann EINMAL eingepasst: alle
+ * Knoten samt Labels, nicht kleiner als FIT_MIN. Eine Auswahl wird nur
+ * hervorgehoben, wo sie liegt — kein Zentrieren, keine Kamerafahrt, die
+ * Kamera folgt dem Layout nie von selbst (Owner-Korrektur 2.10.2026: der
+ * Graph soll sich nicht von selbst bewegen). Nur eine Größenänderung der
+ * Fläche passt erneut ein, solange niemand Zoom oder Lage verändert hat.
  *
- * Verhalten: Lazy-Init beim ersten Öffnen; rAF-Loop endet beim Auskühlen
- * (< 5 s) sowie bei visibilitychange/Zuklappen; prefers-reduced-motion
- * rechnet das Layout synchron vor und zeigt ein Standbild. Auswahl läuft
+ * Verhalten: Lazy-Init beim ersten Öffnen; die rAF-Loop läuft nur nach dem
+ * Ziehen eines Knotens (Nachschwingen, < 5 s) und stoppt bei
+ * visibilitychange/Zuklappen; prefers-reduced-motion setzt den gezogenen
+ * Knoten direkt ohne Nachschwingen. Auswahl läuft
  * über den Event-Vertrag `auflinie:skill-select` (source 'graph').
  * Farben: Cyan für Inhalt (Kanten, Verwandtschaft), Magenta nur für die
  * aktive Auswahl (Interaktionszustand, Design-Regel).
@@ -52,7 +54,7 @@
   const ZOOM_MAX = 2.5;
   const ZOOM_STEP = 1.25;          // Knöpfe und Tastatur (+/−)
   const WHEEL_ZOOM = 0.0016;       // wie das Fraktal-Panel (exp(−deltaY · k))
-  // Einpassen und Fokus: nie kleiner als 0.6. Darunter wird die Feder-Ruhelänge
+  // Einpassen: nie kleiner als 0.6. Darunter wird die Feder-Ruhelänge
   // (100 Layout-px, skill-graph-sim.js) kürzer als 60 px, also kürzer als
   // ein typisches Label (6 bis 10 Zeichen ≈ 55 bis 90 px bei gedämpfter
   // Schrift) — benachbarte Labels überlappen dann systematisch, das Bild
@@ -60,11 +62,11 @@
   // Und nie größer als 1.0 — ein kleiner Graph wird nicht aufgeblasen.
   const FIT_MIN = 0.6;
   const FIT_MAX = 1;
-  const FOCUS_SCALE = 1;           // gewählter Skill in Normalgröße
   const FIT_PAD = 20;              // Rand in Bildschirm-px (Platz für die Rand-Pfeile)
-  // Knoten und Schrift folgen dem Zoom gedämpft: bei 0.6 bleibt die Schrift
-  // bei 0.85 × 11 px ≈ 9,4 px, bei 2.5 wächst sie auf 1.3 × 11 px ≈ 14 px.
-  const GLYPH_MIN = 0.85;
+  // Knoten und Schrift folgen dem Zoom gedämpft: beim Herauszoomen bleibt
+  // die Schrift bei 0.92 × 11 px ≈ 10 px (Telefon lesbar, 0.85 ≈ 9,4 px war
+  // zu klein), bei 2.5 wächst sie auf 1.3 × 11 px ≈ 14 px.
+  const GLYPH_MIN = 0.92;
   const GLYPH_MAX = 1.3;
 
   function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
@@ -104,9 +106,11 @@
     this.scale = 1;
     this.panX = 0;
     this.panY = 0;
-    // Kamera folgt dem Layout, bis jemand eingreift: 'fit' | 'focus' | null
-    this.viewMode = null;
-    this.focusId = null;
+    // true, solange die Ansicht eingepasst ist und niemand Zoom oder Lage
+    // geändert hat: nur dann passt eine Größenänderung der Fläche neu ein.
+    this.fitted = false;
+    this.openRaf = null;
+    this.pendingAspect = null;
     this.panning = false;
     this.gesture = null;
     this.pointers = {};
@@ -132,17 +136,20 @@
       // v.a. beim Wieder-Öffnen). syncLayout koppelt Canvas an die aktuelle
       // Größe = einzige Wahrheit fürs Koordinatensystem.
       const self = this;
-      requestAnimationFrame(function () {
-        if (self.panel.hidden) { return; }
+      if (this.openRaf !== null) { cancelAnimationFrame(this.openRaf); }
+      this.openRaf = requestAnimationFrame(function () {
+        self.openRaf = null;
+        if (self.abort.signal.aborted || self.panel.hidden) { return; }
         if (!self.initialized) { self.build(); }
         if (!self.sim) { return; }
         self.syncLayout();
-        // Startansicht bei JEDEM Öffnen: mit Auswahl den Skill zentriert
-        // (Fokus), sonst alles einpassen.
-        self.setViewMode(self.selected !== null ? 'focus' : 'fit');
-        self.startOrStill();
+        // Startansicht bei JEDEM Öffnen, mit und ohne Auswahl: Layout zu Ende
+        // rechnen, einmal alles einpassen. Die Auswahl wird nur hervorgehoben.
+        self.settle();
+        self.fit();
       });
     } else {
+      if (this.openRaf !== null) { cancelAnimationFrame(this.openRaf); this.openRaf = null; }
       this.stopLoop();
     }
   };
@@ -155,12 +162,14 @@
     if (!cw || !ch) { return; }
     if (this.sim && (cw !== this.canvasW || ch !== this.canvasH)) {
       this.sim.resize(cw * this.spread, ch * this.spread);   // Positionen proportional
-      this.sim.opts.aspect = layoutAspect(cw, ch);           // gilt ab dem nächsten Aufheizen
+      // Neues Format erst beim nächsten Reset übernehmen: sonst zöge schon
+      // ein kleiner Knoten-Drag (Aufheizen) die ganze Wolke ins neue Format.
+      this.pendingAspect = layoutAspect(cw, ch);
     }
     this.canvasW = cw;
     this.canvasH = ch;
     this.sizeCanvas();
-    if (this.viewMode) { this.applyView(); } else { this.clampPan(); }
+    if (this.fitted) { this.applyFit(); } else { this.clampPan(); }
   };
 
   SkillGraph.prototype.build = function () {
@@ -315,14 +324,20 @@
     this.stopLoop();
     if (this.reduceMotion.matches) {
       this.sim.runToEnd();
-      if (this.viewMode) { this.applyView(); }
       this.render();
     } else if (!this.sim.isSettled()) {
       this.loop();
     } else {
-      if (this.viewMode) { this.applyView(); }
       this.render();
     }
+  };
+
+  // Layout synchron zu Ende rechnen (36 Knoten: wenige ms). Vor dem
+  // Einpassen beim Öffnen und bei Reset: Die Kamera wird dann einmal auf das
+  // Endlayout gesetzt und muss dem Auskühlen nicht folgen.
+  SkillGraph.prototype.settle = function () {
+    this.stopLoop();
+    this.sim.runToEnd();
   };
 
   // Deterministische Kreis-Startlage im virtuellen Layout-Raum (w×h).
@@ -347,23 +362,25 @@
   // zurücksetzen, Sim neu aufheizen, Auswahl lösen, Ansicht einpassen.
   SkillGraph.prototype.reset = function () {
     if (!this.sim) { return; }
+    if (this.pendingAspect !== null) {
+      this.sim.opts.aspect = this.pendingAspect;
+      this.pendingAspect = null;
+    }
     this.seedLayout(this.sim.width, this.sim.height, true);
     this.sim.alpha = 1;
     if (this.selected !== null || this.current !== null) {
       this.setSelection(null);
       this.dispatch();
     }
-    this.setViewMode('fit');
-    this.startOrStill();
+    this.settle();
+    this.fit();
   };
 
   SkillGraph.prototype.loop = function () {
     const self = this;
     this.rafId = requestAnimationFrame(function () {
       const moving = self.sim.tick();
-      // Kamera folgt dem auskühlenden Layout, bis jemand eingreift
-      if (self.viewMode) { self.applyView(); }
-      self.render();
+      self.render();   // Kamera bleibt stehen, nur die Knoten schwingen nach
       if (moving && !self.panel.hidden) {
         self.loop();
       } else {
@@ -386,6 +403,7 @@
   // der Konstruktor früh zurückkehrte (fehlende Elemente) oder build() nie lief.
   SkillGraph.prototype.destroy = function () {
     if (this.abort) { this.abort.abort(); }
+    if (this.openRaf != null) { cancelAnimationFrame(this.openRaf); this.openRaf = null; }
     this.stopLoop();
     if (this.observer) { this.observer.disconnect(); this.observer = null; }
     if (this.resizeTimer) { clearTimeout(this.resizeTimer); this.resizeTimer = null; }
@@ -408,9 +426,14 @@
       }
       return;
     }
-    // Tastatur-Zoom bei Fokus im Panel: + / − / 0 (Einpassen)
+    // Tastatur-Zoom bei Fokus im Panel: + / − / 0 (Einpassen). Im modalen
+    // Sheet zählt auch ein Fokus auf <body> (z. B. nach einem Klick auf
+    // eine nicht fokussierbare Stelle): außerhalb des Sheets ist alles inert.
     if (!this.sim || event.ctrlKey || event.metaKey || event.altKey) { return; }
-    if (!this.panel.contains(document.activeElement)) { return; }
+    const active = document.activeElement;
+    const inside = this.panel.contains(active) ||
+      (this.isModal() && (!active || active === document.body));
+    if (!inside) { return; }
     if (event.key === '+' || event.key === '=') {
       this.zoomBy(ZOOM_STEP);
     } else if (event.key === '-' || event.key === '−') {
@@ -445,28 +468,36 @@
     return node.labelW || node.label.length * LABEL_PX * 0.6;
   };
 
-  // Bildschirm-Rechteck eines Labels (zentriert über, ersatzweise unter dem
-  // Knoten) — EINE Quelle für Zeichnen, Kollisionsprüfung, Hit-Test und
-  // Einpassen.
-  SkillGraph.prototype.labelRect = function (sx, sy, node, g, below) {
+  // Bildschirm-Rechteck eines Labels in einer von vier Lagen: 'up' (über
+  // dem Knoten, Regel), 'down' (darunter), 'right' und 'left' (seitlich,
+  // nur wenn oben und unten belegt sind) — EINE Quelle für Zeichnen,
+  // Kollisionsprüfung, Hit-Test und Einpassen. tx = Mitte des Texts.
+  SkillGraph.prototype.labelRect = function (sx, sy, node, g, pos) {
     const w = this.labelWidth(node) * g;
     const fontPx = LABEL_PX * g;
     const off = (NODE_RADIUS + LABEL_GAP) * g;
-    const base = below ? sy + off + fontPx * 0.8 : sy - off;
-    return { x: sx - w / 2 - 2, y: base - fontPx, w: w + 4, h: fontPx + 3, base: base };
+    let base = sy - off, tx = sx;
+    if (pos === 'down') {
+      base = sy + off + fontPx * 0.8;
+    } else if (pos === 'right' || pos === 'left') {
+      base = sy + fontPx * 0.35;
+      tx = pos === 'right' ? sx + off + w / 2 : sx - off - w / 2;
+    }
+    return { x: tx - w / 2 - 2, y: base - fontPx, w: w + 4, h: fontPx + 3, base: base, tx: tx };
   };
 
-  // Ausdehnung von Knoten samt Label (beide Lagen) bei Maßstab s, relativ zu
-  // pan = 0. Ohne Liste: alle Knoten.
-  SkillGraph.prototype.extents = function (s, list) {
+  // Ausdehnung aller Knoten samt Label (Lagen oben und unten) bei Maßstab s,
+  // relativ zu pan = 0. Seitliche Lagen zählen nicht: sie werden nur gesetzt,
+  // wenn sie ganz in die Fläche passen (render).
+  SkillGraph.prototype.extents = function (s) {
     const g = glyphScale(s);
     const rad = NODE_RADIUS * g;
     const self = this;
     let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
-    (list || this.nodes).forEach(function (n) {
+    this.nodes.forEach(function (n) {
       const sx = n.x * s, sy = n.y * s;
-      const up = self.labelRect(sx, sy, n, g, false);
-      const down = self.labelRect(sx, sy, n, g, true);
+      const up = self.labelRect(sx, sy, n, g, 'up');
+      const down = self.labelRect(sx, sy, n, g, 'down');
       minX = Math.min(minX, up.x, sx - rad);
       maxX = Math.max(maxX, up.x + up.w, sx + rad);
       minY = Math.min(minY, up.y);
@@ -500,53 +531,21 @@
     });
   };
 
-  // Fokus: gewählter Skill in der Mitte, in Normalgröße (1.0). Passt seine
-  // Nachbarschaft (Skill + verwandte Skills samt Labels) dann nicht auf die
-  // Fläche, wird nur so weit verkleinert, wie nötig, höchstens bis FIT_MIN —
-  // sonst schnitte das Telefon die Hälfte der verwandten Skills ab.
-  SkillGraph.prototype.focusScale = function (node) {
-    const list = [node];
-    const self = this;
-    (this.neighbors.get(node.id) || new Set()).forEach(function (id) {
-      const n = self.nodeById(id);
-      if (n) { list.push(n); }
-    });
-    const hw = this.canvasW / 2 - FIT_PAD;
-    const hh = this.canvasH / 2 - FIT_PAD;
-    return largestFitting(FIT_MIN, FOCUS_SCALE, function (s) {
-      const e = self.extents(s, list);
-      const cx = node.x * s, cy = node.y * s;
-      return cx - e.minX <= hw && e.maxX - cx <= hw && cy - e.minY <= hh && e.maxY - cy <= hh;
-    });
-  };
-
-  // Startansicht setzen (und ihr folgen, bis jemand eingreift)
-  SkillGraph.prototype.setViewMode = function (mode) {
-    this.viewMode = mode;
-    this.focusId = mode === 'focus' ? this.selected : null;
-    this.applyView();
-  };
-
-  SkillGraph.prototype.applyView = function () {
+  // Alles einpassen (Maßstab nach fitScale, Ausdehnung mittig)
+  SkillGraph.prototype.applyFit = function () {
     if (!this.nodes || !this.nodes.length || !this.canvasW) { return; }
-    const focus = this.viewMode === 'focus' && this.focusId !== null ? this.nodeById(this.focusId) : null;
-    if (focus) {
-      this.scale = this.focusScale(focus);
-      this.panX = this.canvasW / 2 - focus.x * this.scale;
-      this.panY = this.canvasH / 2 - focus.y * this.scale;
-    } else {
-      this.scale = this.fitScale();
-      const e = this.extents(this.scale);
-      this.panX = this.canvasW / 2 - (e.minX + e.maxX) / 2;
-      this.panY = this.canvasH / 2 - (e.minY + e.maxY) / 2;
-    }
+    this.scale = this.fitScale();
+    const e = this.extents(this.scale);
+    this.panX = this.canvasW / 2 - (e.minX + e.maxX) / 2;
+    this.panY = this.canvasH / 2 - (e.minY + e.maxY) / 2;
     this.clampPan();
   };
 
   // Einpassen-Knopf / Taste 0
   SkillGraph.prototype.fit = function () {
     if (!this.sim) { return; }
-    this.setViewMode('fit');
+    this.applyFit();
+    this.fitted = true;
     this.render();
   };
 
@@ -559,7 +558,7 @@
     this.scale = s;
     this.panX = cx - p.x * s;
     this.panY = cy - p.y * s;
-    this.viewMode = null;
+    this.fitted = false;
     this.clampPan();
     this.render();
   };
@@ -633,10 +632,12 @@
     });
 
     // Zustand je Knoten und Beschriftung. Ein Label steht über dem Knoten,
-    // überlappt es dort ein schon gesetztes, darunter. Ohne Auswahl bekommt
-    // jeder Knoten sein Label. Mit Auswahl zuerst der gewählte Skill und seine
-    // Nachbarn (immer beschriftet), danach die übrigen nur, wenn eine der
-    // beiden Lagen frei ist — sonst bleiben sie Punkte.
+    // überlappt es dort ein schon gesetztes, darunter, sonst rechts oder
+    // links daneben (seitlich nur, wenn es ganz in die Fläche passt). Ohne
+    // Auswahl bekommt jeder Knoten sein Label (sind alle Lagen belegt, die
+    // mit der kleinsten Überdeckung). Mit Auswahl zuerst der gewählte Skill
+    // und seine Nachbarn (immer beschriftet), danach die übrigen nur, wenn
+    // eine Lage frei ist — sonst bleiben sie Punkte.
     const states = nodes.map(function (node) {
       if (selected === null) { return 'base'; }
       if (node.id === selected) { return 'selected'; }
@@ -648,22 +649,29 @@
       order.sort(function (a, b) { return rank[states[a]] - rank[states[b]] || a - b; });
     }
     const placed = [];
-    const overlaps = function (r) {
-      return placed.some(function (p) {
-        return r.x < p.x + p.w && r.x + r.w > p.x && r.y < p.y + p.h && r.y + r.h > p.y;
+    // Überdeckte Fläche mit allen schon gesetzten Labels (0 = frei)
+    const overlapArea = function (r) {
+      let sum = 0;
+      placed.forEach(function (p) {
+        const ox = Math.min(r.x + r.w, p.x + p.w) - Math.max(r.x, p.x);
+        const oy = Math.min(r.y + r.h, p.y + p.h) - Math.max(r.y, p.y);
+        if (ox > 0 && oy > 0) { sum += ox * oy; }
       });
+      return sum;
     };
+    const cw = this.canvasW, ch = this.canvasH;
+    const inside = function (r) { return r.x >= 0 && r.x + r.w <= cw && r.y >= 0 && r.y + r.h <= ch; };
     const showLabel = new Array(nodes.length);
+    const LAGEN = ['up', 'down', 'right', 'left'];
     order.forEach(function (i) {
-      let r = self.labelRect(screen[i].x, screen[i].y, nodes[i], g, false);
-      if (overlaps(r)) {
-        const below = self.labelRect(screen[i].x, screen[i].y, nodes[i], g, true);
-        if (!overlaps(below)) {
-          r = below;
-        } else if (states[i] === 'dimmed') {
-          r = null;
-        }
+      let r = null, best = null, bestArea = Infinity;
+      for (let k = 0; k < LAGEN.length && !r; k++) {
+        const cand = self.labelRect(screen[i].x, screen[i].y, nodes[i], g, LAGEN[k]);
+        if (k >= 2 && !inside(cand)) { continue; }   // seitlich nur ganz im Bild
+        const area = overlapArea(cand);
+        if (area === 0) { r = cand; } else if (area < bestArea) { best = cand; bestArea = area; }
       }
+      if (!r && states[i] !== 'dimmed') { r = best; }
       showLabel[i] = r;
       if (r) { r.id = nodes[i].id; placed.push(r); }
     });
@@ -703,7 +711,7 @@
         } else {
           ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
         }
-        ctx.fillText(node.label, p.x, label.base);
+        ctx.fillText(node.label, label.tx, label.base);
       }
       ctx.restore();
     });
@@ -728,11 +736,12 @@
       const x0 = r ? Math.min(p.x, r.x) : p.x;
       const x1 = r ? Math.max(p.x, r.x + r.w) : p.x;
       const y0 = r ? Math.min(p.y, r.y) : p.y;
+      const y1 = r ? Math.max(p.y, r.y + r.h) : p.y;
       let out = false;
       if (x0 < m) { left = out = true; }
       if (x1 > w - m) { right = out = true; }
       if (y0 < m) { top = out = true; }
-      if (p.y > h - m) { bottom = out = true; }
+      if (y1 > h - m) { bottom = out = true; }
       if (out) { outside++; }
     });
     this.outside = outside;
@@ -758,14 +767,29 @@
   };
 
   // Ansichtszustand als Attribute am Canvas (Maßstab, Knoten außerhalb bzw.
-  // angeschnitten) —
-  // für Tests und Entwickler-Werkzeuge, ändert nichts an der Darstellung.
+  // angeschnitten, Bildschirmlage des gewählten Knotens) — für Tests und
+  // Entwickler-Werkzeuge, ändert nichts an der Darstellung. Dazu die
+  // Zoom-Knöpfe an den Grenzen als aria-disabled (Rückmeldung für Tastatur
+  // und Screenreader; nicht disabled, sonst ginge ihr Fokus verloren).
   // Nur bei Änderung schreiben (die Loop rendert pro Frame).
   SkillGraph.prototype.publishView = function () {
-    const zoom = this.scale.toFixed(3);
-    const outside = String(this.outside || 0);
-    if (this.canvas.getAttribute('data-zoom') !== zoom) { this.canvas.setAttribute('data-zoom', zoom); }
-    if (this.canvas.getAttribute('data-outside') !== outside) { this.canvas.setAttribute('data-outside', outside); }
+    const canvas = this.canvas;
+    function put(el, name, value) {
+      if (!el) { return; }
+      if (value === null) {
+        if (el.hasAttribute(name)) { el.removeAttribute(name); }
+      } else if (el.getAttribute(name) !== value) {
+        el.setAttribute(name, value);
+      }
+    }
+    put(canvas, 'data-zoom', this.scale.toFixed(3));
+    put(canvas, 'data-outside', String(this.outside || 0));
+    const sel = this.selected !== null ? this.nodeById(this.selected) : null;
+    const p = sel ? this.toScreen(sel) : null;
+    put(canvas, 'data-sel-x', p ? p.x.toFixed(1) : null);
+    put(canvas, 'data-sel-y', p ? p.y.toFixed(1) : null);
+    put(this.zoomInBtn, 'aria-disabled', this.scale >= ZOOM_MAX - 1e-6 ? 'true' : null);
+    put(this.zoomOutBtn, 'aria-disabled', this.scale <= ZOOM_MIN + 1e-6 ? 'true' : null);
   };
 
   // ── Eingabe ─────────────────────────────────────────────────────────────────
@@ -848,7 +872,7 @@
     if (Math.abs(dx) > Math.abs(dy)) {
       // Waagerechtes Wischen (Trackpad) verschiebt
       this.panX -= dx;
-      this.viewMode = null;
+      this.fitted = false;
       this.clampPan();
       this.render();
       return;
@@ -924,7 +948,7 @@
         this.panX = c.x - gs.anchor.x * this.scale;
         this.panY = c.y - gs.anchor.y * this.scale;
       }
-      this.viewMode = null;
+      this.fitted = false;
       this.clampPan();
       if (event.cancelable) { event.preventDefault(); }
       this.render();
@@ -938,7 +962,6 @@
       const dy = pos.y - this.pointerStart.y;
       if (dx * dx + dy * dy < 25) { return; } // 5px-Schwelle: darunter bleibt es ein Klick
       this.dragMoved = true;
-      this.viewMode = null;   // eigener Eingriff: Kamera folgt nicht mehr
     }
     if (event.cancelable) { event.preventDefault(); }
     const node = this.nodeById(this.dragId);

@@ -60,6 +60,15 @@ $breakpoints: (
   xl: $bp-xl,
 );
 
+// Höhen-Grenze (nur Höhe, Mixin down-height): darunter gilt ein Fenster als
+// flach (Telefon quer, kleine Notebook-Fenster). Das Skill-Graph-Sheet nutzt
+// dann fast die volle Höhe, sonst bliebe dem Canvas zu wenig (gemessen 844×390:
+// 156 px). 640px fängt Telefone quer (≤ 430 px) und 1024×600 ein.
+$bp-height-short: 640px;
+$breakpoints-height: (
+  short: $bp-height-short,
+);
+
 // Theme-Anbindung: Minimal Mistakes liest dieselbe Skala (seine Werte sind
 // !default). Eine Änderung oben gilt so für Theme und eigenen Code.
 $small: $bp-sm;

@@ -82,7 +82,8 @@ test.describe('Drawer per Zeiger (A11Y-2, OVL-3)', () => {
 // (seit 2. 10. 2026, vorher Aktivieren + schwebender Öffner). Reduced Motion
 // rechnet das Layout synchron vor, Ansicht und Knotenlage sind dann sofort
 // stabil. Der Maßstab steht als data-zoom am Canvas, die Zahl der Knoten
-// außerhalb bzw. angeschnitten als data-outside (skill-graph.js publishView).
+// außerhalb bzw. angeschnitten als data-outside, die Bildschirmlage des
+// gewählten Knotens als data-sel-x/-y (skill-graph.js publishView).
 async function openSheet(page, before) {
   await page.goto('/auflinie/cv/', { waitUntil: 'load' });
   if (before) await before();
@@ -133,11 +134,13 @@ test.describe('Skill-Graph-Sheet (OVL-3, OVL-4)', () => {
   });
 
   test('Info-Leiste zeigt nach Knotenklick Skill und Projekte, Esc gestaffelt', async ({ page }) => {
-    // Chip vor dem Öffnen wählen: das Sheet öffnet mit Python in der Mitte
+    // Chip vor dem Öffnen wählen: das Sheet hebt Python hervor, wo es liegt
     const { panel, canvas } = await openSheet(page, () =>
       page.locator('.cv-skill-chip__button[data-skill="python"]').click());
     const info = page.locator('[data-role="graph-context"]');
     await expect(info.locator('.cv-skills__selection-skill')).toHaveText('Python');
+    const x = Number(await canvas.getAttribute('data-sel-x'));
+    const y = Number(await canvas.getAttribute('data-sel-y'));
 
     // Erstes Esc löst nur die Auswahl, das Sheet bleibt offen
     await page.keyboard.press('Escape');
@@ -145,8 +148,10 @@ test.describe('Skill-Graph-Sheet (OVL-3, OVL-4)', () => {
     await expect(info).not.toHaveClass(/is-active/);
     await expect(panel).toHaveAttribute('role', 'dialog');
 
-    // Klick auf den Knoten in der Canvas-Mitte (dort liegt Python)
-    await canvas.click();
+    await expect(canvas).not.toHaveAttribute('data-sel-x', /./);
+    // Klick auf den Python-Knoten an seiner Bildschirmlage (die Ansicht hat
+    // sich durch Esc nicht bewegt)
+    await canvas.click({ position: { x, y } });
     await expect(info.locator('.cv-skills__selection-skill')).toHaveText('Python');
     await expect(info.locator('.cv-skills__selection-rolle')).toHaveText(' – gemeinsam im Einsatz bei');
     await expect(info.locator('.cv-skills__selection-projekte')).toContainText(' · ');
@@ -168,6 +173,20 @@ test.describe('Skill-Graph-Sheet (OVL-3, OVL-4)', () => {
         // Greift die Untergrenze 0.6 nicht, liegt alles samt Labels im Bild
         if (zoom > 0.601) expect(await canvas.getAttribute('data-outside')).toBe('0');
       });
+
+      // Owner-Korrektur 2.10.: auch mit Auswahl kein Zentrieren, die Auswahl
+      // wird nur hervorgehoben, wo sie liegt
+      test('Öffnen mit gewähltem Chip: gleiche Ansicht wie ohne Auswahl', async ({ page }) => {
+        const ohne = await openSheet(page);
+        const zoom = await zoomOf(ohne.canvas);
+        const outside = await ohne.canvas.getAttribute('data-outside');
+        const mit = await openSheet(page, () =>
+          page.locator('.cv-skill-chip__button[data-skill="python"]').click());
+        await expect(mit.canvas).toHaveAttribute('data-sel-x', /\d/);
+        expect(await zoomOf(mit.canvas)).toBeCloseTo(zoom, 3);
+        expect(await mit.canvas.getAttribute('data-outside')).toBe(outside);
+        if (zoom > 0.601) expect(outside).toBe('0');
+      });
     });
   }
 
@@ -186,6 +205,86 @@ test.describe('Skill-Graph-Sheet (OVL-3, OVL-4)', () => {
     expect(await zoomOf(canvas)).toBeGreaterThan(fit);
     await page.keyboard.press('0');
     expect(await zoomOf(canvas)).toBeCloseTo(fit, 3);
+  });
+
+  test('Zoom-Grenze: Knopf aria-disabled, bleibt fokussierbar', async ({ page }) => {
+    const { canvas } = await openSheet(page);
+    const plus = page.getByRole('button', { name: /^\+ Vergrößern/ });
+    const minus = page.getByRole('button', { name: /^− Verkleinern/ });
+    await expect(plus).not.toHaveAttribute('aria-disabled', /./);
+    for (let i = 0; i < 12 && !(await plus.getAttribute('aria-disabled')); i++) await plus.click();
+    expect(await zoomOf(canvas)).toBeCloseTo(2.5, 3);
+    await expect(plus).toHaveAttribute('aria-disabled', 'true');
+    await expect(plus).toBeFocused();
+    // Weiter drücken tut nichts, der Fokus bleibt am Knopf
+    await page.keyboard.press('Enter');
+    expect(await zoomOf(canvas)).toBeCloseTo(2.5, 3);
+    await expect(plus).toBeFocused();
+    await minus.click();
+    await expect(plus).not.toHaveAttribute('aria-disabled', /./);
+  });
+
+  test('Nach Klick auf den Canvas wirken die Tasten weiter', async ({ page }) => {
+    const { canvas } = await openSheet(page);
+    const fit = await zoomOf(canvas);
+    // Leere Ecke (Rand-Pfeile und Knoten liegen weiter innen)
+    await canvas.click({ position: { x: 2, y: 2 } });
+    expect(await page.evaluate(() => document.activeElement.getAttribute('data-role'))).toBe('canvas');
+    await page.keyboard.press('+');
+    expect(await zoomOf(canvas)).toBeGreaterThan(fit);
+  });
+
+  test.describe('flaches Fenster (Telefon quer)', () => {
+    test.use({ viewport: { width: 844, height: 390 } });
+
+    test('Sheet fast volle Höhe, Info-Leiste zweizeilig', async ({ page }) => {
+      const { panel } = await openSheet(page);
+      const box = await panel.boundingBox();
+      expect(box.height).toBeGreaterThan(390 * 0.9);
+      const wrap = await page.locator('[data-role="canvas-wrap"]').boundingBox();
+      expect(wrap.height).toBeGreaterThan(200);
+      // Light Dismiss bleibt möglich: oben ein Streifen Scrim
+      expect(box.y).toBeGreaterThan(8);
+    });
+  });
+});
+
+// Ohne Reduced Motion: Die Kamera steht vom ersten Bild an (Layout wird vor
+// dem Einpassen synchron zu Ende gerechnet, Owner-Korrektur 2.10.: der Graph
+// bewegt sich nicht von selbst).
+test.describe('Skill-Graph ohne Reduced Motion', () => {
+  test.use({ contextOptions: { reducedMotion: 'no-preference' } });
+
+  for (const vp of [{ name: 'Desktop', size: { width: 1280, height: 900 } }, { name: 'mobil', size: MOBIL }]) {
+    test(`${vp.name}: keine Kamerafahrt nach dem Öffnen`, async ({ page }) => {
+      await page.setViewportSize(vp.size);
+      const { canvas } = await openSheet(page);
+      const first = await zoomOf(canvas);
+      const outside = await canvas.getAttribute('data-outside');
+      await page.waitForTimeout(1500);
+      expect(await zoomOf(canvas)).toBe(first);
+      expect(await canvas.getAttribute('data-outside')).toBe(outside);
+      if (first > 0.601) expect(outside).toBe('0');
+    });
+  }
+});
+
+// Touch-Hinweis (Owner: Kasten mittig über dem Graphen) in voller Breite:
+// Zeilen brechen nicht mitten in der Phrase um.
+test.describe('Touch-Hinweis', () => {
+  test.use({ viewport: MOBIL, hasTouch: true, isMobile: true, contextOptions: { reducedMotion: 'reduce' } });
+
+  test('mittig über dem Canvas, drei Zeilen', async ({ page }) => {
+    await openSheet(page);
+    const hint = page.locator('.skill-graph__touch-hint');
+    await expect(hint).toHaveClass(/is-show/);
+    const h = await hint.boundingBox();
+    const c = await page.locator('[data-role="canvas-wrap"]').boundingBox();
+    expect(Math.abs(h.x + h.width / 2 - (c.x + c.width / 2))).toBeLessThan(1.5);
+    expect(Math.abs(h.y + h.height / 2 - (c.y + c.height / 2))).toBeLessThan(1.5);
+    const lineHeight = await hint.evaluate((el) => parseFloat(getComputedStyle(el).lineHeight));
+    const pad = await hint.evaluate((el) => parseFloat(getComputedStyle(el).paddingTop) * 2 + 2);
+    expect(Math.round((h.height - pad) / lineHeight)).toBe(3);
   });
 });
 

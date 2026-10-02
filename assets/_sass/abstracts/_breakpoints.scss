@@ -40,6 +40,18 @@ $-gap: 0.02px;
   }
 }
 
+// Unterhalb einer Höhen-Grenze ($breakpoints-height), z. B. flache Fenster:
+//   @include down-height(short) → @media (max-height: 639.98px)
+@mixin down-height($name) {
+  @if not map.has-key($breakpoints-height, $name) {
+    @error "Unbekannte Höhen-Grenze `#{$name}`. Bekannt: #{map.keys($breakpoints-height)}";
+  }
+
+  @media (max-height: map.get($breakpoints-height, $name) - $-gap) {
+    @content;
+  }
+}
+
 // Ab $lower, unterhalb von $upper.
 @mixin between($lower, $upper) {
   @media (min-width: bp($lower)) and (max-width: bp($upper) - $-gap) {

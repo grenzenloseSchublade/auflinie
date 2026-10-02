@@ -111,6 +111,20 @@ $graph-tool-size: 32px;
     outline: 2px solid $hover-color;
     outline-offset: 2px;
   }
+
+  // An der Zoom-Grenze (skill-graph.js publishView): gedämpft, bleibt
+  // fokussierbar (aria-disabled statt disabled)
+  &[aria-disabled="true"] {
+    color: $white-a32;
+    cursor: default;
+
+    @media (hover: hover) {
+      &:hover {
+        border-color: $console-panel-border;
+        color: $white-a32;
+      }
+    }
+  }
 }
 
 // − und +: quadratisch, Zeichen in Grundgröße statt Label-Größe
@@ -133,6 +147,15 @@ $graph-tool-size: 32px;
 
   &.is-active {
     border-left-color: $hover-color-subtle;
+  }
+}
+
+// Flache Fenster (Telefon quer): Info-Leiste auf zwei Zeilen
+@include down-height(short) {
+  body.graph-open :is(.skill-graph, .skill-graph-layer) p.skill-graph__info {
+    @include selection-console-lines(2);
+
+    margin-bottom: $space-2;
   }
 }
 
@@ -204,6 +227,9 @@ body.graph-open .skill-graph__canvas-wrap canvas {
 // Desktop: breit ($graph-sheet-width, Begründung in variables/_layout.scss),
 // oben bleibt ein Streifen Seite sichtbar. Mobil: volle Breite und Höhe bis
 // knapp unter den Masthead (der Scrim deckt ihn ab, Tippen dort schließt).
+// Flache Fenster (Telefon quer, 1024×600): fast volle Höhe, nur ein Streifen
+// Scrim bleibt oben (Light Dismiss). Bis unter den Masthead wäre dort KLEINER
+// als 82vh (390 − 88 − 8 = 294 px gegen 320 px).
 body.graph-open .skill-graph__panel {
   position: fixed;
   left: 50%;
@@ -233,6 +259,21 @@ body.graph-open .skill-graph__panel {
       height: calc(100dvh - var(--masthead-height) - #{$space-2});
     }
   }
+
+  @include down-height(short) {
+    height: calc(100vh - #{$space-6});
+    padding: $space-2 $space-3;
+
+    @supports (height: 100dvh) {
+      height: calc(100dvh - #{$space-6});
+    }
+  }
+}
+
+@include down-height(short) {
+  body.graph-open .skill-graph__head {
+    margin-bottom: $space-2;
+  }
 }
 
 body.graph-open .skill-graph__canvas-wrap {
@@ -243,18 +284,24 @@ body.graph-open .skill-graph__canvas-wrap {
 
 // Touch-Hinweis (Owner: bleibt als Kasten MITTIG über dem Graphen). Vom
 // Sheet-Modul beim ersten Öffnen auf Touch-Geräten eingeblendet, blendet nach
-// ~4.5s aus.
+// ~4.5s aus. Zentriert über inset + margin: auto statt left: 50% — sonst
+// bekäme der Kasten per shrink-to-fit höchstens die halbe Canvas-Breite und
+// bräche mitten in den Zeilen um (gemessen 390 px: 186 von 372 px). Bis auf
+// $space-2 je Seite breit: die längste Zeile braucht samt Innenabstand
+// 338 px, bei 390 px Viewport bleibt es so bei drei Zeilen.
+// Fast deckender Grund: Labels und Kanten scheinen nicht durch.
 .skill-graph__touch-hint {
   position: absolute;
-  top: 50%;
-  left: 50%;
+  inset: 0;
   z-index: $graph-z-touch-hint;
-  transform: translate(-50%, -50%);
-  max-width: 82%;
-  padding: $space-2 $space-4;
+  width: fit-content;
+  height: fit-content;
+  max-width: calc(100% - #{$space-4});
+  margin: auto;
+  padding: $space-2 $space-3;
   border: 1px solid $console-panel-border;
   border-radius: $radius-xl;
-  background: $black-a68;
+  background: $console-panel-bg-a96;
   color: $white-a90;
   font-family: $mono-font-stack;
   font-size: $fs-label;

@@ -119,11 +119,12 @@
 // im Graph-Sheet (_skill-graph.scss). Die Höhe rechnet mit 1.5em je Zeile,
 // der Aufrufer sichert line-height daher mit einem p-qualifizierten Selektor.
 @mixin selection-console($lines: 3, $lines-narrow: 4) {
+  @include selection-console-lines($lines);
+
   font-size: $fs-body-sm;
   line-height: 1.5;
   color: $fg-muted;
   box-sizing: border-box;
-  height: calc(#{$lines} * 1.5em + 0.8rem);
   overflow-y: auto;
   padding: $space-2 $space-3;
   background: $inset-panel-bg;
@@ -132,8 +133,15 @@
   transition: border-color $duration-base ease;
 
   @include down(content) {
-    height: calc(#{$lines-narrow} * 1.5em + 0.8rem);
+    @include selection-console-lines($lines-narrow);
   }
+}
+
+// Nur die Höhe der Auswahl-Konsole (Zeilen × 1.5em plus Innenabstand), für
+// Abwandlungen ohne die übrigen Eigenschaften neu zu setzen (z. B. flache
+// Fenster im Graph-Sheet, dort bleibt die Magenta-Hairline von .is-active).
+@mixin selection-console-lines($lines) {
+  height: calc(#{$lines} * 1.5em + 0.8rem);
 }
 
 // Sektions-Header: ruhige weiße Überschrift mit Hairline
