@@ -26,7 +26,12 @@
 <link rel="icon" type="image/png" sizes="32x32" href="{{ site.baseurl }}/assets/images/favicon-32x32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="{{ site.baseurl }}/assets/images/favicon-16x16.png">
 <link rel="apple-touch-icon" sizes="180x180" href="{{ site.baseurl }}/assets/images/apple-touch-icon.png">
-<meta name="theme-color" content="#1a1a1a">
+{%- comment -%} Nur dunkel (STYLEGUIDE DES-8): color-scheme lässt native Controls und
+Scrollbars dunkel rendern, theme-color färbt die mobile Browserleiste im
+Seitengrund. #252a34 = $page-bg (variables/_colors.scss), wie body im
+Critical-CSS (_layouts/default.html). Wer den Token ändert, zieht beide nach. {%- endcomment %}
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#252a34">
 
 {% if site.background_image %}
 <link rel="preload" as="image" href="{{ site.background_image | relative_url }}">
