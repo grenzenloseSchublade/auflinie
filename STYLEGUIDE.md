@@ -66,7 +66,7 @@ Durchsetzung:
 
 ### 1.4 Ausnahmen
 
-- **GOV-3** [MUSS · Ist · CI] Ausnahme-Marker stehen **in der Zeile direkt über** der betroffenen Stelle und nennen die Regel-ID oder Kategorie und einen Grund. Die Guardrails (16.1) erkennen `fs`-, `farb`-, `bp`- und `skala`-Marker nur dort oder als `[Block]`-Paar.
+- **GOV-3** [MUSS · Ist · CI] Ausnahme-Marker stehen **in der Zeile direkt über** der betroffenen Stelle und nennen die Regel-ID oder Kategorie und einen Grund. Die Guardrails (16.1) erkennen `fs`- und `bp`-Marker nur dort, `farb`- und `skala`-Marker zusätzlich als `[Block]`-Paar (Anfang und `-Ende`).
 
 ```scss
 // fs-Ausnahme: Hero-em-System, skaliert mit dem Titel
@@ -455,7 +455,7 @@ Die CSS-Schlüsselwörter `ease`, `ease-out` und `linear` bleiben erlaubt.
 - **MO-4** [MUSS · Ist · Review] Choreografien stehen außerhalb der UI-Skala und behalten benannte lokale Variablen am Dateikopf: View Transition, CRT, Neon, Logo-Flackern **und der Drawer**. Ihre Literale tragen `skala-Ausnahme`-Marker statt UI-Tokens, damit ein gleicher Zahlenwert sie nicht an die UI-Skala koppelt. Die Drawer-Werte sind abgenommen und gekoppelt: VT-Exit `vt-drawer-exit` (`200ms`) und `$crt-drawer-offset` in `_view-transition.scss`, Slide `0.3s` / `0.24s` in `_masthead.scss`, Fallback-Timer in `greedy-navigation.js` (`320` nach dem Slide-Out, `360` für `inert` nach dem Slide-In). Sie werden nur gemeinsam geändert.
 - **MO-5** [SOLL · Soll · Review] CSS ist die Quelle für Dauern. JS liest Custom Properties über einen gemeinsamen Helfer (s- und ms-fähig, Vorbild `hero-crt.js` `readHeroCrtFlashDurationMs`, Ziel `cssDurationMs` in `site-utils.js`, siehe JS-18). Fallbacks gleichen dem Token exakt. Wird MUSS, sobald der Helfer existiert.
 - **MO-6** [MUSS · Soll · Review] `transitionend` und `animationend` filtern auf `target` und `propertyName` bzw. `animationName`. Vorbilder: `greedy-navigation.js` (`onSlideEnd`, `onOpenEnd`), `hero-crt.js` (`onAnimationEnd`). Bestand: R-57.
-- **MO-7** [SOLL · Ist · Review] Hover-Lift höchstens zwei Stufen (Buttons `-2px`, Karten `-3px`). Erfüllt: `_buttons.scss` `-2px`, Beitragskarten und Kontakt-Karten `-3px`.
+- **MO-7** [SOLL · Soll · Review] Hover-Lift höchstens zwei Stufen (Buttons `-2px`, Karten `-3px`). Erfüllt in `_buttons.scss` (`-2px`), Beitrags- und Kontakt-Karten (`-3px`). Offen: `.entries-grid .archive__item:hover` nutzt noch `$hover-transform` (`-5px`) auf der Startseite.
 
 ---
 
@@ -640,7 +640,7 @@ Ziel: **WCAG 2.2 AA** als freiwillige Selbstverpflichtung. Rechtsrahmen: Das B
 
 ### 6.5 Dokumentierte bewusste Ausnahmen
 
-**CRT-Hero, Neon-Schriftzug und Logo-Flackern laufen auch bei `prefers-reduced-motion: reduce` endlos** (Owner-Entscheidung vom Juli 2026, am 1. 10. 2026 bestätigt: „das soll ja so, es sind Stilelemente“). Ehrliche Bewertung:
+**CRT-Hero und Neon-Schriftzug laufen auch bei `prefers-reduced-motion: reduce` endlos** (das Logo-Flackern steht nicht in den Ausnahmen des Kill-Switches und hält bei Reduced Motion an) (Owner-Entscheidung vom Juli 2026, am 1. 10. 2026 bestätigt: „das soll ja so, es sind Stilelemente“). Ehrliche Bewertung:
 
 - **2.3.3 (AAA)** ist keine AA-Pflicht. Die Ausnahme ist dort zulässig.
 - **2.2.2 (Level A) ist nicht erfüllt.** Rollbalken, Scanline-Jitter, Phosphor-Flackern, Neon-Flicker und das Logo-Flackern starten automatisch und laufen endlos. Der einzige Stopp-Mechanismus ist der Power-Button (Lesemodus). Er existiert nur auf `/`, wird nicht gespeichert und stoppt Neon und Logo nicht.
@@ -1085,7 +1085,7 @@ Co-Authored-By: …
 - **GIT-1** [MUSS · Ist · CI-P3] Betreff beschreibt das Ergebnis, Groß- und Kleinschreibung nach deutscher Rechtschreibung, kein Schlusspunkt. Ziel höchstens 72 Zeichen, hart höchstens 100. Aufzählungen in den Body.
 - **GIT-2** [MUSS · Ist · Review] Body bei nicht trivialen Änderungen: Warum, Ursache, wie verifiziert.
 - **GIT-3** [MUSS · Ist · Review] `#N` nur für echte GitHub-Issues und -PRs. Interne Aufgaben als Issue anlegen oder mit `T-N` kennzeichnen.
-- **GIT-7** [MUSS · Ist · CI-P3] Typen (abschließend):
+- **GIT-7** [MUSS · Soll · CI-P3] Typen (abschließend). Noch nicht durchgehend eingehalten (z. B. `style(scss)` für einen reinen Formatierungs-Commit, 08bae3c), Prüfung per commitlint geplant:
 
 | Typ | Bedeutung |
 |---|---|
@@ -1248,7 +1248,7 @@ Stand: Abgleich vom 2. 10. 2026 (Kopf). Ein Eintrag verschwindet, sobald der C
 | R-50 | SCSS-10 | Minimal Mistakes 4.28.1 setzt `.page__content :first-child { margin-top: 0 }` (PR #5103, gemeint war nur das erste Inhaltselement neben der TOC). Die Regel trifft jedes erste Kind in der Tiefe. Gegenmittel mit Spiegelwerten in `theme-overrides/_first-child.scss`, H2-Probe in `assets/css/styleguide.scss`. Wer einen gespiegelten Wert ändert, zieht ihn dort nach | – | upstream melden, Datei entfernen, sobald das Theme die Regel auf direkte Kinder begrenzt |
 | R-51 | 3.1.2 (6.1) | Minimal Mistakes 4.28.1 schreibt englische `aria-label` fest ins Markup. Deutsch überschrieben: `skip-links.html`, `post_pagination.html`, Masthead. Offen: `paginator-v2.html` („Pagination“), erscheint erst ab dem siebten Beitrag (`per_page: 6`) | – | Owner: beim ersten Blättern überschreiben oder upstream `ui-text`-Keys anregen |
 | R-52 | FARB-2, FARB-3, FARB-4 (1.4.11) | Hamburger-Balken (`_masthead.scss`) und Back-to-Top (Rand, Icon, `_back-to-top.scss`) nur in `$link-color-subtle`, 2,50 bis 2,63:1 als UI-Grafik (6.4). Platzhalter im Fraktal-Preset-Feld `$white-a50` (`fractal-panel/_controls.scss`, 5,0:1, unter `$fg-subtle`) | B-F06 | Owner (sichtbar) |
-| R-53 | FARB-8 | Farbwerte in JS: Fallbacks in `neon-orbit-toggle.js` in `rgba(…, 0.85)`-Notation, Paletten in `fractal-renderer.js` teils mit großem Hex (Daten nach JS-9, nur die Notation zählt) | B-F19 | Code |
+| R-53 | FARB-8 | Farbwerte in JS: Fallbacks in `neon-orbit-toggle.js` in `rgba(…, 0.85)`-Notation, Paletten in `fractal-renderer.js` teils mit großem Hex (Daten nach JS-9, nur die Notation zählt), Fehler-Fallback `backgroundColor = '#1a1a1a'` in `hero-crt.js`. Dazu SCSS-7: das Keyframe `fade-out` in `base/_animations.scss` ist ungenutzt | B-F19 | Code |
 | R-54 | TYP-3, TYP-8 | `$fs-label-xs` (10,9 px) für funktionalen Text: Button-Text der Fraktal-Toolbar mobil (`fractal-panel/_toolbar.scss`), Copyright-Zeile im Footer. `font-weight: bold` in `_about.scss`, `fractal-panel/_states.scss` (2×) und `_cv.scss` | – | TYP-3: Owner (sichtbar), TYP-8: Code (`bold` = `700`), `_cv.scss`: Track |
 | R-55 | BP-3, BP-4 | Von 59 `:hover`-Stellen stehen 6 in `@media (hover: hover)`. 40 `down()` gegen 9 `up()` | – | Code bei Berührung (unter BP-6) |
 | R-56 | KOMP-2, KOMP-4 | `:focus` als Stil-Selektor in `btn-role-primary` und `btn-role-outline` (`abstracts/_mixins.scss`), `_back-to-top.scss`, `_masthead.scss` (2×), `fractal-panel/_controls.scss` (2×). Mixin `focus-ring()` fehlt | – | Code mit Vorher/Nachher (der Fokusstil nach Mausklick entfällt sichtbar) |
