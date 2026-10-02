@@ -1,30 +1,37 @@
 {% comment %}
-  Experimentelles Skill-Graph-Panel (Stufe 2 des Skill-Features).
+  Skill-Graph-Panel (Stufe 2 des Skill-Features).
   Gated über page.skill_graph.stage2 (siehe cv/skills.html); die Chip-Liste
   darüber bleibt immer die kanonische, vollständige Darstellung.
   Logik: assets/js/skill-graph.js (+ DOM-freie Engine skill-graph-sim.js),
+  Präsentation als modales Sheet: assets/js/skill-graph-sheet.js.
   Daten: dasselbe JSON-Tag [data-skill-graph-data] wie Stufe 1.
+  Ein Knopf öffnet das Sheet direkt. Ohne Sheet-Modul klappt das Panel
+  inline auf (Progressive Enhancement).
+  Kopfleiste: zugängliche Namen beginnen mit dem sichtbaren Text (WCAG 2.5.3,
+  STYLEGUIDE 7.7 „Reset“).
 {% endcomment %}
 <div class="skill-graph" data-skill-graph>
-  <div class="skill-graph__bar">
-    <button type="button" class="skill-graph__activate"
-            data-role="graph-activate" aria-pressed="false">Graph aktivieren</button>
-    <span class="wip-badge">Experimentell</span>
-  </div>
-  {%- comment -%} Stufe 2: floatender Öffner – nur im Graph-Modus + im Kapitel (CSS/JS) {%- endcomment -%}
-  <button type="button" class="skill-graph__floating"
-          data-role="graph-toggle" aria-expanded="false">Graph anzeigen</button>
-  <div class="skill-graph__panel" data-role="graph-panel" hidden>
+  <button type="button" class="skill-graph__open" data-role="graph-toggle"
+          aria-expanded="false" aria-controls="skill-graph-panel">Als Graph anzeigen</button>
+  <div class="skill-graph__panel" id="skill-graph-panel" data-role="graph-panel" hidden>
     <div class="skill-graph__head">
-      <p class="skill-graph__note">Experimentelle Ansicht – Ein Klick hebt verbundene Skills hervor, Knoten lassen sich ziehen.</p>
-      <button type="button" class="skill-graph__reset" data-role="graph-reset" aria-label="Reset – Ansicht zurücksetzen" title="Zurücksetzen">
-        <i class="fas fa-undo" aria-hidden="true"></i> Reset
-      </button>
+      <div class="skill-graph__tools">
+        <button type="button" class="skill-graph__tool skill-graph__tool--icon" data-role="graph-zoom-out"
+                aria-label="− Verkleinern" title="Verkleinern"><span aria-hidden="true">−</span></button>
+        <button type="button" class="skill-graph__tool skill-graph__tool--icon" data-role="graph-zoom-in"
+                aria-label="+ Vergrößern" title="Vergrößern"><span aria-hidden="true">+</span></button>
+        <button type="button" class="skill-graph__tool" data-role="graph-fit"
+                aria-label="Einpassen – ganzen Graphen zeigen" title="Einpassen">Einpassen</button>
+        <button type="button" class="skill-graph__tool skill-graph__reset" data-role="graph-reset"
+                aria-label="Reset – Ansicht zurücksetzen" title="Zurücksetzen">
+          <i class="fas fa-undo" aria-hidden="true"></i> Reset
+        </button>
+      </div>
     </div>
+    <p class="skill-graph__info" data-role="graph-context" aria-live="polite">Ein Klick auf einen Skill zeigt verwandte Skills und gemeinsame Projekte.</p>
     <div class="skill-graph__canvas-wrap" data-role="canvas-wrap">
       <canvas data-role="canvas" role="img"
-              aria-label="Netzdiagramm der Skills, verbunden über gemeinsame Projekte. Die vollständigen Informationen stehen in der Liste darüber."></canvas>
+              aria-label="Netzdiagramm der Skills, verbunden über gemeinsame Projekte. Die vollständigen Informationen stehen in der Skill-Liste des Lebenslaufs."></canvas>
     </div>
-    <p class="skill-graph__context" data-role="graph-context" aria-live="polite"></p>
   </div>
 </div>

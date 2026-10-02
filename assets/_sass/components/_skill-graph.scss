@@ -1,154 +1,27 @@
-// Experimentelles Skill-Graph-Panel (Stufe 2) —
+// Skill-Graph-Panel (Stufe 2 des Skill-Features) —
 // Markup: _includes/cv/skill-graph.html, Logik: assets/js/skill-graph.js
-// (+ DOM-freie Engine skill-graph-sim.js). Die Chip-Liste bleibt kanonisch.
+// (+ DOM-freie Engine skill-graph-sim.js), Präsentation als modales Sheet:
+// assets/js/skill-graph-sheet.js. Die Chip-Liste bleibt kanonisch.
 
 @use "abstracts/tokens" as *;
 @use "abstracts/mixins" as *;
 @use "abstracts/breakpoints" as *;
 
+// Lokale Ebene im Canvas-Rahmen (isolation: isolate)
 // skala-Ausnahme: lokale Ebene (Z-2), Touch-Hinweis über dem Canvas
 $graph-z-touch-hint: 3;
+
+// Zielgröße der Kopfleisten-Knöpfe (WCAG 2.5.8: mindestens 24 px), gleich
+// hoch wie der Schließen-Knopf, damit die Leiste eine Linie bildet
+$graph-tool-size: 32px;
 
 .skill-graph {
   margin-top: $space-6;
 }
 
-.skill-graph__bar {
-  display: flex;
-  align-items: center;
-  gap: $space-3;
-}
-
-// Generisches Beta-/WIP-Badge: Pill mit Cyan-subtle-Rand, bewusst dezent
-// (kein Magenta — das bleibt der Interaktion vorbehalten)
-.wip-badge {
-  @include mono-label($fs-label-xs, 0.07em); // 0.62→0.68 (K6, Skalen-Hygiene)
-
-  border: 1px solid $link-color-subtle;
-  border-radius: $radius-pill;
-  padding: $space-1 $space-2;
-  color: $fg-subtle;
-}
-
-.skill-graph__panel {
-  @include card-panel(0);
-
-  margin-top: $space-3;
-  padding: $space-4;
-
-  @include down(content) {
-    padding: $space-2;
-  }
-}
-
-// Kopfzeile des Panels: Hinweis links, Reset-Button rechts
-.skill-graph__head {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: $space-3;
-  margin: 0 0 $space-3;
-}
-
-// p-qualifiziert (0,2,1): die Theme-Regel .page__content p (1em) und die
-// CV-Absatz-Regel machten font-size/line-height/margin sonst wirkungslos
-:is(.skill-graph, .skill-graph-layer) p.skill-graph__note {
-  font-size: $fs-ui;
-  line-height: 1.5;
-  color: $fg-subtle;
-  margin: 0;
-  flex: 1;
-}
-
-// Layout zurücksetzen: dezenter Mono-Button, rechts neben dem Hinweis
-.skill-graph__reset {
-  @include mono-label($fs-label, 0.06em);
-
-  flex-shrink: 0;
-  display: inline-flex;
-  align-items: center;
-  gap: $space-1;
-  background: transparent;
-  border: 1px solid $console-panel-border;
-  border-radius: $radius-md;
-  color: $fg-subtle;
-  padding: $space-1 $space-2;
-  cursor: pointer;
-  transition: border-color $duration-base ease, color $duration-base ease;
-
-  @media (hover: hover) {
-    &:hover {
-      border-color: $link-color-subtle;
-      color: $white-a80;
-    }
-  }
-
-  &:focus-visible {
-    outline: 2px solid $hover-color;
-    outline-offset: 2px;
-  }
-}
-
-.skill-graph__canvas-wrap {
-  // Etwas mehr Fläche fürs Graph-Panel (mehr Luft für die Knoten)
-  height: clamp(360px, 55vh, 560px);
-
-  canvas {
-    display: block;
-    width: 100%;
-    height: 100%;
-    cursor: grab; // Pan-Affordanz (Desktop: Maus-Drag verschiebt die Ansicht)
-
-    // Seite bleibt über dem Canvas vertikal scrollbar (Touch); waagerechtes
-    // Ziehen von Knoten wird als Pointer-Geste geliefert. Für volles Ziehen
-    // auf Touch (auch senkrecht) müsste hier "none" stehen — Trade-off: dann
-    // scrollt die Seite nicht mehr über dem Canvas.
-    touch-action: pan-y;
-  }
-}
-
-// p-qualifiziert wie die Note — erst dadurch stimmt auch der Höhen-calc:
-// er rechnet mit 1.5em der EIGENEN Größe (vorher gewann Theme 1em/1.6
-// und die dritte Zeile clippte)
-:is(.skill-graph, .skill-graph-layer) p.skill-graph__context {
-  font-size: $fs-body-sm;
-  line-height: 1.5;
-  color: $fg-subtle;
-
-  // Feste Höhe + internes Scrollen — kein Layout-Sprung bei Auswahlwechsel
-  // (analog .cv-skills__selection-info)
-  box-sizing: border-box;
-  height: calc(3 * 1.5em);
-  overflow-y: auto;
-  margin: $space-3 0 0;
-
-  @include down(content) {
-    height: calc(4 * 1.5em);
-  }
-}
-
-// Druckansicht: die Chip-Liste ist vollständig, der Graph entfällt
-@media print {
-  .skill-graph {
-    display: none;
-  }
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// Präsentation (Wrapper — assets/js/skill-graph-sheet.js). Graph-KERN
-// (skill-graph.js) unangetastet. Zwei Stufen:
-//   1) Statischer Button „Graph aktivieren" schaltet den Modus; IM Kapitel
-//      (body.graph-here) erscheint ein floatender Öffner unten, die sticky TOC
-//      weicht — nur hier, nicht global.
-//   2) Der floatende Button öffnet das Panel NON-MODAL als Bottom-Sheet
-//      (body.graph-open): kein Scrim, kein Scroll-Lock — die Chips bleiben live
-//      und steuern den Graphen.
-// Auswahl-Konsole = Sektions-Zeile .cv-skills__selection-info (immer sticky, in
-// _cv.scss); die Panel-interne Zeile entfällt im Sheet.
-// ─────────────────────────────────────────────────────────────────────────────
-
-// Stufe 1: statischer Modus-Schalter (in der Bar, im Fluss)
-.skill-graph__activate {
+// Öffner unter den Chips: ein Knopf, öffnet direkt das Sheet (ohne Sheet-
+// Modul klappt er das Panel inline auf). Ruhig: Cyan-subtle-Rand, Mono.
+.skill-graph__open {
   @include mono-label($fs-label, 0.05em);
 
   display: inline-flex;
@@ -174,55 +47,64 @@ $graph-z-touch-hint: 3;
     outline-offset: 2px;
   }
 
-  &[aria-pressed="true"] {
+  &[aria-expanded="true"] {
     border-color: $hover-color-subtle;
     color: $white-a95;
   }
 }
 
-// Einmaliges Aufglimmen (Discovery) — getriggert von skill-graph-sheet.js beim
-// ersten Erreichen des Kapitels, session-gated. Wie der Hero-Power-Button.
-@keyframes graph-activate-glow {
-  0%,
-  100% {
-    box-shadow: 0 0 0 0 $cyan-a00;
-    border-color: $link-color-subtle;
-  }
+.skill-graph__panel {
+  @include card-panel(0);
 
-  50% {
-    box-shadow: $glow-hint;
-    border-color: $link-color;
+  margin-top: $space-3;
+  padding: $space-4;
+
+  @include down(content) {
+    padding: $space-2;
   }
 }
 
-.skill-graph__activate.is-hint {
-  // skala-Ausnahme: Hinweis-Puls über 500 ms, keine UI-Übergangsdauer (MO-4)
-  animation: graph-activate-glow 1.1s ease 2;
+// Kopfleiste: Ansichts-Knöpfe links, Schließen (vom Sheet-Modul injiziert)
+// rechts außen
+.skill-graph__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: $space-3;
+  margin: 0 0 $space-3;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .skill-graph__activate.is-hint {
-    animation: none;
-  }
-}
-
-// Stufe 2: floatender Öffner (= der bestehende Toggle). Basis versteckt.
-.skill-graph__floating {
-  @include mono-label($fs-label, 0.05em);
-
-  display: none;
+.skill-graph__tools {
+  display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: $space-2;
-  padding: $space-2 $space-4;
-  background: $console-panel-bg;
-  border: 1px solid $link-color-subtle;
-  border-radius: $radius-pill;
-  box-shadow: $shadow-float;
-  color: $white-a92;
+}
+
+// Ansichts-Knöpfe (−, +, Einpassen, Reset): dezenter Mono-Button
+.skill-graph__tool {
+  @include mono-label($fs-label, 0.06em);
+
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: $space-1;
+  box-sizing: border-box;
+  min-height: $graph-tool-size;
+  background: transparent;
+  border: 1px solid $console-panel-border;
+  border-radius: $radius-md;
+  color: $fg-subtle;
+  padding: $space-1 $space-2;
   cursor: pointer;
+  transition: border-color $duration-base ease, color $duration-base ease;
 
   @media (hover: hover) {
-    &:hover { border-color: $link-color; }
+    &:hover {
+      border-color: $link-color-subtle;
+      color: $white-a80;
+    }
   }
 
   &:focus-visible {
@@ -231,81 +113,66 @@ $graph-z-touch-hint: 3;
   }
 }
 
-// Im Graph-Modus UND im Kapitel: unten schwebend einblenden. bottom als calc,
-// damit der Button dem Seiten-Footer ausweicht (Footer-Ride wie Back-to-Top,
-// --graph-float-push wird von skill-graph-sheet.js gesetzt).
-body.graph-here .skill-graph__floating {
-  position: fixed;
-  bottom: calc(20px + var(--graph-float-push, 0px));
-  left: 50%;
-  z-index: $z-graph-float;
-  display: inline-flex;
-  transform: translateX(-50%);
+// − und +: quadratisch, Zeichen in Grundgröße statt Label-Größe
+.skill-graph__tool--icon {
+  min-width: $graph-tool-size;
+  font-size: $fs-base;
+  line-height: 1;
 }
 
-// Bei offenem Graph den Floating-Button ausblenden (das Sheet ist da)
-body.graph-open .skill-graph__floating {
-  display: none;
-}
+// Info-Leiste oben im Sheet: exakt die Konsole über den Chips (Mixin
+// selection-console, Inhalt über SkillGraphData.renderSelection). Bei aktiver
+// Auswahl Magenta-Hairline wie dort (.has-selection).
+// p-qualifiziert (0,2,1) gegen Theme- und CV-Absatzregeln, die Höhe rechnet
+// mit 1.5em je Zeile.
+:is(.skill-graph, .skill-graph-layer) p.skill-graph__info {
+  @include selection-console;
 
-// Aufglimmen des Floating-Öffners, wenn er nach dem Aktivieren auftaucht — er
-// geht sonst leicht unter. Bewusst DEUTLICHER als der Aktivieren-Button:
-// stärkerer Cyan-Glow + leichter Scale-Puls, 3x. translateX(-50%) muss im
-// Keyframe erhalten bleiben (der Button ist fixed + zentriert).
-@keyframes graph-floating-glow {
-  0%,
-  100% {
-    box-shadow: $shadow-float, 0 0 0 0 $cyan-a00;
-    border-color: $link-color-subtle;
-    transform: translateX(-50%) scale(1);
-  }
+  flex-shrink: 0;
+  margin: 0 0 $space-3;
 
-  50% {
-    box-shadow: $shadow-float, $glow-hint-strong;
-    border-color: $link-color;
-    transform: translateX(-50%) scale(1.06);
+  &.is-active {
+    border-left-color: $hover-color-subtle;
   }
 }
 
-.skill-graph__floating.is-hint {
-  // skala-Ausnahme: Hinweis-Puls über 500 ms, keine UI-Übergangsdauer (MO-4)
-  animation: graph-floating-glow 0.95s ease 3;
-}
+.skill-graph__canvas-wrap {
+  // Inline (ohne Sheet-Modul): feste Fläche im Lesefluss
+  height: clamp(360px, 55vh, 560px);
 
-@media (prefers-reduced-motion: reduce) {
-  .skill-graph__floating.is-hint {
-    animation: none;
+  // Bezugsrahmen für den Touch-Hinweis (mittig über dem Graphen) und eigener
+  // Stapel für dessen lokale Ebene (Z-2)
+  position: relative;
+  isolation: isolate;
+
+  canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+    cursor: grab; // Pan-Affordanz (Desktop: Maus-Drag verschiebt die Ansicht)
+
+    // Inline bleibt die Seite über dem Canvas vertikal scrollbar (Touch,
+    // OVL-1-Ausnahme für eingebettete Flächen). Im Sheet gehört jede Geste
+    // dem Graphen (unten, body.graph-open).
+    touch-action: pan-y;
   }
 }
 
-// Im Kapitel + Modus: sticky TOC weicht (mehr Platz) — NUR hier, nicht global
-body.graph-here .toc-sticky-mobile {
-  display: none;
+// Druckansicht: die Chip-Liste ist vollständig, der Graph entfällt
+@media print {
+  .skill-graph {
+    display: none;
+  }
 }
 
-body.graph-here .sidebar__right .toc {
-  display: none;
-}
-
-// Der Floating-Öffner belegt die Mitte unten — der Back-to-Top-Button säße genau
-// dort. Solange der Floating-Graph aktiv ist, tritt Back-to-Top zurück.
-body.graph-here .back-to-top {
-  display: none;
-}
-
-// Best practice: sticky-Offsets koordinieren. Ist die TOC im Kapitel
-// ausgeblendet, darf die Konsole deren Höhe nicht mehr reservieren — toc.js
-// hält --sticky-toc-height sonst auf dem alten Wert (die Leiste ist nur per CSS
-// weg). Also Offset OHNE TOC-Höhe, damit keine Lücke/kein Konflikt entsteht.
-body.graph-here .cv-skills p.cv-skills__selection-info {
-  top: calc(var(--masthead-height) + 8px);
-}
-
-// ── Modales Bottom-Sheet (body.graph-open, seit 1.10.2026) ──────────────────
-// skill-graph-sheet.js verschiebt das Panel beim Öffnen in .skill-graph-layer
-// direkt unter <body>: Scrim davor, Rest der Seite inert, Scroll gesperrt.
-// Ebenen $z-sheet und $z-sheet-panel (variables/_scales.scss): über dem
-// Masthead, unter Hinweis und Toasts.
+// ─────────────────────────────────────────────────────────────────────────────
+// Modales Sheet (body.graph-open, seit 1.10.2026; Wrapper skill-graph-sheet.js)
+// Der Öffner unter den Chips ruft das Panel über skill-graph.js auf, das
+// Sheet-Modul verschiebt es in .skill-graph-layer direkt unter <body>: Scrim
+// davor, Rest der Seite inert, Scroll gesperrt. Ebenen $z-sheet und
+// $z-sheet-panel (variables/_scales.scss): über dem Masthead, unter Hinweis
+// und Toasts.
+// ─────────────────────────────────────────────────────────────────────────────
 
 html.graph-scroll-lock {
   overflow: hidden;
@@ -329,18 +196,22 @@ html.graph-scroll-lock {
   .skill-graph__scrim { animation: none; }
 }
 
-// Im Sheet gehört jede Touch-Geste dem Graphen (Ein-Finger-Pan, Knoten ziehen)
+// Im Sheet gehört jede Touch-Geste dem Graphen (Pan, Pinch, Knoten ziehen)
 body.graph-open .skill-graph__canvas-wrap canvas {
   touch-action: none;
 }
 
+// Desktop: breit ($graph-sheet-width, Begründung in variables/_layout.scss),
+// oben bleibt ein Streifen Seite sichtbar. Mobil: volle Breite und Höhe bis
+// knapp unter den Masthead (der Scrim deckt ihn ab, Tippen dort schließt).
 body.graph-open .skill-graph__panel {
   position: fixed;
   left: 50%;
   bottom: 0;
   z-index: $z-sheet-panel;
-  width: min(760px, 94vw);
-  height: 68vh;
+  box-sizing: border-box;
+  width: min(#{$graph-sheet-width}, 94vw);
+  height: 82vh;
   margin: 0;
   transform: translateX(-50%);
   border: 1px solid $console-panel-border;
@@ -348,9 +219,20 @@ body.graph-open .skill-graph__panel {
   box-shadow: $shadow-sheet;
   display: flex;
   flex-direction: column;
+  overscroll-behavior: contain;
   opacity: 1;
   transition: opacity $duration-base ease;
   animation: graph-sheet-up $duration-moderate $ease-decelerate;
+
+  @include down(md) {
+    width: 100%;
+    height: calc(100vh - var(--masthead-height) - #{$space-2});
+
+    // dvh folgt der sichtbaren Fläche, wenn die Browserleiste ein-/ausfährt
+    @supports (height: 100dvh) {
+      height: calc(100dvh - var(--masthead-height) - #{$space-2});
+    }
+  }
 }
 
 body.graph-open .skill-graph__canvas-wrap {
@@ -359,13 +241,9 @@ body.graph-open .skill-graph__canvas-wrap {
   min-height: 0;
 }
 
-// Panel-interne Kontextzeile entfällt im Sheet (Sektions-Konsole zeigt die Auswahl)
-body.graph-open p.skill-graph__context {
-  display: none;
-}
-
-// Touch-Onboarding-Pille „Zwei Finger verschieben" — von skill-graph-sheet.js
-// beim ersten Öffnen auf Touch eingeblendet, blendet nach ~4.5s aus.
+// Touch-Hinweis (Owner: bleibt als Kasten MITTIG über dem Graphen). Vom
+// Sheet-Modul beim ersten Öffnen auf Touch-Geräten eingeblendet, blendet nach
+// ~4.5s aus.
 .skill-graph__touch-hint {
   position: absolute;
   top: 50%;
@@ -392,15 +270,15 @@ body.graph-open p.skill-graph__context {
   opacity: 1;
 }
 
-// Injizierter Schließen-Button — sitzt als Flex-Item in der Panel-Kopfzeile
-// (neben „Zurücksetzen", daher kein Überlappen), nur im offenen Sheet sichtbar.
+// Injizierter Schließen-Button — sitzt als letztes Flex-Item rechts außen in
+// der Kopfleiste, nur im offenen Sheet sichtbar.
 .skill-graph__sheet-close {
   display: none;
   flex-shrink: 0;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
+  width: $graph-tool-size;
+  height: $graph-tool-size;
   border: 1px solid $console-panel-border;
   border-radius: $radius-lg;
   background: $console-panel-bg;

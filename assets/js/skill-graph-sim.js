@@ -16,7 +16,8 @@
  *   sim.resize(w,h) → Positionen proportional auf neue Fläche skalieren
  *
  * Erweiterungspunkte:
- * - Parameter über options überschreibbar (siehe DEFAULTS).
+ * - Parameter über options überschreibbar (siehe DEFAULTS), auch zur
+ *   Laufzeit über sim.opts (z. B. aspect nach einem Resize).
  * - Export über self/window: die Datei ist ohne Änderung per importScripts
  *   in einen Web Worker verschiebbar (kein DOM-Zugriff).
  * - Neue Knotentypen (z. B. Projekt-Knoten) brauchen hier nichts — nur
@@ -33,7 +34,14 @@
     velocityDecay: 0.6,  // Faktor pro Tick (entspricht d3 velocityDecay 0.4)
     alphaDecay: 0.0228,  // → ~300 Ticks bis Stillstand (d3-Default)
     alphaMin: 0.001,
-    padding: 24          // Mindestabstand zum Rand
+    padding: 24,         // Mindestabstand zum Rand
+    // Seitenverhältnis (Breite/Höhe) der Anzeigefläche. Die Gravitation zieht
+    // waagerecht mit gravity/aspect und senkrecht mit gravity·aspect: die
+    // Wolke übernimmt so ungefähr das Format der Fläche (gemessen 2.10.2026
+    // mit den CV-Daten: Canvas 2,07 → Wolke 1,82, Canvas 0,66 → Wolke 0,65;
+    // isotrop blieb sie bei ~0,93 und ließ breite wie hohe Flächen halb leer).
+    // 1 = isotrop wie bisher.
+    aspect: 1
   };
 
   function SkillGraphSim(nodes, edges, width, height, options) {
@@ -94,9 +102,12 @@
       target.vx -= sx; target.vy -= sy;
     }
 
-    // Zentrums-Gravitation, Integration, Temperatur-Deckel, Rand-Clamp
+    // Zentrums-Gravitation (anisotrop nach aspect), Integration,
+    // Temperatur-Deckel, Rand-Clamp
     const cx = this.width / 2;
     const cy = this.height / 2;
+    const gx = opts.gravity / opts.aspect;
+    const gy = opts.gravity * opts.aspect;
     const maxStep = 0.1 * this.width * this.alpha;
     for (i = 0; i < nodes.length; i++) {
       const node = nodes[i];
@@ -109,8 +120,8 @@
         node.vy = 0;
         continue;
       }
-      node.vx += (cx - node.x) * opts.gravity * this.alpha;
-      node.vy += (cy - node.y) * opts.gravity * this.alpha;
+      node.vx += (cx - node.x) * gx * this.alpha;
+      node.vy += (cy - node.y) * gy * this.alpha;
       node.vx *= opts.velocityDecay;
       node.vy *= opts.velocityDecay;
 

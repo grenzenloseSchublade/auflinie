@@ -68,10 +68,10 @@
 {% endif %}
 
 {% if page.skill_graph.stage2 %}
-<!-- Skill-Graph-Panel (experimentell): Engine vor UI, defer erhält die Reihenfolge -->
+<!-- Skill-Graph-Panel: Engine vor UI, defer erhält die Reihenfolge -->
 <script src="{{ '/assets/js/skill-graph-sim.js' | relative_url }}" defer></script>
 <script src="{{ '/assets/js/skill-graph.js' | relative_url }}" defer></script>
-<!-- Präsentations-Wrapper: Footer-Aktivierung + Bottom-Sheet (ändert den Graph-Kern nicht) -->
+<!-- Präsentations-Wrapper: modales Sheet (ändert den Graph-Kern nicht) -->
 <script src="{{ '/assets/js/skill-graph-sheet.js' | relative_url }}" defer></script>
 {% endif %}
 

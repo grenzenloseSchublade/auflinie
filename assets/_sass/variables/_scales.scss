@@ -78,7 +78,6 @@ $shadow-masthead: 0 2px 10px $black-a30;
 $shadow-drawer: -4px 0 20px $black-a40; // fällt nach links, Drawer kommt von rechts
 $shadow-sheet: 0 -20px 60px -30px $black; // Bottom-Sheet, fällt nach oben
 $shadow-sheet-float: 0 -4px 24px $black-a50; // schwebende Erklärbox im Vollbild, fällt nach oben
-$shadow-float: 0 14px 34px -18px $black-a95; // schwebender Knopf: Schatten nur unter der Kante
 
 // Ringe (box-shadow ohne Blur): Fokus- und Auswahl-Hof, Haarlinie statt
 // border, wo border das Layout verschieben würde.
@@ -97,8 +96,6 @@ $glow-focus: 0 0 8px $cyan-a40; // Regler-Griff im Fokus
 $glow-hover: 0 0 15px $cyan-a20; // Erklär-Schalter im Hover
 $glow-open: 0 0 8px 2px $cyan-a20; // aufgeklappter Erweitert-Schalter
 $glow-halo: 0 0 12px $cyan-a50, 0 0 24px $cyan-a30, 0 0 36px $cyan-a15; // Back-to-Top im Hover
-$glow-hint: 0 0 14px 2px $cyan-a45; // Aufglimmen (Skill-Graph aktivieren)
-$glow-hint-strong: 0 0 24px 5px $cyan-a60; // Aufglimmen (schwebender Graph-Knopf)
 
 // Tasten im Fraktal-Panel (Keycap): Kante unten, Licht oben, Glimmen aktiv
 $shadow-key-edge: 0 2px 0 $black-a45;
@@ -119,7 +116,6 @@ $glow-key-inner: inset 0 0 4px $cyan-a20;
 // Fraktal-Panel, CRT) bleiben bei 0 bis 10 und stehen in ihrer Komponente
 // (Z-2). Achtung: TOC, Back-to-Top, Skill-Graph und Blog-Hinweis liegen in
 // #main und damit im Stacking-Kontext der Theme-Einblendung (Register R-10).
-$z-graph-float: 900; // schwebender Skill-Graph-Knopf
 $z-toc-overlay: 997; // Scrim hinter dem aufgeklappten Sticky-TOC
 $z-toc-sticky: 998; // mitlaufende TOC-Leiste (mobil)
 $z-scrim: 998; // Drawer-Dimmer body::before
