@@ -28,7 +28,7 @@
 
 /// Flicker-Animation A für den ersten Umlaut-Punkt (::before)
 /// Erzeugt unregelmäßiges Flackern mit Glow-Effekt
-@keyframes neonUmlautFlickerA {
+@keyframes neon-umlaut-flicker-a {
   0%, 2.5%, 5%, 7.5%, 10% {
     opacity: 1;
     box-shadow: 0 0 6px var(--neon-umlaut-dot-glow-strong-current, rgb(255 0 204 / 100%)),
@@ -70,7 +70,7 @@
 
 /// Flicker-Animation B für den zweiten Umlaut-Punkt (::after)
 /// Leicht versetztes Timing für natürlicheren Effekt
-@keyframes neonUmlautFlickerB {
+@keyframes neon-umlaut-flicker-b {
   0%, 5% {
     opacity: 1;
     box-shadow: 0 0 6px var(--neon-umlaut-dot-glow-strong-current, rgb(255 0 204 / 100%)),
@@ -111,7 +111,7 @@
 }
 
 /// Unregelmäßiges Flackern für zusätzliche Variation
-@keyframes neonFlickerIrregular {
+@keyframes neon-flicker-irregular {
   0%, 18%, 22%, 25%, 53%, 57%, 100% {
     opacity: 1;
     box-shadow: 0 0 6px var(--neon-umlaut-dot-glow-strong-current, rgb(255 0 204 / 100%)),
@@ -126,7 +126,7 @@
 }
 
 /// Leichtes Zittern/Jitter für realistischen Neon-Röhren-Effekt
-@keyframes neonJitter {
+@keyframes neon-jitter {
   0%, 100% {
     transform: translate(0, 0);
     filter: blur(0);
@@ -154,7 +154,7 @@
 }
 
 /// Mehrschichtiger Glow-Puls für die Punkte
-@keyframes neonLayeredGlow {
+@keyframes neon-layered-glow {
   0%, 100% {
     box-shadow: 0 0 6px var(--neon-umlaut-dot-glow-strong-current, rgb(255 0 204 / 100%)),
       0 0 14px var(--neon-umlaut-dot-glow-mid-current, rgb(255 0 204 / 85%)),
@@ -175,7 +175,7 @@
 // =============================================================================
 
 /// Mehrschichtiger Text-Glow (für .neon-glow Klasse)
-@keyframes neonTextLayeredGlow {
+@keyframes neon-text-layered-glow {
   0%, 100% {
     text-shadow: 0 0 4px rgb(255 0 255 / 40%),
       0 0 10px rgb(255 0 255 / 22%);
@@ -188,7 +188,7 @@
 }
 
 /// Text-Puls Animation
-@keyframes neonTextPulse {
+@keyframes neon-text-pulse {
   0%, 100% {
     text-shadow: 0 0 4px rgb(255 0 255 / 42%),
       0 0 10px rgb(255 0 255 / 24%);
@@ -257,7 +257,7 @@
 
   // Orbit-Mittelpunkt: X = horizontale Mitte, Y = dynamisch
   transform-origin: var(--neon-orbit-center-x, 0.18em) var(--neon-orbit-origin-y, 0.45em);
-  animation-name: neonUmlautFlickerA, neonFlickerIrregular, neonJitter, neonLayeredGlow;
+  animation-name: neon-umlaut-flicker-a, neon-flicker-irregular, neon-jitter, neon-layered-glow;
   animation-duration: calc(var(--neon-base-flicker-on, 1) * 12s),
     calc(var(--neon-flicker-on, 0) * 3.4s),
     calc(var(--neon-jitter-on, 0) * 1.6s),
@@ -297,7 +297,7 @@
   animation-delay: 0.95s, 0s, 0s, 0s;
 
   // Zweite Sequenz für zufälligeren Effekt
-  animation-name: neonUmlautFlickerB, neonFlickerIrregular, neonJitter, neonLayeredGlow;
+  animation-name: neon-umlaut-flicker-b, neon-flicker-irregular, neon-jitter, neon-layered-glow;
 }
 
 /// Perf: außerhalb des Viewports pausieren die Dauer-Animationen (Klasse
@@ -321,7 +321,7 @@
   // Kalibrierter Dauerglow: sanfter schmaler Schein statt Strahlen
   text-shadow: 0 0 4px rgb(255 0 255 / 45%),
     0 0 10px rgb(255 0 255 / 25%);
-  animation-name: neonTextLayeredGlow, neonTextPulse;
+  animation-name: neon-text-layered-glow, neon-text-pulse;
 
   // Langsames „Röhren-Atmen" statt doppeltem Puls
   animation-duration: calc(var(--neon-text-layered-on, 0) * 7s),

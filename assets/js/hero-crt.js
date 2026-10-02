@@ -16,7 +16,7 @@
   let bgPreloaded = false;
 
   const HERO_CRT_BOOT_KEY = 'auflinieHeroCrtBoot';
-  const HERO_TUBE_BOOT_NAMES = ['heroTubeBootStark', 'heroTubeBootDezent'];
+  const HERO_TUBE_BOOT_NAMES = ['hero-tube-boot-stark', 'hero-tube-boot-dezent'];
   /** Pause mit Vorhang/Filter vor `page__hero--crt-boot` (ms), 0,9 s — mit `--hero-tube-boot-dur` nicht verwechseln */
   const HERO_CRT_PREBOOT_DELAY_MS = 900;
   /** Dauer der Tube-Boot-Keyframes (ms), exakt wie `--hero-tube-boot-dur` in `_hero.scss` (unabhängig von Preboot) */

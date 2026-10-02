@@ -110,11 +110,11 @@
 
   // Slide in (von unten erscheinen)
   &.is-sliding-in {
-    animation: slideInFromBottom $duration-base ease-out;
+    animation: toc-slide-in-from-bottom $duration-base ease-out;
   }
 }
 
-@keyframes slideInFromBottom {
+@keyframes toc-slide-in-from-bottom {
   from {
     transform: translateY(100%);
     opacity: 0;

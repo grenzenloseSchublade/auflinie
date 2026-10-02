@@ -51,7 +51,7 @@ $hero-z-scroll-cue: 101; // Scroll-Hinweis über der Caption
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
-    animation: fadeIn $duration-slower ease-in-out;
+    animation: fade-in $duration-slower ease-in-out;
 
     // Einheitliche Hero-Höhe auf allen Seiten (vorher inhaltsabhängig
     // 342-513px); Inhalt OBEN verankert statt zentriert: der H1 sitzt
@@ -197,13 +197,13 @@ $hero-z-scroll-cue: 101; // Scroll-Hinweis über der Caption
           rgb(255 255 255 / 3%) 62%,
           transparent 100%
         );
-        animation: heroCrtRollDown var(--crt-roll-dur, 10.5s) linear infinite;
+        animation: hero-crt-roll-down var(--crt-roll-dur, 10.5s) linear infinite;
       }
 
       &[data-crt-roll-up]::before {
         top: auto;
         bottom: 0;
-        animation-name: heroCrtRollUp;
+        animation-name: hero-crt-roll-up;
       }
     }
 
@@ -380,31 +380,31 @@ $hero-z-scroll-cue: 101; // Scroll-Hinweis über der Caption
 
     // Phosphor-Flimmern nur auf Punkt-Raster, nicht auf dem ganzen Layer
     &[data-background-image].loaded:not(.page__hero--crt-boot, .page__hero--crt-preboot, .page__hero--crt-read) .page__hero-crt-layer::after {
-      animation: heroCrtPhosphorFlicker 2.6s linear infinite;
+      animation: hero-crt-phosphor-flicker 2.6s linear infinite;
       animation-delay: 0.4s;
     }
 
     // Scanline-Jitter (Standard: zwei Hintergrundebenen)
     &[data-background-image].loaded:not(.page__hero--crt-boot, .page__hero--crt-preboot, .page__hero--crt-read) .page__hero-crt-layer {
       opacity: 1;
-      animation: heroScanlineJitter 3.8s linear infinite;
+      animation: hero-scanline-jitter 3.8s linear infinite;
       animation-delay: 0.35s;
     }
 
     &[data-background-image].loaded:not(.page__hero--crt-boot, .page__hero--crt-preboot, .page__hero--crt-read)[data-crt-intensity="dezent"] .page__hero-crt-layer {
-      animation-name: heroScanlineJitterSingle;
+      animation-name: hero-scanline-jitter-single;
     }
 
     // Boot: Tube-Warmup + Scanline parallel
     &[data-background-image].loaded.page__hero--crt-boot[data-crt-intensity="stark"] .page__hero-crt-layer,
     &[data-background-image].loaded.page__hero--crt-boot:not([data-crt-intensity]) .page__hero-crt-layer {
       opacity: 1;
-      animation: heroTubeBootStark var(--hero-tube-boot-dur) linear forwards, heroScanlineJitter 3.8s linear 0.35s infinite;
+      animation: hero-tube-boot-stark var(--hero-tube-boot-dur) linear forwards, hero-scanline-jitter 3.8s linear 0.35s infinite;
     }
 
     &[data-background-image].loaded.page__hero--crt-boot[data-crt-intensity="dezent"] .page__hero-crt-layer {
       opacity: 1;
-      animation: heroTubeBootDezent var(--hero-tube-boot-dur) linear forwards, heroScanlineJitterSingle 3.8s linear 0.35s infinite;
+      animation: hero-tube-boot-dezent var(--hero-tube-boot-dur) linear forwards, hero-scanline-jitter-single 3.8s linear 0.35s infinite;
     }
 
     &[data-background-image].loaded .page__hero-crt-layer {
@@ -455,7 +455,7 @@ $hero-z-scroll-cue: 101; // Scroll-Hinweis über der Caption
       background: rgb(85 240 145 / 38%);
       mix-blend-mode: screen;
       opacity: 0;
-      animation: heroCrtModeFlash var(--hero-crt-mode-flash-dur) ease-out forwards;
+      animation: hero-crt-mode-flash var(--hero-crt-mode-flash-dur) ease-out forwards;
     }
 
     // Lesemodus: Text vor CRT; Grain / Roll / Noise / laufende Layer-Animationen hart aus (CRT-Layer-Basis bleibt).
@@ -653,7 +653,7 @@ $hero-z-scroll-cue: 101; // Scroll-Hinweis über der Caption
   }
 }
 
-// Hinweis: fadeIn Animation ist zentral in base/_animations.scss definiert
+// Hinweis: fade-in Animation ist zentral in base/_animations.scss definiert
 
 // Optimierungen für verschiedene Bildschirmgrößen
 @include up(md) {

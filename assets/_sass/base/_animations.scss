@@ -10,8 +10,8 @@
 
 /// Fade-In Animation - Verwendet für Hero, Overlays und andere Einblendungen
 /// @example
-///   animation: fadeIn 0.5s ease-in-out;
-@keyframes fadeIn {
+///   animation: fade-in 0.5s ease-in-out;
+@keyframes fade-in {
   from {
     opacity: 0;
   }
@@ -23,8 +23,8 @@
 
 /// Fade-Out Animation
 /// @example
-///   animation: fadeOut 0.3s ease-out forwards;
-@keyframes fadeOut {
+///   animation: fade-out 0.3s ease-out forwards;
+@keyframes fade-out {
   from {
     opacity: 1;
   }
@@ -36,7 +36,7 @@
 
 /// Feines Flimmern nur auf dem Phosphor-Punkt-Raster (::after), nicht global auf dem Layer
 /// Weniger Keyframes als früher: weniger filter-Neuberechnungen pro Umlauf, Look bleibt subtil
-@keyframes heroCrtPhosphorFlicker {
+@keyframes hero-crt-phosphor-flicker {
   0%,
   100% {
     filter: brightness(1);
@@ -68,7 +68,7 @@
 }
 
 /// Leichter Jitter der Scanline-Hintergrundlage (keine globale Helligkeit)
-@keyframes heroScanlineJitter {
+@keyframes hero-scanline-jitter {
   0%,
   100% {
     background-position: 0 0, 0 0;
@@ -88,7 +88,7 @@
 }
 
 /// Eine Scanline-Ebene (nur dezent-Modus)
-@keyframes heroScanlineJitterSingle {
+@keyframes hero-scanline-jitter-single {
   0%,
   100% {
     background-position: 0 0;
@@ -104,7 +104,7 @@
 }
 
 /// Roll nach unten (--crt-roll-sign 1): oben beginnen, nach unten durch die Media-Box
-@keyframes heroCrtRollDown {
+@keyframes hero-crt-roll-down {
   from {
     transform: translate3d(0, -22vh, 0);
   }
@@ -116,7 +116,7 @@
 
 /// Roll nach oben: ::before mit `bottom: 0` (s. _hero.scss) — Unterkante = Media-Unterrand; kein vh-top-Mix
 /// from: leicht nach unten verschoben (teilweise geclippt) = Start „tiefer“ unter dem Rand; to: weit nach oben
-@keyframes heroCrtRollUp {
+@keyframes hero-crt-roll-up {
   from {
     transform: translate3d(0, 10vh, 0);
   }
@@ -127,7 +127,7 @@
 }
 
 /// Einmalige „Röhre warm“-Einschwingung (stark): dunkles Plateau, gleichmäßige Stufen → hell (Dauer/Timing: `--hero-tube-boot-dur` in _hero.scss)
-@keyframes heroTubeBootStark {
+@keyframes hero-tube-boot-stark {
   0%,
   10% {
     filter: contrast(1.64) saturate(0.22) brightness(0.0035) blur(1.24px);
@@ -163,7 +163,7 @@
 }
 
 /// Einmalige „Röhre warm“-Einschwingung (dezent): Plateau, gleichmäßige Stufen → hell (Start: gleiches brightness wie stark = dunkelster vorhandener Wert)
-@keyframes heroTubeBootDezent {
+@keyframes hero-tube-boot-dezent {
   0%,
   10% {
     filter: contrast(1.44) saturate(0.3) brightness(0.0035) blur(1.1px);
@@ -199,7 +199,7 @@
 }
 
 /// Kurzes Phosphor-Aufflackern beim Umschalten Lesemodus ↔ Retro (Dauer: `--hero-crt-mode-flash-dur` in _hero.scss)
-@keyframes heroCrtModeFlash {
+@keyframes hero-crt-mode-flash {
   0% {
     opacity: 0;
   }

@@ -8,7 +8,7 @@
 
 // Spiral-Start: Punkte starten von ihrer ECHTEN Position und spiralen zum Orbit
 // --neon-orbit-center-y verschiebt den Orbit vertikal (höher = Punkte weiter oben)
-@keyframes neonOrbitRampBefore {
+@keyframes neon-orbit-ramp-before {
   // ECHTE Spirale: 0% steht in DERSELBEN Polar-Struktur wie 100%
   // (translateY · rotate · translateX · rotate), damit der Browser Winkel UND
   // Radius interpoliert (statt Matrix-LERP = gerader Slide). Startwinkel -180°
@@ -31,7 +31,7 @@
   }
 }
 
-@keyframes neonOrbitRampAfter {
+@keyframes neon-orbit-ramp-after {
   // ECHTE Spirale (Prinzip wie RampBefore). Startwinkel 0° = reale Position
   // (translateX(offset) rechts), translateY 0. Von dort 1,5 Umdrehungen nach
   // außen (Radius 0.14em → 0.7em) bis 540° (180° versetzt zum before-Punkt),
@@ -51,7 +51,7 @@
 }
 
 // Spin: Kontinuierliche Rotation, startet nahtlos wo Ramp endet
-@keyframes neonOrbitSpinBefore {
+@keyframes neon-orbit-spin-before {
   from {
     // Startet bei 360° (wo Ramp endet)
     transform: translateY(var(--neon-orbit-center-y, 0.29em))
@@ -65,7 +65,7 @@
   }
 }
 
-@keyframes neonOrbitSpinAfter {
+@keyframes neon-orbit-spin-after {
   from {
     // Startet bei 540° (wo Ramp endet, 180° versetzt zu before)
     transform: translateY(var(--neon-orbit-center-y, 0.29em))
@@ -79,7 +79,7 @@
   }
 }
 
-@keyframes neonOrbitFinishBefore {
+@keyframes neon-orbit-finish-before {
   0% {
     // Startposition auf Orbit
     transform: translateY(var(--neon-orbit-center-y, 0))
@@ -143,7 +143,7 @@
   }
 }
 
-@keyframes neonOrbitFinishAfter {
+@keyframes neon-orbit-finish-after {
   0% {
     // Startposition auf Orbit
     transform: translateY(var(--neon-orbit-center-y, 0))
@@ -207,7 +207,7 @@
   }
 }
 
-@keyframes neonOrbitPopOutBefore {
+@keyframes neon-orbit-pop-out-before {
   0% {
     opacity: 1;
     box-shadow: 0 0 12px $white,
@@ -221,7 +221,7 @@
   }
 }
 
-@keyframes neonOrbitPopOutAfter {
+@keyframes neon-orbit-pop-out-after {
   0% {
     opacity: 1;
     box-shadow: 0 0 12px $white,
@@ -235,7 +235,7 @@
   }
 }
 
-@keyframes neonOrbitPopInBefore {
+@keyframes neon-orbit-pop-in-before {
   0% {
     transform: translateX(var(--neon-orbit-start-offset-before, -0.10em)) scale(0.6);
     opacity: 0;
@@ -247,7 +247,7 @@
   }
 }
 
-@keyframes neonOrbitPopInAfter {
+@keyframes neon-orbit-pop-in-after {
   0% {
     transform: translateX(var(--neon-orbit-start-offset-after, 0.14em)) scale(0.6);
     opacity: 0;
@@ -263,7 +263,7 @@
 // Scatter Animation - Punkte fliegen wild über den Bildschirm
 // ============================================
 
-@keyframes neonOrbitScatterBefore {
+@keyframes neon-orbit-scatter-before {
   0% {
     transform: translateY(var(--neon-orbit-center-y, 0.29em))
       rotate(var(--neon-orbit-start-angle-before, 180deg))
@@ -311,7 +311,7 @@
   }
 }
 
-@keyframes neonOrbitScatterAfter {
+@keyframes neon-orbit-scatter-after {
   0% {
     transform: translateY(var(--neon-orbit-center-y, 0.29em))
       rotate(var(--neon-orbit-start-angle-after, 0deg))
@@ -360,8 +360,8 @@
 }
 
 .neon-name.orbit-running .neon-umlaut::before {
-  animation-name: neonUmlautFlickerA, neonFlickerIrregular, neonJitter, neonLayeredGlow,
-    neonOrbitRampBefore, neonOrbitSpinBefore;
+  animation-name: neon-umlaut-flicker-a, neon-flicker-irregular, neon-jitter, neon-layered-glow,
+    neon-orbit-ramp-before, neon-orbit-spin-before;
   animation-duration: calc(var(--neon-base-flicker-on, 1) * 3.1s),
     calc(var(--neon-flicker-on, 0) * 3.4s),
     calc(var(--neon-jitter-on, 0) * 1.6s),
@@ -382,8 +382,8 @@
 }
 
 .neon-name.orbit-running .neon-umlaut::after {
-  animation-name: neonUmlautFlickerB, neonFlickerIrregular, neonJitter, neonLayeredGlow,
-    neonOrbitRampAfter, neonOrbitSpinAfter;
+  animation-name: neon-umlaut-flicker-b, neon-flicker-irregular, neon-jitter, neon-layered-glow,
+    neon-orbit-ramp-after, neon-orbit-spin-after;
   animation-duration: calc(var(--neon-base-flicker-on, 1) * 3.1s),
     calc(var(--neon-flicker-on, 0) * 3.4s),
     calc(var(--neon-jitter-on, 0) * 1.6s),
@@ -411,8 +411,8 @@
 }
 
 .neon-name.orbit-finish .neon-umlaut::before {
-  animation-name: neonUmlautFlickerA, neonFlickerIrregular, neonJitter, neonLayeredGlow,
-    neonOrbitFinishBefore, neonOrbitPopOutBefore;
+  animation-name: neon-umlaut-flicker-a, neon-flicker-irregular, neon-jitter, neon-layered-glow,
+    neon-orbit-finish-before, neon-orbit-pop-out-before;
   animation-duration: calc(var(--neon-base-flicker-on, 1) * 3.1s),
     calc(var(--neon-flicker-on, 0) * 3.4s),
     calc(var(--neon-jitter-on, 0) * 1.6s),
@@ -432,8 +432,8 @@
 }
 
 .neon-name.orbit-finish .neon-umlaut::after {
-  animation-name: neonUmlautFlickerB, neonFlickerIrregular, neonJitter, neonLayeredGlow,
-    neonOrbitFinishAfter, neonOrbitPopOutAfter;
+  animation-name: neon-umlaut-flicker-b, neon-flicker-irregular, neon-jitter, neon-layered-glow,
+    neon-orbit-finish-after, neon-orbit-pop-out-after;
   animation-duration: calc(var(--neon-base-flicker-on, 1) * 3.1s),
     calc(var(--neon-flicker-on, 0) * 3.4s),
     calc(var(--neon-jitter-on, 0) * 1.6s),
@@ -453,8 +453,8 @@
 }
 
 .neon-name.orbit-popin .neon-umlaut::before {
-  animation-name: neonUmlautFlickerA, neonFlickerIrregular, neonJitter, neonLayeredGlow,
-    neonOrbitPopInBefore;
+  animation-name: neon-umlaut-flicker-a, neon-flicker-irregular, neon-jitter, neon-layered-glow,
+    neon-orbit-pop-in-before;
   animation-duration: calc(var(--neon-base-flicker-on, 1) * 3.1s),
     calc(var(--neon-flicker-on, 0) * 3.4s),
     calc(var(--neon-jitter-on, 0) * 1.6s),
@@ -471,8 +471,8 @@
 }
 
 .neon-name.orbit-popin .neon-umlaut::after {
-  animation-name: neonUmlautFlickerB, neonFlickerIrregular, neonJitter, neonLayeredGlow,
-    neonOrbitPopInAfter;
+  animation-name: neon-umlaut-flicker-b, neon-flicker-irregular, neon-jitter, neon-layered-glow,
+    neon-orbit-pop-in-after;
   animation-duration: calc(var(--neon-base-flicker-on, 1) * 3.1s),
     calc(var(--neon-flicker-on, 0) * 3.4s),
     calc(var(--neon-jitter-on, 0) * 1.6s),
@@ -498,8 +498,8 @@
 // ============================================
 
 .neon-name.orbit-scatter .neon-umlaut::before {
-  animation-name: neonUmlautFlickerA, neonFlickerIrregular, neonJitter, neonLayeredGlow,
-    neonOrbitScatterBefore;
+  animation-name: neon-umlaut-flicker-a, neon-flicker-irregular, neon-jitter, neon-layered-glow,
+    neon-orbit-scatter-before;
   animation-duration: calc(var(--neon-base-flicker-on, 1) * 3.1s),
     calc(var(--neon-flicker-on, 0) * 3.4s),
     calc(var(--neon-jitter-on, 0) * 1.6s),
@@ -516,8 +516,8 @@
 }
 
 .neon-name.orbit-scatter .neon-umlaut::after {
-  animation-name: neonUmlautFlickerB, neonFlickerIrregular, neonJitter, neonLayeredGlow,
-    neonOrbitScatterAfter;
+  animation-name: neon-umlaut-flicker-b, neon-flicker-irregular, neon-jitter, neon-layered-glow,
+    neon-orbit-scatter-after;
   animation-duration: calc(var(--neon-base-flicker-on, 1) * 3.1s),
     calc(var(--neon-flicker-on, 0) * 3.4s),
     calc(var(--neon-jitter-on, 0) * 1.6s),
