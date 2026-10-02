@@ -33,7 +33,8 @@ import tempfile
 
 ROOT = pathlib.Path(__file__).resolve().parents[2]
 CASES = sorted((ROOT / "tests/guardrails/cases").glob("*.case"))
-COPY = ["scripts", "assets/_sass", "assets/css", "assets/js", "_layouts", "_includes"]
+COPY = ["scripts", "assets/_sass", "assets/css", "assets/js", "_layouts", "_includes",
+        ".github", "_config.yml", "service-worker.js"]
 
 
 def parse(path):
@@ -51,7 +52,10 @@ def parse(path):
 
 def make_copy(dst):
     for rel in COPY:
-        shutil.copytree(ROOT / rel, dst / rel)
+        if (ROOT / rel).is_dir():
+            shutil.copytree(ROOT / rel, dst / rel)
+        else:
+            shutil.copy2(ROOT / rel, dst / rel)
     for f in ROOT.glob("*.html"):
         shutil.copy2(f, dst / f.name)
 

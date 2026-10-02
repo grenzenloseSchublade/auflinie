@@ -1,0 +1,9 @@
+# Leerer sw_cache_prefix: activate und Dev-Aufräumen träfen fremde Caches
+guardrail: security
+expect: 1
+grep: sw_cache_prefix fehlt oder ist leer
+file: _config.yml
+mode: replace
+old: sw_cache_prefix: "kraftstoff-cache-"
+---
+sw_cache_prefix: ""

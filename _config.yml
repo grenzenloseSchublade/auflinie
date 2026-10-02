@@ -14,6 +14,12 @@ background_image_alt: "Retro-Grafik: gestreifte Sonne in Magenta und Cyan über 
 hero_crt_intensity: "stark"
 enable_image_caching: true
 enable_service_worker: true
+# Präfix der eigenen CacheStorage-Einträge (STYLEGUIDE SEC-5c). Einzige Quelle:
+# service-worker.js baut daraus CACHE_PREFIX, sw-register.js liest ihn aus
+# data-sw-cache-prefix am <html> (_layouts/default.html). Alle Projekte unter
+# grenzenloseSchublade.github.io teilen einen Origin, gelöscht wird nur, was
+# mit diesem Präfix beginnt. Nie leer lassen.
+sw_cache_prefix: "kraftstoff-cache-"
 
 # Theme Einstellungen
 remote_theme: "mmistakes/minimal-mistakes@81f00a619fafea2f2d457da8be4788edf06a90be" # 4.28.1 (Commit gepinnt, Tag ist verschiebbar)

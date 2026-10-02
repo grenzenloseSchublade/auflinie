@@ -1,0 +1,9 @@
+# Cache-Präfix als zweites Literal in sw-register.js statt aus _config.yml
+guardrail: security
+expect: 1
+grep: Cache-Präfix als Literal
+file: assets/js/sw-register.js
+mode: replace
+old: if (key.indexOf(prefix) === 0) {
+---
+if (key.indexOf('kraftstoff-cache-') === 0) {

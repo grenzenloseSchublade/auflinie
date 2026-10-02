@@ -9,6 +9,8 @@
 #  4. Kein getRegistrations() (lieferte auch fremde Worker des Origins)
 #  5. Keine Inline-Skripte und Inline-Handler in Templates (CSP ohne
 #     'unsafe-inline'); Datenblöcke (JSON-LD, speculationrules) sind erlaubt
+#  6. Cache-Präfix nur als sw_cache_prefix in _config.yml (SEC-5c), nicht leer
+#     und kein zweites Literal in Skripten oder Templates
 #
 # Nutzung: scripts/security-guardrail.sh   (Exit 0 = sauber, 1 = Verstoß)
 # Läuft im Lint-Job der CI. Gegenstück nach dem Build: scripts/csp-check.py
@@ -29,6 +31,15 @@ V=$(grep -nE '(^|[^.])caches\.match\(' service-worker.js | grep -vE '^[0-9]+:\s*
 $V"
 grep -q 'startsWith(CACHE_PREFIX)' service-worker.js \
   || fail "service-worker.js: activate löscht nicht mehr präfixgefiltert"
+
+PREFIX=$(sed -nE 's/^sw_cache_prefix:[[:space:]]*"?([^"#[:space:]]*)"?.*/\1/p' _config.yml | head -1)
+if [ -z "$PREFIX" ]; then
+  fail "_config.yml: sw_cache_prefix fehlt oder ist leer (ein leerer Präfix löschte fremde Caches)"
+else
+  V=$(grep -rnF -- "$PREFIX" assets/js service-worker.js _layouts _includes 2>/dev/null)
+  [ -n "$V" ] && fail "Cache-Präfix als Literal, Quelle ist nur sw_cache_prefix in _config.yml:
+$V"
+fi
 
 V=$(grep -rn 'getRegistrations()' assets/js service-worker.js | grep -vE '^[^:]+:[0-9]+:\s*//')
 [ -n "$V" ] && fail "getRegistrations() trifft auch fremde Worker, getRegistration(scope) nutzen:

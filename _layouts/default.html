@@ -1,6 +1,6 @@
 <!doctype html>
 {% include copyright.html %}
-<html lang="{{ site.locale | replace: "_", "-" | default: "en" }}" class="no-js" data-enable-service-worker="{% if jekyll.environment == 'production' %}{{ site.enable_service_worker }}{% else %}false{% endif %}" data-baseurl="{{ site.baseurl }}" data-enable-image-caching="{% if site.enable_image_caching != false %}true{% else %}false{% endif %}" data-background-image="{{ site.background_image | relative_url }}">
+<html lang="{{ site.locale | replace: "_", "-" | default: "en" }}" class="no-js" data-enable-service-worker="{% if jekyll.environment == 'production' %}{{ site.enable_service_worker }}{% else %}false{% endif %}" data-baseurl="{{ site.baseurl }}" data-enable-image-caching="{% if site.enable_image_caching != false %}true{% else %}false{% endif %}" data-background-image="{{ site.background_image | relative_url }}" data-sw-cache-prefix="{{ site.sw_cache_prefix }}">
   <head>
     {% include head.html %}
     {% include head/custom.html %}

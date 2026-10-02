@@ -76,10 +76,14 @@
       .then((reg) => { if (reg && reg.scope === scopeUrl) reg.unregister(); })
       .catch(() => {});
 
-    if (window.caches && caches.keys) {
+    // Präfix aus _config.yml (sw_cache_prefix) über data-sw-cache-prefix, wie
+    // CACHE_PREFIX in service-worker.js. Leer = nichts löschen: ein leerer
+    // Präfix passte auf jeden Cache des geteilten Origins.
+    const prefix = document.documentElement.getAttribute('data-sw-cache-prefix') || '';
+    if (prefix && window.caches && caches.keys) {
       caches.keys()
         .then((keys) => keys.forEach((key) => {
-          if (key.indexOf('kraftstoff-cache-') === 0) {
+          if (key.indexOf(prefix) === 0) {
             caches.delete(key);
           }
         }))

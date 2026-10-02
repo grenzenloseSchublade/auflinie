@@ -13,7 +13,8 @@
 // Origin und damit dieselbe CacheStorage. Löschen und Lesen deshalb nur über
 // CACHE_PREFIX bzw. CACHE_NAME, nie origin-weit (Security-Audit 10/2026, N1/N2).
 const CACHE_VERSION = '{{ site.time | date: "%Y%m%d%H%M" }}';
-const CACHE_PREFIX = 'kraftstoff-cache-';
+// Präfix aus _config.yml (sw_cache_prefix), dieselbe Quelle wie sw-register.js
+const CACHE_PREFIX = {{ site.sw_cache_prefix | jsonify }};
 const CACHE_NAME = CACHE_PREFIX + CACHE_VERSION;
 // Scope-Pfad (z. B. "/auflinie/") für die Zuständigkeitsprüfung im fetch-Handler
 const SCOPE_PATH = new URL(self.registration.scope).pathname;
@@ -125,7 +126,7 @@ self.addEventListener('activate', event => {
       .then(cacheNames => {
         return Promise.all(
           cacheNames
-            .filter(cacheName => cacheName.startsWith(CACHE_PREFIX) && cacheName !== CACHE_NAME)
+            .filter(cacheName => CACHE_PREFIX && cacheName.startsWith(CACHE_PREFIX) && cacheName !== CACHE_NAME)
             .map(cacheName => caches.delete(cacheName))
         );
       })
