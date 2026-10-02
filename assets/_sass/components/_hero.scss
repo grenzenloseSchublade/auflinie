@@ -559,8 +559,9 @@ $hero-z-scroll-cue: 101; // Scroll-Hinweis über der Caption
       // Runder, weicher Phosphor-Puls (radialer Bloom) statt eckigem box-shadow-
       // Ring — liest sich als einladender Licht-Puls, nicht als Fokus-Rahmen, und
       // passt zum CRT-Look. Eigener ::after-Layer -> stört die filter-basierten
-      // aria-pressed-Zustände nicht. HART aktiviert (ignoriert reduced-motion,
-      // wie der CRT-Hero generell).
+      // aria-pressed-Zustände nicht. Anders als der CRT-Hero steht der Puls
+      // nicht in den Ausnahmen des Kill-Switches: Unter reduced-motion läuft er
+      // nicht (Owner-Entscheidung, STYLEGUIDE 6.5).
       &--hint {
         position: relative;
 
@@ -771,8 +772,9 @@ $hero-z-scroll-cue: 101; // Scroll-Hinweis über der Caption
 }
 
 // Hinweis-Puls für den CRT-Power-Button (Trigger: hero-crt.js schedulePowerHint,
-// Klasse .hero-crt-power--hint). Sanfter grüner box-shadow-Ring, auf und ab —
-// stört die filter-basierten aria-pressed-Zustände des Buttons nicht.
+// Klasse .hero-crt-power--hint). Der radiale Bloom am ::after blendet auf und
+// wächst, dann wieder zurück. Stört die filter-basierten aria-pressed-Zustände
+// des Buttons nicht.
 @keyframes hero-crt-power-hint {
   0%,
   100% {

@@ -430,10 +430,11 @@
   }
   
   // Einmaliger, dezenter Hinweis-Puls auf den CRT-Power-Button (~1.2s nach dem
-  // vollständigen Laden), macht den Retro/Lesemodus-Knopf entdeckbar. HART
-  // aktiviert — ignoriert reduced-motion (wie der CRT-Hero generell, siehe
-  // README_DEV); ein einzelner sanfter Puls führt gerade bewegungssensible
-  // Nutzer zum ruhigen Lesemodus. Nur einmal pro Session.
+  // vollständigen Laden), macht den Retro/Lesemodus-Knopf entdeckbar. Nur
+  // einmal pro Session. Unter prefers-reduced-motion: reduce nimmt der
+  // Kill-Switch in base/_accessibility.scss den Puls heraus (Owner-Entscheidung,
+  // STYLEGUIDE 6.5): Die Klasse wird trotzdem gesetzt, animationend feuert nach
+  // 0.01ms und räumt sie wieder ab.
   function schedulePowerHint() {
     try { if (sessionStorage.getItem('auflinieHeroCrtPowerHinted') === '1') return; } catch (e) { /* private mode */ }
     if (window._auflinieHeroCrtHintScheduled) return;
