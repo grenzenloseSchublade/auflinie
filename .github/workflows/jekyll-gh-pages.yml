@@ -19,7 +19,7 @@ concurrency:
 
 jobs:
   lint:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04 # fest statt ubuntu-latest (Wechsel auf 26 ab 19.10.2026 bewusst und getestet nachziehen)
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -52,7 +52,7 @@ jobs:
         run: python3 tests/guardrails/run.py
 
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04 # fest statt ubuntu-latest (Wechsel auf 26 ab 19.10.2026 bewusst und getestet nachziehen)
     permissions:
       contents: read
       pages: read   # configure-pages liest die Pages-Konfiguration
@@ -120,7 +120,7 @@ jobs:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04 # fest statt ubuntu-latest (Wechsel auf 26 ab 19.10.2026 bewusst und getestet nachziehen)
     # lint gehört dazu: sonst deployt ein grüner Build trotz rotem Lint-Job
     # (das Style-Guide-Review läuft im Build-Job)
     needs: [build, lint]
