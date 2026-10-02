@@ -1,6 +1,6 @@
 # Komponenten Dritter
 
-Diese Datei listet alle fremden Bestandteile, die mit der Website ausgeliefert werden, mit Version, Herkunft und Lizenz. Sie behalten ihre eigenen Lizenzen, die Lizenz des eigenen Codes und der Texte steht im README-Abschnitt „Lizenz“.
+Diese Datei listet alle fremden Bestandteile, die mit der Website ausgeliefert werden, mit Version, Herkunft und Lizenz. Jeder Bestandteil behält seine eigene Lizenz, die Lizenz des eigenen Codes und der Texte steht im README-Abschnitt „Lizenz“.
 
 Stand: Oktober 2026
 

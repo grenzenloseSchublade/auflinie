@@ -20,26 +20,26 @@ für das Lint- und Test-Werkzeug in `.nvmrc`. Die CI liest beide Dateien. Am ein
 
 Manuelles Setup:
 
-1. Stellen Sie sicher, dass die in `.ruby-version` angegebene Ruby-Version installiert ist:
+1. Die in `.ruby-version` angegebene Ruby-Version muss installiert sein:
 
    ```bash
    ruby --version   # sollte zur .ruby-version passen
    ```
 
-2. Installieren Sie Bundler (Version siehe `Gemfile.lock` → »BUNDLED WITH«):
+2. Bundler installieren (Version siehe `Gemfile.lock` → „BUNDLED WITH“):
 
    ```bash
    gem install bundler
    ```
 
-3. Klonen Sie dieses Repository:
+3. Repository klonen:
 
    ```bash
    git clone [REPOSITORY-URL]
    cd [REPOSITORY-NAME]
    ```
 
-4. Installieren Sie die erforderlichen Gems:
+4. Gems installieren:
 
    ```bash
    bundle install
@@ -49,13 +49,13 @@ Manuelles Setup:
 
 Um die Website lokal zu entwickeln:
 
-1. Starten Sie den Jekyll-Server:
+1. Jekyll-Server starten:
 
    ```bash
    bundle exec jekyll serve
    ```
 
-2. Öffnen Sie <http://localhost:4000> in Ihrem Browser
+2. <http://localhost:4000> im Browser öffnen
 
 ### Service Worker und CSS-Änderungen
 
@@ -87,19 +87,19 @@ kramdown:
 ### Häufige Kramdown-bezogene Probleme
 
 1. **Falsche Formeldarstellung**
-   - Überprüfen Sie, ob `math_engine: mathjax` in `_config.yml` gesetzt ist
-   - Stellen Sie sicher, dass keine Leerzeilen in Formeln sind
-   - Escapen Sie Unterstriche in Formeln: `a\_b` statt `a_b`
+   - `math_engine: mathjax` muss in `_config.yml` gesetzt sein
+   - Formeln dürfen keine Leerzeilen enthalten
+   - Unterstriche in Formeln escapen: `a\_b` statt `a_b`
 
 2. **Parsing-Fehler**
-   - Verwenden Sie `{: .class}` für Kramdown-spezifische Attribute
-   - Achten Sie auf korrekte Einrückung in Listen
-   - Vermeiden Sie Mischung von Tabs und Leerzeichen
+   - Kramdown-spezifische Attribute mit `{: .class}` setzen
+   - Listen korrekt einrücken
+   - Tabs und Leerzeichen nicht mischen
 
 3. **GFM-Kompatibilität**
    - `input: GFM` ermöglicht GitHub-Flavored Markdown
    - Unterstützt Tabellen und durchgestrichenen Text
-   - Beachten Sie die unterschiedliche Behandlung von Unterstrichen
+   - Unterstriche werden unterschiedlich behandelt
 
 ### Kramdown-Tipps
 
@@ -176,7 +176,7 @@ head_scripts:
 
 ### Verwendung in Markdown-Dateien
 
-1. Aktivieren Sie MathJax im Frontmatter der Seite:
+1. MathJax im Front Matter der Seite aktivieren:
 
    ```yaml
    ---
@@ -185,7 +185,7 @@ head_scripts:
    ---
    ```
 
-2. Verwenden Sie LaTeX-Syntax:
+2. Formeln in LaTeX-Syntax schreiben:
    - Inline-Formeln: `$E = mc^2$`
    - Display-Formeln: `$$\sum_{i=1}^n i = \frac{n(n+1)}{2}$$`
 
@@ -202,7 +202,7 @@ Wenn mathematische Formeln nicht korrekt angezeigt werden:
    bundle exec jekyll clean
    ```
 
-2. Überprüfen Sie die folgenden Punkte:
+2. Diese Punkte prüfen:
    - `mathjax: true` ist im Frontmatter der Seite gesetzt
    - Die MathJax-Version in `_includes/head/custom.html` ist korrekt (4.1.3 empfohlen)
    - Die LaTeX-Syntax verwendet `$$` für Display-Math und `$` für Inline-Math
@@ -270,21 +270,21 @@ Ablauf:
 ## Best Practices
 
 1. **Trennung von Inhalt und Präsentation**:
-   - Speichere strukturierte Daten in YAML-Dateien im `_data/` Verzeichnis
-   - Verwende Includes für die Darstellung
-   - Halte Markdown-Dateien sauber und fokussiert auf den Inhalt
+   - Strukturierte Daten liegen als YAML-Dateien im Verzeichnis `_data/`
+   - Die Darstellung übernehmen Includes
+   - Markdown-Dateien bleiben schlank und enthalten nur den Inhalt
 
 2. **Wiederverwendbarkeit**:
-   - Erstelle generische Includes, die in verschiedenen Kontexten verwendet werden können
-   - Parametrisiere Includes, um sie flexibel zu halten
+   - Includes sind generisch gehalten und in verschiedenen Kontexten verwendbar
+   - Parameter halten Includes flexibel
 
 3. **Konsistenz**:
-   - Verwende einheitliche Benennungskonventionen
-   - Halte die Struktur der Datendateien konsistent
+   - Benennung folgt einheitlichen Konventionen
+   - Datendateien sind einheitlich aufgebaut
 
 4. **Erweiterbarkeit**:
-   - Dokumentiere neue Includes und deren Parameter
-   - Halte die Struktur modular, um einfache Erweiterungen zu ermöglichen
+   - Neue Includes und ihre Parameter werden dokumentiert
+   - Die Struktur bleibt modular, damit Erweiterungen leichtfallen
 
 ## Beispiel: Neue Seite mit benutzerdefinierten Daten
 

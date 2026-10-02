@@ -6,10 +6,10 @@ Diese Entwicklungsumgebung stellt Jekyll (Ruby) und Node-Tooling (Stylelint, ESL
 
 Die Entwicklungsumgebung ist mit Visual Studio Code und Dev Containers konfiguriert:
 
-1. Installieren Sie [Visual Studio Code](https://code.visualstudio.com/)
-2. Installieren Sie die [Dev Containers Extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers)
-3. Installieren Sie [Docker Desktop](https://www.docker.com/products/docker-desktop)
-4. Öffnen Sie dieses Projekt in VS Code und klicken Sie auf "Reopen in Container", wenn Sie dazu aufgefordert werden
+1. [Visual Studio Code](https://code.visualstudio.com/) installieren
+2. Die [Dev-Containers-Erweiterung](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) installieren
+3. [Docker Desktop](https://www.docker.com/products/docker-desktop) installieren
+4. Das Projekt in VS Code öffnen und bei der Nachfrage „Reopen in Container“ wählen
 
 ## Enthaltene Komponenten
 
@@ -37,9 +37,9 @@ Alle Regeln zu Gestaltung, Code, Sprache, Sicherheit und Arbeitsweise stehen in 
 
 Der Seitenwechsel-Effekt (View Transitions, grüner Phosphor-Blink) erscheint nur, wenn ALLE Bedingungen erfüllt sind:
 - Fensterbreite unter 768px (Vollbild-Hero: Header reicht bis an den unteren Rand — auch im schmal gezogenen Desktop-Fenster)
-- Start auf der Startseite über „Über mich" oder „Fraktale erkunden", ungescrollt
+- Start auf der Startseite über „Über mich“ oder „Fraktale erkunden“, ungescrollt
 - Browser: Chrome/Edge 126+ oder Safari 18.2+ (Firefox kann Cross-Document-Transitions noch nicht → normaler Wechsel)
-- **Systemeinstellung „Bewegung reduzieren"/„Animationen entfernen" ist AUS** (Android: Bedienungshilfen bzw. Entwickleroptionen → Animationsmaßstab; iOS: Bedienungshilfen → Bewegung) — der Effekt respektiert `prefers-reduced-motion`
+- **Systemeinstellung „Bewegung reduzieren“/„Animationen entfernen“ ist AUS** (Android: Bedienungshilfen bzw. Entwickleroptionen → Animationsmaßstab; iOS: Bedienungshilfen → Bewegung) — der Effekt respektiert `prefers-reduced-motion`
 
 ## Interaktive Komponenten
 
