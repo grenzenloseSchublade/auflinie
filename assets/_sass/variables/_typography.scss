@@ -89,6 +89,27 @@ $fp-fs-lg: 14px; // Erklärbox, Gesten-Hinweis
 $fp-fs-xl: 16px; // Info-Panel, Loading
 $fp-fs-icon: 20px; // Zoom-Glyphe
 
+// =============================================================================
+// Laufweiten (letter-spacing, STYLEGUIDE TYP-7)
+// =============================================================================
+// In em, damit die Laufweite mit der Schrift skaliert. Die Skala:
+$tracking-meta: 0.03em; // Meta-Zeilen in Listen (Datum, Lesezeit)
+$tracking-label: 0.06em; // Chrome-Labels in Versalien
+$tracking-label-wide: 0.08em; // betonte Labels (TOC-Kopf, Archiv-Jahre, Hinweis-Titel)
+
+// Altbestand außerhalb der Skala (Register R-21), wertgleich festgehalten:
+// jede Stelle nutzt ein Token, die Liste steht an einem Ort. Die Angleichung
+// an die Skala ändert die Laufweite sichtbar und braucht eine Owner-Freigabe
+// mit Vergleichsbild (TYP-5). Ziel laut Register, wo eins feststeht.
+$tracking-legacy-quote: 0.02em; // About-Leitspruch (kursiver Fließtext)
+$tracking-legacy-page-meta: 0.04em; // .page__meta auf Seiten, Ziel $tracking-meta
+$tracking-legacy-footer-nav: 0.05em; // Footer-Navigation
+$tracking-legacy-mono-label: 0.07em; // Default von mono-label(), Ziel $tracking-label
+$tracking-legacy-fp-button: 0.04em; // Fraktal-Toolbar, Button-Text mobil
+// Fraktal-Panel in px wie $fp-fs-* (bei 12px entspricht das 0.025em bzw. 0.042em)
+$fp-tracking-legacy-hint: 0.3px; // Gesten-Hinweis unter dem Canvas
+$fp-tracking-legacy-label: 0.5px; // Regler-Beschriftungen
+
 // TOC-Label-Größen (zentral — Referenzgröße von der Mandelbrot-Seite)
 $toc-title-font-size: $fs-base; // „Inhalt" im Seitenleisten-TOC
 $toc-sticky-label-font-size: $fs-label-xs; // INHALT-Tag der mitlaufenden Leiste

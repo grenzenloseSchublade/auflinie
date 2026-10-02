@@ -134,7 +134,7 @@
     font-family: $fp-mono;
     font-size: $fp-fs-sm; // 11→12px (K10, A11y: Regler-Namen)
     font-weight: 600;
-    letter-spacing: 0.06em;
+    letter-spacing: $tracking-label;
     text-transform: uppercase;
     text-align: left;
   }
@@ -205,7 +205,7 @@
     font-size: $fp-fs-sm;
     font-weight: 500;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: $fp-tracking-legacy-label;
     white-space: nowrap;
   }
 

@@ -765,7 +765,7 @@ $hero-z-scroll-cue: 101; // Scroll-Hinweis über der Caption
   font-family: $mono-font-stack;
   font-size: $fs-ui; // 0.62rem war dem Nutzer zu klein
   text-transform: uppercase;
-  letter-spacing: 0.06em;
+  letter-spacing: $tracking-label;
   background: $ink-a55;
   color: $white-a78;
   border: 1px solid $white-a10;

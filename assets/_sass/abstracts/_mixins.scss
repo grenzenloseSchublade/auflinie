@@ -105,7 +105,7 @@
   -webkit-backdrop-filter: blur($px);   // stylelint-disable-line property-no-vendor-prefix
 }
 
-@mixin mono-label($size: $fs-label, $tracking: 0.07em) {
+@mixin mono-label($size: $fs-label, $tracking: $tracking-legacy-mono-label) {
   font-family: $mono-font-stack;
   font-size: $size;
   text-transform: uppercase;

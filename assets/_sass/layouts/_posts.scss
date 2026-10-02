@@ -51,7 +51,7 @@
     font-family: $mono-font-stack;
     font-variant-numeric: tabular-nums;
     font-size: $fs-label;
-    letter-spacing: 0.03em;
+    letter-spacing: $tracking-meta;
     color: $fg-subtle;
     margin-bottom: $space-2;
   }

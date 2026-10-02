@@ -14,7 +14,7 @@
 .site-footer__nav {
   font-family: $mono-font-stack;
   font-size: $fs-label; // 0.75→0.72 (R, Token-Skala)
-  letter-spacing: 0.05em;
+  letter-spacing: $tracking-legacy-footer-nav;
   display: flex;
   align-items: center;
   gap: $space-2;

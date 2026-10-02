@@ -81,7 +81,7 @@
   font-size: $toc-sticky-label-font-size;
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
+  letter-spacing: $tracking-label-wide;
   color: $fg-subtle; // FARB-3 (vorher 45 %, 4,44:1)
 }
 
@@ -264,7 +264,7 @@
     font-family: $mono-font-stack;
     font-size: $toc-title-font-size;
     text-transform: uppercase;
-    letter-spacing: 0.08em;
+    letter-spacing: $tracking-label-wide;
     background: none; // Theme setzt hier Voll-Teal
     border-bottom: none;
     border-radius: 0;

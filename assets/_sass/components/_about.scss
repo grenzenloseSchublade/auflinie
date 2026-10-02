@@ -24,7 +24,7 @@
 }
 
 .section-epigraph__author {
-  @include mono-label($fs-label, 0.06em);
+  @include mono-label($fs-label, $tracking-label);
 
   margin-top: $space-2;
   color: $fg-subtle;
@@ -123,7 +123,7 @@
   font-style: italic;
   line-height: 1.4;
   color: $console-heading;
-  letter-spacing: 0.02em;
+  letter-spacing: $tracking-legacy-quote;
   background: none;
   border: none;
   padding: 0;

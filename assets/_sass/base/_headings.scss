@@ -44,7 +44,7 @@
 
 // Archiv-Zwischenüberschriften (Jahre, „Neueste Beiträge"): Chrome-Label-Stil
 .archive__subtitle {
-  @include mono-label($fs-label-lg, 0.08em);
+  @include mono-label($fs-label-lg, $tracking-label-wide);
 
   font-weight: 600;
   color: $fg-subtle;
@@ -56,7 +56,7 @@
 .page__meta {
   font-family: $mono-font-stack;
   font-size: $fs-label;
-  letter-spacing: 0.04em;
+  letter-spacing: $tracking-legacy-page-meta;
   color: $fg-subtle; // FARB-3: informationstragend, nie unter 55 %
 }
 

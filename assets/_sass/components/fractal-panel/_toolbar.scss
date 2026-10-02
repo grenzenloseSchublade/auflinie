@@ -49,7 +49,7 @@
     .btn-text {
       display: block;
       font-size: $fs-label-xs; // 0.6→0.68 (K5, A11y: Button-Beschriftung)
-      letter-spacing: 0.04em;
+      letter-spacing: $tracking-legacy-fp-button;
     }
   }
 }
@@ -88,7 +88,7 @@
   font-family: $fp-mono;
   font-size: $fp-fs-sm; // 11.5→12px (R, Token-Skala)
   font-weight: 600;
-  letter-spacing: 0.06em;
+  letter-spacing: $tracking-label;
   text-transform: uppercase;
   min-height: 38px;
   display: inline-flex;
