@@ -14,7 +14,7 @@ async function watchErrors(page) {
   page.on('console', (msg) => {
     // Die Testkonfiguration blockiert Service Worker (serviceWorkers: 'block'),
     // sw-register.js meldet das als Fehler. Kein Befund der Bibliotheken.
-    if (msg.type() === 'error' && !msg.text().startsWith('ServiceWorker-Registrierung')) {
+    if (msg.type() === 'error' && !msg.text().startsWith('sw-register: ServiceWorker-Registrierung')) {
       errors.push('console: ' + msg.text());
     }
   });
