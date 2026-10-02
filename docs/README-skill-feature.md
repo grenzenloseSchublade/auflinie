@@ -10,10 +10,13 @@ Die Skill-Chips auf `/cv/` sind erkundbar:
 - **Stufe 1 — Klick-Hervorhebung (produktiv):** Klick auf einen Chip hebt alle
   Skills hervor, die über gemeinsame Projekte verbunden sind (Rest dimmt), und
   zeigt die Projekte in einer Kontextzeile. Zweiter Klick oder Escape löst.
-- **Stufe 2 — Graph-Panel (experimentell, „experimentell"):** Zuschaltbare
-  Canvas-Ansicht mit Kräfte-Graph — Knoten = Skills, Kanten = gemeinsame
-  Projekte (Kantendeckkraft = Gewicht). Klick auf Knoten wählt aus; die
-  Auswahl ist mit der Chip-Liste synchronisiert.
+- **Stufe 2 — Graph-Panel:** Der Knopf „Als Graph anzeigen“ unter den Chips
+  öffnet ein modales Sheet mit Kräfte-Graph — Knoten = Skills, Kanten =
+  gemeinsame Projekte (Kantendeckkraft = Gewicht). Klick auf Knoten wählt
+  aus; die Auswahl ist mit der Chip-Liste synchronisiert, die Info-Leiste
+  oben im Sheet zeigt sie im Format der Konsole (Skill, Rolle, Projekte).
+  Ansicht: Einpassen beim Öffnen, Zoom per Pinch, Mausrad, Knöpfe
+  („−“, „+“, „Einpassen“) und Tasten `+`/`−`/`0`, Pan per Ziehen.
 
 Die statische Chip-Liste bleibt immer die kanonische, vollständige
 Darstellung (auch für Screenreader und Druck); alles Interaktive ist
@@ -39,14 +42,17 @@ skill_graph:
 |---|---|
 | `_data/skill_graph.yml` | **Datenquelle** (Schema v1): Projekte → Skills |
 | `_includes/cv/skills.html` | Chips (+ Buttons, Kontextzeile, JSON-Tag, Panel-Include) |
-| `_includes/cv/skill-graph.html` | Panel-Markup (Toggle, WIP-Badge, Canvas) |
+| `_includes/cv/skill-graph.html` | Panel-Markup (Öffner, Kopfleiste, Info-Leiste, Canvas) |
+| `assets/js/skill-graph-data.js` | Gemeinsame Helfer: Daten lesen, Skill→Projekte, `renderSelection` (Konsole und Info-Leiste) |
 | `assets/js/skill-chips.js` | Stufe 1: Klick-Hervorhebung der Chips |
 | `assets/js/skill-graph-sim.js` | **DOM-freie** Force-Layout-Engine (reine Physik) |
-| `assets/js/skill-graph.js` | Stufe 2: Panel/Canvas/Interaktion (nur UI) |
+| `assets/js/skill-graph.js` | Stufe 2: Panel/Canvas/Interaktion, Ansicht (Pan + Zoom, Einpassen), Info-Leiste (nur UI) |
+| `assets/js/skill-graph-sheet.js` | Präsentation als modales Sheet (Scrim, Scroll-Sperre, inert, Fokus, Touch-Hinweis) |
 | `assets/_sass/components/_cv.scss` | Chip-Zustände (`has-selection`, `is-selected`, `is-related`) |
-| `assets/_sass/components/_skill-graph.scss` | Panel-Styles + generisches `.wip-badge` |
-| `_includes/scripts.html` | Flag-Gates für die drei Skripte |
-| `service-worker.js` | Precache-Einträge der drei Skripte |
+| `assets/_sass/components/_skill-graph.scss` | Panel- und Sheet-Styles |
+| `assets/_sass/abstracts/_mixins.scss` | `selection-console`: gemeinsame Optik von Konsole und Info-Leiste |
+| `_includes/scripts.html` | Flag-Gates für die Skripte |
+| `service-worker.js` | Precache-Einträge der Skripte |
 
 ## Daten pflegen (`_data/skill_graph.yml`)
 
@@ -92,10 +98,17 @@ noch Canvas — sie nimmt `{nodes, edges, width, height}` und bewegt Positionen
   per `options` überschreibbar (Repulsion, Federlänge/-konstante, Gravitation,
   velocityDecay, alphaDecay).
 
-**Bewusste Später-Liste** (Stand Juli 2026): Zoom + Pan (erst mit
-Projekt-Knoten sinnvoll; Muster aus `fractal-panel.js` übernehmen —
-Pinch/Rad-Zoom/Reset; Touch-Konflikt mit `touch-action: pan-y` beachten),
-Drag + Reheat, Projekt-Knoten und
+**Ansicht (seit Oktober 2026):** Bildschirm = Layout × `scale` + `pan`. Render,
+Hit-Test, Rand-Pfeile und Knoten-Ziehen rechnen über dieselben Helfer
+(`toScreen`/`toLayout`). Zoom skaliert Abstände voll, Knoten und Schrift
+gedämpft (`glyphScale`, 0.85 bis 1.3). Einpassen nie unter 0.6 (darunter
+überlappen Labels systematisch), nie über 1.0. Die Engine-Option `aspect`
+lässt die Wolke das Format der Fläche annehmen (breit am Desktop, hoch am
+Telefon). `data-zoom` und `data-outside` am Canvas machen die Ansicht für
+Tests lesbar.
+
+**Bewusste Später-Liste** (Stand Juli 2026, Zoom + Pan + Drag erledigt):
+Projekt-Knoten und
 Detailpanel, Canvas-Tooltips, Deep-Links (`#skill=python`), Persistenz des
 Toggles, Kantengewichts-Legende, Anker-Links in die Berufserfahrung.
 
@@ -103,8 +116,8 @@ Toggles, Kantengewichts-Legende, Anker-Links in die Berufserfahrung.
 
 - **A11y:** Chips sind echte `<button>`s mit `aria-pressed`; Kontextzeilen
   sind `aria-live="polite"`; das Canvas ist `role="img"` und nicht
-  fokussierbar — Tastatur läuft über die Chip-Liste. Keine Information nur
-  per Hover.
+  fokussierbar — Tastatur läuft über die Chip-Liste und die beschrifteten
+  Kopfleisten-Knöpfe. Keine Information nur per Hover.
 - **`prefers-reduced-motion`:** Die Simulation wird synchron vorgerechnet
   (`runToEnd()`) und als Standbild gezeichnet; ein `change`-Listener schaltet
   live um.
@@ -116,7 +129,7 @@ Toggles, Kantengewichts-Legende, Anker-Links in die Berufserfahrung.
   bleibt Cyan.
 - **Determinismus:** Kreis-Startpositionen statt `Math.random()` — das Layout
   ist über Reloads reproduzierbar.
-- **Kein Layout-Shift:** Kontextzeilen reservieren Höhe (`min-height`).
+- **Kein Layout-Shift:** Konsole und Info-Leiste haben eine feste Höhe mit internem Scrollen (Mixin `selection-console`).
 - **Druck:** `@media print` blendet das Panel aus, die Chips bleiben.
 
 ## Verifikation nach Änderungen

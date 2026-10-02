@@ -318,6 +318,7 @@ Rechnungen aus Tokens sind Skalenwerte, z. B. die TOC-Einrückung `$space-4 + n 
 | `$small-spacing` | `0.5em` | kleiner Abstand (Altbestand, em-Ausnahme bis zur Migration) |
 | `$content-width` | `46rem` | Content-Spalte (siehe TYP-10) |
 | `$drawer-width` | `180px` | Drawer-Breite und Overlay-Aussparung |
+| `$graph-sheet-width` | `1100px` | Skill-Graph-Sheet am Desktop (darunter `94vw`, mobil volle Breite). Breiter als die Lesespalte, weil waagerechte Labels Breite brauchen. Lässt bei 1280 px je 90 px Scrim sichtbar |
 | `$space-section-break`, `-inner`, `-narrow`, `-inner-narrow` | `3.2rem` / `2.4rem`, bis 640 px `2.4rem` / `1.8rem` | Kapitelgrenze (`section-break`-Mixin), abgenommen, benannte Sonderwerte neben dem Raster |
 | `--masthead-height` | `74px`, ab 768 px `88px` | Laufzeit |
 | `--sticky-toc-height` | per JS | Laufzeit |
@@ -370,7 +371,6 @@ Globale Ebenen als Tokens in `variables/_scales.scss`, aufsteigend. Werte und Re
 
 | Token | Wert | Element |
 |---|---|---|
-| `$z-graph-float` | `900` | schwebender Skill-Graph-Knopf |
 | `$z-toc-overlay` | `997` | Scrim hinter dem aufgeklappten Sticky-TOC |
 | `$z-toc-sticky` | `998` | mitlaufende TOC-Leiste (mobil) |
 | `$z-scrim` | `998` | Drawer-Dimmer `body::before` |
@@ -384,7 +384,7 @@ Globale Ebenen als Tokens in `variables/_scales.scss`, aufsteigend. Werte und Re
 | `$z-offline` | `$z-toast - 1` | Offline-Hinweis |
 | `$z-toast` | `10020` | Service-Worker-Toast |
 
-Die Theme-Animation `#main { animation: $intro-transition }` erzeugt einen Stacking-Kontext auf `#main`. Was darin fixiert ist (TOC, Back-to-Top, Skill-Graph-Knopf, Blog-Hinweis), konkurriert nicht mit den Ebenen außerhalb (Register R-10).
+Die Theme-Animation `#main { animation: $intro-transition }` erzeugt einen Stacking-Kontext auf `#main`. Was darin fixiert ist (TOC, Back-to-Top, Blog-Hinweis), konkurriert nicht mit den Ebenen außerhalb (Register R-10).
 
 - **Z-1** [MUSS · Soll · Review] Modale, Toasts und app-weite Floats werden am `<body>` gemountet (Vorbild `sw-register.js`), nie innerhalb von `#main`. **[Offen]** Alternative: `$intro-transition: none` vor dem Theme-Import beseitigt den Stacking-Kontext direkt, nimmt aber auch Masthead und Seite die Theme-Einblendung (sichtbare Änderung, Owner).
 - **Z-2** [MUSS · Ist · Review] Lokale Stapel 0 bis 10 nur in Containern mit `isolation: isolate` und mit Skalen-Kopfkommentar. Vorbild: Skala im Kopf von `components/_fractal-panel.scss`, `isolation: isolate` in `components/fractal-panel/_canvas.scss`. Die Werte stehen als benannte Variablen am Dateikopf (`$hero-z-*`, `$fp-z-*`, `$cv-z-*`, `$masthead-z-*`, `$graph-z-touch-hint`) unter einem `skala-Ausnahme`-Marker. Größer als 10 sind der Hero-Stapel (`15`, `25`, `100`, `101`) und die Vollbild-Ebenen des Fraktal-Panels (`200`, `250`, `300`), dort trägt die Reihenfolge, nicht der Wert.
@@ -412,7 +412,6 @@ Quelle `variables/_scales.scss`.
 | `$shadow-drawer` | `-4px 0 20px $black-a40` | Drawer, fällt nach links |
 | `$shadow-sheet` | `0 -20px 60px -30px $black` | Bottom-Sheet, fällt nach oben |
 | `$shadow-sheet-float` | `0 -4px 24px $black-a50` | Erklärbox im Fraktal-Vollbild, fällt nach oben |
-| `$shadow-float` | `0 14px 34px -18px $black-a95` | schwebender Knopf, Schatten nur unter der Kante |
 
 Ringe (ohne Blur) und Glows (nur Interaktions-Momente und Hinweise, nur auf Farb-Tokens) sind eigene Familien. Benannt wird nach Rolle, die Werte sind kalibriert und bleiben exakt:
 
@@ -424,7 +423,6 @@ Ringe (ohne Blur) und Glows (nur Interaktions-Momente und Hinweise, nur auf Farb
 | `$shadow-ring-hairline`, `-inset` | `0 0 0 1px` | Haarlinie statt `border` (Archiv-Hover, Canvas-Rahmen) |
 | `$glow-dot`, `$glow-selected`, `$glow-focus`, `$glow-hover`, `$glow-open` | `0 0 6px` bis `0 0 15px` | Timeline-Punkt, ausgewählter Chip (Magenta), Regler-Fokus, Hover, aufgeklappt |
 | `$glow-halo` | drei Lagen 12/24/36 px | Back-to-Top im Hover |
-| `$glow-hint`, `$glow-hint-strong` | `0 0 14px 2px`, `0 0 24px 5px` | Aufglimmen des Skill-Graphen |
 | `$shadow-key-*`, `$glow-key*` | Kante `0 2px 0`, Licht `inset 0 1px 0`, Glimmen `0 0 8px` | Keycaps im Fraktal-Panel, kombiniert als Liste |
 
 Neon- und CRT-Glows sind Effektwerte (MO-4) und tragen Ausnahme-Marker.
@@ -523,8 +521,8 @@ Anlass: Im Skill-Graphen rutschte die Seite beim Wischen über den Graphen weg (
 **Hinweis (2. 10. 2026):** Die Skill-Graph-Überarbeitung (Owner-Freigabe 2. 10. 2026) gibt dem Graphen Zoom per Pinch, Mausrad und Knöpfen, passt ihn beim Öffnen ein und zentriert eine Auswahl **nicht** automatisch (der Graph bewegt sich nicht von selbst). OVL-2 („der Graph hat keinen Zoom“, Mausrad verschiebt) widerspricht dem und wird mit dieser Überarbeitung neu gefasst, ebenso `$z-graph-float` (3.5) und der Skill-Graph-Knopf in R-10.
 
 - **OVL-1** [MUSS · Ist · Review] **Gestenhoheit.** Eine Fläche, die wie ein eigenes Objekt aussieht (Canvas, Karte, Sheet, Dialog), besitzt ihre Gesten. Wischen, Mausrad und Ziehen werden nie unbemerkt an die Seite dahinter durchgereicht. Umsetzung: `touch-action: none` auf der Fläche, nicht-passive `wheel`- und `touchstart`-Handler, `overscroll-behavior: contain` bei scrollbaren Overlays. Ausnahme: Inline im Lesefluss eingebettete Flächen dürfen Ein-Finger-Wischen an die Seite geben (sonst Scroll-Falle), dann aber konsistent.
-- **OVL-2** [MUSS · Ist · Review] **Gleiche Geste, gleiche Wirkung.** Mausrad über einem Fraktal-Canvas zoomt, über dem Skill-Graphen verschiebt es (der Graph hat keinen Zoom). Ein Finger auf leerer Fläche verschiebt die Ansicht, auf einem Objekt zieht er das Objekt. Zwei Finger verschieben bzw. zoomen. Neue Flächen übernehmen dieses Muster.
-- **OVL-3** [MUSS · Ist · Review] **Light Dismiss.** Jedes Overlay, das keine zwingende Entscheidung verlangt (Sheet, Drawer, Dropdown, Hinweis-Dialog, Tooltip), schließt per Escape, per Klick oder Tippen außerhalb (Scrim bzw. Umgebung) und per sichtbarem ✕ bzw. Auslöser. Kein Light Dismiss nur dort, wo dabei Eingaben verloren gingen. Esc ist gestaffelt: erst Auswahl lösen, dann schließen (Skill-Graph).
+- **OVL-2** [MUSS · Ist · Review] **Gleiche Geste, gleiche Wirkung.** Mausrad über einer Fläche mit Zoom zoomt um den Mauszeiger, im Fraktal-Canvas wie im Skill-Graphen (seit 2. 10. 2026, gleicher Faktor `exp(−deltaY · 0.0016)`). Waagerechtes Wischen auf dem Trackpad und Shift+Rad verschieben. Ein Finger auf leerer Fläche verschiebt die Ansicht, auf einem Objekt zieht er das Objekt. Zwei Finger verschieben und zoomen zugleich (Pinch um den Schwerpunkt). Zoom ist zusätzlich über beschriftete Knöpfe erreichbar (Skill-Graph: „−“, „+“, „Einpassen“, bei Fokus im Sheet auch die Tasten `+`, `−`, `0`). Ohne Sheet, inline im Lesefluss, bleibt das Rad beim Seiten-Scrollen (OVL-1, Ausnahme). Neue Flächen übernehmen dieses Muster.
+- **OVL-3** [MUSS · Ist · Review] **Light Dismiss.** Jedes Overlay, das keine zwingende Entscheidung verlangt (Sheet, Drawer, Dropdown, Hinweis-Dialog, Tooltip), schließt per Escape, per Klick oder Tippen außerhalb (Scrim bzw. Umgebung) und per sichtbarem ✕ bzw. Auslöser. Kein Light Dismiss nur dort, wo dabei Eingaben verloren gingen. Esc ist gestaffelt: erst Auswahl lösen, dann schließen (Skill-Graph). Das Overlay entscheidet darüber in der Capture-Phase, bevor andere Listener die Auswahl lösen (`skill-graph-sheet.js`).
 - **OVL-4** [MUSS · Ist · Review] **Modal heißt vollständig modal:** Scrim, Scroll-Sperre ohne Layout-Sprung (`html { overflow: hidden; scrollbar-gutter: stable }`), Hintergrund `inert`, `role="dialog"` mit `aria-modal="true"` und zugänglichem Namen, Fokus beim Öffnen hinein und beim Schließen zurück zum Auslöser (A11Y-2). Das Overlay liegt in einer eigenen Ebene direkt unter `<body>`, nicht im Stacking-Kontext von `#main` (sonst überdecken es Footer und Masthead). Vorlage: `assets/js/skill-graph-sheet.js` (`enterModal`, `leaveModal`). Der Drawer setzt seit 1. 10. den Hintergrund `inert` (`greedy-navigation.js`: alle `body`-Kinder außer Masthead, Skripten und Live-Regionen). Gesetzt wird erst nach dem Slide-In, aufgehoben an jeder Schließ-Stelle, beim pageswap bleibt alles unangetastet. Semantisch bleibt er eine Disclosure-Navigation ohne `role="dialog"` (Register R-32).
 - **OVL-5** [SOLL · Ist · Review] Non-modale Overlays (Toasts, Hinweise) sperren nichts und stehlen nicht den Fokus. Deckt ein Overlay den größten Teil des Viewports, wird es modal gebaut (OVL-4).
 
@@ -937,7 +935,7 @@ Die Seite ist statisch, hat keine Nutzerkonten und keine Formulare. Die realisti
 
 ### 11.1 DOM-Sinks im eigenen JavaScript
 
-- **SEC-1** [MUSS · Ist · CI-P1] Werte, die nicht als Literal im Quelltext stehen, gelangen nur über `textContent`, `setAttribute` (außer `on*`, `src`, `href` mit fremdem Inhalt), `createElement` oder `canvas.fillText` ins DOM. Kein `innerHTML`, `outerHTML`, `insertAdjacentHTML`, `document.write` oder `createContextualFragment` mit dynamischen Werten. Kein `eval`, kein `new Function`, kein `setTimeout`/`setInterval` mit String, keine `javascript:`-URLs. URL-Bestandteile (`location.search`, `location.hash`, `document.referrer`, `window.name`) und Storage-Werte gelten als unvertrauenswürdig und steuern nur Vergleiche, Booleans oder `getElementById`. Erlaubte Ausnahmen mit Begründungskommentar: der Same-Origin-Swap in `spa-nav.js` (per `DOMParser` geparstes, selbst geholtes HTML) und statische Literale in `sw-register.js`, `skill-graph-sheet.js`, `fractal-panel.js`. `eslint-plugin-no-unsanitized` läuft im Lint-Job (16.1), geplant sind noch `no-eval`, `no-implied-eval`, `no-new-func`, `no-script-url`.
+- **SEC-1** [MUSS · Ist · CI-P1] Werte, die nicht als Literal im Quelltext stehen, gelangen nur über `textContent`, `setAttribute` (außer `on*`, `src`, `href` mit fremdem Inhalt), `createElement` oder `canvas.fillText` ins DOM. Kein `innerHTML`, `outerHTML`, `insertAdjacentHTML`, `document.write` oder `createContextualFragment` mit dynamischen Werten. Kein `eval`, kein `new Function`, kein `setTimeout`/`setInterval` mit String, keine `javascript:`-URLs. URL-Bestandteile (`location.search`, `location.hash`, `document.referrer`, `window.name`) und Storage-Werte gelten als unvertrauenswürdig und steuern nur Vergleiche, Booleans oder `getElementById`. Erlaubte Ausnahmen mit Begründungskommentar: der Same-Origin-Swap in `spa-nav.js` (per `DOMParser` geparstes, selbst geholtes HTML) und statische Literale in `sw-register.js`, `fractal-panel.js` (`skill-graph-sheet.js` baut seit 2. 10. 2026 per `createElement`). Check geplant: ESLint mit `eslint-plugin-no-unsanitized` sowie `no-eval`, `no-implied-eval`, `no-new-func`, `no-script-url`.
 
 ### 11.2 Liquid-Ausgabe
 
@@ -1235,7 +1233,7 @@ Stand: Abgleich vom 2. 10. 2026 (Kopf). Ein Eintrag verschwindet, sobald der C
 
 | ID | Regel | Stelle | Audit | Weg |
 |---|---|---|---|---|
-| R-10 | Z-1 | Fixierte Overlays im Stacking-Kontext von `#main`: Sticky-TOC, Back-to-Top (`_layouts/single.html`), Blog-Hinweis. Der Skill-Graph-Knopf gehört zum Track | B-LAY-05 | Owner (am `<body>` mounten oder `$intro-transition: none`) |
+| R-10 | Z-1 | Fixierte Overlays im Stacking-Kontext von `#main`: Sticky-TOC, Back-to-Top (`_layouts/single.html`), Blog-Hinweis. (Der schwebende Skill-Graph-Knopf ist seit 2. 10. entfallen.) | B-LAY-05 | Owner (am `<body>` mounten oder `$intro-transition: none`) |
 | R-11 | MO-1 | Theme-`$global-transition` (`all 0.2s ease-in-out`) ist nicht überschrieben, das Theme-CSS enthält weiter `transition: all`. Im eigenen SCSS keins mehr | B-MO-01 | Code (eigener Durchgang, ändert Theme-CSS an vielen Stellen, Vorher/Nachher) |
 | R-16 | JS-4 | Kopf ohne `<datei>.js — Zweck`: `service-worker.js`, dazu die Track-Dateien `skill-chips.js`, `skill-graph-data.js`, `skill-graph.js`, `skill-graph-sim.js` | B-JS-23 | Code, Track |
 | R-20 | 6.5, SCSS-16 | Kommentar „HART aktiviert — ignoriert reduced-motion“ am Power-Hinweis in `hero-crt.js` (`schedulePowerHint`) und `components/_hero.scss` (`&--hint`) ist falsch: der Kill-Switch nimmt den Puls unter `reduce` heraus. Die Endlos-Animationen selbst sind eine Owner-Ausnahme (6.5), kein Registerfall | B-A11Y-11, B-MC-01 | Code (Kommentar) |
@@ -1368,3 +1366,4 @@ Prozess und Doku:
 | 2026-10-01 | Theme: Minimal Mistakes 4.28.1 (Commit gepinnt), SEO-3 um `og:image:alt` ergänzt, R-50 (Abstand erstes Kind) und R-51 (englische Landmark-Namen) neu. |
 | 2026-10-01 | Skalen Stufe B: Literale auf die Skalen gerundet (höchstens 4 px), Fraktal-Halbschritte, Ring- und Glow-Familie, lokale Ebenen benannt, Guardrails zählen lokale Variablen und prüfen Block-Marker, Templates und berechnete Breakpoints, Negativtests `tests/guardrails/`, R-35 auf em-Rest. |
 | 2026-10-02 | Abgleich mit dem Code (Stand `75c23c0`), Status vorher → nachher: Ist 100 → 129, Soll 174 → 144, Offen 3 → 4. Auf Ist: GOV-3, GOV-4, GOV-5, GOV-7, GOV-8, DES-8, MO-2, MO-7, SEO-4, BEW-2, BEW-4, TON-1, TON-9, COPY-5, TYPO-3, SCSS-7, SCSS-8, CRIT-1, CRIT-2, JS-2, JS-3, SPA-6, SEC-5a, SEC-5c, SEC-10, DOC-1, GIT-1, GIT-2, GIT-3, GIT-7. Zurück auf Soll, weil der Code sie nicht erfüllt: KOMP-5. Auf Offen: SEC-10a (Datenschutzerklärung), dazu die Owner-Entscheidung „kein Impressum“ (11.10). Übernommen: Grundschrift `html{font-size:100%}` (CRIT-1, 6.1), CRT/Neon endlos als entschiedene Ausnahme (6.5), Lizenz entschieden (13.1), Hinweis zur Skill-Graph-Überarbeitung (4.4). Register 36 → 34 Einträge: 24 entfernt, davon 21 vom Code erfüllt (R-1, R-3 bis R-6, R-8, R-9, R-12 bis R-15, R-17 bis R-19, R-22 bis R-26, R-29, R-31), dazu R-2 (Owner-Ausnahme, steht in KOMP-3), R-7 (Rest ist eine Palettenfrage, 3.1) und R-27 (bewusst viewport-fix, 6.1). R-10, R-16, R-20, R-21, R-28 und R-35 auf den Stand gebracht. Neu R-52 bis R-73 für Abweichungen, die der Abgleich gefunden hat. Hinweis: R-35 war am 1. 10. doppelt vergeben (zuerst tote Kaskaden-Werte, dann Skalen-Rest), die Nummer bleibt beim Skalen-Rest. 16.1 um Playwright, Styleguide-Gate und SEC-5c ergänzt, 16.2 um Erledigtes gekürzt. |
+| 2026-10-02 | Skill-Graph: OVL-2 (Mausrad zoomt auch im Graphen, Pinch, Zoom-Knöpfe), OVL-3 (Esc-Staffelung in der Capture-Phase), `$graph-sheet-width` neu, `$z-graph-float`, `$glow-hint*` und `$shadow-float` entfallen mit Aktivieren-Schritt und schwebendem Öffner, SEC-1-Ausnahme `skill-graph-sheet.js` entfällt, R-10 und 16.2 nachgeführt. |
