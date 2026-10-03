@@ -447,6 +447,10 @@
   width: 100%;
   box-sizing: border-box;
   gap: $space-2;
+
+  // Das Theme gibt jedem span ein transition: all (R-11), der frühere <h4>
+  // hatte keins. So bleibt der :active-Grund ohne Überblendung wie bisher
+  transition: none;
 }
 
 .toc-toggle .toc-toggle-icon {
@@ -614,6 +618,7 @@
 .toc-toggle .nav__title,
 .toc .nav__title {
   font-size: $toc-title-font-size;
+  line-height: 1.2; // wie die Theme-Überschriften, der Titel war bis Oktober 2026 ein <h4> (SEITE-3)
 }
 
 // Theme-Regel ".page__content a:not(.btn):hover { underline }" (0,3,1) ohne

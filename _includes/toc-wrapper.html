@@ -37,17 +37,17 @@
   <nav id="toc-original" class="toc" aria-label="{{ toc_label }}">
     {% if page.toc_collapse %}
       <button id="{{ toc_id }}-toggle" class="toc-toggle" type="button" aria-expanded="true" aria-controls="{{ toc_id }}-content">
-        <h4 class="nav__title">
+        <span class="nav__title">
           <i class="fas fa-{{ page.toc_icon | default: 'file-alt' }}" aria-hidden="true"></i>
           {{ toc_label }}
           <span class="toc-toggle-icon" aria-hidden="true">▲</span>
-        </h4>
+        </span>
       </button>
       <div id="{{ toc_id }}-content" class="toc__menu-wrapper">
         {% include toc.html sanitize=true html=content h_min=2 h_max=6 class="toc__menu" skip_no_ids=true %}
       </div>
     {% else %}
-      <header><h4 class="nav__title"><i class="fas fa-{{ page.toc_icon | default: 'file-alt' }}" aria-hidden="true"></i> {{ toc_label }}</h4></header>
+      <header><div class="nav__title"><i class="fas fa-{{ page.toc_icon | default: 'file-alt' }}" aria-hidden="true"></i> {{ toc_label }}</div></header>
       {% include toc.html sanitize=true html=content h_min=2 h_max=6 class="toc__menu" skip_no_ids=true %}
     {% endif %}
   </nav>
