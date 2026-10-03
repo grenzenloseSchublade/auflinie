@@ -29,8 +29,10 @@
   const HERO_TUBE_BOOT_DURATION_MS = 3500;
   /** Fallback nur wenn `getComputedStyle` `--hero-crt-mode-flash-dur` nicht liefert (Spiegel zu `_hero.scss`) */
   const HERO_CRT_MODE_FLASH_MS = 100;
-  /** Ziel-FPS für Canvas-Rauschen (Zeitdrossel, weniger CPU/GC als festes RAF-3er-Raster) */
+  /** Ziel-FPS für Canvas-Rauschen (Zeitdrossel: gezeichnet wird im ersten Frame, der mindestens 1000/FPS ms nach dem letzten Bild liegt) */
   const HERO_CRT_NOISE_TARGET_FPS = 10;
+  /** Vorlauf (ms), mit dem der Timer vor dem nächsten Bild wieder Frames anfordert, gut ein Frame bei 60 Hz (PERF-7) */
+  const HERO_CRT_NOISE_RAF_LEAD_MS = 20;
 
   function readEnableImageCaching() {
     const raw = (document.documentElement.getAttribute('data-enable-image-caching') || '')
@@ -160,10 +162,18 @@
   }
 
   function stopHeroCanvasNoise(overlay) {
+    if (overlay._heroCrtNoiseTimerId) {
+      window.clearTimeout(overlay._heroCrtNoiseTimerId);
+      overlay._heroCrtNoiseTimerId = 0;
+    }
     if (overlay._heroCrtNoiseRafId) {
       cancelAnimationFrame(overlay._heroCrtNoiseRafId);
       overlay._heroCrtNoiseRafId = 0;
     }
+  }
+
+  function isHeroCanvasNoiseRunning(overlay) {
+    return !!(overlay._heroCrtNoiseTimerId || overlay._heroCrtNoiseRafId);
   }
 
   /** Flash-Timeout aus `bindHomeHeroCrtPowerToggle`; bei Navigation/DOM-Entfernung aufräumen */
@@ -248,6 +258,13 @@
 
   function startHeroCanvasNoise(overlay) {
     if (overlay.classList.contains('page__hero--crt-read')) return;
+    // Außerhalb des Viewports nicht starten, sondern vormerken: der
+    // Observer (observeHeroVisibility) startet beim Wiedereintritt
+    if (overlay.classList.contains(HERO_OFFSCREEN_CLASS)) {
+      stopHeroCanvasNoise(overlay);
+      overlay._heroCrtNoiseOffscreen = true;
+      return;
+    }
     const canvas = overlay.querySelector('.page__hero-crt-noise');
     if (!canvas || !canvas.getContext) return;
     const ctx = canvas.getContext('2d', { alpha: true });
@@ -271,27 +288,40 @@
       }, heroSignal ? { signal: heroSignal } : false);
     }
 
-    function tick(now) {
-      if (document.hidden) {
-        overlay._heroCrtNoiseRafId = 0;
-        return;
-      }
-      if (!overlay.classList.contains('loaded')) {
+    // Frames erst kurz vor dem nächsten Bild anfordern (PERF-7): früher lief
+    // die rAF-Schleife mit 60 Hz und verwarf fünf von sechs Frames. Jetzt
+    // wartet ein Timer bis HERO_CRT_NOISE_RAF_LEAD_MS vor dem Termin, dann
+    // entscheidet dieselbe Zeitdrossel wie vorher über den Frame. Gezeichnet
+    // wird also in denselben Frames, nur die leeren Callbacks entfallen
+    function requestTick(delayMs) {
+      overlay._heroCrtNoiseRafId = 0;
+      overlay._heroCrtNoiseTimerId = window.setTimeout(function() {
+        overlay._heroCrtNoiseTimerId = 0;
         overlay._heroCrtNoiseRafId = requestAnimationFrame(tick);
-        return;
-      }
-      if (overlay.classList.contains('page__hero--crt-read')) {
-        overlay._heroCrtNoiseRafId = 0;
+      }, Math.max(0, delayMs));
+    }
+
+    function tick(now) {
+      overlay._heroCrtNoiseRafId = 0;
+      if (document.hidden) return;
+      if (overlay.classList.contains('page__hero--crt-read')) return;
+      if (!overlay.classList.contains('loaded')) {
+        requestTick(noiseMinIntervalMs - HERO_CRT_NOISE_RAF_LEAD_MS);
         return;
       }
       const ts = typeof now === 'number' ? now : performance.now();
       const lastTs = overlay._heroCrtNoiseLastTs;
       if (lastTs != null && ts - lastTs < noiseMinIntervalMs) {
+        // noch vor dem Termin: nächsten Frame prüfen (ein bis zwei pro Bild)
         overlay._heroCrtNoiseRafId = requestAnimationFrame(tick);
         return;
       }
       overlay._heroCrtNoiseLastTs = ts;
+      drawNoise();
+      requestTick(noiseMinIntervalMs - HERO_CRT_NOISE_RAF_LEAD_MS - (performance.now() - ts));
+    }
 
+    function drawNoise() {
       const w = canvas.width;
       const h = canvas.height;
       let buf = overlay._heroCrtNoiseBuffer;
@@ -308,8 +338,6 @@
         d[i + 3] = 52;
       }
       ctx.putImageData(buf, 0, 0);
-
-      overlay._heroCrtNoiseRafId = requestAnimationFrame(tick);
     }
 
     overlay._heroCrtNoiseRafId = requestAnimationFrame(tick);
@@ -462,9 +490,10 @@
   /**
    * Sichtbarkeit des Heros beobachten: außerhalb des Viewports setzt der
    * Observer HERO_OFFSCREEN_CLASS, dann stehen Scanline-Jitter, Phosphor-
-   * Flackern und Rollbalken still. Ohne die Pause malte der Browser die Fläche
-   * 60-mal pro Sekunde neu, auch weit unten auf einer langen Seite (PERF-7).
-   * Sichtbar ändert sich nichts, der Hero ist dann ja nicht zu sehen.
+   * Flackern und Rollbalken still, und das Canvas-Rauschen pausiert. Ohne
+   * die Pause malte der Browser die Fläche 60-mal pro Sekunde neu, auch weit
+   * unten auf einer langen Seite (PERF-7). Sichtbar ändert sich nichts, der
+   * Hero ist dann ja nicht zu sehen.
    * @param {NodeList} heroes
    */
   function observeHeroVisibility(heroes) {
@@ -473,7 +502,17 @@
     if (!('IntersectionObserver' in window)) return;
     heroObserver = new IntersectionObserver(function(entries) {
       entries.forEach(function(entry) {
-        entry.target.classList.toggle(HERO_OFFSCREEN_CLASS, !entry.isIntersecting);
+        const overlay = entry.target;
+        overlay.classList.toggle(HERO_OFFSCREEN_CLASS, !entry.isIntersecting);
+        if (!entry.isIntersecting) {
+          if (isHeroCanvasNoiseRunning(overlay)) {
+            stopHeroCanvasNoise(overlay);
+            overlay._heroCrtNoiseOffscreen = true;
+          }
+        } else if (overlay._heroCrtNoiseOffscreen) {
+          overlay._heroCrtNoiseOffscreen = false;
+          startHeroCanvasNoise(overlay);
+        }
       });
     });
     Array.prototype.forEach.call(heroes, function(el) { heroObserver.observe(el); });
@@ -515,7 +554,8 @@
   function teardownHero() {
     document.querySelectorAll(HERO_SEL).forEach(function(el) {
       clearHeroCrtFlashTimeout(el);
-      stopHeroCanvasNoise(el);          // rAF-Noise-Loop stoppen
+      stopHeroCanvasNoise(el);          // Rausch-Timer und -rAF stoppen
+      el._heroCrtNoiseOffscreen = false;
       abortCrtBootFlow(el);             // Preboot/Boot-Timer + load-wait-Listener
       el.classList.remove(HERO_OFFSCREEN_CLASS);
     });
