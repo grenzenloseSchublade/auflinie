@@ -14,8 +14,11 @@
   // Persistent-Shell-Kontrakt (spa-nav.js): dokumentweite Listener dieses
   // Mounts hängen an heroSignal und werden im Teardown zentral gelöst.
   const HERO_SEL = '.page__hero--overlay[data-background-image]';
+  /** Klasse am Overlay, solange der Hero außerhalb des Viewports liegt. Hält per CSS die Endlos-Animationen an (PERF-7, `_hero.scss`) */
+  const HERO_OFFSCREEN_CLASS = 'page__hero--crt-offscreen';
   let heroController = null;
   let heroSignal = null;
+  let heroObserver = null;
   let bgPreloaded = false;
 
   const HERO_CRT_BOOT_KEY = 'auflinieHeroCrtBoot';
@@ -456,6 +459,26 @@
     else window.addEventListener('load', fire, { once: true });
   }
 
+  /**
+   * Sichtbarkeit des Heros beobachten: außerhalb des Viewports setzt der
+   * Observer HERO_OFFSCREEN_CLASS, dann stehen Scanline-Jitter, Phosphor-
+   * Flackern und Rollbalken still. Ohne die Pause malte der Browser die Fläche
+   * 60-mal pro Sekunde neu, auch weit unten auf einer langen Seite (PERF-7).
+   * Sichtbar ändert sich nichts, der Hero ist dann ja nicht zu sehen.
+   * @param {NodeList} heroes
+   */
+  function observeHeroVisibility(heroes) {
+    if (heroObserver) heroObserver.disconnect();
+    heroObserver = null;
+    if (!('IntersectionObserver' in window)) return;
+    heroObserver = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        entry.target.classList.toggle(HERO_OFFSCREEN_CLASS, !entry.isIntersecting);
+      });
+    });
+    Array.prototype.forEach.call(heroes, function(el) { heroObserver.observe(el); });
+  }
+
   // ── Persistent-Shell-Kontrakt (spa-nav.js): Mount bei jedem spa:load ────────
   function mountHero(root) {
     const scope = root || document;
@@ -484,6 +507,7 @@
     });
     if (config.enableImageCaching !== false && toLoad.length) applyBackgroundImages(toLoad);
 
+    observeHeroVisibility(heroes);
     bindHomeHeroCrtPowerToggle();
     schedulePowerHint();
   }
@@ -493,7 +517,9 @@
       clearHeroCrtFlashTimeout(el);
       stopHeroCanvasNoise(el);          // rAF-Noise-Loop stoppen
       abortCrtBootFlow(el);             // Preboot/Boot-Timer + load-wait-Listener
+      el.classList.remove(HERO_OFFSCREEN_CLASS);
     });
+    if (heroObserver) { heroObserver.disconnect(); heroObserver = null; } // Observer-Leak zu
     if (heroController) { heroController.abort(); heroController = null; heroSignal = null; } // visibilitychange weg
   }
 

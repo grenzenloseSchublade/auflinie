@@ -486,6 +486,20 @@ $hero-z-scroll-cue: 101; // Scroll-Hinweis über der Caption
       animation: none;
     }
 
+    // Hero außerhalb des Viewports (hero-crt.js setzt page__hero--crt-offscreen
+    // per IntersectionObserver): Endlos-Animationen anhalten (PERF-7). Der
+    // Scanline-Jitter animiert background-position und zwang den Browser sonst
+    // 60-mal pro Sekunde zum Neumalen, auch weit unten auf der Seite. Nicht
+    // während Preboot und Boot, deren Ablauf an JS-Timer gekoppelt ist.
+    // Spezifität über den Regeln mit animation-Kurzform oben
+    &[data-background-image].loaded.page__hero--crt-offscreen:not(.page__hero--crt-boot, .page__hero--crt-preboot) {
+      .page__hero-crt-layer,
+      .page__hero-crt-layer::after,
+      .page__hero-crt-roll::before {
+        animation-play-state: paused;
+      }
+    }
+
     // skala-Ausnahme-Ende
 
     // Startseite: Power (über Effekten/Vorhang, klickbar)
