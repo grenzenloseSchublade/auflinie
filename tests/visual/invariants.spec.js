@@ -1,7 +1,7 @@
 // Automatisches Style-Guide-Review, Teil 4: Bedien-Invarianten aus
 // STYLEGUIDE.md 6.2 und 4.4 (A11Y-2, OVL-3, OVL-4, WCAG 2.4.3/2.4.7).
 // Prüft Verhalten, nicht Aussehen: Fokusführung, aria-expanded, inert,
-// Escape und Light Dismiss an Drawer und Skill-Graph-Sheet, Info-Leiste,
+// Escape und Light Dismiss an Drawer und Skill-Graph-Sheet, Autor-Dropdown, Info-Leiste,
 // Einpassen und Zoom im Skill-Graphen, dass kein
 // unsichtbares Element den Tastaturfokus bekommt, und die Breakpoint-Grenzen
 // 767/768 und 1023/1024 (STYLEGUIDE 3.4).
@@ -75,6 +75,33 @@ test.describe('Drawer per Zeiger (A11Y-2, OVL-3)', () => {
     await page.mouse.click(40, MOBIL.height / 2);
     await expect(toggle).toHaveAttribute('aria-expanded', 'false');
     expect(await page.evaluate(() => document.querySelector('.initial-content').inert)).toBe(false);
+  });
+});
+
+// Autor-Folgen-Dropdown (author-follow.js): Knopf nur unter 1024 px sichtbar.
+// Gleiche Fokus-Logik wie der Drawer.
+test.describe('Autor-Folgen-Dropdown (A11Y-2)', () => {
+  test.use({ viewport: MOBIL });
+
+  test('Tastatur: Fokus in die Liste, Escape gibt ihn zurück', async ({ page }) => {
+    await page.goto('/auflinie/about/', { waitUntil: 'load' });
+    const btn = page.locator('.author__urls-wrapper button');
+    const list = page.locator('.author__urls');
+    await btn.focus();
+    await page.keyboard.press('Enter');
+    await expect(btn).toHaveAttribute('aria-expanded', 'true');
+    await expect(list.locator('a[href]').first()).toBeFocused();
+    await page.keyboard.press('Escape');
+    await expect(btn).toHaveAttribute('aria-expanded', 'false');
+    await expect(btn).toBeFocused();
+  });
+
+  test('Zeiger: Fokus bleibt am Knopf', async ({ page }) => {
+    await page.goto('/auflinie/about/', { waitUntil: 'load' });
+    const btn = page.locator('.author__urls-wrapper button');
+    await btn.click();
+    await expect(btn).toHaveAttribute('aria-expanded', 'true');
+    await expect(btn).toBeFocused();
   });
 });
 

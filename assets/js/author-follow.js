@@ -3,9 +3,9 @@
  * entfernten jQuery-Toggle des Themes (main.min.js wird nicht mehr geladen).
  * Toggelt .is--visible auf .author__urls; schließt bei Außenklick/Escape.
  * Muster nach STYLEGUIDE A11Y-2: aria-expanded und aria-controls am Button,
- * Escape gibt den Fokus an den Button zurück. Das Markup kommt aus dem
- * Theme-Include author-profile.html, deshalb setzt das Skript id und
- * aria-controls selbst.
+ * Öffnen per Tastatur setzt den Fokus in die Liste, Escape gibt ihn an den
+ * Button zurück. Das Markup kommt aus dem Theme-Include author-profile.html,
+ * deshalb setzt das Skript id und aria-controls selbst.
  *
  * An den Persistent-Shell-Kontrakt (spa-nav.js) gebunden: das Autor-Markup
  * liegt INNERHALB von .initial-content und wird bei jedem Swap ersetzt. Ohne
@@ -34,16 +34,23 @@
     function close() {
       list.classList.remove('is--visible');
       btn.classList.remove('open');
-      if (!list.id) list.id = 'author-follow-list';
-    btn.setAttribute('aria-controls', list.id);
-    btn.setAttribute('aria-expanded', 'false');
+      btn.setAttribute('aria-expanded', 'false');
     }
 
     // Element-scoped -> stirbt mit dem alten DOM beim Swap, kein Teardown nötig.
-    btn.addEventListener('click', function () {
+    // Per Enter/Leertaste geöffnet (click mit detail 0): Fokus auf den ersten
+    // Link der Liste. Bei Maus/Touch bleibt er am Button, wie beim Drawer
+    // (greedy-navigation.js): das Theme zeichnet schon bei :focus einen Ring
+    // um Links, nach dem Antippen stünde er ohne Grund am ersten Eintrag.
+    // Tab führt vom Button ohnehin direkt in die Liste.
+    btn.addEventListener('click', function (e) {
       const offen = list.classList.toggle('is--visible');
       btn.classList.toggle('open', offen);
       btn.setAttribute('aria-expanded', offen ? 'true' : 'false');
+      if (offen && e.detail === 0) {
+        const first = list.querySelector('a[href]');
+        if (first) first.focus({ preventScroll: true });
+      }
     });
 
     // Dokumentweit -> überlebt den Swap und muss aktiv abgeräumt werden.
