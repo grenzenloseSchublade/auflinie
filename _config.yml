@@ -191,8 +191,14 @@ exclude:
   - assets/vendor/SHA384SUMS # Prüfsummen der Vendor-Dateien (STYLEGUIDE SEC-8a), nur für die Prüfung
   - "*.sublime-project"
   - "*.sublime-workspace"
+  # Theme-Skripte, die keine Seite lädt (eigenes Vanilla-JS, siehe
+  # _includes/scripts.html). Greift für Theme-Assets erst über
+  # _plugins/theme-assets-exclude.rb (STYLEGUIDE.md SEC-8b)
   - assets/js/_main.js
+  - assets/js/main.min.js # samt main.min.js.map (Präfix)
   - assets/js/vendor
+  - assets/js/lunr
+  - assets/js/plugins
   - Capfile
   - CHANGELOG
   - config

@@ -86,6 +86,9 @@ jobs:
         run: bash scripts/sass-deprecation-check.sh
       - name: Gate – Styleguide nie im Deploy (STYLEGUIDE.md SG-1)
         run: test ! -e _site/styleguide && test ! -e _site/assets/css/styleguide.css
+      # exclude greift für Theme-Assets nur über _plugins/theme-assets-exclude.rb
+      - name: Gate – ungenutzte Theme-Skripte nicht im Deploy (STYLEGUIDE.md SEC-8b)
+        run: test ! -e _site/assets/js/main.min.js && test ! -e _site/assets/js/vendor && test ! -e _site/assets/js/lunr && test ! -e _site/assets/js/plugins
       - name: Review-Build mit Styleguide-Ansicht (wird nicht deployt)
         run: bundle exec jekyll build --unpublished -d _site_review
         env:

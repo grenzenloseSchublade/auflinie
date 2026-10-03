@@ -24,19 +24,7 @@ Das Theme bringt selbst Fremdbestandteile mit. Lizenzangaben laut Abschnitt „L
 | Pure Liquid Jekyll Table of Contents | – | Theme-Include `toc.html` (genutzt über `toc-wrapper.html`) | MIT, © 2017 Vladimir Jimenez | Theme-README |
 | Jekyll Group-By-Array | – | Theme-Include | MIT, © 2015 Max White | Theme-README |
 
-Diese Theme-Skripte kopiert der Build nach `_site/assets/js/`, keine Seite lädt sie:
-
-| Komponente | Version | Datei | Lizenz | Beleg |
-|---|---|---|---|---|
-| Minimal-Mistakes-Bundle (enthält jQuery und die Plugins unten) | 4.28.1 | `main.min.js` | MIT, © 2013–2026 Michael Rose, © 2024–2026 iBug | Dateikopf |
-| jQuery | 3.6.0 | `vendor/jquery/jquery-3.6.0.js` | MIT, © OpenJS Foundation and other contributors | Dateikopf |
-| Lunr | 2.3.9 | `lunr/lunr.js`, `lunr/lunr.min.js` | MIT, © 2020 Oliver Nightingale | Dateikopf |
-| Gumshoe | 5.1.1 | `plugins/gumshoe.js` | MIT, © 2019 Chris Ferdinandi | Dateikopf |
-| Smooth Scroll | 16.1.2 | `plugins/smooth-scroll.js` | MIT, © 2020 Chris Ferdinandi | Dateikopf |
-| GreedyNav.js (jQuery-Fassung) | – | `plugins/jquery.greedy-navigation.js` | MIT, © 2015 Luke Jackson | Dateikopf |
-| Magnific Popup | 1.1.0 | `plugins/jquery.magnific-popup.js` | MIT, © 2016 Dmitry Semenov | Theme-README, Dateikopf ohne Lizenz |
-| jQuery throttle / debounce | 1.1 | `plugins/jquery.ba-throttle-debounce.js` | MIT oder GPL (dual), © 2010 Ben Alman | Dateikopf |
-| FitVids | 1.1 | `plugins/jquery.fitvids.js` | WTFPL, © 2013 Chris Coyier, Dave Rupert | Dateikopf |
+Die Theme-Skripte unter `assets/js/` (`main.min.js` mit jQuery und Plugins, `vendor/jquery`, `lunr/`, `plugins/`) lädt keine Seite. Sie stehen in `exclude` und landen nicht im Build (`_plugins/theme-assets-exclude.rb`), werden also nicht ausgeliefert.
 
 ## Eigener Code nach fremder Vorlage
 
