@@ -25,6 +25,7 @@
   function utils() {
     return window.AuflinieUtils || {
       rafThrottle: function (fn) { return fn; },
+      onDocumentResize: function (fn, signal) { fn(); window.addEventListener('resize', fn, { signal: signal }); },
       prefersReducedMotion: function () {
         return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
       },
@@ -74,6 +75,7 @@
     const stickyCurrent = scope.querySelector('#toc-sticky-current');
     const stickyOverlay = scope.querySelector('#toc-sticky-overlay');
     const originalToc = scope.querySelector('#toc-original');
+    const progressBar = scope.querySelector('#toc-sticky-mobile .toc-sticky-mobile__progress');
     const offsetTargets = Array.prototype.slice.call(scope.querySelectorAll('[data-sticky-toc-offset]'));
 
     if (!stickyToc || !originalToc) { return; }
@@ -91,6 +93,11 @@
     let isDropdownOpen = false;
     let stickyVisible = false;
     let cachedMastheadHeight = null;
+    // Gecacht statt pro Scroll-Frame gemessen (PERF-8), aktualisiert bei
+    // jeder Größenänderung von Dokument oder Viewport (onDocumentResize)
+    let scrollMax = 0;              // scrollHeight - innerHeight
+    let tocBottomDoc = 0;           // Unterkante des Original-TOC in Dokumentkoordinaten
+    let lastProgress = '';
 
     const getMastheadHeight = function () {
       if (cachedMastheadHeight === null) {
@@ -101,12 +108,18 @@
     };
 
     // ── Visibility: Sticky-TOC nur mobil + gescrollt + Original-TOC aus dem Bild
-    function updateStickyVisibility() {
+    // Die Lage des Original-TOC kommt aus dem Cache (tocBottomDoc), pro Frame
+    // wird nur scrollY gelesen. Unter $bp-lg steht das TOC im Fluss, seine
+    // Dokumentlage ändert sich also nur mit dem Layout. Ein
+    // IntersectionObserver reicht hier nicht: springt die Seite in einem
+    // Schritt von „TOC unter dem Viewport“ auf „TOC über dem Masthead“
+    // (Hash-Sprung, Ende-Taste), schneidet das TOC nie und der Observer
+    // meldet nichts.
+    function updateStickyVisibility(knownScrollY) {
       if (!isBelowLg()) { hideStickyToc(); return; }
-      const tocRect = originalToc.getBoundingClientRect();
-      const mastheadHeight = getMastheadHeight();
-      const tocBelowMasthead = tocRect.bottom < mastheadHeight;
-      const hasScrolled = window.scrollY > 50;
+      const scrollY = typeof knownScrollY === 'number' ? knownScrollY : window.scrollY;
+      const tocBelowMasthead = tocBottomDoc - scrollY < getMastheadHeight();
+      const hasScrolled = scrollY > 50;
       if (tocBelowMasthead && hasScrolled) { showStickyToc(); } else { hideStickyToc(); }
     }
 
@@ -157,6 +170,7 @@
         reflow: true,
         events: true
       });
+      bindScroll();   // eigener Scroll-Listener hinter den von Gumshoe (Schreiben nach Messen)
 
       document.addEventListener('gumshoeActivate', function (event) {
         const link = event.detail.link;
@@ -176,18 +190,49 @@
     }
 
     // ── Scroll-Handler (Visibility + Lesefortschritt) ──────────────────────
-    function updateReadingProgress() {
-      const max = document.documentElement.scrollHeight - window.innerHeight;
-      const progress = max > 0 ? Math.min(1, window.scrollY / max) : 0;
-      stickyToc.style.setProperty('--toc-progress', progress.toFixed(4));
+    // Lesefortschritt als transform direkt am Balken (PERF-8): früher eine
+    // Custom Property an der Leiste, die sich auf das ganze Dropdown vererbte
+    // und Gumshoes Messung direkt danach eine erzwungene Neuberechnung von
+    // rund 40 Elementen kostete. Desktop ohne Leiste (display: none) schreibt
+    // nichts. scrollMax kommt aus dem Cache, gelesen wird nur scrollY.
+    function updateReadingProgress(knownScrollY) {
+      if (!progressBar || !isBelowLg()) { return; }
+      const scrollY = typeof knownScrollY === 'number' ? knownScrollY : window.scrollY;
+      const progress = scrollMax > 0 ? Math.min(1, scrollY / scrollMax) : 0;
+      const value = progress.toFixed(4);
+      if (value === lastProgress) { return; }
+      lastProgress = value;
+      progressBar.style.transform = 'scaleX(' + value + ')';
     }
 
-    window.addEventListener('scroll', utils().rafThrottle(function () {
-      updateStickyVisibility();
-      updateReadingProgress();
-    }), { passive: true, signal: controller.signal });
+    // Reihenfolge im Frame (PERF-8): erst messen, dann schreiben. scrollY
+    // wird im Scroll-Event gelesen, das vor allen rAF-Callbacks des Frames
+    // läuft. Gumshoe misst in seinem rAF, dieser Handler schreibt nur noch,
+    // und zwar danach: rAF-Callbacks laufen in der Reihenfolge, in der die
+    // Scroll-Listener sie anfordern, deshalb wird der Listener nach dem
+    // Anlegen von Gumshoe neu gebunden (bindScroll in initGumshoe).
+    let lastScrollY = window.scrollY;
+    const onScrollFrame = utils().rafThrottle(function () {
+      updateStickyVisibility(lastScrollY);
+      updateReadingProgress(lastScrollY);
+    });
+    function onScroll() {
+      lastScrollY = window.scrollY;
+      onScrollFrame();
+    }
+    function bindScroll() {
+      window.removeEventListener('scroll', onScroll);
+      window.addEventListener('scroll', onScroll, { passive: true, signal: controller.signal });
+    }
+    bindScroll();
+
+    utils().onDocumentResize(function () {
+      scrollMax = document.documentElement.scrollHeight - window.innerHeight;
+      tocBottomDoc = originalToc.getBoundingClientRect().bottom + window.scrollY;
+    }, controller.signal);
 
     updateStickyVisibility();
+    updateReadingProgress();
     initGumshoe();
 
     // ── Dropdown ───────────────────────────────────────────────────────────
@@ -285,6 +330,7 @@
       resizeTimeout = window.setTimeout(function () {
         cachedMastheadHeight = null;
         updateStickyVisibility();
+        updateReadingProgress();
         reinitGumshoe();
       }, 100);
     }, signal);

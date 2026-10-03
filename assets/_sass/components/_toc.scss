@@ -137,8 +137,10 @@
   }
 }
 
-// Lesefortschritt: 2px-Linie am Unterrand der Leiste (JS setzt --toc-progress);
-// sitzt im Toggle, damit sie bei geöffnetem Dropdown an der Leiste bleibt
+// Lesefortschritt: 2px-Linie am Unterrand der Leiste. toc.js schreibt
+// transform: scaleX(…) direkt an den Balken (keine Custom Property an der
+// Leiste, die sich ins Dropdown vererbt, PERF-8). Sitzt im Toggle, damit
+// sie bei geöffnetem Dropdown an der Leiste bleibt
 .toc-sticky-mobile__progress {
   position: absolute;
   left: 0;
@@ -147,7 +149,7 @@
   height: 2px;
   pointer-events: none;
   transform-origin: 0 50%;
-  transform: scaleX(var(--toc-progress, 0));
+  transform: scaleX(0);
   background: linear-gradient(90deg, $cyan-a80, $cyan-a40);
 }
 

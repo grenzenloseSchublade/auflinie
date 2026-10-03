@@ -39,6 +39,24 @@
   }
 
   /**
+   * Ruft fn sofort und bei jeder Größenänderung von Dokument oder Viewport
+   * auf (ResizeObserver auf <body> plus window resize). Für Maße wie
+   * scrollHeight, die ein Scroll-Handler sonst pro Frame läse (PERF-8): fn
+   * misst und cacht, der Handler liest nur den Cache. Der ResizeObserver
+   * meldet nach dem Layout, Lesen dort erzwingt also kein Layout.
+   * @param {function(): void} fn
+   * @param {AbortSignal} [signal] beendet Listener und Observer (Teardown)
+   */
+  function onDocumentResize(fn, signal) {
+    fn();
+    global.addEventListener('resize', fn, { passive: true, signal: signal });
+    if (!('ResizeObserver' in global) || !global.document.body) return;
+    const ro = new global.ResizeObserver(function () { fn(); });
+    ro.observe(global.document.body);
+    if (signal) signal.addEventListener('abort', function () { ro.disconnect(); }, { once: true });
+  }
+
+  /**
    * Breakpoints als Live-Abfragen (STYLEGUIDE BP-2), dieselben Grenzen wie
    * die Sass-Mixins. Nur hier stehen Breiten-Zahlen im JS, Nutzer lesen
    * `AuflinieUtils.mq.downMd.matches`.
@@ -60,6 +78,7 @@
   global.AuflinieUtils = {
     prefersReducedMotion: prefersReducedMotion,
     rafThrottle: rafThrottle,
+    onDocumentResize: onDocumentResize,
     mq: mq,
   };
 })(window);
