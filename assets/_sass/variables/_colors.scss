@@ -205,6 +205,12 @@ $hover-color-subtle: rgb(255 29 206 / 60%); // Dezentes Magenta - für subtile A
 // ungenutzt.
 $primary-color: $link-color;
 
+// Theme-Grund (FARB-10): wertgleich mit dem Dark-Skin, jetzt aus dem eigenen
+// Token. Davon leitet das Theme Rahmen, Code-, Formular- und Footer-Flächen
+// per mix() ab. $text-color bleibt beim Skin (#eaeaea), siehe
+// $body-text-color unten.
+$background-color: $page-bg;
+
 // Überschriften
 $card-heading-color: $link-color; // Überschriftenfarbe für Karten
 
