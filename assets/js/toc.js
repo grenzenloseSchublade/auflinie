@@ -49,7 +49,21 @@
     if (controller) { controller.abort(); controller = null; }
     // Falls beim Teardown ein Dropdown offen war: Body-Scroll wieder freigeben.
     document.body.style.overflow = '';
-    document.documentElement.style.setProperty('--sticky-toc-height', '0px');
+    document.documentElement.style.removeProperty('scroll-padding-top');
+  }
+
+  // Höhe der sichtbaren Sticky-TOC in den Sprungmarken-Versatz geben (WCAG
+  // 2.4.11). Spiegel zu variables/_css-properties.scss: --anchor-offset ist
+  // der Versatz ohne Leiste. An <html> landet nur scroll-padding-top (inline,
+  // nicht vererbt), keine Custom Property: eine Custom Property auf <html>
+  // berechnet bei jedem Umschalten alle Elemente der Seite neu (PERF-6).
+  // Elemente mit data-sticky-toc-offset (CV-Auswahl-Konsole) bekommen die
+  // Höhe als --sticky-toc-height direkt, das trifft nur ihren Teilbaum.
+  function setStickyOffset(targets, height) {
+    const root = document.documentElement.style;
+    if (height > 0) { root.setProperty('scroll-padding-top', 'calc(var(--anchor-offset) + ' + height + 'px)'); }
+    else { root.removeProperty('scroll-padding-top'); }
+    targets.forEach(function (el) { el.style.setProperty('--sticky-toc-height', height + 'px'); });
   }
 
   function mount(root) {
@@ -60,6 +74,7 @@
     const stickyCurrent = scope.querySelector('#toc-sticky-current');
     const stickyOverlay = scope.querySelector('#toc-sticky-overlay');
     const originalToc = scope.querySelector('#toc-original');
+    const offsetTargets = Array.prototype.slice.call(scope.querySelectorAll('[data-sticky-toc-offset]'));
 
     if (!stickyToc || !originalToc) { return; }
     if (stickyToc.hasAttribute('data-toc-init')) { return; }   // idempotent
@@ -100,7 +115,7 @@
         stickyVisible = true;
         stickyToc.classList.add('is-visible');
         stickyToc.setAttribute('aria-hidden', 'false');
-        document.documentElement.style.setProperty('--sticky-toc-height', stickyToc.offsetHeight + 'px');
+        setStickyOffset(offsetTargets, stickyToc.offsetHeight);
         reinitGumshoe();
       }
     }
@@ -111,7 +126,7 @@
         stickyToc.classList.remove('is-visible');
         stickyToc.setAttribute('aria-hidden', 'true');
         closeDropdown();
-        document.documentElement.style.setProperty('--sticky-toc-height', '0px');
+        setStickyOffset(offsetTargets, 0);
         reinitGumshoe();
       }
     }

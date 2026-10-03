@@ -321,8 +321,8 @@ Rechnungen aus Tokens sind Skalenwerte, z. B. die TOC-Einrückung `$space-4 + n 
 | `$graph-sheet-width` | `1100px` | Skill-Graph-Sheet am Desktop (darunter `94vw`, mobil volle Breite). Breiter als die Lesespalte, weil waagerechte Labels Breite brauchen. Lässt bei 1280 px je 90 px Scrim sichtbar |
 | `$space-section-break`, `-inner`, `-narrow`, `-inner-narrow` | `3.2rem` / `2.4rem`, bis 640 px `2.4rem` / `1.8rem` | Kapitelgrenze (`section-break`-Mixin), abgenommen, benannte Sonderwerte neben dem Raster |
 | `--masthead-height` | `74px`, ab 768 px `88px` | Laufzeit |
-| `--sticky-toc-height` | per JS | Laufzeit |
-| `--anchor-offset` | Masthead + Sticky-TOC + `20px` | Anker-Offset |
+| `--sticky-toc-height` | per JS, nur an Elementen mit `data-sticky-toc-offset` | Laufzeit (CV-Auswahl-Konsole) |
+| `--anchor-offset` | Masthead + `20px` | Anker-Offset ohne Sticky-TOC, deren Höhe addiert `toc.js` inline am `scroll-padding-top` (PERF-6) |
 
 - **SP-1** [SOLL · Soll · CI] Neue Abstände nur aus der Skala. Bestehende Werte bei Berührung migrieren. `scripts/scale-guardrail.sh` lässt die Zahl der Abstands-Literale außerhalb von `variables/` nicht steigen (Ratchet, Rest im Register R-35). Ein Literal in einer lokalen Sass-Variablen (`$lokal: 13px`) zählt dort, wo es als Abstand landet.
 - **SP-2** [MUSS · Soll · Review] Einheit nach Kontext: Content rem, Hero, Masthead und TOC em (die em-Systeme tragen `skala-Ausnahme`-Marker), Fraktal-Panel px, Hairlines und Schatten px. Feste Chrome-Maße in px: `--masthead-height`, `$drawer-width` und davon abgeleitete Breakpoints (SP-4). `$section-spacing` und `$small-spacing` bleiben em, bis sie in der Skala aufgehen. Ein px-Literal wird nie still durch ein rem-Token ersetzt: Bei 16 px Grundschrift sieht beides gleich aus, bei größerer Browser-Schrift nicht.
@@ -605,7 +605,7 @@ Ziel: **WCAG 2.2 AA** als freiwillige Selbstverpflichtung. Rechtsrahmen: Das B
 | 2.4.2 | A | Jede Seite hat einen eindeutigen `<title>`. Nach einem SPA-Swap wird `document.title` gesetzt (A11Y-5). |
 | 2.4.3 / 2.4.7 | A / AA | Unsichtbares ist nicht fokussierbar (`hidden`, `inert` oder `visibility: hidden`). Kein `outline: none` ohne gleichwertigen Ersatz. |
 | 2.4.4 | A | Linkzweck aus dem Linktext oder seinem Kontext erkennbar (LINK-1). |
-| 2.4.11 | AA | `html { scroll-padding-top: var(--anchor-offset) }`. Jede fixe Leiste meldet ihre Höhe in diese Rechnung. |
+| 2.4.11 | AA | `html { scroll-padding-top: var(--anchor-offset) }`. Jede fixe Leiste meldet ihre Höhe in diese Rechnung, die Sticky-TOC per Inline-`scroll-padding-top` (`toc.js`, PERF-6). |
 | 2.5.1 / 2.5.7 | A / AA | Jede Drag- oder Mehrfinger-Geste hat eine Ein-Klick-Alternative. |
 | 2.5.3 | A | Der zugängliche Name beginnt mit dem sichtbaren Text, oder es gibt kein `aria-label`. |
 | 2.5.8 | AA | Ziele mindestens 24 × 24 px, Touch-Ziele unter `(pointer: coarse)` 44 px. |
@@ -1139,6 +1139,7 @@ Kein SemVer (eine Website hat keine öffentliche API). Ein `CHANGELOG.md` im For
 - **PERF-3** [MUSS · Ist · Review] Das Critical-CSS enthält nur, was für den ersten Viewport ohne Layout-Sprung nötig ist (CRIT-1, CRIT-2).
 - **PERF-4** [MUSS · Ist · Review] Prerender per Speculation Rules nur für Seiten außerhalb des Wired-Sets (SEO-5). Kein Prerender für Drawer-Links.
 - **PERF-5** [MUSS · Ist · Review] Textschrift (TYP-13): höchstens 35 KB je Datei (WOFF2, heute 28 KB aufrecht und 30 KB kursiv), nur die aufrechte Datei per Preload, und der Schrifttausch erzeugt keinen messbaren Layoutsprung (CLS unter 0,01). Gemessen 1. 10. 2026 im Playwright-Container mit 1,5 s verzögerter Schrift auf `/`, `/about/`, `/cv/`, `/posts/` und einem Beitrag, Desktop und mobil: höchstens 0,0003 mit Ersatzschrift (0,0007 ohne).
+- **PERF-6** [MUSS · Ist · Review] JS schreibt im Scroll- und Resize-Pfad keine Custom Property auf `<html>` oder `<body>`. Chromium berechnet dann jedes Element der Seite neu, auch mit `@property { inherits: false }`. Gemessen 4. 10. 2026 auf dem langen Beitrag mobil: 2334 Elemente, rund 35 ms, mit vierfacher CPU-Drosselung 130 bis 165 ms je Umschalten der Sticky-TOC. Erlaubt sind normale Eigenschaften am Wurzelelement (Inline-`scroll-padding-top`: 4 Elemente), Klassen, zu denen nur wenige Regeln passen, und Custom Properties direkt am Element, das sie liest. Vorbild `toc.js` (`setStickyOffset`).
 
 ### 15.2 Browser und Geräte
 
@@ -1368,3 +1369,4 @@ Prozess und Doku:
 | 2026-10-03 | R-54 Teil TYP-8: `font-weight: bold` → `700` in `_about.scss` und `fractal-panel/_states.scss` (2×), kompiliertes CSS bis auf diese drei Werte gleich. Rest `_cv.scss` bleibt beim Track. |
 | 2026-10-03 | R-72 zum Teil: `$background-color: $page-bg` in `_colors.scss`, kompiliertes CSS byte-gleich. `$text-color` bleibt beim Skin, ein Alias auf `$body-text-color` wäre nicht wertgleich, R-72 deshalb auf Owner. FARB-10 und Farbtabelle (3.1) nachgeführt. |
 | 2026-10-03 | Owner-Entscheidungen: R-10 erledigt, der Blog-Hinweis ist ein natives `<dialog>` per `showModal()` im Top Layer und liegt damit über Masthead und Drawer, `$z-notice` entfällt, Z-1 auf Ist mit Top Layer als Regelweg. R-52 erledigt, Hamburger und Back-to-Top in `$control-icon-color` (Cyan 55 %, 3,50 bzw. 3,84:1), Platzhalter im Fraktal-Preset-Feld auf `$fg-subtle`. Altes Fackel-Logo `WebSite_Logo_3.png` entfernt, Site-Vorschaubild für 404 und Offline ist der Hero-Hintergrund, `seo.html` nimmt dafür `background_image_alt`. R-67 und R-71 nachgeführt. |
+| 2026-10-04 | Scroll-Performance: PERF-6 neu (keine Custom Property auf `<html>` oder `<body>` im Scrollpfad). Die Sticky-TOC addiert ihre Höhe per Inline-`scroll-padding-top` statt über `--sticky-toc-height` am Wurzelelement, `--anchor-offset` ist jetzt der Versatz ohne Leiste, die CV-Auswahl-Konsole bekommt die Höhe direkt (`data-sticky-toc-offset`). Landepositionen von Hash-Sprung, TOC-Klick und SPA-Navigation mobil und am Desktop unverändert, Style-Neuberechnung je Umschalten von 2334 auf höchstens 42 Elemente. Token-Tabelle (3.3) und 2.4.11 (6.1) nachgeführt. |

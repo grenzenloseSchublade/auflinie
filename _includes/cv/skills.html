@@ -16,7 +16,7 @@
 {% endcomment %}
 <div class="cv-skills">
   {% if page.skill_graph.enabled %}
-  <p class="cv-skills__selection-info" data-role="skill-context" aria-live="polite">Ein Klick auf einen Skill zeigt verwandte Skills und gemeinsame Projekte.</p>
+  <p class="cv-skills__selection-info" data-role="skill-context" data-sticky-toc-offset aria-live="polite">Ein Klick auf einen Skill zeigt verwandte Skills und gemeinsame Projekte.</p>
   {% endif %}
   {% for skill_group in include.skill_groups %}
   <div class="cv-skill-group">
