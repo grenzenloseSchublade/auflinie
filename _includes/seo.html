@@ -44,16 +44,17 @@
   gebunden. Das Theme nimmt site.og_image_alt auch dann, wenn das Bild der
   Hero-Hintergrund der Seite ist, und beschriebe dann das falsche Bild.
   Reihenfolge: header.og_image_alt der Seite, sonst der passende Site-Text zum
-  Site-Vorschaubild (og_image_alt) oder zum gemeinsamen Hero-Hintergrund
-  (background_image_alt). Passt keiner, bleibt das Bild ohne Alt-Text. {%- endcomment -%}
+  gemeinsamen Hero-Hintergrund (background_image_alt, auch wenn er zugleich
+  Site-Vorschaubild ist) oder zum eigenen Site-Vorschaubild (og_image_alt).
+  Passt keiner, bleibt das Bild ohne Alt-Text. {%- endcomment -%}
 {%- assign og_image_shown = page_large_image | default: page_teaser_image -%}
 {%- assign og_image_alt = page.header.og_image_alt -%}
 {%- unless og_image_alt -%}
   {%- assign site_background_image = site.background_image | absolute_url | escape -%}
-  {%- if og_image_shown == site_og_image -%}
-    {%- assign og_image_alt = site.og_image_alt -%}
-  {%- elsif og_image_shown == site_background_image -%}
+  {%- if og_image_shown == site_background_image -%}
     {%- assign og_image_alt = site.background_image_alt -%}
+  {%- elsif og_image_shown == site_og_image -%}
+    {%- assign og_image_alt = site.og_image_alt -%}
   {%- endif -%}
 {%- endunless -%}
 {%- assign og_image_alt = og_image_alt | strip | escape -%}

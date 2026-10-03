@@ -4,13 +4,16 @@
   enabled: false blendet aus, eine neue id zeigt den Dialog erneut.
   Einmaligkeit pro Besucher über localStorage. Verhalten: assets/js/blog-notice.js
   (geladen in scripts.html, gleiche Bedingung).
+  Natives <dialog> mit showModal(): liegt im Top Layer und damit über dem
+  Masthead, obwohl es im Stacking-Kontext von #main steht (R-10). Abdunkler,
+  Fokusfalle, inert für den Rest der Seite und Escape kommen vom Browser.
 {% endcomment %}
 {% if page.blog_notice.enabled %}
-<div id="blog-notice" class="blog-notice" role="dialog" aria-labelledby="blog-notice-title" data-notice-id="{{ page.blog_notice.id | escape }}" hidden>
+<dialog id="blog-notice" class="blog-notice" aria-labelledby="blog-notice-title" data-notice-id="{{ page.blog_notice.id | escape }}">
   <div class="blog-notice__panel">
     <p id="blog-notice-title" class="blog-notice__title">{{ page.blog_notice.title | escape }}</p>
     <p class="blog-notice__text">{{ page.blog_notice.text | escape }}</p>
     <button type="button" id="blog-notice-close" class="btn btn--outline blog-notice__close">Verstanden</button>
   </div>
-</div>
+</dialog>
 {% endif %}

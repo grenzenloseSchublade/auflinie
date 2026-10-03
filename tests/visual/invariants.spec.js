@@ -128,6 +128,28 @@ async function openSheet(page, before) {
 
 const zoomOf = async (canvas) => Number(await canvas.getAttribute('data-zoom'));
 
+test.describe('Blog-Hinweis im Top Layer (Z-1, früher R-10)', () => {
+  test.use({ viewport: MOBIL });
+
+  test('modal über dem Masthead, Escape schließt und merkt sich das', async ({ page }) => {
+    await page.goto('/auflinie/posts/', { waitUntil: 'load' });
+    const box = page.locator('#blog-notice');
+    await expect(box).toHaveJSProperty('open', true);
+    expect(await box.evaluate((el) => el.matches(':modal'))).toBe(true);
+    await expect(page.locator('#blog-notice-close')).toBeFocused();
+    // Mitte des Burgers trifft den Abdunkler (das <dialog>), nicht den Masthead
+    const hit = await page.evaluate(() => {
+      const r = document.querySelector('.greedy-nav__toggle').getBoundingClientRect();
+      return document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2).id;
+    });
+    expect(hit).toBe('blog-notice');
+    await page.keyboard.press('Escape');
+    await expect(box).toHaveJSProperty('open', false);
+    await page.reload({ waitUntil: 'load' });
+    await expect(box).toHaveJSProperty('open', false);
+  });
+});
+
 test.describe('Skill-Graph-Sheet (OVL-3, OVL-4)', () => {
   test.use({ contextOptions: { reducedMotion: 'reduce' } });
 

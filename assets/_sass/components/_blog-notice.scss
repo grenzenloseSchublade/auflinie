@@ -3,29 +3,28 @@
 
 // Einmal-Hinweis-Dialog auf der Blog-Seite (z.B. Sommerpause) —
 // Markup/Verhalten: _includes/blog-notice.html
+// Natives <dialog> (showModal, Top Layer, R-10): kein z-index nötig, der
+// Browser legt es über Masthead und Drawer. Das Element selbst ist nur die
+// Hülle um das Panel, UA-Rand, -Fläche und -Abstand fallen weg.
 .blog-notice {
-  position: fixed;
-  inset: 0;
-  z-index: $z-notice;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: $space-4;
-  background: $ink-a55;
+  width: min(24rem, 100% - 2 * #{$space-4});
+  max-width: none;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  overflow: visible;
 
-  @include backdrop-blur(2px);
+  &::backdrop {
+    background: $ink-a55;
 
-  // display: flex überschreibt sonst das UA-Stylesheet für [hidden] —
-  // ohne diese Regel ist der Dialog nicht wegklickbar
-  &[hidden] {
-    display: none;
+    @include backdrop-blur(2px);
   }
 }
 
 .blog-notice__panel {
   @include card-panel(2px);
 
-  width: min(24rem, 100%);
   padding: $space-4 $space-5;
   box-shadow: $shadow-3;
   animation: blog-notice-enter $duration-base ease-out;

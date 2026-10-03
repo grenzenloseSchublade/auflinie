@@ -125,7 +125,6 @@ $z-masthead: 1000;
 $z-drawer-toggle: 1010; // Burger/X, im Masthead über der Drawer-Liste
 $z-sheet: 1100; // Skill-Graph-Ebene (Scrim)
 $z-sheet-panel: $z-sheet + 10; // Skill-Graph-Sheet
-$z-notice: 10010; // Blog-Hinweis
 $z-toast: 10020; // Service-Worker-Toast
 $z-offline: $z-toast - 1; // Offline-Hinweis direkt unter dem Toast
 

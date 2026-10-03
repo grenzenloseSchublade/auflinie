@@ -4,41 +4,37 @@
  * Include: das lief nach einem SPA-Swap nie (innerHTML führt <script> nicht
  * aus) und verstieß gegen die CSP ohne 'unsafe-inline' (Security-Audit
  * 10/2026, I10).
+ * Natives <dialog> per showModal() (Top Layer, R-10): Escape, Fokusfalle und
+ * inert für den Rest der Seite kommen vom Browser, showModal() setzt den
+ * Fokus auf den Knopf. Gespeichert wird im close-Event, das deckt Knopf,
+ * Abdunkler und Escape ab. Ein SPA-Swap entfernt den Dialog ohne close.
  * Einmaligkeit pro Besucher über localStorage (Schlüssel je Hinweis-id).
  */
 (function () {
   'use strict';
-
-  let onKeydown = null;
 
   function mount(root) {
     const scope = root || document;
     const box = scope.querySelector('#blog-notice');
     if (!box || box.hasAttribute('data-blog-notice-init')) return;
     box.setAttribute('data-blog-notice-init', '');
+    if (typeof box.showModal !== 'function') return;
 
     const key = 'auflinie:blog-notice-dismissed:' + box.getAttribute('data-notice-id');
     try { if (localStorage.getItem(key) === '1') { return; } } catch (e) { /* Storage gesperrt: einfach zeigen */ }
 
-    const closeBtn = box.querySelector('#blog-notice-close');
-    function dismiss() {
-      box.hidden = true;
+    box.addEventListener('close', function () {
       try { localStorage.setItem(key, '1'); } catch (e) { /* ok */ }
-      teardown();
-    }
+    });
+    box.querySelector('#blog-notice-close').addEventListener('click', function () { box.close(); });
+    // Klick auf den Abdunkler trifft das <dialog> selbst, das Panel füllt es aus
+    box.addEventListener('click', function (e) { if (e.target === box) { box.close(); } });
 
-    box.hidden = false;
-    closeBtn.addEventListener('click', dismiss);
-    box.addEventListener('click', function (e) { if (e.target === box) { dismiss(); } });
-    onKeydown = function (e) { if (e.key === 'Escape' && !box.hidden) { dismiss(); } };
-    document.addEventListener('keydown', onKeydown);
-    closeBtn.focus({ preventScroll: true });
+    box.showModal();
   }
 
-  // Nur der document-Listener überlebt den Swap, Element-Listener sterben mit dem DOM
-  function teardown() {
-    if (onKeydown) { document.removeEventListener('keydown', onKeydown); onKeydown = null; }
-  }
+  // Alle Listener hängen am Dialog und sterben mit dem DOM beim Swap
+  function teardown() {}
 
   window.spaModule({ mount: mount, teardown: teardown });
 })();

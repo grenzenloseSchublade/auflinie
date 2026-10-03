@@ -22,8 +22,8 @@
 
   // Farben (Projekt-Variablen)
   background-color: $background-dark;
-  border: 2px solid $link-color-subtle;
-  color: $link-color-subtle;
+  border: 2px solid $control-icon-color;
+  color: $control-icon-color;
 
   // Layout
   display: flex;
@@ -49,7 +49,7 @@
   svg {
     width: 24px;
     height: 24px;
-    stroke: $link-color-subtle;
+    stroke: $control-icon-color;
     transition: filter $duration-base ease;
   }
 

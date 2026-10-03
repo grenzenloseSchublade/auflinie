@@ -183,7 +183,13 @@ $inset-panel-bg: rgb(20 21 24 / 97%); // Skill-Erklärfeld im CV
 // =============================================================================
 // 3. Rollen-Tokens
 // =============================================================================
-$link-color-subtle: $cyan-a40; // Dezentes Cyan - für subtile Akzente (Trennlinien, Hamburger)
+$link-color-subtle: $cyan-a40; // Dezentes Cyan - für subtile Akzente (Trennlinien, Marker)
+
+// Bedien-Grafik in Ruhe (Hamburger-Balken, Back-to-Top Rand und Pfeil), WCAG
+// 1.4.11 verlangt 3:1. Gemessen: 3,50:1 auf dem Masthead #252a34, 3,84:1 auf
+// der Knopf-Füllung #1a1a1a. 40% (subtle) lag bei 2,50 bzw. 2,60:1 (R-52)
+$control-icon-color: $cyan-a55;
+
 // Aktiv-Zustände im TOC. Bewusst kräftiger als $link-color-subtle: 40% fällt als
 // TEXTfarbe durch WCAG AA (4,5:1). Das subtle-Token bleibt Flächen und Linien.
 // Gemessen auf dem echten Seitengrund #252a34 (Body im Critical CSS):

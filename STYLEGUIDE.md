@@ -1,6 +1,6 @@
 # Style Guide auflinie
 
-Version 2026-10-02 · Stand: 2. Oktober 2026 · Gilt für: Repo `auflinie` (Jekyll, Remote-Theme Minimal Mistakes, Dart Sass über jekyll-sass-converter, Versionen in `Gemfile.lock`, `_config.yml` und `package-lock.json`)
+Version 2026-10-03 · Stand: 3. Oktober 2026 · Gilt für: Repo `auflinie` (Jekyll, Remote-Theme Minimal Mistakes, Dart Sass über jekyll-sass-converter, Versionen in `Gemfile.lock`, `_config.yml` und `package-lock.json`)
 
 Ist-Angaben wurden gegen Commit `848efe2` erhoben, bis `4adea55` nachgeführt und am 2. 10. 2026 gegen den Code-Stand `75c23c0` abgeglichen, am Abend nach dem Abbau der Code-Einträge des Registers nachgeführt: jede Regel mit Status Soll oder Offen und jeder Registereintrag am Code geprüft, erfüllte Regeln auf Ist, erledigte Einträge aus dem Register (Abschnitt 17), neu gefundene Abweichungen eingetragen. Ausgenommen sind die Skill-Graph-Regeln, die eine laufende Überarbeitung neu fasst (Hinweis in 4.4). Bei jedem neuen Ist-Stand werden die Ist-Sätze und das Register neu geprüft und dieser Satz aktualisiert.
 
@@ -193,9 +193,9 @@ Flächen und Linien:
 Regeln:
 
 - **FARB-1** [MUSS · Ist · CI] Farbliterale stehen nur in `variables/_colors.scss`. Komponenten-Tokens (`fractal-panel/_tokens.scss` und künftige) zeigen nur auf globale Tokens (siehe SCSS-8). Braucht eine Komponente einen neuen Ton, kommt er zuerst als globales Token nach `_colors.scss`. Ausnahmen nur mit `farb-Ausnahme`-Marker (CRT-Phosphor, Neon-Flackern, Fraktal-Paletten als Daten): `// farb-Ausnahme: Grund` direkt über der Deklaration (gilt für die ganze, auch mehrzeilige Deklaration) oder `// farb-Ausnahme: [Block] Grund` … `// farb-Ausnahme-Ende` um einen Effekt-Abschnitt. `scripts/color-guardrail.sh` prüft `assets/_sass` außerhalb von `variables/`. Markiert sind heute: CRT-Overlay, CRT-Raster, Rollbalken, Korn, Power-Symbol und Phosphor im Hero, Phosphor und Scanlines in `_view-transition.scss`, der Neon-Block in `_neon-base.scss` und der Logo-Selektor `[stroke="#f0c"]`. Die Neon-Custom-Properties in `variables/_css-properties.scss` sind Effektwerte unter `variables/` (Markenton offen, B-F09).
-- **FARB-2** [MUSS · Soll · CI-P2] Text erreicht 4,5:1, großer Text (ab 24 px oder ab 18,66 px fett) 3:1, UI-Grafik und Fokus 3:1, und zwar in **allen** Zuständen, gemessen auf dem tatsächlichen Grund. Jeder Kontrastwert in einem Token-Kommentar nennt seinen Grund („4,51:1 auf Drawer“). Die Textproben der Styleguide-Ansicht prüft `tests/visual/contrast.spec.js` schon in der CI, ein Token-Kontrast-Skript fehlt (16.2). Bestand: R-52.
-- **FARB-3** [MUSS · Soll · Review] Informationstragender Text nie unter `$fg-subtle` (55 %). Werte von 25 bis 40 % nur für rein dekorative Glyphen (z. B. Footer-Trenner). Bestand: R-52.
-- **FARB-4** [MUSS · Soll · Review] `-subtle`-Tokens sind für Linien, Marker und Flächen. Nie als Textfarbe, nie als einziges Erkennungsmerkmal eines Controls. Bestand: R-52.
+- **FARB-2** [MUSS · Soll · CI-P2] Text erreicht 4,5:1, großer Text (ab 24 px oder ab 18,66 px fett) 3:1, UI-Grafik und Fokus 3:1, und zwar in **allen** Zuständen, gemessen auf dem tatsächlichen Grund. Jeder Kontrastwert in einem Token-Kommentar nennt seinen Grund („4,51:1 auf Drawer“). Die Textproben der Styleguide-Ansicht prüft `tests/visual/contrast.spec.js` schon in der CI, ein Token-Kontrast-Skript fehlt (16.2).
+- **FARB-3** [MUSS · Soll · Review] Informationstragender Text nie unter `$fg-subtle` (55 %). Werte von 25 bis 40 % nur für rein dekorative Glyphen (z. B. Footer-Trenner).
+- **FARB-4** [MUSS · Soll · Review] `-subtle`-Tokens sind für Linien, Marker und Flächen. Nie als Textfarbe, nie als einziges Erkennungsmerkmal eines Controls.
 - **FARB-5** [MUSS · Ist · CI] Niemals ein Token mit eingebautem Alpha in `rgba()` geben. Sass ersetzt den Alpha-Kanal, multipliziert ihn nicht (Beispiel: `rgba($console-panel-border, 0.7)` wird zu 70 % Weiß). Der Guardrail erkennt Alpha-Tokens auch über Aliase. Die einzige Fundstelle (`.guide-banner`) steht seit 1. 10. 2026 auf `$white-a70`, dem bisher gerenderten Wert.
 - **FARB-6** [MUSS · Ist · CI] Keine Ad-hoc-Abstufung `rgba($hover-color, 0.x)`. Benannte Abstufungen (`$magenta-aNN`) verwenden oder in `_colors.scss` neu anlegen (Owner-Regel vom 8. Juli 2026). Der Guardrail lässt dafür keinen Ausnahme-Marker zu.
 - **FARB-7** [MUSS · Soll · Review] Fokus- und Hover-Zustand nehmen Vorder- und Hintergrund nie aus demselben Token.
@@ -386,13 +386,12 @@ Globale Ebenen als Tokens in `variables/_scales.scss`, aufsteigend. Werte und Re
 | `$z-drawer-toggle` | `1010` | Burger/X, im Masthead über der Drawer-Liste |
 | `$z-sheet` | `1100` | Skill-Graph-Ebene (Scrim) |
 | `$z-sheet-panel` | `$z-sheet + 10` | Skill-Graph-Sheet |
-| `$z-notice` | `10010` | Blog-Hinweis |
 | `$z-offline` | `$z-toast - 1` | Offline-Hinweis |
 | `$z-toast` | `10020` | Service-Worker-Toast |
 
-Die Theme-Animation `#main { animation: $intro-transition }` erzeugt einen Stacking-Kontext auf `#main`. Was darin fixiert ist (TOC, Back-to-Top, Blog-Hinweis), konkurriert nicht mit den Ebenen außerhalb (Register R-10).
+Die Theme-Animation `#main { animation: $intro-transition }` erzeugt einen Stacking-Kontext auf `#main`. Was darin fixiert ist (Sticky-TOC, Back-to-Top), konkurriert nicht mit den Ebenen außerhalb. Das ist gewollt, beide sollen unter Masthead und Drawer liegen. Der Blog-Hinweis ist seit 3. 10. 2026 ein natives `<dialog>` im Top Layer (Owner-Entscheidung, früher R-10).
 
-- **Z-1** [MUSS · Soll · Review] Modale, Toasts und app-weite Floats werden am `<body>` gemountet (Vorbild `sw-register.js`), nie innerhalb von `#main`. **[Offen]** Alternative: `$intro-transition: none` vor dem Theme-Import beseitigt den Stacking-Kontext direkt, nimmt aber auch Masthead und Seite die Theme-Einblendung (sichtbare Änderung, Owner).
+- **Z-1** [MUSS · Ist · Review] Modale öffnen als natives `<dialog>` per `showModal()` (Top Layer, Vorbild `blog-notice.js`), Toasts und app-weite Floats werden am `<body>` gemountet (Vorbild `sw-register.js`), nie innerhalb von `#main`. Seitengebundene Floats, die unter Masthead und Drawer liegen sollen (Sticky-TOC, Back-to-Top), dürfen in `#main` bleiben. `$intro-transition` bleibt (Owner-Entscheidung 3. 10. 2026).
 - **Z-2** [MUSS · Ist · Review] Lokale Stapel 0 bis 10 nur in Containern mit `isolation: isolate` und mit Skalen-Kopfkommentar. Vorbild: Skala im Kopf von `components/_fractal-panel.scss`, `isolation: isolate` in `components/fractal-panel/_canvas.scss`. Die Werte stehen als benannte Variablen am Dateikopf (`$hero-z-*`, `$fp-z-*`, `$cv-z-*`, `$masthead-z-*`, `$graph-z-touch-hint`) unter einem `skala-Ausnahme`-Marker. Größer als 10 sind der Hero-Stapel (`15`, `25`, `100`, `101`) und die Vollbild-Ebenen des Fraktal-Panels (`200`, `250`, `300`), dort trägt die Reihenfolge, nicht der Wert.
 - **Z-3** [SOLL · Ist · CI] Globale Ebenen nur über die `$z-*`-Tokens. Einzelne Variablen statt Map mit `z()`-Funktion: Ein Tippfehler bricht so den Build ab, `map.get` lieferte still `null` und Sass ließe die Deklaration weg. Der Skalen-Guardrail zählt z-index-Literale (Ratchet).
 
@@ -501,7 +500,7 @@ Buttons:
 - **ICON-2** [SOLL · Soll · Review] Icon-Größen relativ zum Text: `1em` im Fließtext, `0.85em` in Überschriften (`accent-header`), feste px nur im Fraktal-Panel (`$fp-fs-icon`).
 - **ICON-3** [MUSS · Soll · Review] Dekorative Icons tragen `aria-hidden="true"` (A11Y-3). Ein Icon ohne Text braucht einen zugänglichen Namen am Button oder Link.
 - **ICON-4** [MUSS · Ist · Review] Das Logo kommt aus `_includes/logo.svg` (inline im Masthead). Die Neon-Wortmarke ist Marke und darf Magenta tragen (DES-3).
-- **[Offen]** Mindestgröße und Schutzraum der Wortmarke, Marken-Magenta (3.1), Umgang mit `assets/images/Logo.svg` und `WebSite_Logo_3.png` (Dateinamen verletzen NAME-1, R-71). `WebSite_Logo_3.png` ist zugleich das Site-Vorschaubild (SEO-3).
+- **[Offen]** Mindestgröße und Schutzraum der Wortmarke, Marken-Magenta (3.1), Umgang mit `assets/images/Logo.svg` (Dateiname verletzt NAME-1, R-71).
 
 ### 4.2 Links
 
@@ -640,7 +639,7 @@ Ziel: **WCAG 2.2 AA** als freiwillige Selbstverpflichtung. Rechtsrahmen: Das B
 | Aktiver TOC-Eintrag `$link-color-active` | erledigt 1. 10.: Cyan 75 %, nicht fett | 5,28:1 auf `#252a34` | – |
 | Nav- und TOC-Hover | seit 1. 10. `$hover-color-text` | 4,51:1, auf Cyan-Hover-Grund 3,68:1 | Owner-Ausnahme (KOMP-3) |
 | Nav `:focus-visible` | erledigt 1. 10.: Rahmen statt Füllung | – | KOMP-3a |
-| Hamburger, Back-to-Top | `$link-color-subtle` | 2,50 bis 2,63:1 (UI), R-52 | ab 55 % oder volles Cyan für das Icon (sichtbar, Owner) |
+| Hamburger, Back-to-Top | erledigt 3. 10.: `$control-icon-color` (Cyan 55 %) | 3,50:1 auf `#252a34`, 3,84:1 auf `#1a1a1a` (UI) | – |
 
 ### 6.5 Dokumentierte bewusste Ausnahmen
 
@@ -1239,7 +1238,6 @@ Stand: Abgleich vom 2. 10. 2026 (Kopf). Ein Eintrag verschwindet, sobald der C
 
 | ID | Regel | Stelle | Audit | Weg |
 |---|---|---|---|---|
-| R-10 | Z-1 | Fixierte Overlays im Stacking-Kontext von `#main`: Sticky-TOC, Back-to-Top (`_layouts/single.html`), Blog-Hinweis. (Der schwebende Skill-Graph-Knopf ist seit 2. 10. entfallen.) | B-LAY-05 | Owner (am `<body>` mounten oder `$intro-transition: none`) |
 | R-11 | MO-1 | Theme-`$global-transition` (`all 0.2s ease-in-out`) ist nicht überschrieben, das Theme-CSS enthält weiter `transition: all`. Im eigenen SCSS keins mehr | B-MO-01 | Code (eigener Durchgang, ändert Theme-CSS an vielen Stellen, Vorher/Nachher) |
 | R-21 | TYP-7 | Laufweiten außerhalb der Skala stehen als `$tracking-legacy-*` und `$fp-tracking-legacy-*` mit Ziel in `variables/_typography.scss` (seit 2. 10. keine Literale mehr, CI: `scale-guardrail.sh` Kategorie `tracking`). Offen nur die Angleichung an die Skala, sichtbar | B-T6 | Owner |
 | R-32 | OVL-4, A11Y-2 | Drawer: modal (Scrim, Scroll-Sperre, `inert`), aber ohne `role="dialog"` und `aria-modal`. Fokus wandert nur beim Öffnen per Tastatur hinein, weil mobil `:focus` die Links magenta färbt | B-A11Y-05 | Owner |
@@ -1248,7 +1246,6 @@ Stand: Abgleich vom 2. 10. 2026 (Kopf). Ein Eintrag verschwindet, sobald der C
 | R-35 | SP-1, SP-2 | Stufe B erledigt 1. 10. 2026: Radien, Schatten, z-index, Dauern, Kurven und `transition: all` auf 0. Übrig sind 25 em-Abstände außerhalb der markierten em-Systeme in `_pages.scss`, `_offline.scss`, `_content-accents.scss`, `_footer.scss`, `_archive.scss`, `_author.scss`, `_buttons.scss` und `_home.scss` (Liste: `python3 scripts/scale-literals.py --report`, Ratchet `spacing 25`) | B-SP-01, B-Z-01, B-MO-01, B-RAD-01, B-SH-01 | Code bei Berührung auf rem-Tokens (Größe hängt heute an der Schrift des Elements, je Stelle prüfen) |
 | R-50 | SCSS-10 | Minimal Mistakes 4.28.1 setzt `.page__content :first-child { margin-top: 0 }` (PR #5103, gemeint war nur das erste Inhaltselement neben der TOC). Die Regel trifft jedes erste Kind in der Tiefe. Gegenmittel mit Spiegelwerten in `theme-overrides/_first-child.scss`, H2-Probe in `assets/css/styleguide.scss`. Wer einen gespiegelten Wert ändert, zieht ihn dort nach | – | upstream melden, Datei entfernen, sobald das Theme die Regel auf direkte Kinder begrenzt |
 | R-51 | 3.1.2 (6.1) | Minimal Mistakes 4.28.1 schreibt englische `aria-label` fest ins Markup. Deutsch überschrieben: `skip-links.html`, `post_pagination.html`, Masthead. Offen: `paginator-v2.html` („Pagination“), erscheint erst ab dem siebten Beitrag (`per_page: 6`) | – | Owner: beim ersten Blättern überschreiben oder upstream `ui-text`-Keys anregen |
-| R-52 | FARB-2, FARB-3, FARB-4 (1.4.11) | Hamburger-Balken (`_masthead.scss`) und Back-to-Top (Rand, Icon, `_back-to-top.scss`) nur in `$link-color-subtle`, 2,50 bis 2,63:1 als UI-Grafik (6.4). Platzhalter im Fraktal-Preset-Feld `$white-a50` (`fractal-panel/_controls.scss`, 5,0:1, unter `$fg-subtle`) | B-F06 | Owner (sichtbar) |
 | R-54 | TYP-3, TYP-8 | `$fs-label-xs` (10,9 px) für funktionalen Text: Button-Text der Fraktal-Toolbar mobil (`fractal-panel/_toolbar.scss`), Copyright-Zeile im Footer. `font-weight: bold` noch in `_cv.scss` | – | TYP-3: Owner (sichtbar), TYP-8 (`_cv.scss`): Track |
 | R-55 | BP-3, BP-4 | Von 59 `:hover`-Stellen stehen 6 in `@media (hover: hover)`. 40 `down()` gegen 9 `up()` | – | Code bei Berührung (unter BP-6) |
 | R-56 | KOMP-2, KOMP-4 | `:focus` als Stil-Selektor in `btn-role-primary` und `btn-role-outline` (`abstracts/_mixins.scss`), `_back-to-top.scss`, `_masthead.scss` (2×), `fractal-panel/_controls.scss` (2×). Mixin `focus-ring()` fehlt | – | Code mit Vorher/Nachher (der Fokusstil nach Mausklick entfällt sichtbar) |
@@ -1257,10 +1254,10 @@ Stand: Abgleich vom 2. 10. 2026 (Kopf). Ein Eintrag verschwindet, sobald der C
 | R-64 | CRIT-3, YAML-2, MD-1 | `style`-Attribute in `vt-antenne-defs.html`, `page__hero.html` (Theme-Option `overlay_color`) und `_data/mandelbrot.yml`. `>-`-Folding und `<br>` in `_data/cv_content.yml` und `_data/mandelbrot.yml`. Zwei Code-Fences ohne Sprache in „Erstellung dieser Website“ | – | Code, Inhalt |
 | R-65 | TYPO-1, TYPO-2, COPY-2, COPY-4, FACH-1 | Entities in `footer.html` (`&copy;`, `&ouml;`), `fractal/panel.html` (`&auml;`, `&middot;`, Pfeile) und `fractal/canvas.html`. „Berechne…“ ohne Leerzeichen vor der Auslassung. Note „Sehr Gut“ groß (`cv_content.yml`). Leerzustand der Blog-Suche ohne Hinweis, was hilft. Fachaussagen in `_data/mandelbrot.yml` ohne Quellenkommentar (z. B. Hausdorff-Dimension, Shishikura 1998) | – | Inhalt (Owner liest Texte gegen) |
 | R-66 | SCSS-14 | `/* */`-Dateikopf in `_cv.scss` | – | Track |
-| R-67 | SEO-2, SEO-3, SEITE-6 | Excerpts unter 70 Zeichen: Über mich (59), Archiv (44), Blog (69). Site-Vorschaubild `WebSite_Logo_3.png` ist 600 × 600 px statt 1200 × 630 px (Motiv offen). `blog_notice` „Sommerpause“ auf `/posts/` ohne Ablaufdatum, das Include kennt keins | – | Owner |
+| R-67 | SEO-2, SEO-3, SEITE-6 | Excerpts unter 70 Zeichen: Über mich (59), Archiv (44), Blog (69). Site-Vorschaubild ist auf allen Seiten der Hero-Hintergrund `background.jpg` mit 675 × 360 px statt 1200 × 630 px (Vorschlag mit Namen im Bild liegt vor, Owner). `blog_notice` „Sommerpause“ auf `/posts/` ohne Ablaufdatum, das Include kennt keins | – | Owner |
 | R-69 | DOC-5, DOC-7 | Skill-Feature-Doku noch als `docs/README-skill-feature.md`. Zweite Versionsquellen: `.devcontainer/devcontainer.json` (Ruby als Zahl, Node `lts`) und `post-create.sh` (Bundler-Version), dazu ist `.devcontainer/README.md` veraltet (rbenv, Kompilieren) | – | Code (Dev Container, eigene Runde), Skill-Feature-Doku: Track |
 | R-70 | LINK-3 | `target="_blank"` ohne Hinweis auf den neuen Tab: GitHub-Links in `_pages/about.md` und `_pages/posts.md`, `archive-single.html`, `single.html` (`page.link`), Beispiel im Beitrag „Blogbeitrag erstellen“ | – | Owner (gleicher Tab oder Hinweis) |
-| R-71 | NAME-1 | `assets/images/Logo.svg`, `assets/images/WebSite_Logo_3.png` (4.1) | – | Owner |
+| R-71 | NAME-1 | `assets/images/Logo.svg` (4.1) | – | Owner |
 | R-72 | FARB-10 | `$text-color` kommt weiter aus dem Dark-Skin (`#eaeaea`). `$body-text-color` ist bewusst ein anderer Ton (`#e8e6e3`, `_colors.scss`), ein Alias darauf änderte alle Theme-Stellen mit `#eaeaea` (`body`, Formulare, Notices, Masthead-Links, Social-Icons) | B-F25 | Owner (Alias auf `$body-text-color`, sichtbar, oder eigenes Token mit dem Skin-Wert, zweiter Fast-Weiß-Ton) |
 | R-73 | IMG-7 | `assets/images/QUELLEN.md` fehlt. Die Lizenz des Hintergrundbilds steht nur im README-Abschnitt „Lizenz“ | – | Owner (Quellen nennen), dann Code |
 | R-76 | SEITE-3, HTML-1 | Theme-Include `author-profile.html` (nicht überschrieben): Autorname in der Sidebar als `<h3 class="author__name">`, Button „Folgen“ ohne `type`. Beim Abbau von R-60 gefunden | – | Code (Include überschreiben, Optik vorher und nachher vergleichen) |
@@ -1370,3 +1367,4 @@ Prozess und Doku:
 | 2026-10-03 | R-74 erledigt: das Autor-Folgen-Dropdown setzt beim Öffnen per Tastatur den Fokus auf den ersten Link, bei Maus und Touch bleibt er am Knopf (gleiche Logik wie der Drawer). A11Y-2 nachgeführt, `tests/visual/invariants.spec.js` prüft das Dropdown mit. |
 | 2026-10-03 | R-54 Teil TYP-8: `font-weight: bold` → `700` in `_about.scss` und `fractal-panel/_states.scss` (2×), kompiliertes CSS bis auf diese drei Werte gleich. Rest `_cv.scss` bleibt beim Track. |
 | 2026-10-03 | R-72 zum Teil: `$background-color: $page-bg` in `_colors.scss`, kompiliertes CSS byte-gleich. `$text-color` bleibt beim Skin, ein Alias auf `$body-text-color` wäre nicht wertgleich, R-72 deshalb auf Owner. FARB-10 und Farbtabelle (3.1) nachgeführt. |
+| 2026-10-03 | Owner-Entscheidungen: R-10 erledigt, der Blog-Hinweis ist ein natives `<dialog>` per `showModal()` im Top Layer und liegt damit über Masthead und Drawer, `$z-notice` entfällt, Z-1 auf Ist mit Top Layer als Regelweg. R-52 erledigt, Hamburger und Back-to-Top in `$control-icon-color` (Cyan 55 %, 3,50 bzw. 3,84:1), Platzhalter im Fraktal-Preset-Feld auf `$fg-subtle`. Altes Fackel-Logo `WebSite_Logo_3.png` entfernt, Site-Vorschaubild für 404 und Offline ist der Hero-Hintergrund, `seo.html` nimmt dafür `background_image_alt`. R-67 und R-71 nachgeführt. |

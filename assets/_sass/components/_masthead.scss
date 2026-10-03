@@ -577,7 +577,7 @@ body .navicon {
   display: block;
   width: 1.5em;
   height: 0.2em;
-  background: $link-color-subtle; // Dezentes Cyan
+  background: $control-icon-color;
   box-shadow: none;
   transition: background-color $duration-moderate, transform $duration-moderate, top $duration-moderate, bottom $duration-moderate, width $duration-moderate;
 }
@@ -589,7 +589,7 @@ body .navicon::after {
   left: 0;
   width: 100%;
   height: 100%;
-  background: $link-color-subtle; // Dezentes Cyan
+  background: $control-icon-color;
   box-shadow: none;
   transition: background-color $duration-moderate, transform $duration-moderate, top $duration-moderate, bottom $duration-moderate, width $duration-moderate;
 }
@@ -610,14 +610,14 @@ body .greedy-nav__toggle.close .navicon {
 body .greedy-nav__toggle.close .navicon::before {
   transform: rotate(45deg);
   top: 0;
-  background: $link-color-subtle; // Volles Cyan beim X (für besseren Kontrast)
+  background: $control-icon-color;
   box-shadow: none;
 }
 
 body .greedy-nav__toggle.close .navicon::after {
   transform: rotate(-45deg);
   bottom: 0;
-  background: $link-color-subtle; // Volles Cyan beim X (für besseren Kontrast)
+  background: $control-icon-color;
   box-shadow: none;
 }
 

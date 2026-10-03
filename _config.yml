@@ -87,8 +87,10 @@ include:
 twitter:
   card: "summary_large_image"
   # username: (bei Bedarf ausfüllen)
-og_image: "/assets/images/WebSite_Logo_3.png" # Open Graph/Twitter default site image
-og_image_alt: "Logo: Fackel mit Flamme über dem Schriftzug „German Kraftstoff – Fuel & Energy“"
+# Site-Vorschaubild (Open Graph/Twitter) für Seiten ohne Hero, z. B. 404 und
+# Offline. Derselbe Hero-Hintergrund wie auf allen anderen Seiten, Alt-Text aus
+# background_image_alt. Ein eigenes Bild bekäme og_image_alt (_includes/seo.html)
+og_image: "/assets/images/background.jpg"
 social:
   type: "Person"
   name: "Hans Müller"
