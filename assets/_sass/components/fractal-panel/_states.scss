@@ -30,7 +30,7 @@
 }
 
 .fractal-panel__info-value {
-  font-weight: bold;
+  font-weight: 700;
   color: $white;
   font-family: $fp-mono;
   font-variant-numeric: tabular-nums;
@@ -167,7 +167,7 @@
     position: absolute;
     left: 0;
     color: $fp-accent;
-    font-weight: bold;
+    font-weight: 700;
   }
 
   strong {
