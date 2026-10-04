@@ -1,20 +1,34 @@
 {% comment %}
-  Skill-Graph-Panel (Stufe 2 des Skill-Features).
-  Gated über page.skill_graph.stage2 (siehe cv/skills.html); die Chip-Liste
-  darüber bleibt immer die kanonische, vollständige Darstellung.
+  Skill-Graph des Skill-Features: Öffner und Panel.
+  Gated über page.skill_graph.graph (siehe cv/skills.html, dort oben im
+  Abschnitt VOR den Skill-Gruppen eingebunden). Die Chip-Liste darunter
+  bleibt immer die kanonische, vollständige Darstellung.
   Logik: assets/js/skill-graph.js (+ DOM-freie Engine skill-graph-sim.js),
   Präsentation als modales Sheet: assets/js/skill-graph-sheet.js.
-  Daten: dasselbe JSON-Tag [data-skill-graph-data] wie Stufe 1.
+  Daten: dasselbe JSON-Tag [data-skill-graph-data] wie die Chip-Hervorhebung.
   Ein Knopf öffnet das Sheet direkt. Ohne Sheet-Modul klappt das Panel
-  inline auf (Progressive Enhancement).
+  inline auf (Progressive Enhancement), dann direkt unter dem Öffner.
+  Öffner: zugänglicher Name = sichtbarer Text (Symbol aria-hidden), die
+  Zeile daneben hängt als Beschreibung an (aria-describedby).
   Kopfleiste: zugängliche Namen beginnen mit dem sichtbaren Text (WCAG 2.5.3,
   STYLEGUIDE 7.7 „Reset“).
   Canvas tabindex="-1": nicht in der Tab-Reihenfolge, aber ein Klick hält den
   Fokus im Dialog (sonst fiele er auf <body>, Tasten +/−/0 wirkungslos).
 {% endcomment %}
 <div class="skill-graph" data-skill-graph>
-  <button type="button" class="skill-graph__open" data-role="graph-toggle"
-          aria-expanded="false" aria-controls="skill-graph-panel">Als Graph anzeigen</button>
+  <div class="skill-graph__entry">
+    <button type="button" class="skill-graph__open" data-role="graph-toggle"
+            aria-expanded="false" aria-controls="skill-graph-panel" aria-describedby="skill-graph-lead">
+      <svg class="skill-graph__open-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true" focusable="false">
+        <path d="M6.4 16.2 10.6 7.8M13.4 7.8l4.2 8.4M8.1 19h7.8"/>
+        <circle cx="12" cy="5" r="2.5"/>
+        <circle cx="5" cy="19" r="2.5"/>
+        <circle cx="19" cy="19" r="2.5"/>
+      </svg>
+      <span>Skill-Graph öffnen</span>
+    </button>
+    <p class="skill-graph__lead" id="skill-graph-lead">Welche Fähigkeiten in welchen Projekten zusammenkommen</p>
+  </div>
   <div class="skill-graph__panel" id="skill-graph-panel" data-role="graph-panel" hidden>
     <div class="skill-graph__head">
       <div class="skill-graph__tools">

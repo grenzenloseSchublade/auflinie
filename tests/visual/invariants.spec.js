@@ -151,8 +151,9 @@ test.describe('Sticky-TOC-Dropdown (A11Y-2)', () => {
   });
 });
 
-// Skill-Graph: ein Knopf „Als Graph anzeigen“ öffnet das modale Sheet direkt
-// (seit 2. 10. 2026, vorher Aktivieren + schwebender Öffner). Reduced Motion
+// Skill-Graph: ein Knopf „Skill-Graph öffnen“ oben im Abschnitt öffnet das
+// modale Sheet direkt (seit 2. 10. 2026, vorher Aktivieren + schwebender
+// Öffner, seit 4. 10. 2026 vor den Skill-Gruppen). Reduced Motion
 // rechnet das Layout synchron vor, Ansicht und Knotenlage sind dann sofort
 // stabil. Der Maßstab steht als data-zoom am Canvas, die Zahl der Knoten
 // außerhalb bzw. angeschnitten als data-outside, die Bildschirmlage des
@@ -162,7 +163,8 @@ async function openSheet(page, before) {
   if (before) await before();
   const opener = page.locator('[data-role="graph-toggle"]');
   await opener.scrollIntoViewIfNeeded();
-  await expect(opener).toHaveText('Als Graph anzeigen');
+  await expect(opener).toHaveText('Skill-Graph öffnen');
+  await expect(opener).toHaveAccessibleName('Skill-Graph öffnen');
   await opener.click();
   const panel = page.locator('[data-role="graph-panel"]');
   await expect(panel).toHaveAttribute('role', 'dialog');
@@ -205,7 +207,13 @@ test.describe('Skill-Graph-Sheet (OVL-3, OVL-4)', () => {
     const { opener, panel } = await openSheet(page);
     await expect(page.locator('[data-role="graph-activate"], .skill-graph__floating, .wip-badge')).toHaveCount(0);
     await expect(page.locator('.skill-graph__sheet-close')).toBeFocused();
+    // Öffner steht oben im Abschnitt, vor der ersten Skill-Gruppe
+    expect(await opener.evaluate((el) => Boolean(el.compareDocumentPosition(document.querySelector('.cv-skill-group'))
+      & Node.DOCUMENT_POSITION_FOLLOWING))).toBe(true);
     expect(await page.evaluate(() => document.querySelector('.initial-content').inert)).toBe(true);
+    // Inhaltsverzeichnis (Sidebar und Sticky-Leiste) liegt im inerten Hintergrund
+    expect(await page.evaluate(() => ['#toc-original', '#toc-sticky-mobile']
+      .every((sel) => Boolean(document.querySelector(sel).closest('[inert]'))))).toBe(true);
 
     await page.keyboard.press('Escape');
     await expect(panel).not.toHaveAttribute('role', 'dialog');

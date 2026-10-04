@@ -1,5 +1,5 @@
 /**
- * skill-graph.js — Skill-Graph-Panel, Canvas-Ansicht (Stufe 2 des Skill-Features)
+ * skill-graph.js — Skill-Graph, Canvas-Ansicht (Teil des Skill-Features)
  *
  * Zuständigkeit: nur UI. Toggle, Canvas-Rendering, Ansicht (Pan + Zoom),
  * Klick-Interaktion, Info-Leiste und Synchronisation mit der Chip-Liste. Die
@@ -9,7 +9,7 @@
  * ohne beides anzufassen. Die Präsentation als modales Sheet übernimmt
  * skill-graph-sheet.js; ohne das Modul klappt das Panel inline auf.
  *
- * Daten: dasselbe JSON-Tag [data-skill-graph-data] wie Stufe 1
+ * Daten: dasselbe JSON-Tag [data-skill-graph-data] wie die Chip-Hervorhebung
  * (_data/skill_graph.yml, Schema v1). Knoten = Skills aus den DOM-Chips
  * (Reihenfolge = Gruppenreihenfolge), Kanten = gemeinsame Projekte. Die
  * Info-Leiste schreibt SkillGraphData.renderSelection — derselbe Renderer

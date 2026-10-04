@@ -16,10 +16,10 @@ header:
 show_date: false
 read_time: false
 # Interaktives Skill-Feature (siehe _includes/cv/skills.html):
-#   enabled = Klick-Hervorhebung, stage2 = experimentelles Graph-Panel
+#   enabled = Klick-Hervorhebung, graph = Skill-Graph (Öffner oben im Abschnitt)
 skill_graph:
   enabled: true
-  stage2: true
+  graph: true
 ---
 
 <div class="about-container">

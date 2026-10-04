@@ -11,7 +11,7 @@
  *
  * Erweiterungspunkte:
  * - Event-Vertrag `auflinie:skill-select` (detail: {skill, source}) —
- *   andere Ansichten (z. B. das Graph-Panel, Stufe 2) synchronisieren sich
+ *   andere Ansichten (z. B. der Skill-Graph) synchronisieren sich
  *   darüber lose; eigener source-Wert ist 'chips', fremde Events werden
  *   ohne Re-Dispatch übernommen.
  * - Die Auswahl-Optik lebt vollständig im CSS (Zustände: .has-selection am

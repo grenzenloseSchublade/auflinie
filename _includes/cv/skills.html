@@ -8,7 +8,8 @@
     enabled: Chips werden Buttons – Klick zeigt verwandte Skills und
              gemeinsame Projekte (assets/js/skill-chips.js, Daten aus
              _data/skill_graph.yml via JSON-Tag unten)
-    stage2:  zusätzlich das Graph-Panel (cv/skill-graph.html)
+    graph:   zusätzlich der Skill-Graph (cv/skill-graph.html): Öffner oben
+             im Abschnitt unter der Auswahl-Konsole, vor den Gruppen
   Ohne Flags rendert der Block exakt wie die statische Fassung.
 
   Parameter:
@@ -17,6 +18,9 @@
 <div class="cv-skills">
   {% if page.skill_graph.enabled %}
   <p class="cv-skills__selection-info" data-role="skill-context" data-sticky-toc-offset aria-live="polite">Ein Klick auf einen Skill zeigt verwandte Skills und gemeinsame Projekte.</p>
+  {% endif %}
+  {% if page.skill_graph.graph %}
+    {% include cv/skill-graph.html %}
   {% endif %}
   {% for skill_group in include.skill_groups %}
   <div class="cv-skill-group">
@@ -54,11 +58,7 @@
   </div>
   {% endfor %}
 
-  {% if page.skill_graph.stage2 %}
-    {% include cv/skill-graph.html %}
-  {% endif %}
-
-  {% if page.skill_graph.enabled or page.skill_graph.stage2 %}
+  {% if page.skill_graph.enabled or page.skill_graph.graph %}
   <script type="application/json" data-skill-graph-data>{{ site.data.skill_graph | jsonify | replace: '</', '<\/' }}</script>
   {% endif %}
 </div>

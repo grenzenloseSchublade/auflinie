@@ -7,10 +7,12 @@ in `_config.yml` vom Build ausgeschlossen — diese Datei landet nie auf der Sit
 
 Die Skill-Chips auf `/cv/` sind erkundbar:
 
-- **Stufe 1 — Klick-Hervorhebung (produktiv):** Klick auf einen Chip hebt alle
+- **Klick-Hervorhebung:** Klick auf einen Chip hebt alle
   Skills hervor, die über gemeinsame Projekte verbunden sind (Rest dimmt), und
   zeigt die Projekte in einer Kontextzeile. Zweiter Klick oder Escape löst.
-- **Stufe 2 — Graph-Panel:** Der Knopf „Als Graph anzeigen“ unter den Chips
+- **Skill-Graph:** Der Knopf „Skill-Graph öffnen“ oben im Abschnitt
+  „Technische Fähigkeiten“ (unter der Auswahl-Konsole, vor den Gruppen, mit
+  der Erklärzeile „Welche Fähigkeiten in welchen Projekten zusammenkommen“)
   öffnet ein modales Sheet mit Kräfte-Graph — Knoten = Skills, Kanten =
   gemeinsame Projekte (Kantendeckkraft = Gewicht). Klick auf Knoten wählt
   aus; die Auswahl ist mit der Chip-Liste synchronisiert, die Info-Leiste
@@ -29,12 +31,12 @@ Front Matter von `_pages/cv.md`:
 
 ```yaml
 skill_graph:
-  enabled: true   # Stufe 1: klickbare Chips
-  stage2: true    # Stufe 2: Graph-Panel (setzt kein enabled voraus)
+  enabled: true   # klickbare Chips
+  graph: true     # Skill-Graph: Öffner, Panel, Sheet (setzt kein enabled voraus)
 ```
 
-- `stage2: false` entfernt Panel und Skripte serverseitig komplett.
-- `enabled: false` (und stage2 false) ⇒ die Seite rendert byte-identisch zur
+- `graph: false` entfernt Öffner, Panel und Skripte serverseitig komplett.
+- `enabled: false` (und `graph: false`) ⇒ die Seite rendert byte-identisch zur
   rein statischen Fassung — keine Buttons, kein JSON, kein JS.
 
 ## Beteiligte Dateien
@@ -42,12 +44,12 @@ skill_graph:
 | Datei | Rolle |
 |---|---|
 | `_data/skill_graph.yml` | **Datenquelle** (Schema v1): Projekte → Skills |
-| `_includes/cv/skills.html` | Chips (+ Buttons, Kontextzeile, JSON-Tag, Panel-Include) |
-| `_includes/cv/skill-graph.html` | Panel-Markup (Öffner, Kopfleiste, Info-Leiste, Canvas) |
+| `_includes/cv/skills.html` | Chips (+ Buttons, Kontextzeile, JSON-Tag, Graph-Include oben vor den Gruppen) |
+| `_includes/cv/skill-graph.html` | Graph-Markup (Öffner mit Netz-Symbol und Erklärzeile, Kopfleiste, Info-Leiste, Canvas) |
 | `assets/js/skill-graph-data.js` | Gemeinsame Helfer: Daten lesen, Skill→Projekte, `renderSelection` (Konsole und Info-Leiste) |
-| `assets/js/skill-chips.js` | Stufe 1: Klick-Hervorhebung der Chips |
+| `assets/js/skill-chips.js` | Klick-Hervorhebung der Chips |
 | `assets/js/skill-graph-sim.js` | **DOM-freie** Force-Layout-Engine (reine Physik) |
-| `assets/js/skill-graph.js` | Stufe 2: Panel/Canvas/Interaktion, Ansicht (Pan + Zoom, Einpassen), Info-Leiste (nur UI) |
+| `assets/js/skill-graph.js` | Graph: Panel/Canvas/Interaktion, Ansicht (Pan + Zoom, Einpassen), Info-Leiste (nur UI) |
 | `assets/js/skill-graph-sheet.js` | Präsentation als modales Sheet (Scrim, Scroll-Sperre, inert, Fokus, Touch-Hinweis) |
 | `assets/_sass/components/_cv.scss` | Chip-Zustände (`has-selection`, `is-selected`, `is-related`) |
 | `assets/_sass/components/_skill-graph.scss` | Panel- und Sheet-Styles |

@@ -1,4 +1,4 @@
-// Skill-Graph-Panel (Stufe 2 des Skill-Features) —
+// Skill-Graph des Skill-Features (Öffner, Panel, modales Sheet) —
 // Markup: _includes/cv/skill-graph.html, Logik: assets/js/skill-graph.js
 // (+ DOM-freie Engine skill-graph-sim.js), Präsentation als modales Sheet:
 // assets/js/skill-graph-sheet.js. Die Chip-Liste bleibt kanonisch.
@@ -15,30 +15,45 @@ $graph-z-touch-hint: 3;
 // hoch wie der Schließen-Knopf, damit die Leiste eine Linie bildet
 $graph-tool-size: 32px;
 
+// Oben im Abschnitt „Technische Fähigkeiten“, unter der Auswahl-Konsole
+// und vor den Skill-Gruppen
 .skill-graph {
-  margin-top: $space-6;
+  margin: 0 0 $space-8;
 }
 
-// Öffner unter den Chips: ein Knopf, öffnet direkt das Sheet (ohne Sheet-
-// Modul klappt er das Panel inline auf). Ruhig: Cyan-subtle-Rand, Mono.
+// Öffner + Erklärzeile: nebeneinander, wo die Breite reicht, sonst bricht
+// die Zeile unter den Knopf (flex-wrap)
+.skill-graph__entry {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: $space-2 $space-4;
+}
+
+// Öffner: ein Knopf, öffnet direkt das Sheet (ohne Sheet-Modul klappt er das
+// Panel inline auf). Weißer Umriss im Stil der Hero-Knöpfe
+// (.btn--light-outline): prominent, aber nicht bunt. Magenta nur im
+// Interaktionszustand (Fokus, geöffnet).
 .skill-graph__open {
-  @include mono-label($fs-label, $tracking-legacy-graph-open);
+  @include mono-label($fs-ui, $tracking-label);
 
   display: inline-flex;
   align-items: center;
   gap: $space-2;
-  background: transparent;
-  border: 1px solid $link-color-subtle;
-  border-radius: $radius-lg;
-  color: $white-a80;
-  padding: $space-2 $space-3;
+  box-sizing: border-box;
+  min-height: $graph-tool-size;
+  background-color: $ink-a35;
+  border: 1px solid $white-a45;
+  border-radius: $radius-md;
+  color: $white;
+  padding: $space-2 $space-4;
   cursor: pointer;
-  transition: border-color $duration-base ease, color $duration-base ease;
+  transition: border-color $duration-base ease, background-color $duration-base ease;
 
   @media (hover: hover) {
     &:hover {
-      border-color: $link-color;
-      color: $white-a95;
+      border-color: $white-a85;
+      background-color: $white-a08;
     }
   }
 
@@ -49,8 +64,19 @@ $graph-tool-size: 32px;
 
   &[aria-expanded="true"] {
     border-color: $hover-color-subtle;
-    color: $white-a95;
   }
+}
+
+// Netz-Symbol (Inline-SVG, currentColor, aria-hidden)
+.skill-graph__open-icon {
+  flex-shrink: 0;
+}
+
+// p-qualifiziert (0,2,1) gegen die Theme-Absatzregel (.page__content p)
+.skill-graph p.skill-graph__lead {
+  margin: 0;
+  font-size: $fs-body-sm;
+  color: $fg-muted;
 }
 
 .skill-graph__panel {
@@ -190,7 +216,7 @@ $graph-tool-size: 32px;
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Modales Sheet (body.graph-open, seit 1.10.2026; Wrapper skill-graph-sheet.js)
-// Der Öffner unter den Chips ruft das Panel über skill-graph.js auf, das
+// Der Öffner oben im Abschnitt ruft das Panel über skill-graph.js auf, das
 // Sheet-Modul verschiebt es in .skill-graph-layer direkt unter <body>: Scrim
 // davor, Rest der Seite inert, Scroll gesperrt. Ebenen $z-sheet und
 // $z-sheet-panel (variables/_scales.scss): über dem Masthead, unter Hinweis

@@ -2,7 +2,7 @@
  * skill-graph-sheet.js — Präsentations-Wrapper für den Skill-Graphen.
  *
  * Ändert den Graph-KERN (skill-graph.js) nicht, nur die Darstellung: Der Knopf
- * „Als Graph anzeigen“ unter den Chips ([data-role="graph-toggle"]) öffnet das
+ * „Skill-Graph öffnen“ oben im Abschnitt ([data-role="graph-toggle"]) öffnet das
  * Panel über skill-graph.js. Dieses Modul präsentiert es dann MODAL als Sheet
  * (body.graph-open, seit 1.10.2026): Scrim, Scroll-Sperre, Hintergrund inert.
  * Vorher war das Sheet non-modal, die Seite rutschte beim Wischen über den

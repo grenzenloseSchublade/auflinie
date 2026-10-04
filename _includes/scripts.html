@@ -60,15 +60,15 @@
 <script src="{{ '/assets/js/neon-orbit-toggle.js' | relative_url }}" defer></script>
 {% endif %}
 
-{% if page.skill_graph.enabled or page.skill_graph.stage2 %}
+{% if page.skill_graph.enabled or page.skill_graph.graph %}
 {% comment %} Interaktives Skill-Feature (CV): Flag im Front Matter, Muster blog_search {% endcomment %}
 {% comment %} Gemeinsamer Daten-Helfer VOR den Modulen {% endcomment %}
 <script src="{{ '/assets/js/skill-graph-data.js' | relative_url }}" defer></script>
 <script src="{{ '/assets/js/skill-chips.js' | relative_url }}" defer></script>
 {% endif %}
 
-{% if page.skill_graph.stage2 %}
-{% comment %} Skill-Graph-Panel: Engine vor UI, defer erhält die Reihenfolge {% endcomment %}
+{% if page.skill_graph.graph %}
+{% comment %} Skill-Graph: Engine vor UI, defer erhält die Reihenfolge {% endcomment %}
 <script src="{{ '/assets/js/skill-graph-sim.js' | relative_url }}" defer></script>
 <script src="{{ '/assets/js/skill-graph.js' | relative_url }}" defer></script>
 {% comment %} Präsentations-Wrapper: modales Sheet (ändert den Graph-Kern nicht) {% endcomment %}
