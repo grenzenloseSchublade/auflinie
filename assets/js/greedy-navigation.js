@@ -147,15 +147,16 @@
     // Hintergrund inert (STYLEGUIDE OVL-4/A11Y-2): Solange der Drawer offen
     // ist, sind Inhalt, Footer und Skip-Links weder fokussierbar noch für
     // Screenreader erreichbar. Ausgenommen: der Masthead (Drawer + Toggle
-    // liegen darin), Skripte und Live-Regionen (Ansagen sollen weiterlaufen).
+    // liegen darin), Skripte und Live-Regionen (Ansagen sollen weiterlaufen),
+    // gemeinsamer Helfer inertOutside in site-utils.js (JS-18).
     // Gesetzt wird erst NACH dem Slide-In: inert erzwingt eine Style-
     // Neuberechnung der ganzen Seite, die mitten in der Transform-Animation
     // ruckeln könnte (gleiche Überlegung wie beim menu-open-Release).
     // Beim pageswap (Drawer bleibt für den VT-Snapshot offen) bleibt alles
     // unangetastet, inert ist unsichtbar. Aufgehoben wird an JEDER Stelle,
     // die den Drawer schließt (close, instant, bfcache-Reset).
-    const masthead = nav.closest('.masthead');
-    let inerted = null;
+    const masthead = nav.closest('.masthead') || nav;
+    let releaseInert = null;
     let inertTimer = null;
 
     function cancelInert() {
@@ -168,19 +169,16 @@
 
     function setBackgroundInert() {
       cancelInert();
-      if (inerted || hlinks.classList.contains('hidden')) return;
-      inerted = Array.prototype.filter.call(document.body.children, function(el) {
-        return el !== masthead && !el.contains(nav) && el.tagName !== 'SCRIPT'
-          && !el.matches('[aria-live], [role="status"], [role="alert"]') && !el.inert;
-      });
-      inerted.forEach(function(el) { el.inert = true; });
+      const utils = window.AuflinieUtils;
+      if (releaseInert || hlinks.classList.contains('hidden') || !utils || !utils.inertOutside) return;
+      releaseInert = utils.inertOutside([masthead]);
     }
 
     function releaseBackground() {
       cancelInert();
-      if (!inerted) return;
-      inerted.forEach(function(el) { el.inert = false; });
-      inerted = null;
+      if (!releaseInert) return;
+      releaseInert();
+      releaseInert = null;
     }
 
     function onOpenEnd(e) {
@@ -247,7 +245,7 @@
     // Instant-Close (ohne Slide-Animation): für den Same-Document-Swap
     // (spa-nav.js). Der Drawer muss VOR dem View-Transition-Snapshot zu sein,
     // sonst klappt er WÄHREND der Kanalwechsel-Animation ein statt davor.
-    // Gleiche Technik wie der bfcache-pageshow-Reset (transition:none + rAF).
+    // Auch der bfcache-Reset (pageshow, unten) schließt hierüber.
     function closeInstant() {
       cancelRelease();
       releaseBackground(); // vor dem Swap: spa-nav fokussiert danach #main
@@ -296,15 +294,7 @@
     // (der Klick-Close entfällt bei VT-Navigationen) — ohne Animation
     // zurücksetzen, bevor der erste Frame gemalt wird
     window.addEventListener('pageshow', function(e) {
-      if (!e.persisted || hlinks.classList.contains('hidden')) return;
-      cancelRelease();
-      releaseBackground();
-      hlinks.style.transition = 'none';
-      hlinks.classList.add('hidden');
-      btn.classList.remove('close');
-      setExpanded(false);
-      document.body.classList.remove('menu-open', 'menu-closing');
-      requestAnimationFrame(function() { hlinks.style.transition = ''; });
+      if (e.persisted && !hlinks.classList.contains('hidden')) closeInstant();
     });
 
     // Slide-in Menü: kein automatisches Schließen bei mouseleave
@@ -339,18 +329,11 @@
       }
     }, { passive: true });
 
-    // rAF-Throttle: folgt dem Resize flüssig (max. eine Prüfung pro Frame);
-    // der frühere 100ms-Timeout ließ die Links sichtbar nachziehen
-    let rafPending = false;
-    function throttledCheck() {
-      if (rafPending) return;
-      rafPending = true;
-      window.requestAnimationFrame(() => {
-        rafPending = false;
-        check();
-      });
-    }
-    window.addEventListener('resize', throttledCheck);
+    // rAF-Throttle aus site-utils.js: folgt dem Resize flüssig (max. eine
+    // Prüfung pro Frame), der frühere 100ms-Timeout ließ die Links sichtbar
+    // nachziehen. Ohne Helfer (älteres HTML aus dem Cache) ungedrosselt.
+    const utils = window.AuflinieUtils;
+    window.addEventListener('resize', utils && utils.rafThrottle ? utils.rafThrottle(check) : check);
 
     // Nach dem Font-Laden neu messen: die Erstmessung mit Fallback-Font
     // unterschätzt die Linkbreiten, der Umbruch käme sonst zu spät

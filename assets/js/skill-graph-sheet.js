@@ -122,18 +122,17 @@
     this.panel.setAttribute('aria-modal', 'true');
     this.panel.setAttribute('aria-label', 'Skill-Graph');
 
-    const layer = this.layer;
-    this.inerted = Array.prototype.filter.call(document.body.children, function (el) {
-      return el !== layer && el.tagName !== 'SCRIPT' && !el.inert;
-    });
-    this.inerted.forEach(function (el) { el.inert = true; });
+    // Gemeinsamer Helfer aus site-utils.js: Live-Regionen (Route-Ansage,
+    // Offline-Hinweis, Update-Toast) bleiben wie bei Drawer und TOC aktiv
+    const u = window.AuflinieUtils;
+    this.releaseInert = u && u.inertOutside ? u.inertOutside([this.layer]) : null;
     document.documentElement.classList.add('graph-scroll-lock');
   };
 
   GraphSheet.prototype.leaveModal = function () {
     if (!this.layer) { return; }
-    (this.inerted || []).forEach(function (el) { el.inert = false; });
-    this.inerted = null;
+    if (this.releaseInert) { this.releaseInert(); }
+    this.releaseInert = null;
     document.documentElement.classList.remove('graph-scroll-lock');
     this.panel.removeAttribute('role');
     this.panel.removeAttribute('aria-modal');

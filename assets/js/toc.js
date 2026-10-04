@@ -247,10 +247,11 @@
     // ihrer Vorfahren die Geschwister gesperrt, nicht nur die Kinder von
     // <body>. Ausgenommen: Leiste und Scrim (Light Dismiss per Klick), der
     // Masthead (liegt über dem Scrim und bleibt bedienbar, wie beim Drawer),
-    // Skripte und Live-Regionen. Gesetzt erst nach dem Aufklappen: inert
-    // berechnet die Stile der Seite neu, das soll nicht in die
-    // max-height-Animation fallen (gleiche Überlegung wie im Drawer).
-    let inerted = null;
+    // Skripte und Live-Regionen (Helfer inertOutside in site-utils.js).
+    // Gesetzt erst nach dem Aufklappen: inert berechnet die Stile der Seite
+    // neu, das soll nicht in die max-height-Animation fallen (gleiche
+    // Überlegung wie im Drawer).
+    let releaseInertNow = null;
     let inertTimer = null;
 
     function cancelInert() {
@@ -260,27 +261,16 @@
 
     function setBackgroundInert() {
       cancelInert();
-      if (inerted || !isDropdownOpen) { return; }
-      const keep = new Set();
-      [stickyToc, stickyOverlay].forEach(function (el) {
-        for (let n = el; n && n !== document.body; n = n.parentElement) { keep.add(n); }
-      });
-      inerted = [];
-      keep.forEach(function (n) {
-        Array.prototype.forEach.call(n.parentElement.children, function (el) {
-          if (keep.has(el) || el.inert || el.tagName === 'SCRIPT' || el.classList.contains('masthead')
-            || el.matches('[aria-live], [role="status"], [role="alert"]')) { return; }
-          el.inert = true;
-          inerted.push(el);
-        });
-      });
+      const u = window.AuflinieUtils;
+      if (releaseInertNow || !isDropdownOpen || !u || !u.inertOutside) { return; }
+      releaseInertNow = u.inertOutside([stickyToc, stickyOverlay, document.querySelector('.masthead')]);
     }
 
     function releaseBackground() {
       cancelInert();
-      if (!inerted) { return; }
-      inerted.forEach(function (el) { el.inert = false; });
-      inerted = null;
+      if (!releaseInertNow) { return; }
+      releaseInertNow();
+      releaseInertNow = null;
     }
     releaseInert = releaseBackground;
 

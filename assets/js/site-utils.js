@@ -77,6 +77,37 @@
   }
 
   /**
+   * Schaltet alles außerhalb der übergebenen Elemente inert (modale Ebenen:
+   * Drawer, TOC-Dropdown, Skill-Graph-Sheet, STYLEGUIDE OVL-4). Entlang der
+   * Vorfahren jedes Elements bis <body> werden die Geschwister gesperrt.
+   * Ausgenommen sind Skripte, schon inerte Elemente und Live-Regionen:
+   * Ansagen laufen weiter, der Update-Toast bleibt bedienbar.
+   * @param {Array<Element|null>} keep bleiben bedienbar (null wird übergangen)
+   * @returns {function(): void} hebt genau diese Sperre wieder auf
+   */
+  function inertOutside(keep) {
+    const body = global.document.body;
+    const path = new Set();
+    keep.forEach(function (el) {
+      for (let n = el; n && n !== body; n = n.parentElement) path.add(n);
+    });
+    const inerted = [];
+    path.forEach(function (n) {
+      if (!n.parentElement) return;
+      Array.prototype.forEach.call(n.parentElement.children, function (el) {
+        if (path.has(el) || el.inert || el.tagName === 'SCRIPT'
+          || el.matches('[aria-live], [role="status"], [role="alert"]')) return;
+        el.inert = true;
+        inerted.push(el);
+      });
+    });
+    return function release() {
+      inerted.forEach(function (el) { el.inert = false; });
+      inerted.length = 0;
+    };
+  }
+
+  /**
    * Breakpoints als Live-Abfragen (STYLEGUIDE BP-2), dieselben Grenzen wie
    * die Sass-Mixins. Nur hier stehen Breiten-Zahlen im JS, Nutzer lesen
    * `AuflinieUtils.mq.downMd.matches`.
@@ -100,6 +131,7 @@
     onReducedMotionChange: onReducedMotionChange,
     rafThrottle: rafThrottle,
     onDocumentResize: onDocumentResize,
+    inertOutside: inertOutside,
     mq: mq,
   };
 })(window);
