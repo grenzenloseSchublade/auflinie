@@ -46,9 +46,9 @@ Die Projekte stehen in `playwright.config.js`:
   Übergänge) statt auf feste Zeiten.
 - SPA-Wechsel prüft WebKit nur mit Reduced Motion: Der Update-Callback der View
   Transition kommt im Container erst nach 3 bis 5 s, unter Parallel-Last nach über
-  15 s (STYLEGUIDE Register R-83). Der stille Tausch ist derselbe Code ohne View
+  15 s (STYLEGUIDE Register R-87). Der stille Tausch ist derselbe Code ohne View
   Transition, die prüfen Chromium und Firefox.
-- WebKit blockt den `speculationrules`-Block per CSP (Register R-82).
+- WebKit blockt den `speculationrules`-Block per CSP (Register R-86).
   `vendor.spec.js` nimmt genau diese Meldungen in WebKit aus.
 - Laufzeit der vollen Suite mit 2 Workern auf 4 Kernen (wie ein GitHub-Runner):
   etwa 3 min, davon etwa 30 s Chromium.

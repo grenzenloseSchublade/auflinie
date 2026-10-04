@@ -75,7 +75,7 @@ module.exports = defineConfig({
     { name: 'webkit', testMatch: UI_SPECS, use: WEBKIT },
     // SPA-Wechsel in WebKit nur mit Reduced Motion: Im Container ohne GPU
     // läuft der Update-Callback der View Transition erst nach 3 bis 5 s, unter
-    // Parallel-Last nach über 15 s (Register R-83). Der stille Tausch ist
+    // Parallel-Last nach über 15 s (Register R-87). Der stille Tausch ist
     // derselbe Code ohne die View Transition, die Chromium und Firefox prüfen.
     { name: 'webkit-reduce', testMatch: NAV_SPECS, use: { ...WEBKIT, ...REDUCE } },
   ],

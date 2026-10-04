@@ -9,7 +9,7 @@ const BASE = '/auflinie'; // site.baseurl
 
 // WebKit kennt <script type="speculationrules">, aber nicht das CSP-Schlüsselwort
 // 'inline-speculation-rules'. Es meldet das Schlüsselwort als ungültig und
-// blockt den Block (Register R-82). Kein Befund der Bibliotheken. Nur genau
+// blockt den Block (Register R-86). Kein Befund der Bibliotheken. Nur genau
 // diese beiden Browser-Meldungen fallen weg: der Listener unten meldet jeden
 // CSP-Verstoß selbst und nimmt nur den speculationrules-Block aus.
 const WEBKIT_SPECULATION_NOISE = [
