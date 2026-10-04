@@ -1,7 +1,14 @@
 ---
 layout: default
 ---
-
+{%- comment -%}
+  Landmarke (STYLEGUIDE HTML-2): <main id="inhalt"> fasst Hero und Inhalt,
+  damit die H1 im Hero in der Hauptregion liegt und „Zum Inhalt springen“
+  vor ihr landet. Das Theme stylt #main (Breite, Innenabstand,
+  Einblendung), deshalb bleibt id="main" auf dem inneren <div>, das
+  äußere <main> trägt keinen Stil.
+{%- endcomment %}
+<main id="inhalt">
 {% if page.header.overlay_color or page.header.overlay_image or page.header.image %}
   {% include page__hero.html %}
 {% elsif page.header.video.id and page.header.video.provider %}
@@ -18,7 +25,7 @@ layout: default
   {% endunless %}
 {% endif %}
 
-<main id="main">
+<div id="main">
   {% include sidebar.html %}
 
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork"{% if page.locale %} lang="{{ page.locale }}"{% endif %}>
@@ -81,4 +88,5 @@ layout: default
   {% endif %}
 
   {% include back-to-top.html %}
+</div>
 </main> 

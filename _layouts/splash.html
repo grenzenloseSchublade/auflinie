@@ -2,20 +2,23 @@
 layout: default
 ---
 {%- comment -%}
-  Lokales Override: Landmarke <main id="main"> statt <div id="main"
-  role="main"> (STYLEGUIDE HTML-2). Sonst wörtlich Minimal Mistakes 4.28.1
+  Lokales Override: Landmarke <main id="inhalt"> um Hero und Inhalt statt
+  <div id="main" role="main"> nur um den Inhalt (STYLEGUIDE HTML-2), so
+  liegt die H1 im Hero in der Hauptregion. id="main" bleibt am inneren
+  <div>, das Theme stylt #main. Sonst wörtlich Minimal Mistakes 4.28.1
   (_layouts/splash.html, Layout der Startseite). Bei einem Theme-Update mit
   dem Original abgleichen.
 {%- endcomment -%}
 {%- assign locale = page.locale | default: layout.locale | default: site.locale %}
 
+<main id="inhalt">
 {% if page.header.overlay_color or page.header.overlay_image or page.header.image %}
   {% include page__hero.html locale=locale %}
 {% elsif page.header.video.id and page.header.video.provider %}
   {% include page__hero_video.html %}
 {% endif %}
 
-<main id="main">
+<div id="main">
   <article class="splash" itemscope itemtype="https://schema.org/CreativeWork"{% if page.locale %} lang="{{ page.locale }}"{% endif %}>
     {% if page.title %}<meta itemprop="headline" content="{{ page.title | markdownify | strip_html | strip_newlines | escape_once }}">{% endif %}
     {% if page.excerpt %}<meta itemprop="description" content="{{ page.excerpt | markdownify | strip_html | strip_newlines | escape_once }}">{% endif %}
@@ -26,4 +29,5 @@ layout: default
       {{ content }}
     </section>
   </article>
+</div>
 </main>

@@ -1,14 +1,16 @@
 {% comment %}
-  Lokales Override des Theme-Includes (Minimal Mistakes 4.28.1). Einzige
+  Lokales Override des Theme-Includes (Minimal Mistakes 4.28.1). Erste
   Abweichung: Das Theme benennt die Landmark fest auf Englisch
   (aria-label="Skip links"). Hier kommt der Name aus _data/ui-text.yml
-  (skip_links: „Sprunglinks“), passend zur Seitensprache.
+  (skip_links: „Sprunglinks“), passend zur Seitensprache. Zweite
+  Abweichung: „Zum Inhalt springen“ zeigt auf <main id="inhalt"> (Hero und
+  Inhalt), nicht auf das innere #main hinter der H1 (STYLEGUIDE HTML-2).
 {% endcomment %}
 {% assign locale = include.locale | default: site.locale %}
 <nav class="skip-links" aria-label="{{ site.data.ui-text[locale].skip_links | default: 'Sprunglinks' }}">
   <ul>
     <li><a href="#site-nav" class="screen-reader-shortcut">{{ site.data.ui-text[locale].skip_primary_nav | default: 'Skip to primary navigation' }}</a></li>
-    <li><a href="#main" class="screen-reader-shortcut">{{ site.data.ui-text[locale].skip_content | default: 'Skip to content' }}</a></li>
+    <li><a href="#inhalt" class="screen-reader-shortcut">{{ site.data.ui-text[locale].skip_content | default: 'Skip to content' }}</a></li>
     <li><a href="#footer" class="screen-reader-shortcut">{{ site.data.ui-text[locale].skip_footer | default: 'Skip to footer' }}</a></li>
   </ul>
 </nav>

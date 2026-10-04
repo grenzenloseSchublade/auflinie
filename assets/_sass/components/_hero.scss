@@ -646,8 +646,12 @@ $hero-z-scroll-cue: 101; // Scroll-Hinweis über der Caption
     // Titel-Größe
     // fs-Ausnahme: Hero-em-System (2.5/3/3.5em, eigene 768px-MQ) — bewusst
     // relativ zur Basis statt Token-Skala, abgenommener Bestand
+    // overflow-wrap: Ein einzelnes Wort, das allein breiter ist als die
+    // Zeile, bricht um, statt waagrecht zu scrollen (WCAG 1.4.10, z. B.
+    // „Implementierung“ bei 320 px). Wo alles passt, ändert sich nichts.
     .page__title {
       font-size: 2.5em;
+      overflow-wrap: break-word;
     }
 
     // Lead-Text (52rem statt Theme-768px: bricht auf großen Schirmen
