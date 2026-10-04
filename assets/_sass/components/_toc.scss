@@ -212,8 +212,10 @@
     background: $link-color-subtle;
     border-radius: $radius-xs;
 
-    &:hover {
-      background: $link-color-rail;
+    @include can-hover {
+      &:hover {
+        background: $link-color-rail;
+      }
     }
   }
 }
@@ -338,9 +340,19 @@
     display: flex;
     align-items: center;
 
+    // Touch: Ruhefarbe gegen die Theme-Regel ".toc__menu a:hover" (Hellgrau).
+    // Aktiv (li.active > a) und :active gewinnen weiter.
+    @include no-hover {
+      &:hover {
+        color: $fg-subtle;
+      }
+    }
+
     // Hover = Interaktion ⇒ Magenta-Text (AA-Token, siehe _colors.scss)
-    &:hover {
-      color: $hover-color-text;
+    @include can-hover {
+      &:hover {
+        color: $hover-color-text;
+      }
     }
 
     // Touch-Feedback für Mobile
@@ -597,8 +609,10 @@
     background: $link-color-subtle;
     border-radius: $radius-xs;
 
-    &:hover {
-      background: $link-color-rail;
+    @include can-hover {
+      &:hover {
+        background: $link-color-rail;
+      }
     }
   }
 }
@@ -626,6 +640,7 @@
 // Theme-Regel ".page__content a:not(.btn):hover { underline }" (0,3,1) ohne
 // !important schlagen: gleiche Spezifität, später geladen — gilt für das
 // Sidebar-TOC UND das Mobile-Dropdown (beide liegen im page__content)
+// bp-Ausnahme: BP-3, Gegenregel zur Theme-Hover-Regel, muss auch auf Touch greifen
 .page__content .toc__menu a:hover {
   text-decoration: none;
 }

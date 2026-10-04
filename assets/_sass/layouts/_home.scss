@@ -44,8 +44,10 @@
   margin-bottom: $section-spacing;
   transition: border-color $standard-transition;
 
-  &:hover {
-    border-color: $border-accent-hover;
+  @include can-hover {
+    &:hover {
+      border-color: $border-accent-hover;
+    }
   }
 
   h2 {

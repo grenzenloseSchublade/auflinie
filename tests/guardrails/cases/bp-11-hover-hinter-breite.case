@@ -1,0 +1,15 @@
+# :hover hinter einer Breiten-Weiche, mehrzeilig zusammen mit dem Fokus-Zustand
+guardrail: bp
+expect: 1
+grep: a:focus-visible, a:hover
+file: assets/_sass/components/_footer.scss
+mode: append
+---
+.footer-fixture-a {
+  @include up(md) {
+    a:focus-visible,
+    a:hover {
+      color: inherit;
+    }
+  }
+}

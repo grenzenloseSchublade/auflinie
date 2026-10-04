@@ -122,8 +122,10 @@
   border: 1px solid $white-a04;
   transition: background $duration-base ease;
 
-  &:hover {
-    background: $white-a05;
+  @include can-hover {
+    &:hover {
+      background: $white-a05;
+    }
   }
 
   label {
@@ -268,9 +270,11 @@
       display: none;
     }
 
-    &:hover {
-      border-color: $fp-accent;
-      box-shadow: $shadow-key-edge, $glow-key, $shadow-key-light;
+    @include can-hover {
+      &:hover {
+        border-color: $fp-accent;
+        box-shadow: $shadow-key-edge, $glow-key, $shadow-key-light;
+      }
     }
 
     &:focus {
@@ -330,8 +334,10 @@
     box-shadow: $glow-focus;
   }
 
-  &:hover {
-    border-color: $cyan-a50;
+  @include can-hover {
+    &:hover {
+      border-color: $cyan-a50;
+    }
   }
 }
 
@@ -354,6 +360,12 @@
   background: $gray-20;
   color: $gray-93;
   font-size: $fs-base;
+}
+
+// Hervorgehobene Tom-Select-Option: per Tastatur (.active) oder Zeiger (:hover)
+@mixin -option-active {
+  background: $fp-accent-soft;
+  color: $white;
 }
 
 // stylelint-disable-next-line no-duplicate-selectors -- thematisch getrennter Abschnitt (Tom-Select-Integration), bewusst nicht mit dem Basis-Block gemerged
@@ -390,9 +402,11 @@
     line-height: 1.3;
   }
 
-  .ts-wrapper.single .ts-control:hover {
-    background: $white-a08;
-    border-color: $cyan-a30;
+  @include can-hover {
+    .ts-wrapper.single .ts-control:hover {
+      background: $white-a08;
+      border-color: $cyan-a30;
+    }
   }
 
   .ts-wrapper.single.focus .ts-control {
@@ -454,10 +468,14 @@
     font-variant-numeric: tabular-nums;
   }
 
-  .ts-dropdown .option:hover,
   .ts-dropdown .option.active {
-    background: $fp-accent-soft;
-    color: $white;
+    @include -option-active;
+  }
+
+  @include can-hover {
+    .ts-dropdown .option:hover {
+      @include -option-active;
+    }
   }
 
   .ts-dropdown .option.selected {

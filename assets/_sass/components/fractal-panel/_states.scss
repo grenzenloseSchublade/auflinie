@@ -67,10 +67,12 @@
   justify-content: center;
   gap: $fp-space-2;
 
-  &:hover {
-    background: linear-gradient(145deg, $raised-bg-from-hover, $raised-bg-to-hover);
-    border-color: $cyan-a50;
-    box-shadow: $glow-hover;
+  @include can-hover {
+    &:hover {
+      background: linear-gradient(145deg, $raised-bg-from-hover, $raised-bg-to-hover);
+      border-color: $cyan-a50;
+      box-shadow: $glow-hover;
+    }
   }
 
   &.is-active {

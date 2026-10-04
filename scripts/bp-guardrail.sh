@@ -1,7 +1,7 @@
 #!/bin/bash
-# Breakpoint-Guardrail (STYLEGUIDE BP-1, BP-2, BP-5, BP-6)
+# Breakpoint-Guardrail (STYLEGUIDE BP-1, BP-2, BP-3, BP-5, BP-6)
 #
-# Prüft fünf Fehlerklassen:
+# Prüft sechs Fehlerklassen:
 #  0. Tokens: jeder $bp-… in variables/_layout.scss muss sich zu einem
 #     px-Wert auswerten lassen, auch berechnete wie
 #     $bp-drawer: math.div($drawer-width, 0.75). Die Map $breakpoints zeigt
@@ -27,13 +27,22 @@
 #     min-width nur mit einem $bp-Wert in px, max-width nur mit $bp-Wert
 #     minus 0.02px (halboffen wie die Mixins, Register R-6), keine anderen
 #     Zahlen-Features, keine em/rem, keine Range-Syntax (BP-5).
+#  5. :hover in eigenem SCSS (assets/_sass, assets/css) außerhalb von
+#     @include can-hover { … } oder @media (hover: hover) { … } (BP-3).
+#     Touch-Browser halten :hover nach dem Antippen fest (Register R-55).
+#     Erlaubt ist außerdem @include no-hover { … }: dort stehen nur
+#     Gegenregeln mit Ruhewerten gegen Theme-Hover-Regeln. Ein rohes
+#     @media (hover: none) zählt nicht, die Absicht soll lesbar bleiben.
 #
-# Bewusste Ausnahme in JS (z. B. Positionsrechnung, keine Layout-Weiche):
-#   // bp-Ausnahme: <Grund>     in der Zeile DIREKT ÜBER der Fundstelle.
+# Bewusste Ausnahme in JS (z. B. Positionsrechnung, keine Layout-Weiche)
+# oder ein :hover, das auch auf Touch greifen muss (Gegenregel zu einer
+# Theme-Hover-Regel):
+#   // bp-Ausnahme: <Grund>     in der Zeile DIREKT ÜBER der Fundstelle
+#                               (beim :hover über der ersten Selektorzeile).
 #
 # Nutzung: scripts/bp-guardrail.sh   (Exit 0 = sauber, 1 = Verstoß)
 # Läuft im Lint-Job der CI (nach dem Farb-Guardrail). Negativtests:
-# tests/guardrails/run.sh
+# tests/guardrails/run.py
 set -u
 cd "$(dirname "$0")/.."
 
@@ -244,8 +253,54 @@ report(
     "Fix: min-width = $bp-Wert, max-width = $bp-Wert - 0.02px (wie up()/down()), in px.",
 )
 
+# --- 5. :hover nur hinter (hover: hover) ------------------------------------
+def hover_hits(path):
+    raw = path.read_text()
+    raw_lines = raw.splitlines()
+    code = strip_comments(raw)
+    # Interpolationen #{…} enthalten Klammern, die keine Blöcke sind
+    code = re.sub(r"#\{[^{}]*\}", lambda m: " " * len(m.group(0)), code)
+    found = []
+    stack = []  # je offenem Block: liegt er hinter (hover: hover)?
+    start = 0   # Beginn des aktuellen Prelude
+    for i, ch in enumerate(code):
+        if ch == "{":
+            prelude = code[start:i]
+            text = " ".join(prelude.split())
+            gated = bool(re.match(r"@include\s+(?:can|no)-hover\b", text)) or bool(
+                re.match(r"@media\b(?!.*\bnot\b).*\(\s*hover\s*:\s*hover\s*\)", text))
+            inside = any(stack)
+            if ":hover" in text and not text.startswith("@") and not inside:
+                first = start + len(prelude) - len(prelude.lstrip())
+                n = line_of(code, first)
+                if not (n > 1 and "bp-Ausnahme:" in raw_lines[n - 2]):
+                    found.append(f"{path}:{n}: {text}")
+            stack.append(gated or inside)
+            start = i + 1
+        elif ch == "}":
+            if stack:
+                stack.pop()
+            start = i + 1
+        elif ch == ";":
+            start = i + 1
+    return found
+
+
+hits = []
+for f in files:
+    hits.extend(hover_hits(f))
+report(
+    "VERSTOSS (BP-3) — :hover außerhalb von (hover: hover):",
+    hits,
+    "Fix: @use \"abstracts/breakpoints\" as *; und @include can-hover { &:hover { … } }.\n"
+    "Fokus-Zustände gehören nicht hinein (:focus-visible getrennt notieren). Gegenregel\n"
+    "mit Ruhewerten gegen eine Theme-Hover-Regel auf Touch: @include no-hover { … }.\n"
+    "Muss die Regel für jede Eingabeart gelten (Gegenregel auch für die Maus): Zeile\n"
+    "'// bp-Ausnahme: BP-3, <Grund>' direkt über der ersten Selektorzeile.",
+)
+
 if fail:
     sys.exit(1)
 print(f"Breakpoint-Guardrail OK: @media nur über Mixins, JS nur über AuflinieUtils.mq, "
-      f"site-utils.js und Templates passen zu {len(tokens)} Tokens ({', '.join(f'{k} {v:g}px' for k, v in tokens.items())})")
+      f":hover nur hinter (hover: hover), site-utils.js und Templates passen zu {len(tokens)} Tokens ({', '.join(f'{k} {v:g}px' for k, v in tokens.items())})")
 PY

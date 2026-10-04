@@ -111,10 +111,12 @@
     line-height: 1;
   }
 
-  &:hover {
-    background: $control-bg-hover;
-    border-color: $cyan-a55;
-    box-shadow: $shadow-key-edge, $glow-key, $shadow-key-light-tint;
+  @include can-hover {
+    &:hover {
+      background: $control-bg-hover;
+      border-color: $cyan-a55;
+      box-shadow: $shadow-key-edge, $glow-key, $shadow-key-light-tint;
+    }
   }
 
   &:active {
@@ -186,10 +188,12 @@
   font-size: $fp-fs-md;
   transition: background-color $duration-base ease, border-color $duration-base ease, color $duration-base ease, box-shadow $duration-base ease;
 
-  &:hover {
-    background: $white-a05;
-    border-color: $cyan-a30;
-    color: $white-a90;
+  @include can-hover {
+    &:hover {
+      background: $white-a05;
+      border-color: $cyan-a30;
+      color: $white-a90;
+    }
   }
 
   .chevron {

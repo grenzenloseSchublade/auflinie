@@ -27,9 +27,11 @@
 @mixin hover-effect($transform-value: -5px) {
   transition: transform $duration-moderate ease, box-shadow $duration-moderate ease, background-color $duration-moderate ease;
 
-  &:hover {
-    transform: translateY($transform-value);
-    box-shadow: $shadow-2;
+  @include can-hover {
+    &:hover {
+      transform: translateY($transform-value);
+      box-shadow: $shadow-2;
+    }
   }
 }
 
@@ -72,17 +74,27 @@
 // Eine Stelle für Farbanpassungen — Maße/Padding bleiben beim Aufrufer.
 // Nutzer: _buttons.scss (.btn--primary/.btn--outline), _offline.scss
 // (Reload-Button), _sw-update-toast.scss (Primär), _posts.scss (Pager).
+// Hover nur bei echten Zeigern (BP-3), der Fokus-Zustand gleicht ihm.
 @mixin btn-role-primary {
   background-color: $cyan-a16;
   border: 1px solid $cyan-a50;
   color: $link-color;
 
-  &:hover,
-  &:focus {
-    background-color: $cyan-a26;
-    border-color: $link-color;
-    color: $link-color;
+  @include can-hover {
+    &:hover {
+      @include -btn-role-primary-active;
+    }
   }
+
+  &:focus {
+    @include -btn-role-primary-active;
+  }
+}
+
+@mixin -btn-role-primary-active {
+  background-color: $cyan-a26;
+  border-color: $link-color;
+  color: $link-color;
 }
 
 @mixin btn-role-outline {
@@ -90,12 +102,21 @@
   border: 1px solid $link-color-subtle;
   color: $white-a88;
 
-  &:hover,
-  &:focus {
-    border-color: $link-color;
-    background-color: $cyan-a12;
-    color: $white;
+  @include can-hover {
+    &:hover {
+      @include -btn-role-outline-active;
+    }
   }
+
+  &:focus {
+    @include -btn-role-outline-active;
+  }
+}
+
+@mixin -btn-role-outline-active {
+  border-color: $link-color;
+  background-color: $cyan-a12;
+  color: $white;
 }
 
 // Hintergrund-Blur inkl. -webkit-Prefix (Safari < 18 braucht ihn noch) —

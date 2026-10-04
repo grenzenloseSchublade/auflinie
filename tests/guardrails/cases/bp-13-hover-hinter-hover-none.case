@@ -1,0 +1,12 @@
+# :hover hinter (hover: none) ist keine Hover-Weiche
+guardrail: bp
+expect: 1
+grep: footer-fixture-b
+file: assets/_sass/components/_footer.scss
+mode: append
+---
+@media (hover: none) {
+  .footer-fixture-b:hover {
+    color: inherit;
+  }
+}

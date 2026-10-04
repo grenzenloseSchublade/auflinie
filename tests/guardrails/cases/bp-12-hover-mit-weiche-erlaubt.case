@@ -1,0 +1,33 @@
+# Erlaubt: :hover über can-hover, no-hover, in @media (hover: hover) und mit bp-Ausnahme-Marker
+guardrail: bp
+expect: 0
+file: assets/_sass/components/_footer.scss
+mode: append
+---
+.footer-fixture {
+  width: calc(#{$space-2} * 2);
+
+  @include can-hover {
+    &:hover {
+      color: inherit;
+    }
+  }
+
+  @media (hover: hover) {
+    a:hover {
+      color: inherit;
+    }
+  }
+
+  @include no-hover {
+    &:hover {
+      color: inherit;
+    }
+  }
+}
+
+// bp-Ausnahme: BP-3, Testfall, Gegenregel zu einer Theme-Hover-Regel
+.footer-fixture a:hover,
+.footer-fixture button:hover {
+  text-decoration: none;
+}

@@ -9,6 +9,7 @@
 
 @use "abstracts/tokens" as *;
 @use "abstracts/mixins" as *;
+@use "abstracts/breakpoints" as *;
 
 // Beitragsliste (/posts/): Karten im Panel-Stil statt roher Linkliste
 .post-card-list {
@@ -22,12 +23,14 @@
     padding: $space-4 $space-5;
     transition: transform $duration-moderate ease, border-color $duration-moderate ease, background-color $duration-moderate ease;
 
-    &:hover {
-      transform: translateY(-3px);
-      border-color: $border-accent-hover;
-      background-color: $console-panel-bg-hover;
+    @include can-hover {
+      &:hover {
+        transform: translateY(-3px);
+        border-color: $border-accent-hover;
+        background-color: $console-panel-bg-hover;
 
-      // Dezenter Akzent statt des lauten globalen 4-Lagen-Magenta-Glows
+        // Dezenter Akzent statt des lauten globalen 4-Lagen-Magenta-Glows
+      }
     }
   }
 
@@ -40,9 +43,11 @@
       color: $link-color;
       text-decoration: none;
 
-      &:hover {
-        text-decoration: underline;
-        text-underline-offset: 3px;
+      @include can-hover {
+        &:hover {
+          text-decoration: underline;
+          text-underline-offset: 3px;
+        }
       }
     }
   }
@@ -88,9 +93,11 @@
         color: $link-color;
         text-decoration: none;
 
-        &:hover {
-          text-decoration: underline;
-          text-underline-offset: 3px;
+        @include can-hover {
+          &:hover {
+            text-decoration: underline;
+            text-underline-offset: 3px;
+          }
         }
       }
     }
@@ -109,6 +116,15 @@
   border-radius: $radius-md;
   font-size: $fs-body;
   transition: border-color $duration-base ease, background-color $duration-base ease;
+
+  // Touch: Ruhewerte gegen die Theme-Regel ".pagination--pager:hover"
+  // (hellgrauer Grund, dunkle Schrift)
+  @include no-hover {
+    &:hover {
+      background-color: transparent;
+      color: $white-a88;
+    }
+  }
 
   &.disabled {
     display: none; // Ausblenden statt ausgrauen

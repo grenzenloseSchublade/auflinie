@@ -122,9 +122,11 @@
   border: 1px solid $white-a18;
   color: $white-a70;
 
-  &:hover {
-    border-color: $white-a32;
-    color: $white;
+  @include can-hover {
+    &:hover {
+      border-color: $white-a32;
+      color: $white;
+    }
   }
 }
 

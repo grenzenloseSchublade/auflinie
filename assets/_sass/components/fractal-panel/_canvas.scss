@@ -223,8 +223,10 @@
   border: none;
   transition: background-color $duration-base, transform $duration-instant;
 
-  &:hover {
-    background: $gray-33;
+  @include can-hover {
+    &:hover {
+      background: $gray-33;
+    }
   }
 
   &:active {

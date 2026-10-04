@@ -533,9 +533,11 @@ $hero-z-scroll-cue: 101; // Scroll-Hinweis über der Caption
       line-height: 0;
       transition: color $duration-base ease, filter $duration-base ease, opacity $duration-base ease;
 
-      &:hover {
-        color: rgb(255 255 255 / 98%);
-        filter: drop-shadow(0 0 5px rgb(255 255 255 / 22%));
+      @include can-hover {
+        &:hover {
+          color: rgb(255 255 255 / 98%);
+          filter: drop-shadow(0 0 5px rgb(255 255 255 / 22%));
+        }
       }
 
       &:focus-visible {
@@ -548,9 +550,11 @@ $hero-z-scroll-cue: 101; // Scroll-Hinweis über der Caption
         filter: drop-shadow(0 0 7px rgb(90 200 120 / 45%));
       }
 
-      &[aria-pressed="true"]:hover {
-        color: rgb(220 255 228 / 100%);
-        filter: drop-shadow(0 0 10px rgb(110 230 150 / 55%));
+      @include can-hover {
+        &[aria-pressed="true"]:hover {
+          color: rgb(220 255 228 / 100%);
+          filter: drop-shadow(0 0 10px rgb(110 230 150 / 55%));
+        }
       }
 
       &[aria-pressed="false"] {
@@ -558,9 +562,11 @@ $hero-z-scroll-cue: 101; // Scroll-Hinweis über der Caption
         filter: none;
       }
 
-      &[aria-pressed="false"]:hover {
-        color: rgb(210 204 198 / 92%);
-        filter: drop-shadow(0 0 4px rgb(255 255 255 / 12%));
+      @include can-hover {
+        &[aria-pressed="false"]:hover {
+          color: rgb(210 204 198 / 92%);
+          filter: drop-shadow(0 0 4px rgb(255 255 255 / 12%));
+        }
       }
 
       &[aria-busy="true"] {
@@ -662,8 +668,10 @@ $hero-z-scroll-cue: 101; // Scroll-Hinweis über der Caption
       &--light-outline {
         border: 1px solid $white;
 
-        &:hover {
-          background-color: $white-a20;
+        @include can-hover {
+          &:hover {
+            background-color: $white-a20;
+          }
         }
       }
     }

@@ -265,8 +265,10 @@ $cv-z-selection-info: 6;
       transition: transform $duration-moderate ease;
     }
 
-    &:hover {
-      background-color: $white-a05;
+    @include can-hover {
+      &:hover {
+        background-color: $white-a05;
+      }
     }
 
     &:focus-visible {
@@ -296,8 +298,10 @@ $cv-z-selection-info: 6;
     position: relative;
     transition: color $duration-base ease;
 
-    &:hover {
-      color: $white-a90;
+    @include can-hover {
+      &:hover {
+        color: $white-a90;
+      }
     }
 
     &::before {

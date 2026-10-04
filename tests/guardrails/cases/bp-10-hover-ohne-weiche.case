@@ -1,0 +1,14 @@
+# :hover verschachtelt ohne (hover: hover), bleibt auf Touch nach dem Antippen stehen
+guardrail: bp
+expect: 1
+grep: BP-3
+file: assets/_sass/components/_footer.scss
+mode: append
+---
+.footer-fixture {
+  a {
+    &:hover {
+      color: inherit;
+    }
+  }
+}

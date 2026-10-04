@@ -24,10 +24,21 @@
   padding: 0.5em 1.1em;
   transition: border-color $duration-base ease, background-color $duration-base ease;
 
-  &:hover {
-    border-color: $link-color;
-    background-color: $cyan-a12;
-    color: $white;
+  // Touch: Ruhewerte gegen die Theme-Regel ".btn--inverse:hover"
+  // (hellgrauer Grund, dunkle Schrift)
+  @include no-hover {
+    &:hover {
+      background-color: transparent;
+      color: $white-a88;
+    }
+  }
+
+  @include can-hover {
+    &:hover {
+      border-color: $link-color;
+      background-color: $cyan-a12;
+      color: $white;
+    }
   }
 }
 
@@ -58,8 +69,10 @@
   a {
     color: $white-a88;
 
-    &:hover {
-      color: $link-color;
+    @include can-hover {
+      &:hover {
+        color: $link-color;
+      }
     }
   }
 }

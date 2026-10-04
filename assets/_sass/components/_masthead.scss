@@ -34,8 +34,10 @@ $masthead-z-drawer-link: 10;
   transition: filter $duration-slow ease;
 }
 
-.site-logo:hover svg {
-  filter: drop-shadow(0 0 4px $cyan-a50) drop-shadow(0 0 10px $magenta-a35);
+@include can-hover {
+  .site-logo:hover svg {
+    filter: drop-shadow(0 0 4px $cyan-a50) drop-shadow(0 0 10px $magenta-a35);
+  }
 }
 
 // Röhren-Flackern der Magenta-Konturen: zwei teilerfremde Laufzeiten
@@ -100,15 +102,24 @@ $masthead-z-drawer-link: 10;
     // skala-Ausnahme: Masthead-em-System (SP-2), wächst mit der Nav-Schrift
     margin-right: 3em; // Größerer Abstand zum Menü (Desktop)
 
-    &:hover {
-      color: inherit;
+    // Touch: Ruhefarbe gegen die Theme-Regel ".greedy-nav a:hover" (Grau)
+    @include no-hover {
+      &:hover {
+        color: $white;
+      }
+    }
 
-      // Kalibriert: Glow als warmes Glühen, kein 90px-Halo
-      // (Recherche: Glow <=16px, Alpha <=0.55 — Synthwave '84-Praxis)
-      text-shadow: 0 0 4px $magenta-a55,
-        0 0 10px $magenta-a35,
-        0 0 16px $magenta-a20;
-      text-decoration: none;
+    @include can-hover {
+      &:hover {
+        color: inherit;
+
+        // Kalibriert: Glow als warmes Glühen, kein 90px-Halo
+        // (Recherche: Glow <=16px, Alpha <=0.55 — Synthwave '84-Praxis)
+        text-shadow: 0 0 4px $magenta-a55,
+          0 0 10px $magenta-a35,
+          0 0 16px $magenta-a20;
+        text-decoration: none;
+      }
     }
 
     // Responsive Anpassung für kleinere Bildschirme
@@ -150,8 +161,10 @@ $masthead-z-drawer-link: 10;
           font-size: 1.15em; // ~17px bei 16px Basis
         }
 
-        &:hover {
-          color: $hover-color-text; // Magenta-Text (AA), siehe _colors.scss
+        @include can-hover {
+          &:hover {
+            color: $hover-color-text; // Magenta-Text (AA), siehe _colors.scss
+          }
         }
       }
     }
@@ -307,6 +320,12 @@ body .visible-links li.masthead__menu-item--featured {
   }
 }
 
+// Hover- und Fokus-Zustand der Masthead-Links (KOMP-3)
+@mixin -nav-link-active {
+  color: $hover-color-text;
+  background: $cyan-a10;
+}
+
 body .greedy-nav .visible-links a {
   display: flex;
   align-items: center;
@@ -318,11 +337,15 @@ body .greedy-nav .visible-links a {
   z-index: $masthead-z-link;
   transition: color $duration-base ease-in-out, background-color $duration-base ease-in-out;
 
-  // Hover-Effekt wie hidden-links
-  &:hover,
+  // Hover-Effekt wie hidden-links, Fokus sieht gleich aus
+  @include can-hover {
+    &:hover {
+      @include -nav-link-active;
+    }
+  }
+
   &:focus {
-    color: $hover-color-text;
-    background: $cyan-a10;
+    @include -nav-link-active;
   }
 
   // Theme-Override: Entferne die Teal-Underline-Animation des Themes.
@@ -464,6 +487,15 @@ body.menu-open.menu-closing::before {
   }
 }
 
+// Touch: Ruhewerte gegen die Theme-Regel ".greedy-nav .hidden-links a:hover"
+// (Grau auf dunklem Grund). Steht vor den eigenen Hover- und Fokus-Regeln.
+@include no-hover {
+  body .greedy-nav .hidden-links li a:hover {
+    color: $white;
+    background: transparent;
+  }
+}
+
 // Hidden-Links: Liste und Links (zusammengeführt)
 body .greedy-nav .hidden-links li {
   display: block;
@@ -484,20 +516,27 @@ body .greedy-nav .hidden-links li {
 
   // Desktop: Hover-Effekt auf gesamter Box
   @include up(md) {
-    &:hover {
-      background: $cyan-a10;
-      border-left-color: $link-color-subtle;
+    @include can-hover {
+      &:hover {
+        background: $cyan-a10;
+        border-left-color: $link-color-subtle;
 
-      a {
-        color: $hover-color-text;
+        a {
+          color: $hover-color-text;
+        }
       }
     }
   }
 
   // Mobile: nur Textfarbe ändern
   @include down(md) {
-    &:hover a,
-    a:hover,
+    @include can-hover {
+      &:hover a,
+      a:hover {
+        color: $hover-color-text;
+      }
+    }
+
     a:focus {
       color: $hover-color-text;
     }
@@ -557,8 +596,10 @@ body .greedy-nav__toggle {
   }
 }
 
-body .greedy-nav__toggle:hover {
-  opacity: 0.8;
+@include can-hover {
+  body .greedy-nav__toggle:hover {
+    opacity: 0.8;
+  }
 }
 
 // Hover der Hamburger-Balken: Das Theme färbt sie mit
@@ -566,10 +607,23 @@ body .greedy-nav__toggle:hover {
 // Ruhe-Regel unten. Nav-Hover ist Magenta (Owner, KOMP-3): derselbe Ton wie
 // die Nav-Links im Hover. Nicht im .close-Zustand: dort ist der mittlere
 // Balken transparent und das X bleibt dezent.
-body .greedy-nav__toggle:not(.close):hover .navicon,
-body .greedy-nav__toggle:not(.close):hover .navicon::before,
-body .greedy-nav__toggle:not(.close):hover .navicon::after {
-  background: $hover-color-text;
+// Die Theme-Regel steht nicht hinter (hover: hover). Touch-Browser halten
+// :hover nach dem Antippen fest, ohne Gegenregel blieben die Balken dann
+// Theme-Cyan. Auf Touch gilt darum unter :hover die Ruhefarbe (R-55).
+@include no-hover {
+  body .greedy-nav__toggle:not(.close):hover .navicon,
+  body .greedy-nav__toggle:not(.close):hover .navicon::before,
+  body .greedy-nav__toggle:not(.close):hover .navicon::after {
+    background: $control-icon-color;
+  }
+}
+
+@include can-hover {
+  body .greedy-nav__toggle:not(.close):hover .navicon,
+  body .greedy-nav__toggle:not(.close):hover .navicon::before,
+  body .greedy-nav__toggle:not(.close):hover .navicon::after {
+    background: $hover-color-text;
+  }
 }
 
 body .navicon {
@@ -685,7 +739,12 @@ body .greedy-nav .visible-links a.current::after {
   background: $link-color-subtle;
 }
 
-body .greedy-nav .visible-links a:hover::after,
+@include can-hover {
+  body .greedy-nav .visible-links a:hover::after {
+    background: $hover-color-subtle;
+  }
+}
+
 body .greedy-nav .visible-links a:focus-visible::after {
   background: $hover-color-subtle;
 }
@@ -695,8 +754,10 @@ body .greedy-nav__toggle:focus-visible {
   outline-offset: 2px;
 }
 
-.site-logo:hover img {
-  filter: drop-shadow(0 0 4px $cyan-a50) drop-shadow(0 0 10px $magenta-a35);
+@include can-hover {
+  .site-logo:hover img {
+    filter: drop-shadow(0 0 4px $cyan-a50) drop-shadow(0 0 10px $magenta-a35);
+  }
 }
 
 // Fokus-Hintergrund der Navigation (aus base/_accessibility.scss hierher

@@ -2,6 +2,7 @@
 
 @use "abstracts/tokens" as *;
 @use "abstracts/mixins" as *;
+@use "abstracts/breakpoints" as *;
 
 // Kategorie-Buttons
 .category-buttons {
@@ -19,10 +20,12 @@
   // Die Grundstile werden aus dem Theme übernommen
   transition: color $duration-moderate ease, background-color $duration-moderate ease, border-color $duration-moderate ease, box-shadow $duration-moderate ease, transform $duration-moderate ease;
 
-  &:hover {
-    color: $hover-color;
-    transform: translateY(-2px);
-    box-shadow: $shadow-2;
+  @include can-hover {
+    &:hover {
+      color: $hover-color;
+      transform: translateY(-2px);
+      box-shadow: $shadow-2;
+    }
   }
 
   &:active {
@@ -48,10 +51,12 @@
   background-color: $ink-a35;
   color: $white;
 
-  &:hover {
-    border-color: $white-a85;
-    background-color: $white-a08;
-    color: $white;
+  @include can-hover {
+    &:hover {
+      border-color: $white-a85;
+      background-color: $white-a08;
+      color: $white;
+    }
   }
 }
 
