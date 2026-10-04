@@ -1,0 +1,8 @@
+# Schriftgröße als Literal ohne führende Null (.875rem) (TYP-1)
+guardrail: fs
+expect: 1
+grep: font-size: \.875rem
+file: assets/_sass/components/_footer.scss
+mode: append
+---
+.footer-fixture { font-size: .875rem; }

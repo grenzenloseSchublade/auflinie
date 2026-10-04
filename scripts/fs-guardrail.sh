@@ -2,9 +2,11 @@
 # Schriftgrößen-Guardrail (Token-Skala, Juli 2026)
 #
 # Verhindert neue px/rem-font-size-Literale außerhalb der Token-Zentrale
-# (assets/_sass/variables/_typography.scss). Bewusste Ausnahmen tragen in
-# der Zeile DARÜBER einen "fs-Ausnahme"-Kommentar (dokumentierter Bestand:
-# Hero-em-System, TOC-em-Hierarchie, Scroll-Cue-Glyphe).
+# (assets/_sass/variables/_typography.scss), auch in der Kurzschreibweise
+# `font: 700 14px/1.4 …` und ohne führende Null (`.875rem`). Bewusste
+# Ausnahmen tragen in der Zeile DARÜBER einen "fs-Ausnahme"-Kommentar
+# (dokumentierter Bestand: Hero-em-System, TOC-em-Hierarchie,
+# Scroll-Cue-Glyphe).
 #
 # Nutzung: scripts/fs-guardrail.sh   (Exit 0 = sauber, 1 = Verstoß)
 # Läuft im Lint-Job der CI. Hintergrund: Token-Migration
@@ -12,7 +14,7 @@
 set -u
 cd "$(dirname "$0")/.."
 
-V=$(grep -rn 'font-size: *[0-9][0-9.]*\(px\|rem\)' assets/_sass --include='*.scss' \
+V=$(grep -rnE 'font(-size)?: *([^;{}]*[ /(,])?\.?[0-9][0-9.]*(px|rem)' assets/_sass --include='*.scss' \
   | grep -v 'variables/_typography' \
   | while IFS=: read -r f n rest; do
       prev=$(sed -n "$((n-1))p" "$f")

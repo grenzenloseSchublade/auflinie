@@ -1,0 +1,8 @@
+# Inline-Script in einem Beitrag (_posts gehörte bisher nicht zur Prüfung)
+guardrail: security
+expect: 1
+grep: Inline-Script in Template oder Beitrag.*\n.*_posts/2025-02-15-erster-beitrag\.md
+file: _posts/2025-02-15-erster-beitrag.md
+mode: append
+---
+<script>document.title = "x";</script>

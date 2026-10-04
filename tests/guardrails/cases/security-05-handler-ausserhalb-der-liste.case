@@ -1,0 +1,8 @@
+# Inline-Handler, der nicht in der früheren festen Liste stand (onpointerdown)
+guardrail: security
+expect: 1
+grep: Inline-Event-Handler
+file: _includes/footer.html
+mode: append
+---
+<img src="x.png" alt="" onpointerdown="x()">

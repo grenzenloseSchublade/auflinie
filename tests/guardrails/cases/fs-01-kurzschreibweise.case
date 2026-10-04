@@ -1,0 +1,10 @@
+# Schriftgröße als Literal in der Kurzschreibweise font: (TYP-1)
+guardrail: fs
+expect: 1
+grep: font: 700 14px/1\.4
+file: assets/_sass/components/_footer.scss
+mode: append
+---
+.footer-fixture {
+  font: 700 14px/1.4 sans-serif;
+}

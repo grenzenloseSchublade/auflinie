@@ -1,0 +1,8 @@
+# Inline-Script, dahinter ein src= in derselben Zeile (entschuldigte das Skript bisher)
+guardrail: security
+expect: 1
+grep: Inline-Script
+file: _includes/footer.html
+mode: append
+---
+<script>document.title = "x";</script><img src="x.png" alt="">

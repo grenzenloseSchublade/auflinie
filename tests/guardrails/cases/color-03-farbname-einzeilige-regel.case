@@ -1,0 +1,8 @@
+# Farbname in einer einzeiligen Regel (die Selektor-Zeile verdeckte ihn bisher)
+guardrail: color
+expect: 1
+grep: FARB-1.*\n.*\.footer-fixture \{ color: red; \}
+file: assets/_sass/components/_footer.scss
+mode: append
+---
+.footer-fixture { color: red; }

@@ -1,0 +1,12 @@
+# Erlaubt: Skript und Handler als Code-Beispiel im Beitrag (Code-Block, Inline-Code)
+guardrail: security
+expect: 0
+file: _posts/2025-02-15-erster-beitrag.md
+mode: append
+---
+Ein Handler wie `<button onclick="x()">` ist unter der CSP verboten.
+
+```html
+<script>document.title = "x";</script>
+<button onclick="x()">Nein</button>
+```

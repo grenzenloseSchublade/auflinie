@@ -1,0 +1,7 @@
+# Erlaubt: Farbname nur im Klassennamen, Wert aus einem Token (kein Fehlalarm)
+guardrail: color
+expect: 0
+file: assets/_sass/components/_footer.scss
+mode: append
+---
+.footer-fixture--red { color: $body-text-color; }

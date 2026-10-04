@@ -1,0 +1,14 @@
+# Erlaubt: Kurzschreibweise mit fs-Ausnahme-Marker in der Zeile darüber, Token-Kurzschreibweise ohne Literal
+guardrail: fs
+expect: 0
+file: assets/_sass/components/_footer.scss
+mode: append
+---
+.footer-fixture {
+  // fs-Ausnahme: Testfall für den Marker
+  font: 700 14px/1.4 sans-serif;
+}
+
+.footer-fixture-2 {
+  font: 700 #{$fs-label-xs}/1.4 sans-serif;
+}

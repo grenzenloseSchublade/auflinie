@@ -7,8 +7,12 @@
 #  3. Service Worker liest/löscht nur eigene Caches (geteilter github.io-Origin):
 #     kein caches.match() ohne eigenen Cache, kein origin-weites Löschen
 #  4. Kein getRegistrations() (lieferte auch fremde Worker des Origins)
-#  5. Keine Inline-Skripte und Inline-Handler in Templates (CSP ohne
-#     'unsafe-inline'); Datenblöcke (JSON-LD, speculationrules) sind erlaubt
+#  5. Keine Inline-Skripte und Inline-Handler (jedes on…=) in Templates und
+#     Inhalten (_includes, _layouts, _pages, _posts, _drafts, Seiten im
+#     Wurzelverzeichnis), CSP ohne 'unsafe-inline'. Datenblöcke (JSON-LD,
+#     speculationrules) sind erlaubt. Geprüft wird jedes <script>-Tag
+#     einzeln, ein src= anderswo in der Zeile entschuldigt nichts.
+#     Code-Blöcke und Inline-Code in Markdown sind Beispieltext
 #  6. Cache-Präfix nur als sw_cache_prefix in _config.yml (SEC-5c), nicht leer
 #     und kein zweites Literal in Skripten oder Templates
 #
@@ -45,14 +49,37 @@ V=$(grep -rn 'getRegistrations()' assets/js service-worker.js | grep -vE '^[^:]+
 [ -n "$V" ] && fail "getRegistrations() trifft auch fremde Worker, getRegistration(scope) nutzen:
 $V"
 
-# Inline-Skripte: <script> ohne src und ohne Daten-Typ
-V=$(grep -rnE '<script(\s[^>]*)?>' _includes _layouts _pages index.html 404.html offline.html 2>/dev/null \
-  | grep -vE 'src=|type="(application/ld\+json|application/json|speculationrules)"')
-[ -n "$V" ] && fail "Inline-Script in Template (CSP verbietet es, Code nach assets/js/):
+# Templates und Inhalte zeilenweise als datei:zeile:text. In Markdown ohne
+# Code-Blöcke und Inline-Code: ein Code-Beispiel im Beitrag ist Text.
+SRC=$( { find _includes _layouts _pages _posts _drafts -type f \
+           \( -name '*.html' -o -name '*.md' -o -name '*.markdown' \) 2>/dev/null
+         ls index.html 404.html offline.html 2>/dev/null; } | sort | xargs awk '
+  FNR == 1 { fence = ""; md = (FILENAME ~ /\.(md|markdown)$/) }
+  md && match($0, /^[ \t]*(```|~~~)/) {
+    mark = substr($0, RSTART + RLENGTH - 3, 3)
+    if (fence == "") fence = mark; else if (fence == mark) fence = ""
+    next
+  }
+  fence != "" { next }
+  { line = $0; if (md) gsub(/`+[^`]*`+/, "", line); print FILENAME ":" FNR ":" line }
+')
+
+# Inline-Skripte: jedes <script>-Tag ohne src und ohne Daten-Typ
+V=$(printf '%s\n' "$SRC" | awk '
+  {
+    rest = $0
+    while (match(rest, /<script([ \t][^>]*)?>/)) {
+      tag = substr(rest, RSTART, RLENGTH)
+      rest = substr(rest, RSTART + RLENGTH)
+      if (tag ~ /[ \t]src=/) continue
+      if (tag ~ /type="(application\/ld\+json|application\/json|speculationrules)"/) continue
+      print; break
+    }
+  }')
+[ -n "$V" ] && fail "Inline-Script in Template oder Beitrag (CSP verbietet es, Code nach assets/js/):
 $V"
 
-V=$(grep -rnE '<[a-zA-Z][^>]*\son(click|load|error|change|input|submit|keydown|keyup|mouseover|focus|blur)\s*=' \
-  _includes _layouts _pages _posts index.html 404.html offline.html 2>/dev/null)
+V=$(printf '%s\n' "$SRC" | grep -E '<[a-zA-Z][^>]*[[:space:]]on[a-z]+[[:space:]]*=')
 [ -n "$V" ] && fail "Inline-Event-Handler (CSP), addEventListener nutzen:
 $V"
 

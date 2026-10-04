@@ -78,8 +78,12 @@ V=$(awk '
       hit = 0
       if (code ~ /#[0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F]*([^0-9a-zA-Z_-]|$)/) hit = 1
       if (code ~ /(^|[^a-zA-Z0-9_-])(rgba?|hsla?|hwb|lab|lch|oklab|oklch)\([ \t]*[0-9.]/) hit = 1
-      if (code ~ /(^|[^a-zA-Z0-9_$-])(white|black|red|green|blue|yellow|cyan|magenta|aqua|fuchsia|lime|navy|teal|olive|maroon|purple|silver|gray|grey|orange|pink|gold|brown|violet|indigo)([^a-zA-Z0-9_-]|$)/ \
-          && code !~ /^[ \t]*[@.&#:[]/) hit = 1
+      # Farbnamen nur im Deklarationsteil: Bei einer Selektor- oder @-Zeile
+      # zählt erst, was hinter der ersten { steht (einzeilige Regel wie
+      # .x { color: red; }), Klassennamen wie .text-red bleiben außen vor
+      decl = code
+      if (decl ~ /^[ \t]*[@.&#:[]/) { p = index(decl, "{"); decl = p ? substr(decl, p + 1) : "" }
+      if (decl ~ /(^|[^a-zA-Z0-9_$-])(white|black|red|green|blue|yellow|cyan|magenta|aqua|fuchsia|lime|navy|teal|olive|maroon|purple|silver|gray|grey|orange|pink|gold|brown|violet|indigo)([^a-zA-Z0-9_-]|$)/) hit = 1
       if (!hit) continue
       s = i
       while (s > 1 && cont(L[s - 1])) s--
