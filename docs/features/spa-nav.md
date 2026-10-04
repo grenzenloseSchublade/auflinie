@@ -42,7 +42,8 @@ Ein voller Reload (statt Swap) tritt immer ein bei:
 
 ```js
 function isWired(pathname) {
-  var p = stripBase(pathname);           // baseurl "/auflinie" bereinigt
+  const p = stripBase(pathname);         // baseurl "/auflinie" bereinigt, null = fremd
+  if (p === null) return false;
   if (p === '/' || p === '/about/' || p === '/cv/' || p === '/mandelbrot/') return true;
   return /^\/posts\//.test(p);           // Übersicht, Pagination UND Einzelbeiträge
 }
@@ -178,7 +179,8 @@ umgebaut werden, bevor die Seite verdrahtet wird.
 > [`_includes/toc-wrapper.html`](../../_includes/toc-wrapper.html). Vor dem
 > Verdrahten von `/cv/` wanderte sie nach
 > [`assets/js/toc.js`](../../assets/js/toc.js), sonst wäre die TOC nach einem
-> Swap tot gewesen. STYLEGUIDE SPA-4 sperrt solche Skripte per CI.
+> Swap tot gewesen. STYLEGUIDE SPA-4 sperrt solche Skripte per CI, die CSP
+> verbietet ausführbare Inline-Skripte ohnehin (STYLEGUIDE SEC-4).
 
 ---
 
@@ -219,7 +221,7 @@ umgebaut werden, bevor die Seite verdrahtet wird.
 | Subsystem | Regel |
 |---|---|
 | **Service Worker** | Swap-/Prefetch-fetch trägt Header `X-SPA-Nav`; das navigate-Gate in `service-worker.js` leitet ihn auf `handleNavigation` (cache-first + `offline.html`). Same-origin + Custom-Header ⇒ kein Preflight. `spa-nav.js` ist im Precache. |
-| **Speculation Rules** | `/` und `/about/*` sind aus dem Chromium-Prerender ausgenommen (werden geswappt). Beiträge/CV/Archiv behalten Prerender. |
+| **Speculation Rules** | Alle verdrahteten Ziele (`/`, `/about/`, `/cv/`, `/mandelbrot/`, `/posts/*`) sind aus dem Chromium-Prerender ausgenommen, sie werden geswappt. Prerender bleibt für die übrigen Seiten (Archiv), nie für die versteckten Drawer-Links (`_includes/head/custom.html`). |
 | **View-Transition-Kür** | Chromium + Bewegung: `document.startViewTransition(mutate)` blendet den Inhalt über. Firefox / `reduce`: stiller Instant-Swap. Für die Dauer setzt `spa-nav.js` `html.spa-vt`; CSS `html.spa-vt .masthead { view-transition-name: none }` nimmt den **fixierten** Masthead aus dem Snapshot (sonst versetzt sein Snapshot die Schrift um wenige Pixel). Cross-Document-CRT (ohne `.spa-vt`) bleibt unberührt. |
 | **reduced-motion** | JS-Gate `!reduce` + CSS-Gürtel (`@media (prefers-reduced-motion: reduce) { ::view-transition-*{animation:none} }`). |
 | **CSP** | Nur `src='self'`-Injektion + Attribut-Mutation + `textContent`-JSON-LD. Kein `eval`/`blob:`/Inline-Style. |
@@ -241,9 +243,11 @@ umgebaut werden, bevor die Seite verdrahtet wird.
    sonst Seite vorerst nicht verdrahten (`needsFullLoad` erzwingt dann von
    selbst den Voll-Reload).
 5. **Pfad in `isWired`** aufnehmen.
-6. **Im echten Browser testen** (headless hier nicht möglich): Swap hin/zurück,
-   Interaktion nach Swap, kein Listener-Leak über N Swaps (`getEventListeners`/
-   Heap-Diff), Zurück/Vor, bfcache, Fokus, Offline, `reduce` + Firefox.
+6. **Testen:** [`tests/spa-nav.spec.js`](../../tests/spa-nav.spec.js) um die
+   Seite erweitern (Swap hin und zurück, Interaktion nach Swap, Zahl der
+   `mount`-Aufrufe). Im echten Browser dazu: kein Listener-Leak über N Swaps
+   (`getEventListeners`/Heap-Diff), Zurück/Vor, bfcache, Fokus, Offline,
+   `reduce` + Firefox.
 
 ---
 

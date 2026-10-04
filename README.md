@@ -130,49 +130,11 @@ kramdown:
 
 ## Mathematische Formeln mit MathJax
 
-Diese Website unterstützt mathematische Formeln durch MathJax. Die Konfiguration erfolgt in zwei Dateien:
+MathJax 4 ist selbst gehostet (`assets/vendor/mathjax/` und das Font-Paket `assets/vendor/mathjax-newcm-font/`), es gibt keinen CDN-Aufruf. Geladen wird es nur auf Seiten mit `mathjax: true` im Front Matter:
 
-### 1. _config.yml
-
-```yaml
-# Math Settings
-markdown: kramdown
-mathjax: true
-kramdown:
-  math_engine: mathjax
-  syntax_highlighter: rouge
-  input: GFM
-
-# MathJax specific settings (MathJax 4)
-head_scripts:
-  - https://cdn.jsdelivr.net/npm/mathjax@4.1.3/tex-chtml.js
-```
-
-### 2. _includes/head/custom.html
-
-```html
-{% if page.mathjax %}
-<script>
-  MathJax = {
-    tex: {
-      inlineMath: [['$', '$'], ['\\(', '\\)']],
-      displayMath: [['$$', '$$'], ['\\[', '\\]']],
-      processEscapes: true,
-      packages: { '[+]': ['noerrors'] }
-    },
-    options: {
-      skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
-      ignoreHtmlClass: 'tex2jax_ignore',
-      processHtmlClass: 'tex2jax_process',
-      renderActions: { assistiveMml: [] },
-      menuOptions: { settings: { assistiveMml: false } }
-    },
-    loader: { load: ['[tex]/noerrors'] }
-  };
-</script>
-<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@4.1.3/tex-chtml.js"></script>
-{% endif %}
-```
+- `_config.yml` stellt kramdown auf `math_engine: mathjax`. kramdown gibt die Formeln dann als `\(…\)` und `\[…\]` aus.
+- `_includes/head/custom.html` bindet bei `page.mathjax` drei Skripte mit `defer` ein: `assets/js/mathjax-config.js` (die Konfiguration als Datei, kein Inline-Skript wegen der CSP), `assets/vendor/mathjax/tex-chtml.js` und `assets/js/mathjax-typeset.js` (setzt nach einem SPA-Seitenwechsel den neuen Inhalt).
+- Die Version steht in `THIRD-PARTY-NOTICES.md`, `tests/vendor.spec.js` prüft nach einem Versionswechsel, ob alle Formeln gesetzt werden.
 
 ### Verwendung in Markdown-Dateien
 
@@ -204,7 +166,7 @@ Wenn mathematische Formeln nicht korrekt angezeigt werden:
 
 2. Diese Punkte prüfen:
    - `mathjax: true` ist im Frontmatter der Seite gesetzt
-   - Die MathJax-Version in `_includes/head/custom.html` ist korrekt (4.1.3 empfohlen)
+   - `assets/vendor/mathjax/tex-chtml.js` wird ohne Fehler geladen (Netzwerk-Tab, Konsole)
    - Die LaTeX-Syntax verwendet `$$` für Display-Math und `$` für Inline-Math
    - Der Browser-Cache wurde geleert
 
@@ -257,7 +219,7 @@ Einsatz der aktuellen Jekyll-4-Version inkl. dart-sass.
 Ablauf:
 
 1. Push auf `main`/`master` → Workflow baut und deployt automatisch.
-2. Push auf `test/**` → Workflow baut nur (ohne Deploy), zum Verifizieren.
+2. Manueller Start (`workflow_dispatch`) auf einem anderen Branch → Workflow baut und prüft nur (ohne Deploy).
 3. In den Repository-Einstellungen muss unter **Pages → Build and deployment** die Quelle auf
    **GitHub Actions** stehen.
 
@@ -292,7 +254,6 @@ Ablauf:
 
 ```yaml
 - section: "Aktuelle Projekte"
-  icon: "rocket"
   content: "Hier sind meine aktuellen Projekte."
   projekte:
     - titel: "Projekt A"
@@ -309,18 +270,16 @@ Ablauf:
 
 ```html
 {% for projekt in include.projekte %}
-<div class="cv-entry">
-  <div class="cv-entry-header">
-    <h3>{{ projekt.titel }}</h3>
-  </div>
-  <div class="cv-entry-content">
-    <p>{{ projekt.beschreibung }}</p>
-    <p><strong>Technologien:</strong> {{ projekt.technologien | join: ", " }}</p>
-    <p><a href="{{ projekt.link }}" target="_blank">Projekt ansehen</a></p>
-  </div>
-</div>
+<article class="project-card">
+  <h3 class="project-card__title">{{ projekt.titel }}</h3>
+  <p>{{ projekt.beschreibung }}</p>
+  <p><strong>Technologien:</strong> {{ projekt.technologien | join: ", " }}</p>
+  <p><a href="{{ projekt.link }}">Projekt ansehen</a></p>
+</article>
 {% endfor %}
 ```
+
+Neue Klassen nach BEM bekommen eine eigene Datei unter `assets/_sass/components/` (STYLEGUIDE SCSS-1, SCSS-5). Ein Link mit `target="_blank"` braucht `rel="noopener noreferrer"` (SEC-9).
 
 ### 3. Markdown-Datei erstellen (`_pages/projekte.md`)
 
@@ -336,20 +295,10 @@ toc_sticky: true
 ---
 
 {% for section in site.data.projekte %}
-<section id="{{ section.section | slugify }}" class="projekte-section">
+<section id="{{ section.section | slugify }}">
   <h2>{{ section.section }}</h2>
-
-  {% capture inner_content %}
-    {% if section.projekte %}
-      {% include projekte.html projekte=section.projekte %}
-    {% endif %}
-  {% endcapture %}
-
-  {% include cv-section.html 
-    icon=section.icon 
-    title=section.section 
-    content=section.content 
-    inner_content=inner_content %}
+  {{ section.content | markdownify }}
+  {% include projekte.html projekte=section.projekte %}
 </section>
 {% endfor %}
 ```
@@ -368,7 +317,7 @@ title: "Seitentitel"
 toc: true
 toc_label: "Inhalt"  # Optional: Passt die Beschriftung an
 toc_icon: "list"     # Optional: Fügt ein Icon hinzu
-toc_sticky: true     # Optional: Macht das TOC scrollbar
+toc_sticky: true     # Optional: TOC bleibt beim Scrollen sichtbar
 ---
 ```
 
@@ -432,14 +381,9 @@ toc_sticky: true
 ---
 ```
 
-### Automatische Erkennung des Farbschemas
+### Mobile Sticky-Leiste
 
-Das ausklappbare TOC erkennt automatisch, ob die Seite ein dunkles oder helles Farbschema verwendet, und passt sein Erscheinungsbild entsprechend an. Es verwendet dafür mehrere Methoden:
-
-1. Prüfung der Hintergrundfarbe des `<body>`-Elements
-2. Prüfung der Hintergrundfarbe des `.page__content`-Elements
-3. Prüfung, ob bestimmte Elemente vorhanden sind, die auf ein dunkles Design hinweisen
-4. Prüfung, ob das Minimal Mistakes Skin "dark" ist
+Unter 1024 px steht die TOC nicht in der Seitenleiste. Sobald sie aus dem Bild scrollt, erscheint unter dem Masthead eine Leiste mit dem aktuellen Kapitel und dem Lesefortschritt, die die Kapitel-Liste aufklappt. Verhalten und Barrierefreiheit liegen in `assets/js/toc.js` (STYLEGUIDE A11Y-2).
 
 ### Speicherung des Zustands
 

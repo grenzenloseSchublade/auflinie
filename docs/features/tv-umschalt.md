@@ -3,18 +3,21 @@
 Der Seitenwechsel nutzt Cross-Document View Transitions (mobil, Chrome):
 Der Header steht als eigener Snapshot fest, ein offener Nav-Drawer slidet
 innerhalb der Transition raus, und der Inhalt wechselt im Stil eines
-Röhrenfernsehers. Dieses Dokument hält die drei Effekt-Varianten samt
+Röhrenfernsehers. Dieses Dokument hält die vier Effekt-Varianten samt
 Recherche-Grundlagen fest und erklärt Umschaltung und Dosierung.
 
 ## Varianten umschalten
 
-In `assets/_sass/components/_view-transition.scss` ganz oben:
+Der Default steht in `assets/_sass/components/_view-transition.scss` ganz oben:
 
 ```scss
 $crt-variante: "antenne" !default; // "dezent" | "linie-punkt" | "voll" | "antenne"
 ```
 
-Wert ändern, neu bauen — es wird nur die gewählte Variante kompiliert.
+Umgestellt wird in `assets/_sass/_custom.scss` per
+`@use "components/view-transition" with ($crt-variante: "linie-punkt");`
+(STYLEGUIDE SCSS-4), danach neu bauen. Es wird nur die gewählte Variante
+kompiliert, ein unbekannter Wert bricht den Build mit `@error` ab.
 
 ## Die vier Varianten
 
@@ -33,7 +36,7 @@ leichter horizontaler Overshoot, Einschalten als Warm-up (siehe
  V-Kollaps  Grün-Blink   Warm-up (gedimmt -> hell)
 ```
 
-### 2. `linie-punkt` — Standard, empfohlen (~1980 ms)
+### 2. `linie-punkt` — früherer Standard (~1980 ms)
 
 Das physikalische Phasenmodell echter Röhren: Die Vertikalablenkung stirbt
 zuerst (Bild kollabiert zur extrem hellen Linie — real ~480-fache
@@ -182,10 +185,12 @@ statt 560 ms. Der Drawer-Offset wirkt unverändert (die Offset-Regeln
 ## Choreografie mit dem Drawer
 
 Ist der Drawer beim Wechsel offen, slidet sein Old-Snapshot zuerst raus
-(200 ms, accelerate), dann folgt nach einem **70 ms-Beat** der gewählte
-Effekt (`$crt-drawer-offset: 270ms`). Begründung: Über ~40 ms wird die
-Pause als eigenes Ereignis wahrnehmbar (Staging), unter 100 ms verschmilzt
-die Kette zu einer Geste (NN/g-Reaktionszeit-Schwellen) — 70 ms ≈ 4 Frames.
+(200 ms, accelerate). Der gewählte Effekt startet leicht überlappend nach
+180 ms (`$crt-drawer-offset: 180ms`), der Drawer fährt dabei noch die letzten
+Millisekunden aus. Die Folgebewegung überlappt die ausklingende ohne Lücke
+(Material-Choreografie), das liest sich flüssiger als die frühere Fassung mit
+einem 70-ms-Beat nach dem Slide (`270ms`). Die Werte sind mit
+`greedy-navigation.js` gekoppelt (STYLEGUIDE MO-4).
 
 ## Dosierung (tv-switch.js)
 
@@ -195,7 +200,7 @@ Der volle Effekt läuft NICHT bei jedem Klick — er markiert Ortswechsel:
 2. **Bereichswechsel:** nur wenn sich das erste Pfad-Segment ändert
    (home / about / mandelbrot / cv / archiv / posts …) — Post → Post oder
    Pagination bleiben ruhig.
-3. **Cooldown:** höchstens einmal pro 8 s (sessionStorage-Zeitstempel).
+3. **Cooldown:** höchstens einmal pro 6 s (sessionStorage-Zeitstempel, `COOLDOWN_MS`).
 
 In allen anderen Fällen: ruhiger UA-Crossfade — der Header steht immer,
 ein offener Drawer slidet trotzdem raus.
@@ -203,9 +208,10 @@ ein offener Drawer slidet trotzdem raus.
 ## Technik-Kurzreferenz
 
 - Types propagieren nicht zwischen Dokumenten → `pageswap` schreibt die
-  Entscheidung nach `sessionStorage`, ein parser-blockierendes
-  Inline-Script in `_includes/head/custom.html` liest sie im `pagereveal`
-  (nie auf defer/async umstellen!). Guards: Pfad-Match + 10 s-TTL.
+  Entscheidung nach `sessionStorage`, das parser-blockierende
+  `assets/js/head-early.js` (eingebunden in `_includes/head.html`) liest sie
+  im `pagereveal` (nie auf defer/async umstellen!). Guards: Pfad-Match +
+  10 s-TTL.
 - View Transitions laufen nur unter `(prefers-reduced-motion: no-preference)`
   (`_view-transition.scss`, `vtGate` in `greedy-navigation.js`). Den
   CRT-Effekt gibt es nur mobil, also unter 768 px: `tv-switch.js` fragt

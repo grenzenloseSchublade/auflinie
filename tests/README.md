@@ -17,6 +17,10 @@ Drei Gruppen, alle mit Playwright:
   - `contrast.spec.js`: Kontrast jeder Textprobe (`data-sg-min`) gegen ihren tatsächlichen Grund.
   - `a11y.spec.js`: axe-core (WCAG 2.2 AA) auf den echten Seiten und der Styleguide-Ansicht.
     Bekannte Befunde stehen in `visual/a11y-known.json`, nur neue Verstöße brechen ab.
+  - `invariants.spec.js`: Verhalten statt Aussehen. Fokusführung, `aria-expanded`, `inert`,
+    Escape und Light Dismiss an Drawer, Autor- und TOC-Dropdown und Skill-Graph-Sheet, der
+    Blog-Hinweis im Top Layer, kein unsichtbares Element mit Tastaturfokus und die
+    Breakpoint-Grenzen 767/768 und 1023/1024.
 
 Alles läuft in der CI im Build-Job (Schritt „Style-Guide-Review“) und blockiert bei Fehlern den Deploy.
 
