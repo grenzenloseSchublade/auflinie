@@ -836,7 +836,7 @@ Ein neues Token kommt in die passende Datei unter `variables/` und ist danach ü
 
 ### 9.4 Kommentare und Format
 
-- **SCSS-14** [MUSS · Soll · Review] Kommentare deutsch, nur `//`. `/* */` nur für Stylelint-Blockdirektiven. Bestand: R-66.
+- **SCSS-14** [MUSS · Ist · Review] Kommentare deutsch, nur `//`. `/* */` nur für Stylelint-Blockdirektiven.
 - **SCSS-15** [SOLL · Soll · Review] Dateikopf: Banner `// ===`, Titel, Zweck, Zeilen `Markup:` / `JS:` / `Tokens:`.
 - **SCSS-16** [MUSS · Soll · Review] Kommentare erklären das Warum des Ist-Zustands. Werthistorie (`// vorher 3.5rem`) gehört in die Commit-Message. A11y- und Owner-Gründe bleiben im Kommentar.
 - **SCSS-17** [MUSS · Soll · Review] Keine auskommentierten Alternativwerte, keine toten Selektoren, keine px-Umrechnungen an em- oder rem-Werten.
@@ -1266,7 +1266,6 @@ Stand: Abgleich vom 2. 10. 2026 (Kopf). Ein Eintrag verschwindet, sobald der C
 | R-58 | SPA-1, SPA-2, BEW-1a | Handgerollter `spa:load`-Kontrakt statt `spaModule`: `toc.js`, `back-to-top.js`, `hero-crt.js`, `author-follow.js`, `neon-orbit-toggle.js`, `blog-search.js`, `mathjax-typeset.js`. Lokale Reduced-Motion-Abfragen statt `AuflinieUtils.prefersReducedMotion` in `spa-nav.js`, `greedy-navigation.js` und den Track-Dateien | B-JS-03 | Code bei Berührung, Track |
 | R-64 | CRIT-3, MD-2 | Templates, `_data/` und Fences seit 4. 10. 2026 erledigt. Offen nur der Beitrag „Blogbeitrag erstellen“: `style`-Attribute am Download-Link und am Icon darin (Zeile 30) und ein `<div style="text-align: center">` (Zeile 55), beim Abbau gefunden | – | Code, Inhalt (Klassen bzw. kramdown-IAL, Optik vorher und nachher vergleichen) |
 | R-65 | TYPO-1, TYPO-2, COPY-2, COPY-4, FACH-1 | Entities in `footer.html` (`&copy;`, `&ouml;`), `fractal/panel.html` (`&auml;`, `&middot;`, Pfeile) und `fractal/canvas.html`. „Berechne…“ ohne Leerzeichen vor der Auslassung. Note „Sehr Gut“ groß (`cv_content.yml`). Leerzustand der Blog-Suche ohne Hinweis, was hilft. Fachaussagen in `_data/mandelbrot.yml` ohne Quellenkommentar (z. B. Hausdorff-Dimension, Shishikura 1998) | – | Inhalt (Owner liest Texte gegen) |
-| R-66 | SCSS-14 | `/* */`-Dateikopf in `_cv.scss` | – | Track |
 | R-67 | SEO-2, SEO-3, SEITE-6 | Excerpts unter 70 Zeichen: Über mich (59), Archiv (44), Blog (69). Site-Vorschaubild ist auf allen Seiten der Hero-Hintergrund `background.jpg` mit 675 × 360 px statt 1200 × 630 px (Vorschlag mit Namen im Bild liegt vor, Owner). `blog_notice` kennt kein Ablaufdatum (der Sommerpause-Hinweis ist seit 4. 10. 2026 ausgeschaltet, beim nächsten Hinweis nachrüsten) | – | Owner |
 | R-69 | DOC-5, DOC-7 | Skill-Feature-Doku noch als `docs/README-skill-feature.md`. Der Beitrag „Erstellung dieser Website“ zeigt noch die alte `devcontainer.json` (Node `lts`) | – | Skill-Feature-Doku: Track, Beitrag: Owner (Lesertext) |
 | R-70 | LINK-3 | `target="_blank"` ohne Hinweis auf den neuen Tab: GitHub-Links in `_pages/about.md` und `_pages/posts.md`, `archive-single.html`, `single.html` (`page.link`), Beispiel im Beitrag „Blogbeitrag erstellen“ | – | Owner (gleicher Tab oder Hinweis) |
@@ -1403,3 +1402,4 @@ Prozess und Doku:
 | 2026-10-04 | R-81 erledigt: Die drei Fokusringe in `components/_skill-graph.scss` (Öffner, Werkzeugknöpfe der Info-Leiste, Schließen-Knopf des Sheets) nutzen `@include focus-ring` statt `outline` und `outline-offset` ausgeschrieben, kompiliertes CSS byte-gleich. KOMP-4 nennt den Skill-Graph nicht mehr als Ausnahme. |
 | 2026-10-04 | R-54 Teil TYP-8 erledigt: Der Aufzählungspunkt der CV-Einträge (`_cv.scss`) trägt `font-weight: 700` statt `bold`, kompiliertes CSS bis auf diesen Wert gleich (berechnet ohnehin `700`). TYP-8 auf Ist, R-54 hält nur noch TYP-3 (Owner). |
 | 2026-10-04 | TYP-8 per CI: Stylelint `font-weight-notation: numeric` in `.stylelintrc.json` (16.1), der Bestand hat keinen Verstoß. 16.2 führt nur noch `color-named` und `selector-max-id`. |
+| 2026-10-04 | R-66 erledigt, SCSS-14 auf Ist: Der Dateikopf von `_cv.scss` steht als `//`-Kommentar. `/* */` kommt in `assets/_sass` nur noch in Stylelint-Blockdirektiven vor, kompiliertes CSS gleich. |
