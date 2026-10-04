@@ -9,6 +9,13 @@
      tv-switch.js, greedy-navigation.js, fractal-panel.js) {% endcomment %}
 <script src="{{ '/assets/js/site-utils.js' | relative_url }}" defer></script>
 
+{% comment %} Persistent-Shell-Kontrakt (window.spaModule, STYLEGUIDE SPA-1) – sitewide,
+     direkt nach den Helfern und VOR allen Seiten-Modulen, die sich am
+     SPA-Lebenszyklus registrieren (toc.js, hero-crt.js, blog-search.js,
+     blog-notice.js, neon-orbit-toggle.js, Skill-Feature, Fraktal-Panels,
+     author-follow.js, back-to-top.js) {% endcomment %}
+<script src="{{ '/assets/js/spa-module.js' | relative_url }}" defer></script>
+
 {% if page.toc %}
 {% comment %} Gumshoe ScrollSpy (standalone, kein jQuery) – nur auf Seiten mit TOC {% endcomment %}
 <script src="{{ '/assets/vendor/gumshoe.min.js' | relative_url }}" defer></script>
@@ -33,11 +40,6 @@
 
 {% comment %} Service Worker (global) {% endcomment %}
 <script src="{{ '/assets/js/sw-register.js' | relative_url }}" defer></script>
-
-{% comment %} Persistent-Shell-Kontrakt (window.spaModule) – sitewide, VOR allen
-     Modulen, die sich am SPA-Lebenszyklus registrieren (Skill-Feature,
-     Fraktal-Panels) {% endcomment %}
-<script src="{{ '/assets/js/spa-module.js' | relative_url }}" defer></script>
 
 {% if page.header.overlay_image %}
 {% comment %} Hero-Hintergrund + CRT-Effekt: nur auf Seiten mit Overlay-Hero {% endcomment %}

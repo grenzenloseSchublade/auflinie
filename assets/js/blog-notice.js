@@ -16,8 +16,8 @@
   function mount(root) {
     const scope = root || document;
     const box = scope.querySelector('#blog-notice');
-    if (!box || box.hasAttribute('data-blog-notice-init')) return;
-    box.setAttribute('data-blog-notice-init', '');
+    if (!box || box.hasAttribute('data-blog-notice-mounted')) return;
+    box.setAttribute('data-blog-notice-mounted', '');
     if (typeof box.showModal !== 'function') return;
 
     const key = 'auflinie:blog-notice-dismissed:' + box.getAttribute('data-notice-id');
@@ -36,5 +36,5 @@
   // Alle Listener hängen am Dialog und sterben mit dem DOM beim Swap
   function teardown() {}
 
-  window.spaModule({ mount: mount, teardown: teardown });
+  window.spaModule({ name: 'blog-notice', mount: mount, teardown: teardown });
 })();

@@ -4,9 +4,9 @@
  * Lädt das Bild aus data-background-image vor und setzt es samt
  * Retro-Verlauf, danach steuert es den CRT-Effekt (Einschalt-Sequenz,
  * Canvas-Rauschen, Power-Knopf für den Lesemodus mit Hinweis-Puls).
- * Am Persistent-Shell-Kontrakt (spa:load/spa:unload, PE-Fallback), beim
- * ersten Laden mit Früh-Mount vor dem initialen spa:load (PERF-9). Nur auf
- * Seiten mit Overlay-Hero geladen (_includes/scripts.html).
+ * Am Persistent-Shell-Kontrakt (window.spaModule aus spa-module.js), beim
+ * ersten Laden mit Früh-Mount vor dem initialen spa:load (Option early,
+ * PERF-9). Nur auf Seiten mit Overlay-Hero geladen (_includes/scripts.html).
  */
 
 (function() {
@@ -564,36 +564,16 @@
     if (heroController) { heroController.abort(); heroController = null; heroSignal = null; } // visibilitychange weg
   }
 
-  // Früh-Mount beim ersten Laden (PERF-9): Als Defer-Skript läuft diese
-  // Datei im Zustand 'interactive', das DOM ist vollständig geparst und das
-  // Stylesheet geladen. Das initiale spa:load käme erst mit DOMContentLoaded,
-  // also nach dem Download ALLER Defer-Skripte bis spa-nav.js. So lange
-  // wartete das Hero-Bild (LCP), obwohl es längst geladen war. Der Mount
-  // läuft deshalb sofort, das initiale spa:load und der PE-Fallback
-  // überspringen ihn danach. Swap-ins (initial: false) und bfcache bleiben
-  // beim Kontrakt. Ein Reconcile-Nachladen (Swap zwischen DOMContentLoaded
-  // und load, Zustand ebenfalls 'interactive') erkennt der Früh-Mount an
-  // __spaNavActive: spa-nav.js läuft als letztes Defer-Skript, beim ersten
-  // Laden ist die Marke hier also noch nicht gesetzt.
-  let initialMounted = false;
-
-  // Kontrakt: mount bei jedem spa:load (initial + Swap-in), teardown bei spa:unload.
-  document.addEventListener('spa:load', function(e) {
-    if (initialMounted && e.detail && e.detail.initial) return;
-    mountHero(e.detail && e.detail.root);
-  });
-  document.addEventListener('spa:unload', teardownHero);
-  // bfcache-Restore refeuert kein spa:load -> Effekt selbst wieder anwerfen.
-  window.addEventListener('pageshow', function(e) { if (e.persisted) mountHero(document); });
-
-  // PE-Fallback (Fundament inaktiv): einmaliger Mount ohne Kontrakt.
-  function heroPeFallback() { if (!window.__spaNavActive && !initialMounted) mountHero(document); }
-  if (document.readyState === 'interactive' && !window.__spaNavActive) {
-    initialMounted = true;
-    mountHero(document);
-  } else if (document.readyState === 'complete') {
-    heroPeFallback();
-  } else {
-    document.addEventListener('DOMContentLoaded', heroPeFallback);
-  }
+  // Kontrakt über spaModule: mount bei jedem spa:load (initial + Swap-in),
+  // teardown bei spa:unload, bfcache-Restore (pageshow) wirft den Effekt
+  // wieder an. Früh-Mount beim ersten Laden (early, PERF-9): Als
+  // Defer-Skript läuft diese Datei im Zustand 'interactive', das DOM ist
+  // vollständig geparst und das Stylesheet geladen. Das initiale spa:load
+  // käme erst nach dem Download ALLER Defer-Skripte bis spa-nav.js. So lange
+  // wartete das Hero-Bild (LCP), obwohl es längst geladen war. spaModule
+  // mountet deshalb sofort, das initiale spa:load und der PE-Fallback
+  // überspringen den Mount danach. Swap-ins (initial: false) und bfcache
+  // bleiben beim Kontrakt, ein Reconcile-Nachladen erkennt spaModule an
+  // __spaNavActive.
+  window.spaModule({ name: 'hero-crt', mount: mountHero, teardown: teardownHero, early: true });
 })();

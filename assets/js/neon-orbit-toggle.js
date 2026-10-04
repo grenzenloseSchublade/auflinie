@@ -3,7 +3,7 @@
  * Enter/Leertaste auf .neon-orbit-trigger steuern die Umlaut-Punkte
  * (Orbit, Farbwechsel, Scatter, Zustand je .neon-name). Pausiert die
  * Dauer-Animationen außerhalb des Viewports (Klasse neon-paused). Am
- * Persistent-Shell-Kontrakt (spa:load/spa:unload, PE-Fallback). Nur auf der
+ * Persistent-Shell-Kontrakt (window.spaModule aus spa-module.js). Nur auf der
  * Startseite geladen (_includes/scripts.html), Keyframes in
  * components/_neon-base.scss und components/_neon-orbit.scss.
  */
@@ -404,11 +404,5 @@
     activeScopes.clear();
   }
 
-  document.addEventListener('spa:load', (e) => mountNeon(e.detail && e.detail.root));
-  document.addEventListener('spa:unload', teardownNeon);
-  window.addEventListener('pageshow', (e) => { if (e.persisted) mountNeon(document); });
-
-  function neonPeFallback() { if (!window.__spaNavActive) mountNeon(document); }
-  if (document.readyState === 'complete') neonPeFallback();
-  else document.addEventListener('DOMContentLoaded', neonPeFallback);
+  window.spaModule({ name: 'neon-orbit-toggle', mount: mountNeon, teardown: teardownNeon });
 })();

@@ -3,7 +3,7 @@
  *
  * Externalisiert aus dem früheren Inline-Script in _includes/toc-wrapper.html
  * und an den Persistent-Shell-Kontrakt (spa-nav.js, siehe docs/features/spa-nav.md)
- * gebunden: mount auf spa:load, teardown auf spa:unload. Alle dokument-/
+ * gebunden (window.spaModule): mount auf spa:load, teardown auf spa:unload. Alle dokument-/
  * fensterweiten Listener (window scroll/resize, document keydown/gumshoe*) und
  * die Gumshoe-Instanz hängen an einem AbortController bzw. werden im Teardown
  * gelöst — sonst leakten sie über Content-Swaps.
@@ -12,8 +12,9 @@
  * nur verdrahtet, wenn der Toggle (.toc-toggle) vorhanden ist; die frühere
  * toc_id kommt aus dem gerenderten Toggle-id-Attribut.
  *
- * Braucht gumshoe.min.js und site-utils.js (window.AuflinieUtils), beide
- * vorher geladen (_includes/scripts.html).
+ * Braucht gumshoe.min.js, site-utils.js (window.AuflinieUtils) und
+ * spa-module.js (window.spaModule), alle vorher geladen
+ * (_includes/scripts.html).
  */
 (function () {
   'use strict';
@@ -82,8 +83,8 @@
     const offsetTargets = Array.prototype.slice.call(scope.querySelectorAll('[data-sticky-toc-offset]'));
 
     if (!stickyToc || !originalToc) { return; }
-    if (stickyToc.hasAttribute('data-toc-init')) { return; }   // idempotent
-    stickyToc.setAttribute('data-toc-init', '');
+    if (stickyToc.hasAttribute('data-toc-mounted')) { return; }   // idempotent
+    stickyToc.setAttribute('data-toc-mounted', '');
 
     if (controller) { controller.abort(); }
     controller = new AbortController();
@@ -459,11 +460,10 @@
     }
   }
 
-  document.addEventListener('spa:load', function (e) { mount(e.detail && e.detail.root); });
-  document.addEventListener('spa:unload', teardown);
-  window.addEventListener('pageshow', function (e) { if (e.persisted) { mount(document); } });
-
-  function peFallback() { if (!window.__spaNavActive) { mount(document); } }
-  if (document.readyState === 'complete') { peFallback(); }
-  else { document.addEventListener('DOMContentLoaded', peFallback); }
+  // spa-module.js lädt direkt nach site-utils.js und damit vor toc.js
+  // (_includes/scripts.html). Älteres HTML aus dem HTTP-Cache lud es erst
+  // danach: dann ohne TOC-Verhalten, aber ohne Absturz.
+  if (typeof window.spaModule === 'function') {
+    window.spaModule({ name: 'toc', mount: mount, teardown: teardown });
+  }
 })();

@@ -4,7 +4,8 @@
  * window scroll/resize sind dokumentweit -> MÜSSEN im Teardown gelöst werden
  * (via AbortController), sonst zeigt der Listener nach einem Swap auf ein
  * entferntes .back-to-top und stapelt sich pro Besuch.
- * Braucht site-utils.js (window.AuflinieUtils), dort zuerst geladen.
+ * Braucht site-utils.js (window.AuflinieUtils) und spa-module.js
+ * (window.spaModule), beide vorher geladen (_includes/scripts.html).
  */
 (function () {
   'use strict';
@@ -27,8 +28,8 @@
   function mount(root) {
     const scope = root || document;
     const btn = scope.querySelector('.back-to-top');
-    if (!btn || btn.hasAttribute('data-back-to-top-init')) return;
-    btn.setAttribute('data-back-to-top-init', '');
+    if (!btn || btn.hasAttribute('data-back-to-top-mounted')) return;
+    btn.setAttribute('data-back-to-top-mounted', '');
 
     if (controller) controller.abort();
     controller = new AbortController();
@@ -99,10 +100,5 @@
 
   function teardown() { if (controller) { controller.abort(); controller = null; } }
 
-  document.addEventListener('spa:load', function (e) { mount(e.detail && e.detail.root); });
-  document.addEventListener('spa:unload', teardown);
-
-  function peFallback() { if (!window.__spaNavActive) mount(document); }
-  if (document.readyState === 'complete') peFallback();
-  else document.addEventListener('DOMContentLoaded', peFallback);
+  window.spaModule({ name: 'back-to-top', mount: mount, teardown: teardown });
 })();

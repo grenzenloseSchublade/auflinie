@@ -114,11 +114,15 @@ test.describe('Persistent-Shell-Navigation — Non-Breaking-Invarianten', () => 
   });
 });
 
-// spaModule-Kontrakt (spa-module.js, Register R-17): jedes über
+
+// spaModule-Kontrakt (spa-module.js, STYLEGUIDE SPA-1, SPA-6): jedes über
 // window.spaModule registrierte Modul mountet beim Erstaufbau genau EINMAL.
 // Mit spa-nav.js über das initiale spa:load (root = .initial-content), ohne
-// spa-nav.js über den PE-Fallback (root = document). Ein Init-Skript fängt die
-// Zuweisung von window.spaModule ab und zählt die mount-Aufrufe je Modul.
+// spa-nav.js über den PE-Fallback (root = document). Ausnahme ist der
+// Früh-Mount von hero-crt.js (Option early, PERF-9): Er mountet in beiden
+// Fällen einmal auf document, das initiale spa:load überspringt ihn. Ein
+// Init-Skript fängt die Zuweisung von window.spaModule ab und protokolliert
+// je Modul (Option name) die mount-Aufrufe.
 async function trackSpaModuleMounts(page) {
   await page.addInitScript(() => {
     window.__spaMounts = [];
@@ -128,12 +132,12 @@ async function trackSpaModuleMounts(page) {
       get() { return impl; },
       set(fn) {
         impl = function (opts) {
-          const calls = [];
-          window.__spaMounts.push(calls);
+          const entry = { name: opts.name || '?', calls: [] };
+          window.__spaMounts.push(entry);
           const mount = opts.mount;
           return fn(Object.assign({}, opts, {
             mount(root) {
-              calls.push(root === document ? 'document' : (root && root.className) || String(root));
+              entry.calls.push(root === document ? 'document' : (root && root.className) || String(root));
               return mount(root);
             },
           }));
@@ -144,15 +148,28 @@ async function trackSpaModuleMounts(page) {
 }
 const spaMounts = (page) => page.evaluate(() => window.__spaMounts);
 
+// Seiten-Module je Seite (Stand _includes/scripts.html und after_footer_scripts)
+const HOME_MODULES = ['author-follow', 'back-to-top', 'hero-crt', 'neon-orbit-toggle'];
+const CV_MODULES = ['author-follow', 'back-to-top', 'hero-crt', 'skill-chips', 'skill-graph',
+  'skill-graph-sheet', 'toc'];
+const EARLY_MODULES = ['hero-crt'];
+const ersterMount = (name) => (EARLY_MODULES.includes(name) ? 'document' : 'initial-content');
+
+function mountsByName(mounts) {
+  const names = mounts.map((m) => m.name);
+  expect(new Set(names).size).toBe(names.length);               // kein Modul doppelt registriert
+  return Object.fromEntries(mounts.map((m) => [m.name, m.calls]));
+}
+
 test.describe('spaModule-Kontrakt — genau ein Mount pro Modul', () => {
   test('Erstaufbau mit spa-nav.js: nur das initiale spa:load mountet', async ({ page }) => {
     await trackSpaModuleMounts(page);
     await page.goto(`${BASE}/cv/`);
     await page.waitForFunction(() => window.__spaNavActive === true, null, { timeout: 7000 });
     await page.waitForTimeout(300);
-    const mounts = await spaMounts(page);
-    expect(mounts.length).toBeGreaterThan(0);                   // Skill-Feature-Module sind registriert
-    for (const calls of mounts) expect(calls).toEqual(['initial-content']);
+    const byName = mountsByName(await spaMounts(page));
+    expect(Object.keys(byName).sort()).toEqual(CV_MODULES);
+    for (const name of CV_MODULES) expect(byName[name], name).toEqual([ersterMount(name)]);
   });
 
   test('ohne spa-nav.js: der PE-Fallback mountet einmal auf document', async ({ page }) => {
@@ -161,20 +178,88 @@ test.describe('spaModule-Kontrakt — genau ein Mount pro Modul', () => {
     await page.goto(`${BASE}/cv/`);
     await page.waitForTimeout(300);
     expect(await page.evaluate(() => window.__spaNavActive)).toBeFalsy();
-    const mounts = await spaMounts(page);
-    expect(mounts.length).toBeGreaterThan(0);
-    for (const calls of mounts) expect(calls).toEqual(['document']);
+    const byName = mountsByName(await spaMounts(page));
+    expect(Object.keys(byName).sort()).toEqual(CV_MODULES);
+    for (const name of CV_MODULES) expect(byName[name], name).toEqual(['document']);
   });
 
-  test('Swap auf eine Seite mit neuem Modul-Skript: ein Mount über spa:load', async ({ page }) => {
+  test('Swap: neue Modul-Skripte mounten einmal, vorhandene einmal je spa:load', async ({ page }) => {
     await trackSpaModuleMounts(page);
     await gotoHome(page);
-    expect(await spaMounts(page)).toEqual([]);                  // Startseite: kein spaModule-Nutzer
+    const home = mountsByName(await spaMounts(page));
+    expect(Object.keys(home).sort()).toEqual(HOME_MODULES);
+    for (const name of HOME_MODULES) expect(home[name], name).toEqual([ersterMount(name)]);
+
     await page.click('.greedy-nav .visible-links a[href$="/cv/"]');
     await expect(page).toHaveURL(new RegExp(`${BASE}/cv/?$`));
     expect(await survivedSwap(page)).toBe(true);
-    await expect.poll(async () => (await spaMounts(page)).length).toBeGreaterThan(0);
+    await expect.poll(async () => (await spaMounts(page)).length).toBeGreaterThan(HOME_MODULES.length);
     await page.waitForTimeout(300);
-    for (const calls of await spaMounts(page)) expect(calls).toEqual(['initial-content']);
+    const byName = mountsByName(await spaMounts(page));         // Reconcile lädt nichts doppelt
+    for (const name of CV_MODULES) expect(byName[name], name).toBeDefined();
+    for (const name of Object.keys(byName)) {
+      const vorher = home[name] || [];                           // neu nachgeladen: kein Mount vor dem Swap
+      expect(byName[name], name).toEqual([...vorher, 'initial-content']);
+    }
+  });
+
+  test('bfcache-Rückkehr (pageshow persisted): ein Mount je Modul, idempotent', async ({ page }) => {
+    await trackSpaModuleMounts(page);
+    await page.goto(`${BASE}/cv/`);
+    await page.waitForFunction(() => window.__spaNavActive === true, null, { timeout: 7000 });
+    await page.waitForTimeout(300);
+    const vorher = mountsByName(await spaMounts(page));
+    // Ein echter bfcache-Restore lässt sich headless nicht zuverlässig
+    // erzwingen. Das Ereignis ist dasselbe: pageshow mit persisted = true.
+    await page.evaluate(() => {
+      window.dispatchEvent(new PageTransitionEvent('pageshow', { persisted: true }));
+    });
+    const byName = mountsByName(await spaMounts(page));
+    for (const name of CV_MODULES) expect(byName[name], name).toEqual([...vorher[name], 'document']);
+    // Idempotent: das Folgen-Dropdown hat genau einen Klick-Listener, ein
+    // doppelt gebundener Toggle klappte sofort wieder zu.
+    const offen = await page.evaluate(() => {
+      const btn = document.querySelector('.author__urls-wrapper button');
+      btn.click();
+      return btn.getAttribute('aria-expanded');
+    });
+    expect(offen).toBe('true');
+  });
+});
+
+// Teardown (STYLEGUIDE SPA-3): Nach jedem Swap hängen an window und
+// document wieder gleich viele Listener. Ein Modul, das dokumentweite
+// Listener nicht abräumt, stapelte sie je Besuch. Gezählt über das
+// Chrome-DevTools-Protokoll, Stand jeweils auf /about/ nach einer Runde
+// über /cv/ und die Startseite (alle Module schon einmal geladen).
+test.describe('Teardown — kein Listener-Leck über Swaps', () => {
+  test('Listener an window und document bleiben über drei Runden gleich', async ({ page }) => {
+    await gotoHome(page);
+    const cdp = await page.context().newCDPSession(page);
+    async function listenerCounts() {
+      const counts = {};
+      for (const expr of ['window', 'document']) {
+        const { result } = await cdp.send('Runtime.evaluate', { expression: expr });
+        const { listeners } = await cdp.send('DOMDebugger.getEventListeners', { objectId: result.objectId });
+        counts[expr] = listeners.length;
+      }
+      return counts;
+    }
+    async function runde() {
+      for (const ziel of ['/cv/', '/about/', '/', '/about/']) {
+        const geladen = page.evaluate(() => new Promise((resolve) => {
+          document.addEventListener('spa:load', () => resolve(), { once: true });
+        }));
+        await page.locator(`.greedy-nav a[href="${BASE}${ziel}"]`).first().click();
+        await geladen;
+        await page.waitForTimeout(200);
+      }
+      expect(await survivedSwap(page)).toBe(true);
+    }
+    await runde();
+    const nachRunde1 = await listenerCounts();
+    await runde();
+    await runde();
+    expect(await listenerCounts()).toEqual(nachRunde1);
   });
 });

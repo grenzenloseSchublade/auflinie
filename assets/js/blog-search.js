@@ -3,6 +3,7 @@
  * (spa-nav.js) gebunden.
  * Rein element-scoped (input/clear sterben mit dem alten DOM) -> kein Teardown,
  * nur idempotent gegen Doppel-Init. Läuft initial UND nach jedem Swap.
+ * Registrierung über window.spaModule (spa-module.js, vorher geladen).
  */
 (function () {
   'use strict';
@@ -10,8 +11,8 @@
   function mount(root) {
     const scope = root || document;
     const input = scope.querySelector('#blog-search-input');
-    if (!input || input.hasAttribute('data-blog-search-init')) return;
-    input.setAttribute('data-blog-search-init', '');
+    if (!input || input.hasAttribute('data-blog-search-mounted')) return;
+    input.setAttribute('data-blog-search-mounted', '');
 
     const clearBtn = scope.querySelector('#blog-search-clear');
     const entries = scope.querySelectorAll('#blog-entries .post-item');
@@ -32,12 +33,8 @@
     if (clearBtn) clearBtn.addEventListener('click', function () { input.value = ''; applyFilter(); input.focus(); });
   }
 
-  document.addEventListener('spa:load', function (e) { mount(e.detail && e.detail.root); });
+  // Kein Teardown nötig: alle Listener hängen an Knoten im Inhalt.
+  function teardown() {}
 
-  // PE-Fallback: greift nur, wenn das Fundament NICHT aktiv ist. Prüfung erst
-  // zur DOMContentLoaded-/complete-Zeit -> dann ist __spaNavActive korrekt
-  // gesetzt (spa-nav ist das letzte defer-Skript).
-  function peFallback() { if (!window.__spaNavActive) mount(document); }
-  if (document.readyState === 'complete') peFallback();
-  else document.addEventListener('DOMContentLoaded', peFallback);
+  window.spaModule({ name: 'blog-search', mount: mount, teardown: teardown });
 })();

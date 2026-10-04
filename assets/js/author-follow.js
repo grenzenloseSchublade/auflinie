@@ -12,6 +12,7 @@
  * Re-Mount wäre der Button danach tot; ohne Teardown zeigten die dokumentweiten
  * Listener auf detachierte Nodes. Daher: idempotenter Mount auf spa:load,
  * dokumentweite Listener via AbortController an spa:unload abräumen.
+ * Registrierung über window.spaModule (spa-module.js, vorher geladen).
  */
 (function () {
   'use strict';
@@ -21,11 +22,11 @@
   function mount(root) {
     const scope = root || document;
     const wrapper = scope.querySelector('.author__urls-wrapper');
-    if (!wrapper || wrapper.hasAttribute('data-author-follow-init')) return;
+    if (!wrapper || wrapper.hasAttribute('data-author-follow-mounted')) return;
     const btn = wrapper.querySelector('button');
     const list = wrapper.querySelector('.author__urls');
     if (!btn || !list) return;
-    wrapper.setAttribute('data-author-follow-init', '');
+    wrapper.setAttribute('data-author-follow-mounted', '');
 
     if (!list.id) list.id = 'author-follow-list';
     btn.setAttribute('aria-controls', list.id);
@@ -54,6 +55,7 @@
     });
 
     // Dokumentweit -> überlebt den Swap und muss aktiv abgeräumt werden.
+    if (controller) controller.abort();
     controller = new AbortController();
     const signal = controller.signal;
     document.addEventListener('click', function (e) {
@@ -71,12 +73,5 @@
 
   function teardown() { if (controller) { controller.abort(); controller = null; } }
 
-  document.addEventListener('spa:load', function (e) { mount(e.detail && e.detail.root); });
-  document.addEventListener('spa:unload', teardown);
-
-  // PE-Fallback: greift nur, wenn das Fundament NICHT aktiv ist (JS-an, aber
-  // spa-nav-Capability-Gate nicht bestanden). Prüfung erst zur complete-Zeit.
-  function peFallback() { if (!window.__spaNavActive) mount(document); }
-  if (document.readyState === 'complete') peFallback();
-  else document.addEventListener('DOMContentLoaded', peFallback);
+  window.spaModule({ name: 'author-follow', mount: mount, teardown: teardown });
 })();

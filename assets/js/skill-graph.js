@@ -1083,5 +1083,5 @@
     instances = [];
   }
 
-  window.spaModule({ mount: mountGraph, teardown: teardownGraph });
+  window.spaModule({ name: 'skill-graph', mount: mountGraph, teardown: teardownGraph });
 })();

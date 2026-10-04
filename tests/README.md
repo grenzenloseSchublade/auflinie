@@ -3,7 +3,9 @@
 Drei Gruppen, alle mit Playwright:
 
 - **`spa-nav.spec.js`** – Regressionstests der Persistent-Shell-Navigation
-  (`assets/js/spa-nav.js`, siehe [`docs/features/spa-nav.md`](../docs/features/spa-nav.md)).
+  (`assets/js/spa-nav.js`, siehe [`docs/features/spa-nav.md`](../docs/features/spa-nav.md)),
+  dazu der `spaModule`-Kontrakt: je Seiten-Modul genau ein Mount bei Erstaufbau,
+  PE-Fallback, Swap und bfcache-Rückkehr, kein Listener-Leck über Swap-Runden.
 - **`vendor.spec.js`** – Prüfung nach jedem Versionswechsel in `assets/vendor/`:
   MathJax setzt auf `/mandelbrot/` alle Formeln (direkt und nach SPA-Navigation,
   ohne Seitenfehler und CSP-Verstoß), die noUiSlider-Griffe sind benannt und per

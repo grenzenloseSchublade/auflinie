@@ -199,5 +199,5 @@
     instances = [];
   }
 
-  window.spaModule({ mount: mount, teardown: teardown });
+  window.spaModule({ name: 'skill-graph-sheet', mount: mount, teardown: teardown });
 })();

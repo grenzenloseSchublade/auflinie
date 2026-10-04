@@ -76,6 +76,13 @@ document → 'spa:load'    detail: { root, url, initial }  // NACH Content + Scr
 
 ### Regeln für jedes Seiten-Modul
 
+Jedes Seiten-Modul registriert sich über `window.spaModule({ name, mount,
+teardown })` aus [`spa-module.js`](../../assets/js/spa-module.js) (STYLEGUIDE
+SPA-1). Der Helfer verdrahtet `spa:load`, `spa:unload`, `pageshow(persisted)`
+und den PE-Fallback, die Regeln 1, 5 und 6 erfüllt er also selbst. Er lädt
+sitewide direkt nach `site-utils.js` und vor allen Modulen. `name` dient nur
+der Diagnose und den Tests.
+
 1. **Auf `spa:load` mounten.** `detail.root` nach dem eigenen Wurzel-Selektor
    absuchen; **fehlt er → sofort raus** (idempotenter No-Op auf fremden Seiten).
 2. **Idempotent.** Doppel-`mount` (initial + PE-Fallback, oder `pageshow`) darf
@@ -97,53 +104,62 @@ document → 'spa:load'    detail: { root, url, initial }  // NACH Content + Scr
 **Ausnahme Früh-Mount (nur LCP-kritisch, STYLEGUIDE PERF-9):** Das initiale
 `spa:load` kommt erst, wenn alle Defer-Skripte bis `spa-nav.js` geladen sind.
 `hero-crt.js` setzt das Hero-Bild (LCP) deshalb schon bei der eigenen
-Ausführung: Zustand `interactive` und `__spaNavActive` noch nicht gesetzt heißt
-„erstes Laden, Defer-Phase“. Danach überspringen das initiale `spa:load`
-(`detail.initial === true`) und der PE-Fallback den Mount. Swap-ins, Teardown
-und `pageshow` bleiben beim Kontrakt. Ein per Reconcile nachgeladenes Skript
-sieht `__spaNavActive` und mountet wie jedes Modul erst auf `spa:load`.
+Ausführung, über die Option `early: true` von `spaModule`: Zustand
+`interactive` und `__spaNavActive` noch nicht gesetzt heißt „erstes Laden,
+Defer-Phase“, der Helfer mountet sofort auf `document`. Danach überspringen
+das initiale `spa:load` (`detail.initial === true`) und der PE-Fallback den
+Mount. Swap-ins, Teardown und `pageshow` bleiben beim Kontrakt. Ein per
+Reconcile nachgeladenes Skript sieht `__spaNavActive` und mountet wie jedes
+Modul erst auf `spa:load`.
+
+**Ausnahme `mathjax-typeset.js`:** Head-Skript, läuft vor `spa-module.js` und
+reagiert nur auf Swaps (Typeset auf `spa:load` mit `initial: false`,
+`typesetClear` auf `spa:unload`). Beim Erstaufbau setzt MathJax selbst, PE-
+Fallback und `pageshow` hätten nichts zu tun. Die Datei hängt deshalb direkt
+an den beiden Events.
 
 ### Standard-Skelett
 
 ```js
 (function () {
   'use strict';
-  var controller = null;                     // nur wenn dokumentweite Listener nötig
+  let controller = null;                     // nur wenn dokumentweite Listener nötig
 
   function mount(root) {
-    var scope = root || document;
-    var el = scope.querySelector('DEIN-WURZEL-SELEKTOR');
-    if (!el || el.hasAttribute('data-DEIN-init')) return;   // fremde Seite / idempotent
-    el.setAttribute('data-DEIN-init', '');
+    const scope = root || document;
+    const el = scope.querySelector('DEIN-WURZEL-SELEKTOR');
+    if (!el || el.hasAttribute('data-DEIN-mounted')) return;   // fremde Seite / idempotent
+    el.setAttribute('data-DEIN-mounted', '');
 
     if (controller) controller.abort();
     controller = new AbortController();
-    var signal = controller.signal;
+    const signal = controller.signal;
 
     // element-scoped: kein signal nötig
     el.addEventListener('click', onClick);
     // dokumentweit: IMMER an das signal
     window.addEventListener('resize', onResize, { signal: signal });
     document.addEventListener('keydown', onKey, { signal: signal });
+    // Timer: Callback prüft signal.aborted (SPA-3)
+    setTimeout(function () { if (signal.aborted) return; /* … */ }, 100);
   }
 
   function teardown() { if (controller) { controller.abort(); controller = null; } }
 
-  document.addEventListener('spa:load', function (e) { mount(e.detail && e.detail.root); });
-  document.addEventListener('spa:unload', teardown);
-  window.addEventListener('pageshow', function (e) { if (e.persisted) mount(document); });
-
-  function peFallback() { if (!window.__spaNavActive) mount(document); }
-  if (document.readyState === 'complete') peFallback();
-  else document.addEventListener('DOMContentLoaded', peFallback);
+  window.spaModule({ name: 'DEIN-MODUL', mount: mount, teardown: teardown });
 })();
 ```
 
 Vorbilder im Repo: [`back-to-top.js`](../../assets/js/back-to-top.js) (window-Listener
 via AbortController), [`blog-search.js`](../../assets/js/blog-search.js) (rein
-element-scoped, kein Teardown), [`hero-crt.js`](../../assets/js/hero-crt.js) /
-[`neon-orbit-toggle.js`](../../assets/js/neon-orbit-toggle.js) (Observer/rAF/Timer +
-`pageshow`-Remount).
+element-scoped, leerer Teardown), [`hero-crt.js`](../../assets/js/hero-crt.js) /
+[`neon-orbit-toggle.js`](../../assets/js/neon-orbit-toggle.js) (Observer/rAF/Timer,
+ohne Marker: jeder Mount bricht den alten Controller ab und wirft den Effekt
+nach `pageshow` neu an).
+
+`tests/spa-nav.spec.js` prüft je Modul (über `name`) genau einen Mount bei
+Erstaufbau, PE-Fallback, Swap und `pageshow(persisted)` sowie gleich viele
+`window`-/`document`-Listener über mehrere Swap-Runden.
 
 ---
 
@@ -156,10 +172,11 @@ Script-Reconcile). Jede seiten-spezifische Initialisierung muss also entweder in
 einer **externen, an `spa:load` gebundenen** Datei liegen oder als solche
 umgebaut werden, bevor die Seite verdrahtet wird.
 
-> Konkret offen: die TOC-Initialisierung in
-> [`_includes/toc-wrapper.html`](../../_includes/toc-wrapper.html) ist ein großes
-> Inline-Script — es muss vor dem Verdrahten von `/cv/` in ein `spa:load`-Modul
-> überführt werden (sonst TOC nach Swap tot). Siehe Task „CV verdrahten".
+> Beispiel: Die TOC-Initialisierung stand früher als großes Inline-Script in
+> [`_includes/toc-wrapper.html`](../../_includes/toc-wrapper.html). Vor dem
+> Verdrahten von `/cv/` wanderte sie nach
+> [`assets/js/toc.js`](../../assets/js/toc.js), sonst wäre die TOC nach einem
+> Swap tot gewesen. STYLEGUIDE SPA-4 sperrt solche Skripte per CI.
 
 ---
 
@@ -212,8 +229,10 @@ umgebaut werden, bevor die Seite verdrahtet wird.
 1. **Skripte inventarisieren** (`_includes/scripts.html` + Inline-Init im Layout/
    Content der Seite). Alles Seiten-spezifische identifizieren.
 2. **Inline-Init → externes `spa:load`-Modul** umbauen (siehe Falle oben).
-3. **Jedes Modul** auf den Kontrakt bringen: idempotenter `mount`, `teardown`
-   für dokumentweite Ressourcen, `pageshow`-Remount, PE-Fallback.
+3. **Jedes Modul** über `window.spaModule` registrieren: idempotenter
+   `mount`, `teardown` für dokumentweite Ressourcen (`pageshow`-Remount und
+   PE-Fallback erledigt der Helfer). Modulname in die Listen von
+   `tests/spa-nav.spec.js` aufnehmen.
 4. **Cross-Origin-Abhängigkeiten**: erst self-hosten (Muster `assets/vendor/`,
    siehe MathJax) und die per-Seite-Initialisierung an `spa:load` binden —
    sonst Seite vorerst nicht verdrahten (`needsFullLoad` erzwingt dann von
@@ -230,7 +249,8 @@ umgebaut werden, bevor die Seite verdrahtet wird.
 Phase 2 ist umgesetzt: CV (Skill-Graph/Chips/Sheet), Mandelbrot
 (Fraktal-Panels über `spaModule`, MathJax-Typeset-Hook) und alle
 `/posts/`-Seiten swappen. Der Persistent-Shell-Kontrakt liegt sitewide in
-`assets/js/spa-module.js`.
+`assets/js/spa-module.js`, alle Seiten-Module außer `mathjax-typeset.js`
+registrieren sich darüber (seit 4. 10. 2026).
 
 - Same-Doc-CRT-Typen (`crt`/`drawer`) laufen auch auf dem SPA-Pfad
   (tv-switch-Typen in `swap()`); Firefox bekommt den stillen Instant-Swap.

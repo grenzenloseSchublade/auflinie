@@ -35,8 +35,8 @@
     const dataTag = scope.querySelector('script[data-skill-graph-data]');
     const contextLine = scope.querySelector('[data-role="skill-context"]');
     if (!container || !dataTag || !contextLine) { return; }
-    if (container.hasAttribute('data-skill-chips-init')) { return; }   // idempotent
-    container.setAttribute('data-skill-chips-init', '');
+    if (container.hasAttribute('data-skill-chips-mounted')) { return; }   // idempotent
+    container.setAttribute('data-skill-chips-mounted', '');
 
     const data = window.SkillGraphData.parse(dataTag, 'skill-chips');
     if (!data) { return; }
@@ -147,5 +147,5 @@
 
   function teardown() { if (controller) { controller.abort(); controller = null; } }
 
-  window.spaModule({ mount: mount, teardown: teardown });
+  window.spaModule({ name: 'skill-chips', mount: mount, teardown: teardown });
 })();

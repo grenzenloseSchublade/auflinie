@@ -11,6 +11,11 @@
  * Ressource asynchron nachgeladen werden (Font-Range, Extension), wirft
  * typeset einen Retry-Fehler mit err.retry-Promise — das offizielle
  * Muster: warten, erneut versuchen (begrenzte Versuche).
+ *
+ * Bewusst ohne window.spaModule (Ausnahme zu STYLEGUIDE SPA-1): Als
+ * Head-Skript läuft die Datei vor spa-module.js, und sie reagiert nur auf
+ * Swaps. Beim Erstaufbau setzt MathJax selbst, ein PE-Fallback oder ein
+ * Mount nach bfcache-Rückkehr hätte nichts zu tun.
  */
 (function () {
   'use strict';

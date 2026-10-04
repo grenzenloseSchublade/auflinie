@@ -1086,7 +1086,7 @@
   }
 
   if (typeof window.spaModule === 'function') {
-    window.spaModule({ mount: mount, teardown: teardown });
+    window.spaModule({ name: 'fractal-panel', mount: mount, teardown: teardown });
   } else {
     // Fallback ohne spa-module.js (sollte sitewide geladen sein): altes Verhalten
     if (document.readyState === 'loading') {
