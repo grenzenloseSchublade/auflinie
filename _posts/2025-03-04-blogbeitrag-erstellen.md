@@ -15,7 +15,7 @@ tags:
 header:
   overlay_image: /assets/images/background.jpg
   overlay_filter: 0.5
-  caption: "Technische Grundlagen und Methodik für Content Management"
+  caption: "Technische Grundlagen und Methodik für Content-Management"
   teaser: /assets/images/background.jpg
 toc: true
 toc_label: "Inhalt"
@@ -31,7 +31,7 @@ Wer sich mit dem Thema schon auskennt, kann direkt das [Template <i class="fas f
 
 ## Technischer Aufbau
 
-Die Website basiert auf **Jekyll**, einem etablierten Static Site Generator, in Kombination mit dem **Minimal Mistakes Theme**. Jekyll macht aus Markdown-Dateien und strukturierten Daten statische HTML-Seiten. Das hat mehrere Vorteile:
+Die Website basiert auf **Jekyll**, einem etablierten Static Site Generator, in Kombination mit dem **Minimal-Mistakes-Theme**. Jekyll macht aus Markdown-Dateien und strukturierten Daten statische HTML-Seiten. Das hat mehrere Vorteile:
 
 - **Performance**: Statische Dateien laden schnell, weil der Server nichts berechnen muss
 - **Sicherheit**: Ohne Datenbank und dynamische Serverkomponenten gibt es weniger Angriffsfläche

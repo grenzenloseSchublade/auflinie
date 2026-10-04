@@ -21,7 +21,7 @@ sections:
       Die Julia-Menge und die Mandelbrot-Menge sind zentrale Objekte in dieser Theorie.
       Ihre Erforschung wurde maßgeblich von Gaston Maurice Julia und Pierre Fatou vorangetrieben.
       Benoît Mandelbrot prägte ab 1979 mit grundlegenden Untersuchungen diesen Forschungszweig und
-      verhalf der Mandelbrot-Menge – die 1980 erstmals am IBM Forschungszentrum visuell dargestellt und später nach ihm benannt wurde – zu weltweiter Bekanntheit.
+      verhalf der Mandelbrot-Menge – die 1980 erstmals am IBM-Forschungszentrum visuell dargestellt und später nach ihm benannt wurde – zu weltweiter Bekanntheit.
 
     subsections:
       - title: "Grundprinzip und Visualisierung"
@@ -148,7 +148,7 @@ sections:
           Nahegelegene Punkte können divergente Laufbahnen zeigen.
           Das Studium solcher Phänomene liefert wichtige Erkenntnisse für die Stabilität von Algorithmen,
           die Simulation dynamischer Systeme und die Modellierung natürlicher Prozesse.
-          Sensitivität gegenüber Anfangsdaten ist auch in anderen Kontexten wie z.B. in der Wettervorhersage und der Kryptographie von Bedeutung.
+          Sensitivität gegenüber Anfangsdaten ist auch in anderen Kontexten wie z. B. in der Wettervorhersage und der Kryptographie von Bedeutung.
 
   - section: "Fazit"
     icon: "check-circle"

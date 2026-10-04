@@ -334,7 +334,7 @@
       } else {
         if (this.loadingIndicator) {
           this.loadingIndicator.style.display = 'block';
-          this.loadingIndicator.textContent = 'Render-Fallback aktiv';
+          this.loadingIndicator.textContent = 'Die Darstellung ist in diesem Browser nicht möglich.';
         }
         this.ctx.setTransform(1, 0, 0, 1, 0, 0);
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -342,8 +342,7 @@
         this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
         this.ctx.fillStyle = '#dddddd';
         this.ctx.font = '16px sans-serif';
-        this.ctx.fillText('Web Worker nicht verfügbar.', 20, 32);
-        this.ctx.fillText('Bitte einen modernen Browser nutzen.', 20, 54);
+        this.ctx.fillText('Die Darstellung ist in diesem Browser nicht möglich.', 20, 32);
         console.warn('fractal-renderer: Web Worker nicht verfügbar, Rendering deaktiviert');
       }
     }

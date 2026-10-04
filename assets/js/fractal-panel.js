@@ -64,9 +64,12 @@
     }
   };
 
+  // Anzeige mit echtem Minuszeichen U+2212 (STYLEGUIDE TYPO-2), Dezimalpunkt
+  // wie in MathJax. Nur für Text, Rechenwerte (data-real, Eingabefelder)
+  // bleiben ASCII.
   function formatComplex(cx, cy) {
     const sign = cy >= 0 ? '+' : '−';
-    return cx.toFixed(3) + ' ' + sign + ' ' + Math.abs(cy).toFixed(3) + 'i';
+    return cx.toFixed(3).replace('-', '−') + ' ' + sign + ' ' + Math.abs(cy).toFixed(3) + 'i';
   }
 
   function setButtonLabel(button, label) {

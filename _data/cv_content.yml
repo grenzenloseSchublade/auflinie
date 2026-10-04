@@ -4,7 +4,7 @@
   intro: true
 
   content: |-
-        Ingenieur mit Schwerpunkt **Machine Learning**, ausgebildet in **Elektro- und Informationstechnik** an der Ruhr-Universität Bochum (M.Sc., *Eingebettete Systeme*).
+        Ingenieur mit Schwerpunkt **Machine Learning**, ausgebildet in **Elektro- und Informationstechnik** an der Ruhr-Universität Bochum (M. Sc., *Eingebettete Systeme*).
         Seit vielen Jahren baue ich KI-Software, von der ersten Idee bis in den laufenden Betrieb. Am Anfang steht dabei immer die gleiche Frage: Welches Problem haben die Menschen eigentlich, für die das Ganze gedacht ist?\\
         \\
         Gearbeitet habe ich in Forschung und Industrie, in Teams jeder Größe. So ist nach und nach das **Full-Stack**-Handwerk dazugekommen, von Frontend über DevOps bis MLOps. Am wohlsten fühle ich mich aber im **Backend**.
@@ -69,13 +69,13 @@
         - text: "Entwicklung eines KI-gestützten Systems zur automatisierten Erkennung und Verarbeitung verschiedener Belegtypen"
           subitems:
             - "Entwicklung und Optimierung der Lösung in Python mit spezialisierten **Computer-Vision**- und Deep-Learning-Algorithmen"
-            - "Robuste Verarbeitung schwieriger Vorlagen: Belege und Trainingsdaten mit Auflösungen unter 100 dpi, eingerissen oder verschmutzt"
+            - "Robuste Verarbeitung schwieriger Vorlagen: Belege und Trainingsdaten mit Auflösungen unter 100 dpi, eingerissen oder verschmutzt"
             - "Entwicklung von Algorithmen zur präzisen Textlokalisation und -segmentierung im Dokumentlayout mit OpenCV"
             - "Entwicklung eigener Ansätze auf Basis von Deep Learning, die die Texterkennung (OCR) auf diesen Vorlagen deutlich verbesserten"
             - "Qualitätsverbesserung der Vorlagen mit Computer-Vision-Techniken als Grundlage der Texterkennung"
-            - "KI-basierte Klassifizierung von unterschiedlichen Belegtypen mit einer Genauigkeit von 98 %"
+            - "KI-basierte Klassifizierung von unterschiedlichen Belegtypen mit einer Genauigkeit von 98 %"
             - "Rotationserkennung und -korrektur mittels Deep Learning"
-            - "Integration und Erprobung der Lösung mit einer Erkennungsgenauigkeit von 92 % im produktiven Betrieb"
+            - "Integration und Erprobung der Lösung mit einer Erkennungsgenauigkeit von 92 % im produktiven Betrieb"
 
       # [BACKEND / ZUSATZ] -> Normkonforme Nachbildung des IT-Systems des deutschen Gesundheitswesens
         - text: "Entwicklung eines normkonformen Systems zur Abbildung und Integration der Telematik-Infrastruktur"
@@ -131,7 +131,7 @@
         - text: "Etablierung moderner Entwicklungspraktiken und Automatisierungen"
           subitems:
             - "Erstellung und Verteilung von Entwicklungsumgebungen mittels DevContainer und GitHub Codespaces"
-            - "Umsetzung von Test-Driven Development und Erstellung von CI / CD Pipelines"
+            - "Umsetzung von Test-Driven Development und Erstellung von CI/CD-Pipelines"
             - "Implementierung von Buildpipelines mit GitHub Actions für die automatische Bereitstellung von Docker-Images"
             - "Einführung von **DVC** für die übergreifende Versionierung und Verwaltung von Daten und das Tracking von Experimenten"
 
@@ -144,7 +144,7 @@
             - "Fachliche Anleitung eines Werkstudenten"
 
     - position: "Innovationsingenieur"
-      company: "opta data Institut e.V."
+      company: "opta data Institut e. V."
       location: "Essen, Deutschland"
       period: "2018 – 2020"
       description: "Computer-Vision-Algorithmen und Prototypen für die Prozessautomatisierung – von der mobilen Belegerfassung bis zu Machbarkeitsstudien."
@@ -171,7 +171,7 @@
 - section: "Akademische Ausbildung"
   icon: "graduation-cap"
   education:
-    - degree: "M. Sc. Elektro- und Informationstechnik"
+    - degree: "M. Sc. Elektro- und Informationstechnik"
       institution: "Ruhr-Universität Bochum"
       location: "Bochum, Deutschland"
       period: "2015 – 2018"
@@ -182,7 +182,7 @@
         - 'Masterarbeit: „Erkennung handgeschriebener Worte mittels CNN / BiRNN für eingebettete Systeme“ – Note: **Ausgezeichnet**'
         - "Vertiefung an der Schnittstelle von Machine Learning und eingebetteten Systemen"
 
-    - degree: "B. Sc. Elektro- und Informationstechnik"
+    - degree: "B. Sc. Elektro- und Informationstechnik"
       institution: "Ruhr-Universität Bochum"
       location: "Bochum, Deutschland"
       period: "2012 – 2015"

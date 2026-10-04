@@ -83,7 +83,7 @@ Wichtig war auch die Langzeitstabilität. Jekyll wird seit 2008 entwickelt, gilt
 
 Wartbar und erweiterbar bleibt das Ganze durch die modulare Architektur: Plugins und eigener Code lassen sich leicht ergänzen. Alle Inhalte und Einstellungen sind mit Git versioniert, und in Markdown lässt sich gut gemeinsam arbeiten.
 
-### 2.3 Minimal Mistakes Theme: Feature-Analyse und Auswahl
+### 2.3 Minimal-Mistakes-Theme: Feature-Analyse und Auswahl
 
 Ebenso wichtig wie Jekyll war die Wahl des Themes. Nach dem Vergleich mehrerer Jekyll-Themes passte Minimal Mistakes am besten zu den Anforderungen.
 
@@ -264,7 +264,7 @@ Die Navigation hat vier Einträge: Mandelbrot, Blog, Über mich und Lebenslauf. 
 
 **Konfigurationsparameter:**
 
-**GitHub Pages Integration:**
+**GitHub-Pages-Integration:**
 ```yaml
 # Repository und URL-Konfiguration
 repository: "grenzenloseSchublade/auflinie"
@@ -564,7 +564,7 @@ function getColor(iterations, maxIterations) {
 
 **Editor-Experience-Optimierung:**
 
-**VS Code Konfiguration:**
+**VS-Code-Konfiguration:**
 ```json
 // .vscode/settings.json – Vorschlag, liegt nicht im Repository
 {
@@ -752,7 +752,7 @@ Jekyll und Minimal Mistakes haben sich als solide Basis erwiesen. Statisch erzeu
 
 Die ursprüngliche Technologiewahl hat sich in den wichtigen Punkten bewährt:
 
-**GitHub Pages Integration:**
+**GitHub-Pages-Integration:**
 - **Kostenloses Hosting**: Keine laufenden Kosten
 - **Automatische Deployments**: Jeder Push auf den Hauptzweig geht nach bestandenen Prüfungen online
 - **SSL-Zertifikate**: Automatische Sicherheit ohne zusätzlichen Aufwand
@@ -766,7 +766,7 @@ Die ursprüngliche Technologiewahl hat sich in den wichtigen Punkten bewährt:
 - **Dokumentationsqualität**: Ausführliche Dokumentation
 - **Plugin-Ökosystem**: Reichhaltige Sammlung von Erweiterungen
 
-**Minimal Mistakes Theme:**
+**Minimal-Mistakes-Theme:**
 - **Solide Grundlage**: Gutes Grunddesign, auf dem die eigene Gestaltung aufbaut
 - **Responsive Design**: Gute Darstellung vom Smartphone bis zum Desktop
 - **SEO-Optimierung**: Automatische Meta-Tags und strukturierte Daten
