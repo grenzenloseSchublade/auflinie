@@ -412,19 +412,31 @@
       const legacyKey = tocToggle.id ? tocToggle.id.replace(/-toggle$/, '') + '-state' : 'toc-state';
       const storageKey = 'auflinie:' + legacyKey;
       const prefersReducedMotion = utils().prefersReducedMotion();
-      let resizeRaf = null;
 
-      const updateMaxHeight = function () {
-        if (mountSignal.aborted) { return; }
-        if (tocToggle.getAttribute('aria-expanded') === 'true') {
-          tocContent.style.maxHeight = tocContent.scrollHeight + 'px';
-        }
-      };
-
-      const setExpanded = function (isExpanded, persist) {
+      // Aufgeklappt steht max-height auf none: Die Liste darf wachsen, wenn
+      // Lesende Textabstände vergrößern (WCAG 1.4.12), ein fester Pixelwert
+      // schnitte sie ab. Für die Animation wird die Höhe nur kurz gemessen:
+      // beim Aufklappen bis transitionend, beim Zuklappen als Startwert.
+      // instant: ohne Übergang (Startzustand, Reduced Motion).
+      const setExpanded = function (isExpanded, persist, instant) {
+        const animate = !instant && !prefersReducedMotion;
         tocToggle.setAttribute('aria-expanded', isExpanded ? 'true' : 'false');
-        tocContent.classList.toggle('is-collapsed', !isExpanded);
-        if (isExpanded) { updateMaxHeight(); } else { tocContent.style.maxHeight = '0px'; }
+        if (!animate) { tocContent.style.transition = 'none'; }
+        if (isExpanded) {
+          tocContent.classList.remove('is-collapsed');
+          tocContent.style.maxHeight = animate ? tocContent.scrollHeight + 'px' : 'none';
+        } else {
+          if (animate) {
+            tocContent.style.maxHeight = tocContent.scrollHeight + 'px';
+            void tocContent.offsetHeight;   // Startwert festschreiben, sonst springt none → 0
+          }
+          tocContent.classList.add('is-collapsed');
+          tocContent.style.maxHeight = '0px';
+        }
+        if (!animate && !prefersReducedMotion) {
+          void tocContent.offsetHeight;      // Zustand ohne Übergang übernehmen
+          tocContent.style.transition = '';
+        }
         if (persist !== false) {
           try { localStorage.setItem(storageKey, isExpanded ? 'expanded' : 'collapsed'); }
           catch (error) { /* localStorage nicht verfügbar */ }
@@ -447,21 +459,26 @@
         }
       } catch (error) { storedState = null; }
 
+      // Voll breiter TOC (mehr als 520 px) startet eingeklappt. Spiegel zur
+      // Container-Query in _toc.scss: Sie klappt ihn schon vor dem ersten
+      // Bild ein, hier wird der Zustand ohne Übergang übernommen. Sonst
+      // klappte er erst jetzt sichtbar zu und der Inhalt spränge hoch (CLS).
       const isFullWidthToc = originalToc.getBoundingClientRect().width > 520;
       const defaultExpanded = !isFullWidthToc;
       const startExpanded = storedState ? storedState !== 'collapsed' : defaultExpanded;
-      setExpanded(startExpanded, false);
-
-      if (prefersReducedMotion) { tocContent.style.transition = 'none'; }
+      setExpanded(startExpanded, false, true);
+      originalToc.classList.add('toc--ready');
 
       tocToggle.addEventListener('click', function () {
         const isExpanded = tocToggle.getAttribute('aria-expanded') === 'true';
         setExpanded(!isExpanded);
       }, signal);
 
-      window.addEventListener('resize', function () {
-        if (resizeRaf) { window.cancelAnimationFrame(resizeRaf); }
-        resizeRaf = window.requestAnimationFrame(updateMaxHeight);
+      tocContent.addEventListener('transitionend', function (e) {
+        if (e.target === tocContent && e.propertyName === 'max-height'
+          && tocToggle.getAttribute('aria-expanded') === 'true') {
+          tocContent.style.maxHeight = 'none';
+        }
       }, signal);
     }
   }

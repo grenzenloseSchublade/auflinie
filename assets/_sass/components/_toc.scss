@@ -507,6 +507,29 @@
   @include focus-ring(-2px);
 }
 
+// Startzustand vor toc.js: Ein voll breiter TOC startet eingeklappt (Spiegel
+// zu isFullWidthToc in toc.js, Breite über 520 px). Ohne diese Regel klappte
+// toc.js ihn erst nach dem ersten Bild zu, der Inhalt sprang dabei bis zu
+// 384 px hoch (CLS). Ab .toc--ready gilt der Zustand aus toc.js. Ohne
+// JavaScript (kein .js) bleibt der TOC offen.
+.sidebar__right > .toc {
+  container-type: inline-size;
+}
+
+@container (width > 520px) {
+  .js .toc:not(.toc--ready) {
+    .toc__menu-wrapper {
+      max-height: 0;
+      opacity: 0;
+      visibility: hidden;
+    }
+
+    .toc-toggle-icon {
+      transform: rotate(180deg);
+    }
+  }
+}
+
 // =============================================================================
 // DESKTOP STYLES (up(lg), ab 1024px)
 // Kompaktere Darstellung für Sidebar-Sticky-Modus
