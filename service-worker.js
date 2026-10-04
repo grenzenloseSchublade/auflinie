@@ -38,8 +38,11 @@ const CACHE_URLS = [
 {% endunless %}{% endfor %}{% for post in site.posts %}  '.{{ post.url }}',
 {% endfor %}  './404.html',
   './offline.html',
-  // Styles/Skripte
+  // Styles/Skripte. Jede Datei, die eine gebaute Seite unter /assets/ lädt,
+  // steht hier (Ausnahmen: assets/downloads/, styleguide.css). Prüft
+  // tests/visual/precache.spec.js
   './assets/css/main.css',
+  './assets/js/head-early.js',
   './assets/js/site-utils.js',
   './assets/js/offline.js',
   './assets/js/greedy-navigation.js',
@@ -53,6 +56,7 @@ const CACHE_URLS = [
   './assets/js/spa-module.js',
   './assets/js/toc.js',
   './assets/js/blog-search.js',
+  './assets/js/blog-notice.js',
   './assets/js/skill-chips.js',
   './assets/js/skill-graph-data.js',
   './assets/js/skill-graph-sim.js',
@@ -80,6 +84,11 @@ const CACHE_URLS = [
   './assets/vendor/tom-select.css',
   './assets/vendor/gumshoe.min.js',
   // Sonstiges
+  './assets/images/Logo.svg',
+  './assets/images/favicon.ico',
+  './assets/images/favicon-16x16.png',
+  './assets/images/favicon-32x32.png',
+  './assets/images/apple-touch-icon.png',
   './assets/images/background.jpg',
   './assets/images/mandelbrot-preview.jpg',
   './assets/webfonts/fa-solid-900-subset.woff2',
@@ -99,9 +108,13 @@ self.addEventListener('install', event => {
       .then(cache => {
         return Promise.allSettled(
           CACHE_URLS.map(url =>
-            // cache: 'reload' — direkt vom Server, nie aus dem HTTP-Cache:
-            // der neue versionierte Cache darf keine alten Kopien enthalten
-            cache.add(new Request(url, { cache: 'reload' })).catch(() => {
+            // cache: 'no-cache' — der Browser fragt beim Server nach
+            // (ETag/Last-Modified), eine unveränderte Datei kommt als 304
+            // ohne Body aus dem HTTP-Cache. Der neue versionierte Cache
+            // enthält so nie eine veraltete Kopie, lädt aber Dateien, die
+            // die Seite gerade erst geholt hat, nicht doppelt ('reload'
+            // holte alles neu, beim Erstbesuch etwa 230 KB zusätzlich)
+            cache.add(new Request(url, { cache: 'no-cache' })).catch(() => {
               // Einzelne Fehler still ignorieren - Netz-Fallback greift zur Laufzeit
             })
           )
@@ -156,8 +169,8 @@ self.addEventListener('fetch', event => {
     return;
   }
 
-  // Spezielle Behandlung für Bilder: Cache-First
-  if (url.match(/\.(jpg|jpeg|png|gif|webp|ico|woff2?)$/)) {
+  // Spezielle Behandlung für Bilder und Schriften: Cache-First
+  if (url.match(/\.(jpg|jpeg|png|gif|webp|svg|ico|woff2?)$/)) {
     event.respondWith(cacheFirst(event.request));
   }
   // CSS und JS: Cache-First — alles ist precached und friert pro Build ein

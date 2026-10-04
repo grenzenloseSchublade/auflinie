@@ -36,6 +36,9 @@ Drei Gruppen, alle mit Playwright:
     und gibt den Fokus ins Suchfeld.
   - `gast-autor.spec.js`: Gastbeitrag (Fixture mit `published: false`, nur im Review-Build)
     mit „von <Name>“, ohne Sidebar-Profil, Gast als Autor in den Metadaten (INH-5).
+  - `precache.spec.js`: Jede Datei unter `/assets/`, die eine Seite aus der
+    Precache-Liste lädt, steht selbst in `CACHE_URLS` von `service-worker.js`
+    (ohne Downloads und Styleguide-Ansicht).
 
 Alles läuft in der CI im Build-Job (Schritt „Style-Guide-Review“) und blockiert bei Fehlern den Deploy.
 

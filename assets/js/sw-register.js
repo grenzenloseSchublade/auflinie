@@ -225,7 +225,9 @@
   /**
    * Offline-Hinweis (Markup in _layouts/default.html, außerhalb von
    * .initial-content und damit swap-fest). Früher Inline-Skript im Layout,
-   * ausgelagert für die CSP ohne 'unsafe-inline'.
+   * ausgelagert für die CSP ohne 'unsafe-inline'. Einmal beim Laden
+   * abgleichen: Liefert der Service Worker die Seite offline aus dem Cache,
+   * erscheint der Hinweis sofort, nicht erst beim nächsten Wechsel.
    */
   function wireOfflineNotice() {
     function sync() {
@@ -234,6 +236,7 @@
     }
     window.addEventListener('online', sync);
     window.addEventListener('offline', sync);
+    sync();
   }
 
   // Service Worker registrieren
