@@ -1,4 +1,5 @@
 @use "abstracts/tokens" as *;
+@use "abstracts/mixins" as *;
 
 // Syntax-Highlighting-Feinschliff (Palette kommt aus variables/_colors.scss)
 div.highlighter-rouge,
@@ -12,4 +13,12 @@ figure.highlight {
 .highlight .err {
   color: inherit;
   background: transparent;
+}
+
+// Scrollende Codeblöcke sind per Tastatur fokussierbar (tabindex aus
+// _plugins/inhalts-a11y.rb). Der Ring liegt innen: Der Container sitzt in
+// einem pre mit overflow, ein Ring außen würde abgeschnitten.
+.rouge-table:focus-visible,
+pre:focus-visible {
+  @include focus-ring(-2px);
 }
