@@ -15,16 +15,25 @@ Drei Gruppen, alle mit Playwright:
     (`_pages/styleguide.html`, nie veröffentlicht) und jedes erzwungenen Zustands
     (`data-sg-states`: hover, focus-visible).
   - `contrast.spec.js`: Kontrast jeder Textprobe (`data-sg-min`) gegen ihren tatsächlichen Grund.
-  - `a11y.spec.js`: axe-core (WCAG 2.2 AA) auf den echten Seiten und der Styleguide-Ansicht.
-    Bekannte Befunde stehen in `visual/a11y-known.json`, nur neue Verstöße brechen ab.
+  - `a11y.spec.js`: axe-core (WCAG 2.2 AA) auf den echten Seiten, jedem Beitrag des
+    Review-Builds und der Styleguide-Ansicht (Liste in `visual/pages.js`, neue Beiträge
+    sind automatisch dabei), einmal in Fensterbreite und einmal bei 320 px, dort mit
+    Reflow-Prüfung (kein waagerechtes Scrollen, WCAG 1.4.10). Bekannte Befunde stehen in
+    `visual/a11y-known.json`, nur neue Verstöße brechen ab. Befunde, die an einem
+    Inhaltsmuster hängen (Aufgabenliste, breiter Code-Block), nimmt `KNOWN_PATTERNS` mit
+    Verweis aufs Register aus, sonst machte jeder neue Beitrag die CI rot.
   - `invariants.spec.js`: Verhalten statt Aussehen. Fokusführung, `aria-expanded`, `inert`,
     Escape und Light Dismiss an Drawer, Autor- und TOC-Dropdown und Skill-Graph-Sheet, der
-    Blog-Hinweis im Top Layer, kein unsichtbares Element mit Tastaturfokus, die
+    Blog-Hinweis im Top Layer, kein unsichtbares Element mit Tastaturfokus (Tab-Runde auf
+    allen Seiten aus `visual/pages.js`), die
     Breakpoint-Grenzen 767/768 und 1023/1024 und dass Touch nach dem Antippen keinen
     Theme-Hover festhält (BP-3).
   - `links.spec.js`: externe Links mit `target="_blank"`, `rel="noopener noreferrer"`,
     verstecktem Hinweis „öffnet in neuem Tab“ und Symbol ohne Umbruch davor, interne
     Links unverändert (LINK-3).
+  - `blog-search.spec.js`: Blog-Suche auf `/posts/` filtert nach Titel und Gastname ohne
+    Groß- und Kleinschreibung, zeigt den Leerzustand, „Zurücksetzen“ zeigt wieder alles
+    und gibt den Fokus ins Suchfeld.
   - `gast-autor.spec.js`: Gastbeitrag (Fixture mit `published: false`, nur im Review-Build)
     mit „von <Name>“, ohne Sidebar-Profil, Gast als Autor in den Metadaten (INH-5).
 
@@ -37,9 +46,9 @@ Die Projekte stehen in `playwright.config.js`:
 | Projekt | Engine | Tests |
 |---|---|---|
 | `spa-nav`, `vendor`, `desktop`, `mobil` | Chromium | alles |
-| `firefox` | Firefox | `spa-nav`, `vendor`, `invariants`, `a11y` |
+| `firefox` | Firefox | `spa-nav`, `vendor`, `invariants`, `a11y`, `blog-search` |
 | `firefox-reduce` | Firefox, Reduced Motion | `spa-nav`, `vendor` (Primärplattform des Owners, STYLEGUIDE BRW-2) |
-| `webkit` | WebKit | `invariants`, `a11y` |
+| `webkit` | WebKit | `invariants`, `a11y`, `blog-search` |
 | `webkit-reduce` | WebKit, Reduced Motion | `spa-nav`, `vendor` |
 
 - Screenshot-Vergleich (`styleguide.spec.js`) und Kontrast (`contrast.spec.js`) laufen

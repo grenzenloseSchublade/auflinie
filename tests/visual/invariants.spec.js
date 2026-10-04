@@ -7,6 +7,7 @@
 // 767/768 und 1023/1024 (STYLEGUIDE 3.4) und dass Touch nach dem Antippen
 // keinen Theme-Hover festhält (BP-3).
 const { test, expect } = require('@playwright/test');
+const { PAGES } = require('./pages');
 
 const MOBIL = { width: 390, height: 844 };
 
@@ -406,8 +407,11 @@ test.describe('Touch-Hinweis', () => {
   });
 });
 
+// Alle Seiten aus pages.js, samt jedem Beitrag des Review-Builds. Die
+// Offline-Seite hat nur Sprunglinks, Menü, Neu-laden-Knopf und Footer.
+const MIN_TAB_STOPS = { 'offline.html': 5 };
 test.describe('Kein unsichtbarer Fokus (WCAG 2.4.7)', () => {
-  for (const p of ['', 'cv/']) {
+  for (const p of PAGES) {
     test(`Tab durch /${p}`, async ({ page }) => {
       await page.goto(`/auflinie/${p}`, { waitUntil: 'load' });
       await page.waitForTimeout(500);
@@ -420,7 +424,7 @@ test.describe('Kein unsichtbarer Fokus (WCAG 2.4.7)', () => {
         seen.add(res.what);
         if (!res.ok) invisible.push(`${res.why}: ${res.what}`);
       }
-      expect(seen.size, 'Tab-Runde zu kurz, Test greift nicht').toBeGreaterThan(10);
+      expect(seen.size, 'Tab-Runde zu kurz, Test greift nicht').toBeGreaterThan(MIN_TAB_STOPS[p] || 10);
       expect(invisible, invisible.join('\n')).toEqual([]);
     });
   }

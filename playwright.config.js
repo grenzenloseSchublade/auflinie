@@ -22,7 +22,7 @@ const { defineConfig, devices } = require('@playwright/test');
 const PORT = 4100;
 // Verhaltens-Tests, die zusätzlich in Firefox und WebKit laufen (siehe projects)
 const NAV_SPECS = ['spa-nav.spec.js', 'vendor.spec.js'];
-const UI_SPECS = ['visual/invariants.spec.js', 'visual/a11y.spec.js'];
+const UI_SPECS = ['visual/invariants.spec.js', 'visual/a11y.spec.js', 'visual/blog-search.spec.js'];
 const REDUCE = { contextOptions: { reducedMotion: 'reduce' } };
 const FIREFOX = { ...devices['Desktop Firefox'], viewport: { width: 1280, height: 900 } };
 // deviceScaleFactor 1 statt 2 wie das Safari-Profil: ohne GPU malt WebKit im
