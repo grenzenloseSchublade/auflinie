@@ -7,6 +7,7 @@
   ],
   "rules": {
     "color-hex-length": "long",
+    "font-weight-notation": "numeric",
     "declaration-block-no-duplicate-properties": true,
     "no-descending-specificity": null,
     "selector-class-pattern": null,

@@ -287,7 +287,7 @@ Regeln:
 - **TYP-5** [MUSS · Ist · Review] Ein entdeckter toter Wert wird auf den **gerenderten** Wert festgeschrieben. Den ursprünglich gemeinten Wert scharfzuschalten braucht eine Owner-Freigabe mit Screenshot-Vergleich.
 - **TYP-6** [MUSS · Soll · CI-P3] Nach jeder Änderung an Typografie, Abständen oder Theme-Overrides läuft `scripts/cascade-check.py` gegen das gebaute CSS.
 - **TYP-7** [MUSS · Ist · CI] `line-height` einheitenlos (erfüllt). `letter-spacing` in em, nur aus der Laufweiten-Skala `$tracking-meta`, `$tracking-label`, `$tracking-label-wide` (`variables/_typography.scss`). Werte außerhalb der Skala stehen dort wertgleich als `$tracking-legacy-*` und `$fp-tracking-legacy-*`, die Angleichung ist sichtbar und braucht eine Owner-Freigabe (TYP-5). Bestand: R-21. Literale in `letter-spacing` und im Laufweiten-Argument von `mono-label()` zählt `scale-guardrail.sh` (Kategorie `tracking`, Grenze 0).
-- **TYP-8** [SOLL · Ist · Review] Gewichte numerisch, kein `bold`. `500` nur bewusst (fällt bei vielen System-Fonts auf `400` zurück, die Ubuntu-Achse deckt es ab, TYP-13).
+- **TYP-8** [SOLL · Ist · CI] Gewichte numerisch, kein `bold`. `500` nur bewusst (fällt bei vielen System-Fonts auf `400` zurück, die Ubuntu-Achse deckt es ab, TYP-13).
 - **TYP-9** [SOLL · Soll · Review] Ziffern in Mono-Daten mit `font-variant-numeric: tabular-nums`.
 - **TYP-10** [SOLL · Offen · Review] Fließtextspalte höchstens 75 Zeichen. `$content-width: 46rem` sind 736 px, das ergibt bei 16 bis 18 px Sans geschätzt 80 bis 90 Zeichen. Vor einer Festlegung wird gemessen. Danach wird entweder das Token (zum Beispiel in `ch`) oder die Regel angepasst. Blocksatz nur mit `hyphens: auto`, `lang` und linksbündig bis 480 px Breite (Home-Intro, Owner-Entscheidung).
 - **TYP-11** [SOLL · Soll · Review] Überschriftengröße und -gewicht fallen monoton mit der Ebene. Abweichung: H4 ist schwerer als H3 (Überschriften-Matrix, Owner-Entscheidung offen).
@@ -1173,7 +1173,7 @@ Kein SemVer (eine Website hat keine öffentliche API). Ein `CHANGELOG.md` im For
 
 | Check | Wo | Prüft |
 |---|---|---|
-| Stylelint (`npm run lint:css`) | CI `lint` | SCSS-Regeln laut `.stylelintrc.json`, darunter SCSS-2, SCSS-7 (`keyframes-name-pattern`), SCSS-12 (`declaration-no-important`), BP-5 |
+| Stylelint (`npm run lint:css`) | CI `lint` | SCSS-Regeln laut `.stylelintrc.json`, darunter SCSS-2, SCSS-7 (`keyframes-name-pattern`), SCSS-12 (`declaration-no-important`), TYP-8 (`font-weight-notation: numeric`), BP-5 |
 | ESLint (`npm run lint:js`, `eslint.config.mjs`) | CI `lint` | JS-2 (`no-var`, `prefer-const`, ohne Ausnahme), dazu `js/recommended` und `no-unsanitized` (SEC-1) |
 | `scripts/fs-guardrail.sh` | CI `lint` | TYP-1 |
 | `scripts/color-guardrail.sh` | CI `lint` | FARB-1, FARB-5, FARB-6, FARB-8 (SCSS), FARB-9, ungepaarte `[Block]`-Marker |
@@ -1202,7 +1202,7 @@ Kein SemVer (eine Website hat keine öffentliche API). Ein `CHANGELOG.md` im For
 |---|---|---|
 | 1 | `node --check` über `assets/js/*.js` im Lint-Job | JS-1 |
 | 1 | Stylelint-Flags `--report-needless-disables --report-descriptionless-disables --report-invalid-scope-disables` | SCSS-18 |
-| 1 | Stylelint: `color-named: never`, `font-weight-notation: numeric`, `selector-max-id: 0` | FARB-8, TYP-8, SCSS-9 |
+| 1 | Stylelint: `color-named: never`, `selector-max-id: 0` | FARB-8, SCSS-9 |
 | 1 | Stylelint `declaration-property-value-disallowed-list`: `outline: none` (`transition: all` und `rgba($hover-color` fangen schon die Guardrails) | 2.4.7 |
 | 1 | Grep `target="_blank"` ohne `noopener` | LINK-3, SEC-9 |
 | 2 | Stylelint `selector-max-specificity: "0,4,2"` | SCSS-9 |
@@ -1402,3 +1402,4 @@ Prozess und Doku:
 | 2026-10-04 | R-79 auf echten Rest gekürzt (BP-3): Theme-Hover-Regeln, die auf Touch nach dem Antippen sichtbar stehen blieben, haben Gegenregeln in `no-hover` mit den Ruhewerten. Ermittelt per Touch-Emulation auf allen Seiten bei 412 und 1024 px (Mausschritt aufs Ziel und erzwungenes `:hover` auf jedem Träger der Theme-Regeln, auch im offenen Drawer und Skill-Graph-Sheet, besucht und unbesucht). Neu `base/_links.scss` vor den Komponenten: Linkfarbe im Inhalt gegen `a:hover` (Hellcyan), besucht `$link-color-visited`, Fußnoten (Farbe, Linie), Rücksprung (Linie). Dazu Kontaktkarten (Farbe), Kartentitel auf `/posts/` und `/archiv/` (Linie), Footer (Linie), Autor-Links (Linie), Sidebar ab `up(lg)` (Deckkraft 75 %), Fraktalbild der Startseite (Schatten). Die bestehende Pager-Gegenregel setzt besucht jetzt die Theme-Farbe `a:visited` statt Weiß, wie in Ruhe. Nachweis: kompiliertes CSS nur um `(hover: none)`-Regeln gewachsen, Hover-Screenshots mit Maus an 15 Stellen vorher/nachher byte-gleich, mit Touch zeigen alle 15 nach dem Antippen den Ruhewert. Neuer Touch-Test in `invariants.spec.js` (sieben Seiten), am alten Stand schlagen alle sieben fehl. |
 | 2026-10-04 | R-81 erledigt: Die drei Fokusringe in `components/_skill-graph.scss` (Öffner, Werkzeugknöpfe der Info-Leiste, Schließen-Knopf des Sheets) nutzen `@include focus-ring` statt `outline` und `outline-offset` ausgeschrieben, kompiliertes CSS byte-gleich. KOMP-4 nennt den Skill-Graph nicht mehr als Ausnahme. |
 | 2026-10-04 | R-54 Teil TYP-8 erledigt: Der Aufzählungspunkt der CV-Einträge (`_cv.scss`) trägt `font-weight: 700` statt `bold`, kompiliertes CSS bis auf diesen Wert gleich (berechnet ohnehin `700`). TYP-8 auf Ist, R-54 hält nur noch TYP-3 (Owner). |
+| 2026-10-04 | TYP-8 per CI: Stylelint `font-weight-notation: numeric` in `.stylelintrc.json` (16.1), der Bestand hat keinen Verstoß. 16.2 führt nur noch `color-named` und `selector-max-id`. |
