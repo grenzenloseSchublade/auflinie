@@ -64,8 +64,8 @@ jobs:
         with:
           persist-credentials: false
       # Ein Ort je Version (STYLEGUIDE.md DOC-7): der Cache-Schlüssel kommt aus
-      # .ruby-version und der Bundler-Hauptversion in Gemfile.lock, ergibt heute
-      # wie bisher ruby-3.4.11-bundler-4.
+      # .ruby-version und der Bundler-Hauptversion in Gemfile.lock. Er hat die
+      # Form des früheren festen Schlüssels (ruby-<Version>-bundler-<Haupt>).
       - name: Versionen aus den Versionsdateien
         id: versions
         run: |
