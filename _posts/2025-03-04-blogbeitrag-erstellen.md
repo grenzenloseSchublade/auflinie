@@ -27,7 +27,7 @@ excerpt: "Wie ein Beitrag auf dieser Website entsteht, vom Entwurf in Markdown b
 
 Dieser Beitrag zeigt, wie ein Blogbeitrag auf dieser Website entsteht: welche Technik dahintersteckt, wie eine Beitragsdatei aufgebaut ist und worauf es beim Schreiben ankommt. Er ist als Leitfaden gedacht und soll den Einstieg leichter machen.
 
-Wer sich mit dem Thema schon auskennt, kann direkt das <a href="{{ "assets/downloads/post-template.md" | relative_url }}" download="post-template.md" style="text-decoration: underline;">Template <i class="fas fa-download" style="margin-left: 0.35em;" aria-hidden="true"></i></a> herunterladen und losschreiben. Es enthält alles, was ein Blogbeitrag braucht: Front Matter, Gliederung und kurze Hinweise.
+Wer sich mit dem Thema schon auskennt, kann direkt das [Template <i class="fas fa-download download-link__icon" aria-hidden="true"></i>]({{ "assets/downloads/post-template.md" | relative_url }}){: .download-link download="post-template.md"} herunterladen und losschreiben. Es enthält alles, was ein Blogbeitrag braucht: Front Matter, Gliederung und kurze Hinweise.
 
 ## Technischer Aufbau
 
@@ -52,9 +52,9 @@ YAML legt die Metadaten fest, vor allem im Front Matter am Anfang jeder Markdown
 ## Aufbau der Markdown-Dateien
 
 Für einen Blogbeitrag reicht eine Markdown-Datei mit passendem Front Matter. Die Datei folgt einem festen Schema. Damit der Anfang leichter fällt, gibt es ein Template, das die nötigen Metadaten und die Gliederung schon enthält. Die folgenden Abschnitte zeigen, wie es aufgebaut ist und welche Elemente es enthält.
-<div style="text-align: center">
-  <a href="{{ "assets/downloads/post-template.md" | relative_url }}" class="btn btn--primary btn--medium" download="post-template.md"><i class="fas fa-download" aria-hidden="true"></i> Template herunterladen</a>
-</div>
+
+[<i class="fas fa-download" aria-hidden="true"></i> Template herunterladen]({{ "assets/downloads/post-template.md" | relative_url }}){: .btn .btn--primary .btn--medium download="post-template.md"}
+{: .download-cta}
 
 ### Syntaktischer Aufbau
 

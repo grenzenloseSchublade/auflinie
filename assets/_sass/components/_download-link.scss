@@ -1,0 +1,12 @@
+// Download-Link im Fließtext eines Beitrags (kramdown-IAL
+// `{: .download-link download="…"}`, MD-2), mit Icon hinter dem Text
+
+.download-link {
+  // Unterstrich auch in Ruhe, nicht erst beim Hover wie die Theme-Links
+  text-decoration: underline;
+}
+
+.download-link__icon {
+  // skala-Ausnahme: Icon-Abstand in em wächst mit der Linkschrift, Wert aus dem früheren Inline-Stil des Beitrags
+  margin-left: 0.35em;
+}

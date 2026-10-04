@@ -1,0 +1,9 @@
+// Zentrierte Download-Zeile mit einem Button in einem Beitrag
+// (kramdown-IAL `{: .download-cta}` am Absatz, MD-2)
+
+.page__content .download-cta {
+  // (0,2,0) > (0,1,1): ohne den Absatzabstand von `.page__content p`, die
+  // Zeile sitzt wie ein Block zwischen Text und Überschrift
+  margin: 0;
+  text-align: center;
+}
