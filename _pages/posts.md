@@ -28,9 +28,10 @@ read_time: false
 
 {% include blog-notice.html %}
 
+{% assign kontakt = site.author.links | where: "contact", true | first %}
 <div class="guide-banner">
   <i class="fas fa-file-alt guide-banner__icon" aria-hidden="true"></i>
-  <p class="guide-banner__text"><strong>Neu hier?</strong> Der Leitfaden zeigt, wie die Beiträge hier technisch entstehen. Und wer selbst einen Artikel schreiben möchte, kann ihn nach kurzer Absprache veröffentlichen – Kontakt am einfachsten über <a href="https://github.com/grenzenloseSchublade">GitHub</a>.</p>
+  <p class="guide-banner__text"><strong>Neu hier?</strong> Der Leitfaden zeigt, wie die Beiträge hier technisch entstehen. Und wer selbst einen Artikel schreiben möchte, kann ihn nach kurzer Absprache veröffentlichen – Kontakt am einfachsten über <a href="{{ kontakt.url }}">{{ kontakt.label }}</a>.</p>
   <a href="{{ "/posts/blogbeitrag-erstellen/" | relative_url }}" class="btn btn--outline guide-banner__btn">Zum Leitfaden <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
 </div>
 

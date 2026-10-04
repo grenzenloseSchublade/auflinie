@@ -7,7 +7,15 @@ main:
     url: "/about/"
   - title: "Lebenslauf"
     url: "/cv/"
-  
+
+# Footer-Links zu Seiten (_includes/footer.html). Die Kanäle dahinter
+# (GitHub …) kommen aus author.links in _config.yml (footer: true).
+footer:
+  - title: "Blog"
+    url: "/posts/"
+  - title: "Archiv"
+    url: "/archiv/"
+
 
   # Kategorien und Tags auskommentiert, damit sie nicht mehr in der Navigation erscheinen
   # - title: "Kategorien"

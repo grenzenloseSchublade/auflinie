@@ -1,0 +1,25 @@
+{% comment %}
+  Kontaktkarten (/about/): jeder Eintrag aus author.links in _config.yml mit
+  contact: true, in dieser Reihenfolge (einzige Quelle, STYLEGUIDE ARCH-4).
+  Die Karte zeigt label und handle, das Icon kommt aus der Font-Awesome-
+  Klasse in icon (letzte Klasse ohne „fa-“, über brand-icon.html).
+{% endcomment %}
+{%- assign contact_links = site.author.links | where: "contact", true -%}
+{%- if contact_links.size > 0 %}
+<div class="contact-container">
+{%- for link in contact_links %}
+  {%- assign contact_icon = link.icon | split: " " | last | remove_first: "fa-" %}
+  <a href="{{ link.url }}" class="contact-card" aria-label="{{ link.label | escape }}{% if link.handle %}: {{ link.handle | escape }}{% endif %}">
+    <div class="contact-icon">
+      {% include brand-icon.html icon=contact_icon %}
+    </div>
+    <div class="contact-info">
+      <span class="contact-type">{{ link.label | escape }}</span>
+      {%- if link.handle %}
+      <span class="contact-value">{{ link.handle | escape }}</span>
+      {%- endif %}
+    </div>
+  </a>
+{%- endfor %}
+</div>
+{%- endif %}

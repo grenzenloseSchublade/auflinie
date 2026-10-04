@@ -91,18 +91,29 @@ twitter:
 # Offline. Derselbe Hero-Hintergrund wie auf allen anderen Seiten, Alt-Text aus
 # background_image_alt. Ein eigenes Bild bekäme og_image_alt (_includes/seo.html)
 og_image: "/assets/images/background.jpg"
+# Theme-Schema der Site (JSON-LD auf der Startseite). social.links (sameAs)
+# füllt _plugins/social-links.rb aus author.links unten, hier nicht pflegen
+# (STYLEGUIDE ARCH-4).
 social:
   type: "Person"
   name: "Hans Müller"
-  links:
-    - "https://github.com/grenzenloseSchublade"
-    - "https://www.linkedin.com/in/hans-m%C3%BCller-39a133359/"
 
 # Analytics (derzeit deaktiviert)
 analytics:
   provider: false
 
 # Site Author
+# author.links ist die einzige Quelle für Kontakt- und Social-Links
+# (STYLEGUIDE ARCH-4). Daraus lesen:
+#   - die Autor-Sidebar (Theme, alle Einträge)
+#   - JSON-LD sameAs auf / und /about/ (alle http-Links, über social.links
+#     aus _plugins/social-links.rb)
+#   - der Footer (footer: true, _includes/footer.html)
+#   - die Kontaktkarten auf /about/ (contact: true, mit handle,
+#     _includes/contact-cards.html) und der Kontakt-Hinweis im Text von
+#     /about/ und /posts/ (erster Eintrag mit contact: true)
+# Neuer Kanal: Eintrag ergänzen. icon ist eine Font-Awesome-Klasse, neue
+# Icons auch ins Subset aufnehmen (assets/_sass/base/_icons.scss).
 author:
   name: "Hans Müller"
   avatar: "/assets/images/Logo.svg"
@@ -112,12 +123,17 @@ author:
     - label: "GitHub"
       icon: "fab fa-fw fa-github"
       url: "https://github.com/grenzenloseSchublade"
-    - label: "Linked In"
+      handle: "@grenzenloseSchublade" # Anzeige auf der Kontaktkarte
+      footer: true
+      contact: true
+    - label: "LinkedIn"
       icon: "fab fa-fw fa-linkedin"
       url: "https://www.linkedin.com/in/hans-m%C3%BCller-39a133359/"
-    # - label: "Email"
-    #   icon: "fas fa-fw fa-envelope-square"
-    #   url: "mailto:ihre@email.de"
+    # - label: "E-Mail"
+    #   icon: "fas fa-fw fa-envelope"
+    #   url: "mailto:kontakt@beispiel.de"
+    #   handle: "kontakt@beispiel.de"
+    #   contact: true
 
 # Build settings
 highlighter: rouge

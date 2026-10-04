@@ -52,21 +52,8 @@ Daraus folgt keine Ablehnung der Schulmedizin, sondern eine Arbeitsteilung: krit
 
 ## Kontakt
 
-Austausch und Zusammenarbeit sind willkommen – am einfachsten über GitHub.
+{% comment %} Kanäle und Kontaktkarten: author.links in _config.yml (contact: true) {% endcomment %}
+{% assign kontakt = site.author.links | where: "contact", true | first %}
+Austausch und Zusammenarbeit sind willkommen – am einfachsten über {{ kontakt.label }}.
 
-{% comment %}
-  Weitere Kanäle, sobald verfügbar:
-  - E-Mail: kontakt@beispiel.de (mailto:kontakt@beispiel.de), Icon "envelope"
-  - LinkedIn: https://linkedin.com/in/username, Icon "linkedin"
-{% endcomment %}
-<div class="contact-container">
-  <a href="https://github.com/grenzenloseSchublade" class="contact-card" aria-label="GitHub: @grenzenloseSchublade">
-    <div class="contact-icon">
-      {% include brand-icon.html icon="github" %}
-    </div>
-    <div class="contact-info">
-      <span class="contact-type">GitHub</span>
-      <span class="contact-value">@grenzenloseSchublade</span>
-    </div>
-  </a>
-</div>
+{% include contact-cards.html %}
