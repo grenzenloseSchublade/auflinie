@@ -105,7 +105,7 @@
   -webkit-backdrop-filter: blur($px);
 }
 
-@mixin mono-label($size: $fs-label, $tracking: $tracking-legacy-mono-label) {
+@mixin mono-label($size: $fs-label, $tracking: $tracking-label) {
   font-family: $mono-font-stack;
   font-size: $size;
   text-transform: uppercase;

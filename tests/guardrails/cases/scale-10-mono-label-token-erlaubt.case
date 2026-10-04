@@ -1,0 +1,13 @@
+# Laufweiten-Token als Argument von mono-label() ist erlaubt (kein Fehlalarm)
+guardrail: scale
+expect: 0
+file: assets/_sass/components/_footer.scss
+mode: append
+---
+.footer-fixture {
+  @include mono-label($fs-label-lg, $tracking-label-wide);
+}
+
+.footer-fixture-zwei {
+  @include mono-label($size: $fs-label, $tracking: $tracking-label);
+}

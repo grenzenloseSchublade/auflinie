@@ -22,7 +22,7 @@ $graph-tool-size: 32px;
 // Öffner unter den Chips: ein Knopf, öffnet direkt das Sheet (ohne Sheet-
 // Modul klappt er das Panel inline auf). Ruhig: Cyan-subtle-Rand, Mono.
 .skill-graph__open {
-  @include mono-label($fs-label, 0.05em);
+  @include mono-label($fs-label, $tracking-legacy-graph-open);
 
   display: inline-flex;
   align-items: center;
@@ -83,7 +83,7 @@ $graph-tool-size: 32px;
 
 // Ansichts-Knöpfe (−, +, Einpassen, Reset): dezenter Mono-Button
 .skill-graph__tool {
-  @include mono-label($fs-label, 0.06em);
+  @include mono-label($fs-label, $tracking-label);
 
   flex-shrink: 0;
   display: inline-flex;

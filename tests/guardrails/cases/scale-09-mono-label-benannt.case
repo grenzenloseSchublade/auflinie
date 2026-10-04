@@ -1,0 +1,12 @@
+# Laufweite als benanntes Argument von mono-label() über eine lokale Variable (TYP-7)
+guardrail: scale
+expect: 1
+grep: VERSTOSS tracking
+file: assets/_sass/components/_footer.scss
+mode: append
+---
+$footer-fixture-laufweite: 0.05em;
+
+.footer-fixture {
+  @include mono-label($tracking: $footer-fixture-laufweite);
+}

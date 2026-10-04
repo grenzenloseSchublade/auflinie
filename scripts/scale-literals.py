@@ -15,7 +15,8 @@ Kategorien (je Kategorie eine Zahl im Ratchet):
   shadow         box-shadow-Deklarationen mit Zahlenwerten (je Deklaration,
                  none und reine Token zählen nicht)
   z-index        Zahlen in z-index (je Deklaration)
-  tracking       Zahlen in letter-spacing (Laufweiten nur über $tracking-*, TYP-7)
+  tracking       Zahlen in letter-spacing, dazu das Laufweiten-Argument von
+                 mono-label() (Laufweiten nur über $tracking-*, TYP-7)
   duration       Zeitliterale ungleich 0 in transition* und animation* (je Literal)
   easing         cubic-bezier() und steps() in transition* und animation*
   transition-all transition mit all oder ohne Eigenschaft (MO-1, je Deklaration)
@@ -61,6 +62,42 @@ MOTION_PROP = re.compile(r"^(transition|animation)(-[a-z-]+)?$")
 NUM = re.compile(r"(?<![\w$.#-])(-?(?:\d+\.?\d*|\.\d+))([a-z%]*)")
 TIME = re.compile(r"(?<![\w$.#-])((?:\d+\.?\d*|\.\d+))(ms|s)\b")
 MARK = "skala-Ausnahme:"
+# Mixin-Parameter, die eine Skala tragen: Name -> (Kategorie, Position, Parametername).
+# Ein Literal als Argument (positional oder benannt) oder als Default zählt
+# wie dasselbe Literal in der Deklaration, die das Mixin daraus schreibt.
+MIXIN_ARGS = {
+    "card-panel": ("radius", 1, "$radius"),
+    "mono-label": ("tracking", 1, "$tracking"),
+}
+
+
+def mixin_arg(args, pos, name):
+    """Wert des Parameters `name` (benannt) oder an Position `pos` (0-basiert), sonst None.
+
+    Getrennt wird nur an Kommas außerhalb von Klammern. Bei einer
+    Mixin-Definition ist der Wert der Default hinter dem Doppelpunkt.
+    """
+    parts, buf, depth = [], [], 0
+    for c in args:
+        if c == "(":
+            depth += 1
+        elif c == ")":
+            depth -= 1
+        if c == "," and depth == 0:
+            parts.append("".join(buf).strip())
+            buf = []
+        else:
+            buf.append(c)
+    parts.append("".join(buf).strip())
+    parts = [p for p in parts if p]
+    named = re.compile(r"^\$([a-zA-Z0-9_-]+)\s*:\s*(.*)$", re.S)
+    for p in parts:
+        nm = named.match(p)
+        if nm and "$" + nm.group(1) == name:
+            return nm.group(2).strip()
+    if pos < len(parts) and not named.match(parts[pos]):
+        return parts[pos]
+    return None
 
 
 def strip(text):
@@ -258,12 +295,12 @@ def scan_file(path):
     for line, text, end in statements(strip(raw)):
         if end == "{":
             continue  # Selektor oder At-Rule-Kopf
-        # Radius-Argument von card-panel()
-        m = re.match(r"@(include|mixin)\s+card-panel\s*\((.*)\)\s*$", text, re.S)
-        if m:
-            args = [a.strip() for a in m.group(2).split(",")]
-            if len(args) >= 2:
-                val = args[1].split(":")[-1].strip()
+        # Skalen-Argumente von Mixins (MIXIN_ARGS), im Aufruf und als Default
+        m = re.match(r"@(?:include|mixin)\s+([a-z][a-z0-9-]*)\s*\((.*)\)\s*$", text, re.S)
+        if m and m.group(1) in MIXIN_ARGS:
+            cat, pos, name = MIXIN_ARGS[m.group(1)]
+            val = mixin_arg(m.group(2), pos, name)
+            if val is not None:
                 mk = line in marked
                 for ref in sorted(set(VAR_REF.findall(val))):
                     r = resolve(ref, rel, line)
@@ -272,7 +309,7 @@ def scan_file(path):
                         mk = mk or r[2]
                 for nm in NUM.finditer(val):
                     if nonzero(nm.group(1)):
-                        yield dict(cat="radius", file=rel, line=line, prop="card-panel($radius)",
+                        yield dict(cat=cat, file=rel, line=line, prop=f"{m.group(1)}({name})",
                                    value=nm.group(0), decl=text, marked=mk)
             continue
         m = re.match(r"^([a-z][a-z-]*)\s*:\s*(.*)$", text, re.S)
@@ -449,7 +486,8 @@ def main(argv):
         if fail:
             print()
             print("Fix: Token aus assets/_sass/variables/_scales.scss verwenden ($space-*, $fp-space-*,")
-            print("$radius-*, $shadow-*, $z-*, $duration-*, $ease-*) oder (begründet) eine Zeile")
+            print("$radius-*, $shadow-*, $z-*, $duration-*, $ease-*), für Laufweiten $tracking-* aus")
+            print("assets/_sass/variables/_typography.scss, oder (begründet) eine Zeile")
             print("'// skala-Ausnahme: <Grund>' direkt darüber. transition immer mit konkreten")
             print("Eigenschaften (MO-1). Inventar: python3 scripts/scale-literals.py --report")
             return 1
