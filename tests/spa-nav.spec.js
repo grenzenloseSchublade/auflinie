@@ -65,15 +65,6 @@ test.describe('Persistent-Shell-Navigation — Non-Breaking-Invarianten', () => 
   });
 
   test('Rapid-Nav: Single-Flight, kein Overlap, spa:load/unload balanciert', async ({ page }) => {
-    // WebKit (Linux-Build von Playwright) bricht unter Last gelegentlich den
-    // Abruf des zweiten Ziels mit einem internen Fehler ab, wenn der erste
-    // gerade abgebrochen wurde. spa-nav.js lädt dann wie vorgesehen voll nach
-    // (Fallback-Leitplanke). Der Fall ist dann kein Befund der Seite.
-    const engineErrors = [];
-    page.on('requestfailed', (req) => {
-      const text = (req.failure() || {}).errorText || '';
-      if (text === 'WebKit encountered an internal error') engineErrors.push(req.url());
-    });
     await gotoHome(page);
 
     // Lifecycle-Zähler ab JETZT scharf schalten (initiales spa:load ist schon durch).
@@ -82,6 +73,21 @@ test.describe('Persistent-Shell-Navigation — Non-Breaking-Invarianten', () => 
       window.__spaUnloads = [];
       document.addEventListener('spa:load', (e) => window.__spaLoads.push(e.detail && e.detail.url));
       document.addEventListener('spa:unload', () => window.__spaUnloads.push(1));
+    });
+
+    // WebKit (Linux-Build von Playwright) bricht unter Last gelegentlich den
+    // Abruf des zweiten Ziels mit einem internen Fehler ab, wenn der erste
+    // gerade abgebrochen wurde. spa-nav.js lädt dann wie vorgesehen voll nach
+    // (Fallback-Leitplanke). Der Fall ist dann kein Befund der Seite. Gezählt
+    // wird nur dieser Fehler, nur ab den Klicks und nur am Swap-Abruf eines
+    // der beiden Ziele (Kopfzeile X-SPA-Nav), sonst greift der Skip nicht.
+    const engineErrors = [];
+    page.on('requestfailed', (req) => {
+      const text = (req.failure() || {}).errorText || '';
+      if (text !== 'WebKit encountered an internal error') return;
+      if (req.headers()['x-spa-nav'] !== '1') return;
+      if (!new RegExp(`^${BASE}/(about|cv)/?$`).test(new URL(req.url()).pathname)) return;
+      engineErrors.push(req.url());
     });
 
     // Zwei verdrahtete Ziele im SELBEN Tick anklicken -> maximale Überlappung
