@@ -7,8 +7,10 @@
  * verdrahtet, scheitert fetch/parse, oder betrifft es einen fremden/bfcache-
  * restaurierten History-Eintrag -> ganz normale volle Navigation.
  *
- * Kuer (Chromium + Bewegung): document.startViewTransition() umschliesst den
- * Swap. Firefox / prefers-reduced-motion: stiller, sofortiger DOM-Tausch.
+ * Kuer (Bewegung erlaubt und startViewTransition vorhanden, also Chromium,
+ * Safari und Firefox mit Same-Document-VT): document.startViewTransition()
+ * umschliesst den Swap. prefers-reduced-motion oder ohne Support: stiller,
+ * sofortiger DOM-Tausch.
  *
  * Kontrakt fuer Seiten-Skripte: document-Events 'spa:unload' (vor dem Wipe der
  * alten .initial-content) und 'spa:load' (nach Content + Script-Reconcile),

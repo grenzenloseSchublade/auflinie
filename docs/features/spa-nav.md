@@ -222,7 +222,7 @@ umgebaut werden, bevor die Seite verdrahtet wird.
 |---|---|
 | **Service Worker** | Swap-/Prefetch-fetch trägt Header `X-SPA-Nav`; das navigate-Gate in `service-worker.js` leitet ihn auf `handleNavigation` (cache-first + `offline.html`). Same-origin + Custom-Header ⇒ kein Preflight. `spa-nav.js` ist im Precache. |
 | **Speculation Rules** | Alle verdrahteten Ziele (`/`, `/about/`, `/cv/`, `/mandelbrot/`, `/posts/*`) sind aus dem Chromium-Prerender ausgenommen, sie werden geswappt. Prerender bleibt für die übrigen Seiten (Archiv), nie für die versteckten Drawer-Links (`_includes/head/custom.html`). |
-| **View-Transition-Kür** | Chromium + Bewegung: `document.startViewTransition(mutate)` blendet den Inhalt über. Firefox / `reduce`: stiller Instant-Swap. Für die Dauer setzt `spa-nav.js` `html.spa-vt`; CSS `html.spa-vt .masthead { view-transition-name: none }` nimmt den **fixierten** Masthead aus dem Snapshot (sonst versetzt sein Snapshot die Schrift um wenige Pixel). Cross-Document-CRT (ohne `.spa-vt`) bleibt unberührt. |
+| **View-Transition-Kür** | Bewegung erlaubt und `document.startViewTransition` vorhanden (Chromium, Safari, Firefox seit den Same-Document-View-Transitions, geprüft mit Firefox 155 in Playwright): `startViewTransition(mutate)` blendet den Inhalt über. `reduce` oder ohne Support: stiller Instant-Swap. Für die Dauer setzt `spa-nav.js` `html.spa-vt`; CSS `html.spa-vt .masthead { view-transition-name: none }` nimmt den **fixierten** Masthead aus dem Snapshot (sonst versetzt sein Snapshot die Schrift um wenige Pixel). Cross-Document-CRT (ohne `.spa-vt`) bleibt unberührt. |
 | **reduced-motion** | JS-Gate `!reduce` + CSS-Gürtel (`@media (prefers-reduced-motion: reduce) { ::view-transition-*{animation:none} }`). |
 | **CSP** | Nur `src='self'`-Injektion + Attribut-Mutation + `textContent`-JSON-LD. Kein `eval`/`blob:`/Inline-Style. |
 
@@ -245,9 +245,10 @@ umgebaut werden, bevor die Seite verdrahtet wird.
 5. **Pfad in `isWired`** aufnehmen.
 6. **Testen:** [`tests/spa-nav.spec.js`](../../tests/spa-nav.spec.js) um die
    Seite erweitern (Swap hin und zurück, Interaktion nach Swap, Zahl der
-   `mount`-Aufrufe). Im echten Browser dazu: kein Listener-Leak über N Swaps
-   (`getEventListeners`/Heap-Diff), Zurück/Vor, bfcache, Fokus, Offline,
-   `reduce` + Firefox.
+   `mount`-Aufrufe). Die Suite läuft in Chromium, Firefox (mit und ohne
+   `reduce`) und WebKit (nur `reduce`, siehe `tests/README.md`). Im echten
+   Browser dazu: kein Listener-Leak über N Swaps (`getEventListeners`/
+   Heap-Diff), Zurück/Vor, bfcache, Fokus, Offline.
 
 ---
 
@@ -260,7 +261,12 @@ Phase 2 ist umgesetzt: CV (Skill-Graph/Chips/Sheet), Mandelbrot
 registrieren sich darüber (seit 4. 10. 2026).
 
 - Same-Doc-CRT-Typen (`crt`/`drawer`) laufen auch auf dem SPA-Pfad
-  (tv-switch-Typen in `swap()`); Firefox bekommt den stillen Instant-Swap.
+  (tv-switch-Typen in `swap()`). Firefox nimmt denselben Pfad, seit er
+  Same-Document-View-Transitions kann, mit `reduce` den stillen Instant-Swap.
+- Firefox-Gegentest (4. 10. 2026, headless in Playwright, Firefox 155): Swap,
+  Zurück, Rapid-Nav, `spaModule`-Kontrakt, MathJax nach Swap, Drawer, Fokus
+  und `inert` grün, mit und ohne `reduce`. Offen im echten Firefox: bfcache,
+  Offline, die Optik des stehenden Headers und der Überblendung.
 - Scroll-Restore: Position wird laufend (trailing-throttled, 500 ms) in
   `history.state.scrollY` gesichert — Back, Forward und Reload stellen sie
   wieder her; Same-Page-Hash-Traversal swappt nicht, sondern scrollt nur.
