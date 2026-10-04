@@ -6,7 +6,9 @@
     title       – Positions-/Abschlussbezeichnung
     org         – Firma/Institution
     location    – Ort (nur Ortsname wird angezeigt, Land entfällt in der Rail)
-    period      – Zeitraum
+    period      – Zeitraum, in den Daten mit normalen Leerzeichen („2020 – 2025“).
+                  Die Ausgabe macht sie um den Strich geschützt (&nbsp;), damit
+                  der Zeitraum nicht umbricht (TYPO-1, TYPO-2)
     description – Beschreibung (Markdown)
     items       – Liste (Strings oder {text, subitems}) – Unterpunkte klappen
                   über natives <details>/<summary>
@@ -15,7 +17,7 @@
 {% endcomment %}
 <li class="cv-entry">
   <div class="cv-entry__period">
-    <span class="cv-entry__dates">{{ include.period }}</span>
+    <span class="cv-entry__dates">{{ include.period | replace: " – ", "&nbsp;–&nbsp;" }}</span>
     <span class="cv-entry__location">{{ include.location | split: "," | first }}</span>
   </div>
   <div class="cv-entry__body">

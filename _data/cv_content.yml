@@ -17,7 +17,7 @@
     - position: "Senior Consultant – Data & Analytics"
       company: "Sopra Steria SE"
       location: "Hamburg, Deutschland"
-      period: "2025 – Heute"
+      period: "2025 – Heute"
       description: |-
         Technische Beratung im Umfeld Data & Analytics mit Schwerpunkt auf generativer KI (GenAI),
         in den Projekten als Software-Architekt und mit Lead-Verantwortung: Ziele und Problemstellungen
@@ -48,7 +48,7 @@
     - position: "Softwareingenieur"
       company: "opta data Innovation Lab GmbH"
       location: "Bochum, Deutschland"
-      period: "2020 – 2025"
+      period: "2020 – 2025"
       description: |-
         Konzeption und Entwicklung von Softwarelösungen auf Basis eigenentwickelter Deep-Learning-Modelle,
         die Geschäftsprozesse der Kunden automatisieren – von der Machbarkeitsstudie bis in den produktiven Betrieb.
@@ -146,7 +146,7 @@
     - position: "Innovationsingenieur"
       company: "opta data Institut e.V."
       location: "Essen, Deutschland"
-      period: "2018 – 2020"
+      period: "2018 – 2020"
       description: "Computer-Vision-Algorithmen und Prototypen für die Prozessautomatisierung – von der mobilen Belegerfassung bis zu Machbarkeitsstudien."
       expandable: false
       responsibilities:
@@ -174,7 +174,7 @@
     - degree: "M. Sc. Elektro- und Informationstechnik"
       institution: "Ruhr-Universität Bochum"
       location: "Bochum, Deutschland"
-      period: "2015 – 2018"
+      period: "2015 – 2018"
       description: |-
         Schwerpunkt: Eingebettete Systeme\\
         Abschlussnote: **Sehr Gut**
@@ -185,7 +185,7 @@
     - degree: "B. Sc. Elektro- und Informationstechnik"
       institution: "Ruhr-Universität Bochum"
       location: "Bochum, Deutschland"
-      period: "2012 – 2015"
+      period: "2012 – 2015"
       description: "Grundlagenstudium"
       achievements:
         - 'Bachelorarbeit: „Elektrische Charakterisierung einer Halbleiter-Nanostruktur“ – Note: **Sehr Gut**'
