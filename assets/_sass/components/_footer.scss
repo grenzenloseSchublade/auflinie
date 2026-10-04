@@ -10,6 +10,13 @@
     margin-top: 1.2em;
     margin-bottom: 1.2em;
   }
+
+  // Touch: ohne Linie gegen die Theme-Regel „.page__footer a:hover“
+  @include no-hover {
+    a:hover {
+      text-decoration: none;
+    }
+  }
 }
 
 .site-footer__nav {

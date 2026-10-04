@@ -1,0 +1,56 @@
+// =============================================================================
+// Links im Inhalt: Ruhewerte auf Touch gegen Theme-Hover (STYLEGUIDE BP-3)
+// =============================================================================
+// Das Theme stellt seine Hover-Regeln nicht hinter (hover: hover). Touch-
+// Browser halten :hover nach dem Antippen fest, ohne Gegenregel bliebe ein
+// angetippter Link in Hellcyan ($link-color-hover) stehen, Fußnoten zusätzlich
+// unterstrichen. Hier stehen unter (hover: none) nur die Ruhewerte, mit Maus
+// ändert sich nichts.
+
+// Die Datei lädt vor den Komponenten (Reihenfolge in _custom.scss): Die
+// Grundregel hat mit :where() dieselbe Spezifität wie das Theme-„a:hover“
+// (0,1,1). Damit überdeckt sie genau die Links, deren Ruhefarbe gegen
+// „a:hover“ verliert, und jede spätere eigene Linkfarbe (TOC, Karten,
+// Footer) bleibt vorn.
+
+@use "sass:color";
+@use "abstracts/tokens" as *;
+@use "abstracts/breakpoints" as *;
+@use "theme-bridge" as mm;
+
+@include no-hover {
+  // Ruhefarbe aus dem Theme: „a“ bzw. „a:visited“
+  :where(.page__content) a:hover {
+    color: $link-color;
+  }
+
+  // :visited steht in :where(), damit die Regel bei (0,1,1) bleibt. Ein
+  // „a:visited:hover“ (0,2,1) schlüge sonst Linkfarben, die in Ruhe gegen
+  // „a:visited“ gewinnen (Buttons). Browser ohne :visited in :where() zeigen
+  // besuchte Links beim Antippen in der Linkfarbe statt dunkler.
+  :where(.page__content) a:where(:visited):hover {
+    color: mm.$link-color-visited;
+  }
+
+  // Fußnotenzeichen: Ruhefarbe aus der Theme-Regel „.footnote“ (0,1,0),
+  // besucht gewinnt in Ruhe „a:visited“
+  .footnote:hover {
+    color: color.mix($white, mm.$gray, 25%);
+  }
+
+  .footnote:visited:hover {
+    color: mm.$link-color-visited;
+  }
+
+  // Unterstreichung aus „.page__content a:not(.btn):hover“ (0,3,1)
+  .page__content a.footnote:hover {
+    text-decoration: none;
+  }
+
+  // Rücksprung: Theme-Regel „a.reversefootnote“ (Grau, ohne Linie) gewinnt in
+  // Ruhe auch gegen „a:visited“, darum hier über der Grundregel
+  .page__content a.reversefootnote:hover {
+    color: mm.$gray;
+    text-decoration: none;
+  }
+}

@@ -6,6 +6,7 @@
 @use "abstracts/tokens" as *;
 @use "abstracts/mixins" as *;
 @use "abstracts/breakpoints" as *;
+@use "theme-bridge" as mm;
 
 // Epigraph am Abschnittsanfang: keine Karte, nur Hairline und Zurückhaltung
 .section-epigraph {
@@ -53,6 +54,18 @@
   @include hover-effect(-3px);
 
   font-size: $fs-body;
+
+  // Touch: Ruhefarbe gegen die Theme-Regel „a:hover“ (Hellcyan). Besucht
+  // gewinnt in Ruhe die Theme-Regel „a:visited“ gegen „.contact-card“.
+  @include no-hover {
+    &:hover {
+      color: inherit;
+    }
+
+    &:visited:hover {
+      color: mm.$link-color-visited;
+    }
+  }
 
   @include can-hover {
     &:hover {

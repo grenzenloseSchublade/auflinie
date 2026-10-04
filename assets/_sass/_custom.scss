@@ -21,6 +21,10 @@
 @use "base/headings";
 @use "base/content-accents";
 
+// Vor den Komponenten: Touch-Ruhewerte gegen das Theme-„a:hover“ mit dessen
+// Spezifität, spätere eigene Linkfarben bleiben vorn (BP-3)
+@use "base/links";
+
 // =============================================================================
 // 2. Neon-Effekte (Keyframes und Basis-Styles)
 // =============================================================================

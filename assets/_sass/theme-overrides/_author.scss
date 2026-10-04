@@ -69,6 +69,13 @@
   a {
     color: $white-a88;
 
+    // Touch: ohne Linie gegen die Theme-Regel „.author__urls a:hover“
+    @include no-hover {
+      &:hover {
+        text-decoration: none;
+      }
+    }
+
     @include can-hover {
       &:hover {
         color: $link-color;

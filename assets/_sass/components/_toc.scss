@@ -619,6 +619,20 @@
   top: calc(var(--masthead-height) + 16px);
 }
 
+// Touch: Die Theme-Sidebar ruht ab 64em bei 75 % Deckkraft und wird unter
+// „.sidebar:hover“ voll deckend. Nach dem Antippen bliebe sie das, hier
+// gilt der Ruhewert. Der Wert spiegelt das Theme (_sidebar.scss). Die Grenze
+// ist up(lg) in px, das Theme rechnet in em: Bei 16 px Grundschrift fallen
+// beide auf 1024 px, bei anderer Grundschrift liegen sie auseinander
+// (STYLEGUIDE 3.4, Einheit).
+@include up(lg) {
+  @include no-hover {
+    .sidebar:hover {
+      opacity: 0.75;
+    }
+  }
+}
+
 // Avatar in der Sidebar - Transparenz beibehalten
 .author__avatar img {
   background: transparent;

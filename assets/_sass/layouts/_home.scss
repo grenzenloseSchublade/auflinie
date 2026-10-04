@@ -78,6 +78,14 @@
   }
 }
 
+// Touch: ohne Schatten gegen die Theme-Regel
+// „.page__content a:not(.btn):hover img“ (gleiche Spezifität, später geladen)
+@include no-hover {
+  .page__content a.fractal-showcase__media:hover img {
+    box-shadow: none;
+  }
+}
+
 // Zentrieren von Elementen
 .text-center {
   text-align: center;

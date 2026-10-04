@@ -3,8 +3,9 @@
 // Prüft Verhalten, nicht Aussehen: Fokusführung, aria-expanded, inert,
 // Escape und Light Dismiss an Drawer und Skill-Graph-Sheet, Autor- und TOC-Dropdown, Info-Leiste,
 // Einpassen und Zoom im Skill-Graphen, dass kein
-// unsichtbares Element den Tastaturfokus bekommt, und die Breakpoint-Grenzen
-// 767/768 und 1023/1024 (STYLEGUIDE 3.4).
+// unsichtbares Element den Tastaturfokus bekommt, die Breakpoint-Grenzen
+// 767/768 und 1023/1024 (STYLEGUIDE 3.4) und dass Touch nach dem Antippen
+// keinen Theme-Hover festhält (BP-3).
 const { test, expect } = require('@playwright/test');
 
 const MOBIL = { width: 390, height: 844 };
@@ -453,6 +454,68 @@ test.describe('Breakpoint-Grenzen (BP-1, BP-2, BP-6)', () => {
           sticky: getComputedStyle(document.querySelector('.toc-sticky-mobile')).display,
         }));
         expect(s).toEqual({ js: unten, sticky: unten ? 'block' : 'none' });
+      });
+    });
+  }
+});
+
+// Touch hält keinen Theme-Hover fest (BP-3, früher R-79): Das Theme stellt
+// seine :hover-Regeln nicht hinter (hover: hover), Touch-Browser halten :hover
+// nach dem Antippen fest. Die Gegenregeln in no-hover setzen dort die
+// Ruhewerte. Ein Mausschritt hält :hover wie ein Tipp (tap() allein nicht).
+// TOC-Links bleiben außen vor, ihr Aktiv-Zustand folgt dem Scrollen.
+test.describe('Touch hält keinen Theme-Hover (BP-3)', () => {
+  const SEL = ['.page__content a[href]:not(.toc__menu a, .toc-sticky-mobile a)', '.page__footer a[href]',
+    '.author__urls a[href]', '.sidebar'].join(', ');
+  const SEITEN = [
+    { path: '', width: 390 }, { path: 'about/', width: 390 }, { path: 'posts/', width: 390 },
+    { path: 'posts/blogbeitrag-erstellen/', width: 390 }, { path: 'archiv/', width: 390 },
+    { path: '404.html', width: 390 }, { path: 'cv/', width: 1024 },
+  ];
+  const stile = (el) => el.evaluate((e) => {
+    const cs = getComputedStyle(e);
+    const img = e.querySelector('img');
+    return [cs.color, cs.textDecorationLine, cs.backgroundColor, cs.opacity, img && getComputedStyle(img).boxShadow].join(' | ');
+  });
+
+  for (const { path, width } of SEITEN) {
+    test.describe(`${width} px`, () => {
+      test.use({ viewport: { width, height: 844 }, hasTouch: true, isMobile: true, contextOptions: { reducedMotion: 'reduce' } });
+
+      test(`/${path}`, async ({ page }) => {
+        await page.goto(`/auflinie/${path}`, { waitUntil: 'load' });
+        await page.addStyleTag({ content: '*, *::before, *::after { transition: none !important; }' });
+        expect(await page.evaluate(() => matchMedia('(hover: none)').matches)).toBe(true);
+        const ziele = page.locator(SEL);
+        const n = await ziele.count();
+        const haengt = [];
+        let geprueft = 0;
+        for (let i = 0; i < n; i++) {
+          const el = ziele.nth(i);
+          if (!(await el.isVisible())) continue;
+          // Mitte des Fensters, damit keine Leiste (Masthead, Sticky-TOC) den
+          // Punkt verdeckt. Liegt doch etwas darüber, zählt das Ziel nicht.
+          const punkt = await el.evaluate((e) => {
+            e.scrollIntoView({ block: 'center', inline: 'nearest' });
+            const r = [...e.getClientRects()].find((q) => q.width > 0 && q.height > 0);
+            if (!r) return null;
+            const p = { x: r.left + Math.min(r.width / 2, 8), y: r.top + r.height / 2 };
+            const hit = document.elementFromPoint(p.x, p.y);
+            return hit && (hit === e || e.contains(hit)) ? p : null;
+          });
+          if (!punkt) continue;
+          await page.mouse.move(-10, -10);
+          const ruhe = await stile(el);
+          await page.mouse.move(punkt.x, punkt.y);
+          const nachTipp = await stile(el);
+          geprueft += 1;
+          if (nachTipp !== ruhe) {
+            const was = await el.evaluate((e) => e.outerHTML.slice(0, 90));
+            haengt.push(`${was}\n  Ruhe:      ${ruhe}\n  nach Tipp: ${nachTipp}`);
+          }
+        }
+        expect(geprueft, 'keine sichtbaren Ziele, Test greift nicht').toBeGreaterThan(1);
+        expect(haengt, haengt.join('\n')).toEqual([]);
       });
     });
   }

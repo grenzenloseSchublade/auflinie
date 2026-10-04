@@ -10,6 +10,7 @@
 @use "abstracts/tokens" as *;
 @use "abstracts/mixins" as *;
 @use "abstracts/breakpoints" as *;
+@use "theme-bridge" as mm;
 
 // Beitragsliste (/posts/): Karten im Panel-Stil statt roher Linkliste
 .post-card-list {
@@ -42,6 +43,14 @@
     a {
       color: $link-color;
       text-decoration: none;
+
+      // Touch: ohne Linie gegen die Theme-Regel
+      // „.page__content a:not(.btn):hover“ (gleiche Spezifität, später geladen)
+      @include no-hover {
+        &:hover {
+          text-decoration: none;
+        }
+      }
 
       @include can-hover {
         &:hover {
@@ -118,11 +127,16 @@
   transition: border-color $duration-base ease, background-color $duration-base ease;
 
   // Touch: Ruhewerte gegen die Theme-Regel ".pagination--pager:hover"
-  // (hellgrauer Grund, dunkle Schrift)
+  // (hellgrauer Grund, dunkle Schrift). Besucht gewinnt in Ruhe die
+  // Theme-Regel „a:visited“ gegen die Outline-Farbe.
   @include no-hover {
     &:hover {
       background-color: transparent;
       color: $white-a88;
+    }
+
+    &:visited:hover {
+      color: mm.$link-color-visited;
     }
   }
 
