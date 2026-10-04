@@ -7,22 +7,36 @@ const { test, expect } = require('@playwright/test');
 
 const BASE = '/auflinie'; // site.baseurl
 
+// WebKit kennt <script type="speculationrules">, aber nicht das CSP-Schlüsselwort
+// 'inline-speculation-rules'. Es meldet das Schlüsselwort als ungültig und
+// blockt den Block (Register R-82). Kein Befund der Bibliotheken. Nur genau
+// diese beiden Browser-Meldungen fallen weg: der Listener unten meldet jeden
+// CSP-Verstoß selbst und nimmt nur den speculationrules-Block aus.
+const WEBKIT_SPECULATION_NOISE = [
+  "The source list for Content Security Policy directive 'script-src' contains an invalid source: ''inline-speculation-rules''. It will be ignored.",
+  "Refused to execute a script because its hash, its nonce, or 'unsafe-inline' does not appear in the script-src directive of the Content Security Policy.",
+];
+
 // CSP-Verstöße und Laufzeitfehler mitschreiben, bevor die Seite lädt
-async function watchErrors(page) {
+async function watchErrors(page, browserName) {
   const errors = [];
+  const webkit = browserName === 'webkit';
   page.on('pageerror', (err) => errors.push('pageerror: ' + err.message));
   page.on('console', (msg) => {
+    if (msg.type() !== 'error') return;
     // Die Testkonfiguration blockiert Service Worker (serviceWorkers: 'block'),
     // sw-register.js meldet das als Fehler. Kein Befund der Bibliotheken.
-    if (msg.type() === 'error' && !msg.text().startsWith('sw-register: ServiceWorker-Registrierung')) {
-      errors.push('console: ' + msg.text());
-    }
+    if (msg.text().startsWith('sw-register: ServiceWorker-Registrierung')) return;
+    if (webkit && WEBKIT_SPECULATION_NOISE.includes(msg.text())) return;
+    errors.push('console: ' + msg.text());
   });
-  await page.addInitScript(() => {
+  await page.addInitScript((skipSpeculation) => {
     document.addEventListener('securitypolicyviolation', (e) => {
+      const t = e.target;
+      if (skipSpeculation && t && t.tagName === 'SCRIPT' && t.getAttribute('type') === 'speculationrules') return;
       console.error('CSP: ' + e.violatedDirective + ' ' + e.blockedURI);
     });
-  });
+  }, webkit);
   return errors;
 }
 
@@ -58,8 +72,8 @@ async function renderedMath(page) {
 }
 
 test.describe('Vendor-Bibliotheken auf /mandelbrot/', () => {
-  test('MathJax setzt alle Formeln, auch nach SPA-Navigation', async ({ page }) => {
-    const errors = await watchErrors(page);
+  test('MathJax setzt alle Formeln, auch nach SPA-Navigation', async ({ page, browserName }) => {
+    const errors = await watchErrors(page, browserName);
 
     await page.goto(`${BASE}/mandelbrot/`);
     const direct = await renderedMath(page);
@@ -82,8 +96,8 @@ test.describe('Vendor-Bibliotheken auf /mandelbrot/', () => {
     expect(errors).toEqual([]);
   });
 
-  test('Fraktal-Panel: Slider benannt und per Tastatur bedienbar, Preset wählbar', async ({ page }) => {
-    const errors = await watchErrors(page);
+  test('Fraktal-Panel: Slider benannt und per Tastatur bedienbar, Preset wählbar', async ({ page, browserName }) => {
+    const errors = await watchErrors(page, browserName);
     await page.goto(`${BASE}/mandelbrot/`);
 
     const handles = page.locator('.noUi-handle[role="slider"]');

@@ -24,6 +24,35 @@ Drei Gruppen, alle mit Playwright:
 
 Alles läuft in der CI im Build-Job (Schritt „Style-Guide-Review“) und blockiert bei Fehlern den Deploy.
 
+## Browser
+
+Die Projekte stehen in `playwright.config.js`:
+
+| Projekt | Engine | Tests |
+|---|---|---|
+| `spa-nav`, `vendor`, `desktop`, `mobil` | Chromium | alles |
+| `firefox` | Firefox | `spa-nav`, `vendor`, `invariants`, `a11y` |
+| `firefox-reduce` | Firefox, Reduced Motion | `spa-nav`, `vendor` (Primärplattform des Owners, STYLEGUIDE BRW-2) |
+| `webkit` | WebKit | `invariants`, `a11y` |
+| `webkit-reduce` | WebKit, Reduced Motion | `spa-nav`, `vendor` |
+
+- Screenshot-Vergleich (`styleguide.spec.js`) und Kontrast (`contrast.spec.js`) laufen
+  bewusst nur in Chromium: Schriftglättung, Farbmischung und Rendering sind
+  browserabhängig. Eigene Vergleichsbilder je Engine brächten dreifache Pflege,
+  aber keine Regel, die besser geprüft wäre.
+- Im Container gibt es keine GPU. Firefox und WebKit malen die Seiten mit dem
+  CRT-Hero dort nur mit wenigen Bildern pro Sekunde, WebKit während des Boots
+  mit unter einem. Die Tests warten deshalb auf Ereignisse (`spa:load`, Ende der
+  Übergänge) statt auf feste Zeiten.
+- SPA-Wechsel prüft WebKit nur mit Reduced Motion: Der Update-Callback der View
+  Transition kommt im Container erst nach 3 bis 5 s, unter Parallel-Last nach über
+  15 s (STYLEGUIDE Register R-83). Der stille Tausch ist derselbe Code ohne View
+  Transition, die prüfen Chromium und Firefox.
+- WebKit blockt den `speculationrules`-Block per CSP (Register R-82).
+  `vendor.spec.js` nimmt genau diese Meldungen in WebKit aus.
+- Laufzeit der vollen Suite mit 2 Workern auf 4 Kernen (wie ein GitHub-Runner):
+  etwa 3 min, davon etwa 30 s Chromium.
+
 Dazu, ohne Browser und ohne Node:
 
 - **`guardrails/`** – Negativtests der Guardrail-Skripte (`scripts/*-guardrail.sh`).
@@ -45,6 +74,8 @@ docker run --rm --user "$(id -u):$(id -g)" -e HOME=/tmp -v "$PWD":/srv -w /srv "
 # 2) Tests im Playwright-Container (startet den Server tests/serve.js selbst)
 docker run --rm --user "$(id -u):$(id -g)" -e HOME=/tmp -v "$PWD":/w -w /w --ipc=host \
   mcr.microsoft.com/playwright:v1.63.0-noble npx playwright test
+
+# Nur eine Engine: ... npx playwright test --project=firefox --project=firefox-reduce
 
 # Gewollte visuelle Änderung: Vergleichsbilder neu erzeugen und mitcommitten
 #   ... npx playwright test tests/visual --update-snapshots

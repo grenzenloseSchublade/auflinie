@@ -11,8 +11,20 @@ const { test, expect } = require('@playwright/test');
 const MOBIL = { width: 390, height: 844 };
 
 // Ist das fokussierte Element wirklich zu sehen? (Größe, visibility und
-// Deckkraft entlang der Vorfahren)
+// Deckkraft entlang der Vorfahren). Blendet es gerade ein (Back-to-Top nach
+// dem Scrollen, aufklappendes Dropdown), zählt der Zustand nach Ende der
+// Übergänge: WebKit und Firefox malen im Container ohne GPU nur wenige Bilder
+// pro Sekunde, ein Übergang steht beim Messen dort oft noch am Anfang.
 async function focusedIsVisible(page) {
+  const res = await focusedIsVisibleNow(page);
+  if (res.ok) return res;
+  await page.evaluate(() => Promise.all(document.getAnimations()
+    .filter((a) => a.effect && a.effect.getComputedTiming().endTime !== Infinity)
+    .map((a) => a.finished.catch(() => {}))));
+  return focusedIsVisibleNow(page);
+}
+
+async function focusedIsVisibleNow(page) {
   return page.evaluate(() => {
     const el = document.activeElement;
     if (!el || el === document.body) return { ok: true, what: 'body' };

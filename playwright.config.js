@@ -2,6 +2,8 @@
 // Vendor-Regressionstests (tests/vendor.spec.js: MathJax, noUiSlider,
 // Tom Select auf /mandelbrot/) und das automatische Style-Guide-Review (tests/visual/: Screenshot-Vergleich der
 // Styleguide-Ansicht, Kontrast, axe-core WCAG 2.2 AA).
+// Chromium prüft alles, Firefox und WebKit die Verhaltens-Tests (Projekte
+// unten, Übersicht in tests/README.md).
 //
 // Die Seite muss vorher MIT unveröffentlichten Seiten gebaut sein, damit die
 // Styleguide-Ansicht existiert (sie wird nie deployt, STYLEGUIDE.md SG-1):
@@ -16,6 +18,14 @@
 const { defineConfig, devices } = require('@playwright/test');
 
 const PORT = 4100;
+// Verhaltens-Tests, die zusätzlich in Firefox und WebKit laufen (siehe projects)
+const NAV_SPECS = ['spa-nav.spec.js', 'vendor.spec.js'];
+const UI_SPECS = ['visual/invariants.spec.js', 'visual/a11y.spec.js'];
+const REDUCE = { contextOptions: { reducedMotion: 'reduce' } };
+const FIREFOX = { ...devices['Desktop Firefox'], viewport: { width: 1280, height: 900 } };
+// deviceScaleFactor 1 statt 2 wie das Safari-Profil: ohne GPU malt WebKit im
+// Container sonst die vierfache Pixelzahl, für Verhaltens-Tests ohne Nutzen
+const WEBKIT = { ...devices['Desktop Safari'], viewport: { width: 1280, height: 900 }, deviceScaleFactor: 1 };
 const external = !!process.env.BASE_URL;
 
 module.exports = defineConfig({
@@ -52,5 +62,21 @@ module.exports = defineConfig({
     { name: 'vendor', testMatch: 'vendor.spec.js', use: { ...devices['Desktop Chrome'], viewport: { width: 1280, height: 900 } } },
     { name: 'desktop', testMatch: 'visual/**/*.spec.js', use: { ...devices['Desktop Chrome'], viewport: { width: 1280, height: 900 } } },
     { name: 'mobil', testMatch: 'visual/styleguide.spec.js', use: { ...devices['Pixel 7'] } },
+    // Firefox und WebKit (STYLEGUIDE BRW-2): nur die Verhaltens-Tests.
+    // Screenshot-Vergleich (styleguide.spec.js) und Kontrast (contrast.spec.js)
+    // bleiben bewusst bei Chromium: Rendering, Schriftglättung und Farbmischung
+    // sind browserabhängig, eigene Vergleichsbilder je Engine verdreifachten
+    // die Pflege, ohne eine Regel besser zu prüfen. Die Namen der Chromium-
+    // Projekte bleiben, sie stecken im Pfad der Vergleichsbilder.
+    { name: 'firefox', testMatch: [...NAV_SPECS, ...UI_SPECS], use: FIREFOX },
+    // Primärplattform des Owners: Firefox mit Reduced Motion (BRW-2), dort
+    // tauscht spa-nav.js still ohne View Transition
+    { name: 'firefox-reduce', testMatch: NAV_SPECS, use: { ...FIREFOX, ...REDUCE } },
+    { name: 'webkit', testMatch: UI_SPECS, use: WEBKIT },
+    // SPA-Wechsel in WebKit nur mit Reduced Motion: Im Container ohne GPU
+    // läuft der Update-Callback der View Transition erst nach 3 bis 5 s, unter
+    // Parallel-Last nach über 15 s (Register R-83). Der stille Tausch ist
+    // derselbe Code ohne die View Transition, die Chromium und Firefox prüfen.
+    { name: 'webkit-reduce', testMatch: NAV_SPECS, use: { ...WEBKIT, ...REDUCE } },
   ],
 });

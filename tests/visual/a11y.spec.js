@@ -19,6 +19,14 @@ for (const p of PAGES) {
   test(`axe: /${p}`, async ({ page }) => {
     await page.goto(`/auflinie/${p}`, { waitUntil: 'load' });
     await page.waitForTimeout(p === 'mandelbrot/' ? 3000 : 800);
+    // Einblendungen (CRT-Boot, Fade-in) zu Ende laufen lassen: axe liest die
+    // berechnete Deckkraft, ein halb eingeblendeter Text gälte als zu blass.
+    // Chromium ist nach 800 ms fertig, WebKit malt im Container ohne GPU
+    // während des Boots unter einem Bild pro Sekunde. Endlos-Animationen
+    // zählen nicht, sie enden nie.
+    await page.evaluate(() => Promise.all(document.getAnimations()
+      .filter((a) => a.effect && a.effect.getComputedTiming().endTime !== Infinity)
+      .map((a) => a.finished.catch(() => {}))));
     const { violations } = await new AxeBuilder({ page })
       .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa'])
       .analyze();
