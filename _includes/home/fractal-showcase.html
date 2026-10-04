@@ -1,0 +1,14 @@
+{% comment %} Kachel zur Fraktal-Seite, Texte und Bild aus _data/home.yml (fractal_showcase, ARCH-4) {% endcomment %}
+{%- assign showcase = site.data.home.fractal_showcase %}
+<section class="fractal-showcase" id="fraktale">
+  <a class="fractal-showcase__media" href="{{ showcase.url | relative_url }}" aria-label="{{ showcase.link_label | escape }}">
+    <img src="{{ showcase.image.src | relative_url }}"
+         alt="{{ showcase.image.alt | escape }}"
+         loading="lazy" width="{{ showcase.image.width }}" height="{{ showcase.image.height }}">
+  </a>
+  <div class="fractal-showcase__text">
+    <h2>{{ showcase.title }}</h2>
+    {{ showcase.text | markdownify }}
+    <a href="{{ showcase.url | relative_url }}" class="btn btn--primary">{{ showcase.button }}</a>
+  </div>
+</section>

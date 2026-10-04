@@ -1,14 +1,16 @@
 {% comment %}
-  Footer-Links: Seiten aus _data/navigation.yml (Liste footer), danach die
-  Kanäle aus author.links in _config.yml mit footer: true (STYLEGUIDE ARCH-4).
+  Footer-Links: Seiten aus _data/navigation.yml (Liste footer, ohne title gilt
+  der Menütitel aus main), danach die Kanäle aus author.links in _config.yml
+  mit footer: true (STYLEGUIDE ARCH-4).
   Die Trennpunkte sind Schmuck und für Screenreader ausgeblendet.
 {% endcomment %}
 {%- assign footer_channels = site.author.links | where: "footer", true -%}
 <div class="page__footer-follow site-footer">
   <nav class="site-footer__nav" aria-label="Footer-Navigation">
     {%- for link in site.data.navigation.footer %}
+    {%- assign main_item = site.data.navigation.main | where: "url", link.url | first %}
     {% unless forloop.first %}<span class="site-footer__sep" aria-hidden="true">·</span>
-    {% endunless %}<a href="{{ link.url | relative_url }}">{{ link.title }}</a>
+    {% endunless %}<a href="{{ link.url | relative_url }}">{{ link.title | default: main_item.title }}</a>
     {%- endfor %}
     {%- for link in footer_channels %}
     <span class="site-footer__sep" aria-hidden="true">·</span>

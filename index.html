@@ -17,53 +17,19 @@ neon_name: true # Neon-Namenseffekt (page__hero.html, neon-orbit-toggle.js)
 site_schema: true # Theme-JSON-LD der Site (seo.html)
 ---
 
-<section class="home-intro">
-  <p>
-    Theorie hat ihren eigenen Reiz – man kann sich in ihr verlieren, und manchmal ist das genau
-    richtig: In Philosophie und Utopie ist der Gedanke selbst das Werk, und Grundlagenforschung
-    macht Umsetzung überhaupt erst möglich. Für die Forschung gibt es keinen schöneren Moment
-    als den, in dem die Anwendung genau so funktioniert wie erdacht – oder ein aufwendiger
-    Versuch exakt das misst, was die Theorie vorhergesagt hat.
-  </p>
-  <p>
-    Wo werden der Theorie Grenzen gesetzt? Da, wo Ideen auf die Wirklichkeit treffen.
-    Die eigene Erfahrung bestätigt die Theorie nicht nur – sie zeigt Wege, die keine
-    Herleitung vorhergesehen hat. Hunderte Konzepte ersetzen keine einzige Erfahrung
-    der tatsächlichen Anwendung.
-  </p>
-  <p>
-    Erfahrung nützt aber niemandem, solange sie bei einem selbst bleibt. Wissen sollte immer und
-    überall frei verfügbar sein. Es wird nicht weniger, wenn man es teilt, sondern wertvoller,
-    je mehr Menschen es erreicht. Deshalb steht hier, was ich gebaut und verstanden habe –
-    Projekte, Experimente, Gedanken.
-  </p>
-</section>
+{% include home/intro.html %}
 
-<section class="fractal-showcase" id="fraktale">
-  <a class="fractal-showcase__media" href="{{ '/mandelbrot/' | relative_url }}" aria-label="Zur interaktiven Fraktal-Erkundung">
-    <img src="{{ '/assets/images/mandelbrot-preview.jpg' | relative_url }}"
-         alt="Ausschnitt der Mandelbrot-Menge mit spiralförmigen Ausläufern"
-         loading="lazy" width="1920" height="1080">
-  </a>
-  <div class="fractal-showcase__text">
-    <h2>Die Mandelbrot-Menge, interaktiv</h2>
-    <p>
-      Unendliche Komplexität aus einer einfachen Formel. Der Explorer rendert Mandelbrot-
-      und Julia-Mengen direkt im Browser – hineinzoomen, Parameter verändern und die
-      Strukturen entdecken, die dabei sichtbar werden.
-    </p>
-    <a href="{{ '/mandelbrot/' | relative_url }}" class="btn btn--primary">Fraktale erkunden</a>
-  </div>
-</section>
+{% include home/fractal-showcase.html %}
 
-<h3 class="archive__subtitle">Neueste Beiträge</h3>
+{%- assign latest = site.data.home.latest_posts %}
+<h3 class="archive__subtitle">{{ latest.title }}</h3>
 
 <div class="entries-grid">
-  {% for post in site.posts limit:6 %}
+  {% for post in site.posts limit: latest.count %}
     {% include archive-single.html type="grid" %}
   {% endfor %}
 </div>
 
 <div class="text-center">
-  <a href="{{ '/posts/' | relative_url }}" class="btn btn--primary">Alle Beiträge anzeigen</a>
+  <a href="{{ '/posts/' | relative_url }}" class="btn btn--primary">{{ latest.button }}</a>
 </div>
