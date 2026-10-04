@@ -27,6 +27,8 @@
 
   const HERO_CRT_BOOT_KEY = 'auflinie:hero-crt:boot';
   const HERO_TUBE_BOOT_NAMES = ['hero-tube-boot-stark', 'hero-tube-boot-dezent'];
+  /** Keyframes des Power-Hinweises, Spiegel zu `@keyframes hero-crt-power-hint` in `_hero.scss` */
+  const HERO_POWER_HINT_ANIMATION = 'hero-crt-power-hint';
   /** Pause mit Vorhang/Filter vor `page__hero--crt-boot` (ms), 0,9 s — mit `--hero-tube-boot-dur` nicht verwechseln */
   const HERO_CRT_PREBOOT_DELAY_MS = 900;
   /** Dauer der Tube-Boot-Keyframes (ms), exakt wie `--hero-tube-boot-dur` in `_hero.scss` (unabhängig von Preboot) */
@@ -153,7 +155,7 @@
       finishHeroCrtBoot(overlay);
     }
     function onAnimationEnd(e) {
-      if (!e || !e.animationName || HERO_TUBE_BOOT_NAMES.indexOf(e.animationName) === -1) return;
+      if (!e || e.target !== crtLayer || HERO_TUBE_BOOT_NAMES.indexOf(e.animationName) === -1) return;
       endBoot();
     }
     crtLayer.addEventListener('animationend', onAnimationEnd);
@@ -483,7 +485,10 @@
         const btn = document.getElementById('hero-crt-power');
         if (!btn) { window.__auflinieHeroCrtHintScheduled = false; return; } // kein Button -> später erneut zulassen
         btn.classList.add('hero-crt-power--hint');
-        btn.addEventListener('animationend', function onEnd() {
+        // Nur das Ende des Pulses (am ::after des Buttons, MO-6): animationend
+        // bubbelt, andere Animationen im Button räumten die Klasse sonst zu früh ab.
+        btn.addEventListener('animationend', function onEnd(e) {
+          if (e.target !== btn || e.animationName !== HERO_POWER_HINT_ANIMATION) return;
           btn.classList.remove('hero-crt-power--hint');
           btn.removeEventListener('animationend', onEnd);
         });
