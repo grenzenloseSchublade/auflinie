@@ -148,10 +148,17 @@ async function trackSpaModuleMounts(page) {
 }
 const spaMounts = (page) => page.evaluate(() => window.__spaMounts);
 
-// Seiten-Module je Seite (Stand _includes/scripts.html und after_footer_scripts)
+// Seiten-Module je Seite (Stand _includes/scripts.html und after_footer_scripts).
+// Zusammen decken Startseite, /cv/, /posts/ und /mandelbrot/ jedes Modul ab,
+// das ein gebautes Seiten-Template lädt. blog-notice.js lädt nur mit
+// blog_notice.enabled im Front Matter von /posts/ und fehlt deshalb, solange
+// kein Hinweis aktiv ist.
 const HOME_MODULES = ['author-follow', 'back-to-top', 'hero-crt', 'neon-orbit-toggle'];
 const CV_MODULES = ['author-follow', 'back-to-top', 'hero-crt', 'skill-chips', 'skill-graph',
   'skill-graph-sheet', 'toc'];
+const POSTS_MODULES = ['author-follow', 'back-to-top', 'blog-search', 'hero-crt'];
+const MANDELBROT_MODULES = ['author-follow', 'back-to-top', 'fractal-panel', 'hero-crt', 'toc'];
+const SEITEN = [['/cv/', CV_MODULES], ['/posts/', POSTS_MODULES], ['/mandelbrot/', MANDELBROT_MODULES]];
 const EARLY_MODULES = ['hero-crt'];
 const ersterMount = (name) => (EARLY_MODULES.includes(name) ? 'document' : 'initial-content');
 
@@ -162,26 +169,28 @@ function mountsByName(mounts) {
 }
 
 test.describe('spaModule-Kontrakt — genau ein Mount pro Modul', () => {
-  test('Erstaufbau mit spa-nav.js: nur das initiale spa:load mountet', async ({ page }) => {
-    await trackSpaModuleMounts(page);
-    await page.goto(`${BASE}/cv/`);
-    await page.waitForFunction(() => window.__spaNavActive === true, null, { timeout: 7000 });
-    await page.waitForTimeout(300);
-    const byName = mountsByName(await spaMounts(page));
-    expect(Object.keys(byName).sort()).toEqual(CV_MODULES);
-    for (const name of CV_MODULES) expect(byName[name], name).toEqual([ersterMount(name)]);
-  });
+  for (const [pfad, module] of SEITEN) {
+    test(`Erstaufbau ${pfad} mit spa-nav.js: nur das initiale spa:load mountet`, async ({ page }) => {
+      await trackSpaModuleMounts(page);
+      await page.goto(`${BASE}${pfad}`);
+      await page.waitForFunction(() => window.__spaNavActive === true, null, { timeout: 7000 });
+      await page.waitForTimeout(300);
+      const byName = mountsByName(await spaMounts(page));
+      expect(Object.keys(byName).sort()).toEqual(module);
+      for (const name of module) expect(byName[name], name).toEqual([ersterMount(name)]);
+    });
 
-  test('ohne spa-nav.js: der PE-Fallback mountet einmal auf document', async ({ page }) => {
-    await trackSpaModuleMounts(page);
-    await page.route('**/assets/js/spa-nav.js', (route) => route.abort());
-    await page.goto(`${BASE}/cv/`);
-    await page.waitForTimeout(300);
-    expect(await page.evaluate(() => window.__spaNavActive)).toBeFalsy();
-    const byName = mountsByName(await spaMounts(page));
-    expect(Object.keys(byName).sort()).toEqual(CV_MODULES);
-    for (const name of CV_MODULES) expect(byName[name], name).toEqual(['document']);
-  });
+    test(`${pfad} ohne spa-nav.js: der PE-Fallback mountet einmal auf document`, async ({ page }) => {
+      await trackSpaModuleMounts(page);
+      await page.route('**/assets/js/spa-nav.js', (route) => route.abort());
+      await page.goto(`${BASE}${pfad}`);
+      await page.waitForTimeout(300);
+      expect(await page.evaluate(() => window.__spaNavActive)).toBeFalsy();
+      const byName = mountsByName(await spaMounts(page));
+      expect(Object.keys(byName).sort()).toEqual(module);
+      for (const name of module) expect(byName[name], name).toEqual(['document']);
+    });
+  }
 
   test('Swap: neue Modul-Skripte mounten einmal, vorhandene einmal je spa:load', async ({ page }) => {
     await trackSpaModuleMounts(page);

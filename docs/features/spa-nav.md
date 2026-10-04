@@ -158,8 +158,10 @@ ohne Marker: jeder Mount bricht den alten Controller ab und wirft den Effekt
 nach `pageshow` neu an).
 
 `tests/spa-nav.spec.js` prüft je Modul (über `name`) genau einen Mount bei
-Erstaufbau, PE-Fallback, Swap und `pageshow(persisted)` sowie gleich viele
-`window`-/`document`-Listener über mehrere Swap-Runden.
+Erstaufbau und PE-Fallback (auf `/cv/`, `/posts/` und `/mandelbrot/`), beim
+Swap von der Startseite nach `/cv/` und bei `pageshow(persisted)` sowie gleich
+viele `window`-/`document`-Listener über mehrere Swap-Runden. `blog-notice.js`
+lädt nur bei aktivem Blog-Hinweis und fehlt deshalb in den Listen.
 
 ---
 
@@ -231,8 +233,9 @@ umgebaut werden, bevor die Seite verdrahtet wird.
 2. **Inline-Init → externes `spa:load`-Modul** umbauen (siehe Falle oben).
 3. **Jedes Modul** über `window.spaModule` registrieren: idempotenter
    `mount`, `teardown` für dokumentweite Ressourcen (`pageshow`-Remount und
-   PE-Fallback erledigt der Helfer). Modulname in die Listen von
-   `tests/spa-nav.spec.js` aufnehmen.
+   PE-Fallback erledigt der Helfer). Modulname in die Liste der
+   Seite in `tests/spa-nav.spec.js` aufnehmen, für eine neue Seite eine Liste
+   anlegen und in `SEITEN` eintragen.
 4. **Cross-Origin-Abhängigkeiten**: erst self-hosten (Muster `assets/vendor/`,
    siehe MathJax) und die per-Seite-Initialisierung an `spa:load` binden —
    sonst Seite vorerst nicht verdrahten (`needsFullLoad` erzwingt dann von
