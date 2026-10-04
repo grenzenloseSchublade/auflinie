@@ -3,11 +3,10 @@
   # Einleitung ohne Überschrift (site-weites Muster: Hero → Intro-Text → H2-Abschnitte)
   intro: true
 
-  content: >-
-
+  content: |-
         Ingenieur mit Schwerpunkt **Machine Learning**, ausgebildet in **Elektro- und Informationstechnik** an der Ruhr-Universität Bochum (M.Sc., *Eingebettete Systeme*).
-        Seit vielen Jahren baue ich KI-Software, von der ersten Idee bis in den laufenden Betrieb. Am Anfang steht dabei immer die gleiche Frage: Welches Problem haben die Menschen eigentlich, für die das Ganze gedacht ist?
-        <br> <br>
+        Seit vielen Jahren baue ich KI-Software, von der ersten Idee bis in den laufenden Betrieb. Am Anfang steht dabei immer die gleiche Frage: Welches Problem haben die Menschen eigentlich, für die das Ganze gedacht ist?\\
+        \\
         Gearbeitet habe ich in Forschung und Industrie, in Teams jeder Größe. So ist nach und nach das **Full-Stack**-Handwerk dazugekommen, von Frontend über DevOps bis MLOps. Am wohlsten fühle ich mich aber im **Backend**.
         Was mich fasziniert, ist der Weg – man startet mit einer Idee und einer Problembeschreibung, arbeitet sich durch komplexe Algorithmik und kommt am Ende zu einer Lösung, die Prozesse oder den Alltag spürbar vereinfacht und (teil-)automatisiert.
 
@@ -19,7 +18,7 @@
       company: "Sopra Steria SE"
       location: "Hamburg, Deutschland"
       period: "2025 – Heute"
-      description: >-
+      description: |-
         Technische Beratung im Umfeld Data & Analytics mit Schwerpunkt auf generativer KI (GenAI),
         in den Projekten als Software-Architekt und mit Lead-Verantwortung: Ziele und Problemstellungen
         gemeinsam mit dem Kunden schärfen, die Architektur festlegen und die Systeme anschließend
@@ -50,7 +49,7 @@
       company: "opta data Innovation Lab GmbH"
       location: "Bochum, Deutschland"
       period: "2020 – 2025"
-      description: >-
+      description: |-
         Konzeption und Entwicklung von Softwarelösungen auf Basis eigenentwickelter Deep-Learning-Modelle,
         die Geschäftsprozesse der Kunden automatisieren – von der Machbarkeitsstudie bis in den produktiven Betrieb.
       expandable: true # Standard ist true
@@ -176,9 +175,11 @@
       institution: "Ruhr-Universität Bochum"
       location: "Bochum, Deutschland"
       period: "2015 – 2018"
-      description: "Schwerpunkt: Eingebettete Systeme <br> Abschlussnote: <strong>Sehr Gut</strong>"
+      description: |-
+        Schwerpunkt: Eingebettete Systeme\\
+        Abschlussnote: **Sehr Gut**
       achievements:
-        - 'Masterarbeit: „Erkennung handgeschriebener Worte mittels CNN / BiRNN für eingebettete Systeme“ – Note: <strong>Ausgezeichnet</strong>'
+        - 'Masterarbeit: „Erkennung handgeschriebener Worte mittels CNN / BiRNN für eingebettete Systeme“ – Note: **Ausgezeichnet**'
         - "Vertiefung an der Schnittstelle von Machine Learning und eingebetteten Systemen"
 
     - degree: "B. Sc. Elektro- und Informationstechnik"
@@ -187,7 +188,7 @@
       period: "2012 – 2015"
       description: "Grundlagenstudium"
       achievements:
-        - 'Bachelorarbeit: „Elektrische Charakterisierung einer Halbleiter-Nanostruktur“ – Note: <strong>Sehr Gut</strong>'
+        - 'Bachelorarbeit: „Elektrische Charakterisierung einer Halbleiter-Nanostruktur“ – Note: **Sehr Gut**'
 
 - section: "Technische Fähigkeiten"
   icon: "laptop-code"

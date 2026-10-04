@@ -84,6 +84,15 @@ $crt-drawer-offset: 180ms;
   }
 }
 
+// --- Filter-Defs der Antennen-Störung (_includes/vt-antenne-defs.html) -------
+// Das 0×0-<svg> steht am Body-Anfang. Im Fluss öffnete es als Inline-Element
+// eine Zeile vor dem Inhalt, absolut positioniert nimmt es keinen Platz
+// (früher style-Attribut, CRIT-3). main.css blockiert das Rendern, die Regel
+// gilt also schon vor dem ersten Bild.
+.vt-antenne-defs {
+  position: absolute;
+}
+
 // --- Masthead: stehende Landmarke ---------------------------------------------
 .masthead {
   view-transition-name: masthead;

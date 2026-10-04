@@ -124,7 +124,7 @@ Basierend auf meiner Analyse schlage ich folgende Struktur für eine bessere Zen
 
 Wir sollten ein eigenes SASS-Verzeichnis erstellen, das unsere spezifischen Styles enthält:
 
-```
+```plaintext
 assets/
 └── _sass/
     ├── variables/

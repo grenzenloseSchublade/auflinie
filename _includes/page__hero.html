@@ -30,9 +30,12 @@ selbst liegen, sonst rendert der Hero data-background-image="" + CRT-Markup. {% 
 
 {% comment %} Startseiten-Hero über Front-Matter-Flags statt URL-Vergleich
 (STYLEGUIDE LIQ-4): header.crt_power legt die CRT-Ebenen über den Text und
-zeigt den Lesemodus-Schalter, neon_name setzt den Neon-Namenseffekt. {% endcomment %}
+zeigt den Lesemodus-Schalter, neon_name setzt den Neon-Namenseffekt.
+Theme-Option header.overlay_color: schaltet nur die Overlay-Variante. Die
+Farbe gibt dieses Include nicht mehr als style-Attribut aus (STYLEGUIDE
+CRIT-3), keine Seite setzt sie. Eine Hero-Farbe ohne Bild bekäme eine
+Klasse in components/_hero.scss. {% endcomment %}
 <div class="page__hero{% if page.header.overlay_color or page.header.overlay_image %}--overlay{% endif %}{% if page.header.crt_power and page.header.overlay_image %} page__hero--crt-over-text{% endif %}"
-  {% if page.header.overlay_color %}style="background-color: {{ page.header.overlay_color | default: 'transparent' }};"{% endif %}
   {% if overlay_img_path %}
   data-background-image="{{ overlay_img_path }}"
   data-crt-intensity="{{ hero_crt }}"

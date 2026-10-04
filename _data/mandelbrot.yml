@@ -3,7 +3,7 @@ sections:
     icon: "info-circle"
     # Einleitung ohne Überschrift (site-weites Muster: Hero → Intro-Text → H2-Abschnitte)
     intro: true
-    content: >-
+    content: |-
       Die Mandelbrot-Menge zählt seit ihrer Entdeckung zu den bedeutendsten mathematischen Objekten
       des 20. Jahrhunderts – ein Paradebeispiel dafür, wie aus einer einfachen rekursiven Regel
       hochkomplexe Strukturen entstehen.
@@ -13,12 +13,11 @@ sections:
 
   - section: "Fraktale Geometrie"
     icon: "question-circle"
-    content: >-
+    content: |-
       Die fraktale Geometrie ist ein Teilgebiet der Mathematik, welches sich mit Strukturen beschäftigt, die auf verschiedenen Skalen selbstähnlich sind.
       Solche Muster finden sich in vielen natürlichen Phänomenen, zum Beispiel in Wolken, dem Wachstum von Pflanzen oder Küstenlinien.
       Fraktale zeigen Skalierungsinvarianz und sind ein wichtiges Werkzeug in der Bildverarbeitung, Computergrafik,
-      Physik sowie bei der Modellierung komplexer Systeme.
-      <br>
+      Physik sowie bei der Modellierung komplexer Systeme.\\
       Die Julia-Menge und die Mandelbrot-Menge sind zentrale Objekte in dieser Theorie.
       Ihre Erforschung wurde maßgeblich von Gaston Maurice Julia und Pierre Fatou vorangetrieben.
       Benoît Mandelbrot prägte ab 1979 mit grundlegenden Untersuchungen diesen Forschungszweig und
@@ -26,7 +25,7 @@ sections:
 
     subsections:
       - title: "Grundprinzip und Visualisierung"
-        content: >-
+        content: |-
           Die Mandelbrot-Menge ist eine Teilmenge der komplexen Ebene, bei der jeder Punkt einer komplexen Zahl entspricht.
           In der Visualisierung kennzeichnen schwarze Bereiche die zur Menge gehörigen Zahlen.
           Farbkodierungen verdeutlichen die Divergenzgeschwindigkeit der zugehörigen Iterationsfolgen.
@@ -39,7 +38,7 @@ sections:
   - section: "Julia-Mengen"
     icon: "cube"
     anchor: "julia-section"
-    content: >-
+    content: |-
       Die Julia-Menge steht in direkter Beziehung zur Mandelbrot-Menge und illustriert anschaulich die Vielfalt komplexer Dynamik für unterschiedliche Parameter $c$.
       Verschiedene Julia-Mengen verdeutlichen, wie stark die Struktur des Fraktals durch die Auswahl des Parameters beeinflusst wird.
       Insbesondere wirken die Julia-Mengen oft ästhetisch ansprechend und dienen als Einstieg in die Erforschung fraktaler Geometrie.
@@ -49,7 +48,7 @@ sections:
   - section: "Mandelbrot-Julia-Explorer"
     icon: "search-plus"
     anchor: "explorer-section"
-    content: >-
+    content: |-
       Mithilfe interaktiver Visualisierungen lässt sich der Zusammenhang zwischen Mandelbrot-Menge und Julia-Mengen direkt erforschen:
       Die Auswahl eines Punktes $c$ in der komplexen Ebene innerhalb der Mandelbrot-Menge erzeugt die zugehörige Julia-Menge.
       Die betrachtete Julia-Menge spiegelt dann die Stabilitätseigenschaften des gewählten Punktes wider und illustriert die Verbindung
@@ -60,12 +59,10 @@ sections:
 
   - section: "Mathematische Definition"
     icon: "calculator"
-    content: >-
+    content: |-
       Die Mandelbrot-Menge $\\mathscr{M}$ ist die Menge aller komplexen Zahlen $c$, für die die durch $z_{n+1} = z_n^2 + c$, $z_0=0$ definierte Folge $\\{z_n\\}$ für $n\\to\\infty$ betragsmäßig beschränkt bleibt:
 
-      <div style="text-align: center;">
-        $$\mathscr{M} = \{c \in \mathbb{C} : \limsup_{n \to \infty} \lvert z_n \rvert \leq 2\}$$
-      </div>
+      $$\mathscr{M} = \{c \in \mathbb{C} : \limsup_{n \to \infty} \lvert z_n \rvert \leq 2\}$$
 
       Die iterative Konstruktion ist mathematisch elegant und zugleich äußerst effizient in computergestützten Anwendungen.
       Sie führt direkt zu faszinierenden Visualisierungen und zu Fragestellungen über Stabilität, Chaotik und Konvergenz –
@@ -73,32 +70,31 @@ sections:
 
   - section: "Struktur und Selbstähnlichkeit"
     icon: "magic"
-    content: >-
+    content: |-
       Die Mandelbrot-Menge zeichnet sich durch ausgeprägte Selbstähnlichkeit und hochkomplexe fraktale Strukturen aus.
       Insbesondere die Randbereiche offenbaren bei jeder Vergrößerung Kopien der Gesamtmenge sowie zahlreiche weitere Muster und Details.
       Diese theoretisch unendliche Detailtiefe wird lediglich durch die numerische Genauigkeit und die Rechenleistung moderner Computer begrenzt.
       Besonders interessant sind die Mini-Mandelbrots: Teilbereiche der Gesamtstruktur, die das Original in verschiedenen Größen und Orientierungen widerspiegeln.
       Die Erforschung dieser Selbstähnlichkeit ist ein Schlüssel zur Charakterisierung fraktaler Objekte.
-      Darüber hinaus bestehen enge Beziehungen zu Julia-Mengen, da jedem Punkt $c$ der komplexen Ebene eine charakteristische Julia-Menge zugeordnet ist.<br>
-      Dieses Zusammenspiel ist von grundlegender Bedeutung für das Verständnis komplexer dynamischer Systeme.<br>
+      Darüber hinaus bestehen enge Beziehungen zu Julia-Mengen, da jedem Punkt $c$ der komplexen Ebene eine charakteristische Julia-Menge zugeordnet ist.\\
+      Dieses Zusammenspiel ist von grundlegender Bedeutung für das Verständnis komplexer dynamischer Systeme.
 
     subsections:
       - title: "Fraktale Dimension"
-        content: >-
+        content: |-
           In der klassischen Geometrie werden Objekte durch ganzzahlige Dimensionen beschrieben.
           Eine Linie ist 1-dimensional, eine Fläche 2-dimensional, ein Volumen 3-dimensional.
           Fraktale wie die Mandelbrot-Menge überschreiten diese einfache Kategorisierung, da ihre Randstruktur die Eigenschaften einer Fläche annimmt,
-          ohne diese allerdings vollständig auszufüllen.
-          <br>
+          ohne diese allerdings vollständig auszufüllen.\\
           Ihr Rand hat die Hausdorff-Dimension exakt $2$ – das hat Mitsuhiro Shishikura 1998 bewiesen. Eine Grenzlinie ist damit so komplex wie eine Fläche.
-          Die fraktale Dimension quantifiziert die Skalierungsinvarianz solch komplexer Gebilde und ist ein wesentliches Werkzeug zur Charakterisierung von Fraktalen.<br>
-          Die Berechnung und theoretische Einordnung fraktaler Dimensionen ist Gegenstand aktueller mathematischer Forschung.<br>
+          Die fraktale Dimension quantifiziert die Skalierungsinvarianz solch komplexer Gebilde und ist ein wesentliches Werkzeug zur Charakterisierung von Fraktalen.\\
+          Die Berechnung und theoretische Einordnung fraktaler Dimensionen ist Gegenstand aktueller mathematischer Forschung.
 
   - section: "Eigenschaften und Hauptstrukturen"
     icon: "fingerprint"
     # Quelle (Mini-Mandelbrots nie exakt gleich, quasi-selbstähnlich): Wikipedia, „Mandelbrot set“, Abschnitt „Self-similarity“, https://en.wikipedia.org/wiki/Mandelbrot_set#Self-similarity
     # Quelle (Hausdorff-Dimension des Rands = 2): M. Shishikura, „The Hausdorff dimension of the boundary of the Mandelbrot set and Julia sets“, Annals of Mathematics 147 (1998), S. 225–267
-    content: >-
+    content: |-
       - **Zusammenhang:**
         Trotz ihrer komplexen Geometrie bildet die Mandelbrot-Menge ein zusammenhängendes Objekt, wie Douady und Hubbard 1982 mathematisch gezeigt haben.
         Eine vollständige Zerlegung in voneinander unabhängige Teilmengen ist nicht möglich.
@@ -127,11 +123,11 @@ sections:
 
           An den Rändern dieser Komponenten entstehen weitere Strukturen wie Miniaturkopien sowie die charakteristischen Muster („Seepferdchen“, „Elefantenrüssel“).
           Die mathematische Analyse dieser Hauptstrukturen liefert Einblicke in die Verzweigungsstruktur und die universellen Eigenschaften von Fraktalen.
-          Die kontinuierliche Entdeckung neuer Muster am Rand der Menge macht die Mandelbrot-Menge zu einem ständig faszinierenden Objekt moderner Mathematik.<br>
+          Die kontinuierliche Entdeckung neuer Muster am Rand der Menge macht die Mandelbrot-Menge zu einem ständig faszinierenden Objekt moderner Mathematik.
 
   - section: "Wissenschaftliche Bedeutung"
     icon: "star"
-    content: >-
+    content: |-
       Die Mandelbrot-Menge besitzt fundamentale Bedeutung für verschiedene Disziplinen:
         - In der Chaostheorie dient sie als ideales Modell für sensitiv abhängige Systeme.
         - In der komplexen Dynamik illustriert sie die Bandbreite dynamischen Verhaltens.
@@ -144,7 +140,7 @@ sections:
 
     subsections:
       - title: "Sensitive Abhängigkeit"
-        content: >-
+        content: |-
           Die Mandelbrot-Menge exemplifiziert die sensitive Abhängigkeit von Anfangsbedingungen:
           Minimale Veränderungen der Parameter $c$ können zu signifikant unterschiedlichen dynamischen Entwicklungen führen.
           Zwei Punkte, die sich nur geringfügig unterscheiden, können über die Iteration in der Folge $\\{z_n\\}$ vollkommen verschiedene Verhaltensweisen entwickeln.
@@ -156,12 +152,12 @@ sections:
 
   - section: "Fazit"
     icon: "check-circle"
-    content: >-
+    content: |-
       Die Mandelbrot-Menge veranschaulicht in einzigartiger Weise die Entstehung von Komplexität aus einfachen Regeln.
       Sie vermittelt grundlegende Einsichten in Dynamik, Fraktalität und den Zusammenhang zwischen Mathematik, Naturwissenschaften und Kunst.
       Die fortgesetzte Forschung an der Mandelbrot-Menge eröffnet ständig neue mathematische und physikalische Erkenntnisse.
-      Der Reiz der Menge liegt im Zusammenspiel von Theorie, Visualisierung und Anwendung in diversen Disziplinen.
-      <br> <br>
+      Der Reiz der Menge liegt im Zusammenspiel von Theorie, Visualisierung und Anwendung in diversen Disziplinen.\\
+      \\
       Experimentelle und interaktive Ansätze erlauben es, immer tiefere Details und neue Strukturen zu entdecken.
       Die Mandelbrot-Menge bleibt somit ein zentrales Objekt der modernen Mathematik und bietet Anknüpfungspunkte für vielfältige Forschungsfragen.
 

@@ -213,7 +213,7 @@ Die Projektstruktur folgt den Jekyll-Konventionen. Jedes Verzeichnis hat eine kl
 
 **Jekyll-Architektur:**
 
-```
+```plaintext
 auflinie/
 ├── _config.yml                    # Hauptkonfiguration mit allen Einstellungen
 ├── _data/                         # Strukturierte Daten in YAML-Format
@@ -620,7 +620,7 @@ bundle exec jekyll build --unpublished -d _site_review
 **Asset-Management und Organisation:**
 
 **Strukturierte Asset-Organisation:**
-```
+```plaintext
 assets/
 ├── _sass/                  # SCSS: base / components / layouts / variables
 ├── css/main.scss           # Einstieg für die Sass-Kompilierung

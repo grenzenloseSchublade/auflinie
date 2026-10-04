@@ -24,9 +24,12 @@
   und unreferenzierte Filter kosten nichts (werden nie evaluiert).
 
   Stufen: id | displacement-scale | schnee-alpha | seed
+
+  position: absolute setzt .vt-antenne-defs in _view-transition.scss
+  (kein style-Attribut, STYLEGUIDE CRIT-3).
 {% endcomment %}
 {% assign ant_stufen = "1|12|0|11,2|30|0|23,3|60|0.35|37,4|100|0.6|41,4b|100|0.6|53" | split: "," %}
-<svg class="vt-antenne-defs" aria-hidden="true" focusable="false" width="0" height="0" style="position:absolute">
+<svg class="vt-antenne-defs" aria-hidden="true" focusable="false" width="0" height="0">
   <defs>
     {%- for stufe in ant_stufen %}
     {%- assign p = stufe | split: "|" %}

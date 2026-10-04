@@ -34,7 +34,13 @@ header:
 {: id="{{ heading_id }}"}
 {% endunless %}
 
+{% comment %} nomarkdown (hier und bei den Unterabschnitten): markdownify hat den
+Text schon gesetzt. Ohne die Klammer liest kramdown das Ergebnis ein zweites
+Mal und macht aus dem Formelblock \[…\] einer Display-Formel in
+_data/mandelbrot.yml ein „[…]“ (STYLEGUIDE MD-3). {% endcomment %}
+{::nomarkdown}
 {{ section.content | markdownify }}
+{:/nomarkdown}
 
 {% if section.include %}
   {% include {{ section.include }} %}
@@ -44,7 +50,9 @@ header:
   {% for subsection in section.subsections %}
 ### {{ subsection.title }}
 
+{::nomarkdown}
 {{ subsection.content | markdownify }}
+{:/nomarkdown}
   {% endfor %}
 {% endif %}
 
