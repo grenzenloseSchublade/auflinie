@@ -2,6 +2,8 @@
   Lokales Override des Theme-Includes: deutsches Datumsformat (date-de.html)
   statt "%B %-d, %Y" (englische Monatsnamen) und korrekter Singular bei
   "1 Minute zum Lesen".
+  Lesezeit aus read_words (_plugins/lesezeit.rb): gleich, egal ob der
+  Beitrag beim Einbinden schon gerendert ist. Ohne read_words wie im Theme.
   Gastbeiträge: „von <Name>“ als letztes Element (page.author, nur Name,
   siehe _plugins/gast-autor.rb). Die Weichen stehen inline, ohne Gast
   bleibt die Ausgabe byte-gleich.
@@ -21,7 +23,7 @@
 
     {% if document.read_time %}
       {% assign words_per_minute = document.words_per_minute | default: site.words_per_minute | default: 200 %}
-      {% assign words = document.content | strip_html | number_of_words %}
+      {% if document.read_words %}{% assign words = document.read_words %}{% else %}{% assign words = document.content | strip_html | number_of_words %}{% endif %}
 
       <span class="page__meta-readtime">
         <i class="far {% if include.type == 'grid' and document.read_time and document.show_date %}fa-fw {% endif %}fa-clock" aria-hidden="true"></i>
