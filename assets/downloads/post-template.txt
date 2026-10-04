@@ -35,7 +35,9 @@ tags:
 
 {% comment %}
 Vorlage für einen Blogbeitrag. Speichern als _posts/JJJJ-MM-TT-titel-des-beitrags.md,
-das Datum im Dateinamen ist das Veröffentlichungsdatum. Dann die Felder oben und
+das Datum im Dateinamen ist das Veröffentlichungsdatum (ein date im Front Matter
+braucht es nur, um es zu überschreiben). Ein Datum in der Zukunft erscheint erst,
+wenn die Seite an oder nach diesem Tag neu gebaut wird. Dann die Felder oben und
 den Text unten ersetzen. Dieser Kommentar erscheint nicht auf der Seite und darf
 stehen bleiben.
 
@@ -43,8 +45,10 @@ stehen bleiben.
   der erste Absatz ist die Einleitung.
 - Enthält der Beitrag Formeln, im Front Matter „mathjax: true“ ergänzen.
 - Anredefrei schreiben, keine Semikolons, deutsche Anführungszeichen „…“.
-- Bilder im Text mit relative_url einbinden, sonst fehlt der Pfad /auflinie:
-  ![Was das Bild zeigt]({{ "/assets/images/posts/bild.jpg" | relative_url }})
+- Bilder liegen in assets/images/posts/. Im Text mit relative_url einbinden,
+  sonst fehlt der Pfad /auflinie, dahinter Breite und Höhe in Pixeln, damit die
+  Seite beim Laden nicht springt:
+  ![Was das Bild zeigt]({{ "/assets/images/posts/bild.jpg" | relative_url }}){: width="1200" height="800"}
 - Links mit https://, nie http://. Externe Links öffnen beim Bauen
   automatisch in einem neuen Tab, ein Zusatz wie {:target="_blank"} ist
   nicht nötig.

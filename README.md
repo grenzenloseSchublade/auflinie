@@ -10,7 +10,7 @@ Diese Website kombiniert Jekyll mit dem Minimal Mistakes Theme, um eine ansprech
 
 - [x] Bilder und Grafiken optimieren (ungenutzte Assets entfernt — ~450 KB; Font-Awesome-Subset statt Komplett-CSS)
 - [ ] Weitere Blog Einträge hinzufügen
-- [ ] og:image: echtes 1200×630-Banner statt Logo (bessere Link-Vorschauen)
+- [ ] og:image: eigenes 1200 × 630-Bild statt des Hero-Hintergrunds mit 675 × 360 px (bessere Link-Vorschauen, STYLEGUIDE Register R-67)
 
 ## Installation und Einrichtung
 
@@ -55,7 +55,7 @@ Um die Website lokal zu entwickeln:
    bundle exec jekyll serve
    ```
 
-2. <http://localhost:4000> im Browser öffnen
+2. <http://localhost:4000/auflinie/> im Browser öffnen (die Site liegt unter `baseurl: /auflinie`)
 
 ### Service Worker und CSS-Änderungen
 
@@ -151,6 +151,8 @@ MathJax 4 ist selbst gehostet (`assets/vendor/mathjax/` und das Font-Paket `asse
    - Inline-Formeln: `$E = mc^2$`
    - Display-Formeln: `$$\sum_{i=1}^n i = \frac{n(n+1)}{2}$$`
 
+   In `_data/*.yml` (etwa `_data/mandelbrot.yml`) gilt eine Besonderheit (STYLEGUIDE MD-3): Inline-Formeln brauchen doppelte Backslashes, `$\\{z_n\\}$` und `$n\\to\\infty$`, Display-Formeln `$$…$$` einfache. Sonst verschluckt kramdown etwa bei `\{` den Backslash. `scripts/content-check.py` prüft das.
+
 ## Troubleshooting
 
 ### MathJax-Probleme
@@ -192,15 +194,24 @@ Wenn mathematische Formeln nicht korrekt angezeigt werden:
    bundle exec jekyll build --trace
    ```
 
-## Neue Inhalte erstellen
+## Inhalte pflegen
 
-### Blogbeiträge
+Inhalte stehen in Markdown oder in `_data/*.yml`, das Markup in Includes (STYLEGUIDE ARCH-4). Die CI meldet typische Fehler mit Datei, Zeile und Lösung. Vor dem Push lokal: `python3 scripts/content-check.py`.
 
-Neue Blogbeiträge werden im `_posts` Verzeichnis erstellt. Die Dateinamen müssen dem Format `JAHR-MONAT-TAG-titel.md` folgen.
-
-### Seiten
-
-Statische Seiten werden im `_pages` Verzeichnis erstellt.
+| Fall | Datei | Fallen |
+|---|---|---|
+| Neuer Beitrag | `_posts/JJJJ-MM-TT-titel.md` nach der Vorlage `assets/downloads/post-template.txt` (Download im Leitfaden „Blogbeitrag erstellen“) | Das Datum im Dateinamen ist das Veröffentlichungsdatum, ein Datum in der Zukunft erscheint erst ab diesem Tag beim nächsten Build. Kein `<!-- -->`, Notizen als `{% comment %}` (sonst rot) |
+| Gastbeitrag | wie ein Beitrag, dazu `author: "Vorname Nachname"` | Nur der Name erscheint, kein Profil (INH-5) |
+| Bild im Beitrag | Datei nach `assets/images/posts/`, Einbindung `![Alt]({{ "/assets/images/posts/bild.jpg" \| relative_url }}){: width="1200" height="800"}` | Ohne `relative_url` fehlt `/auflinie`. Fehlende Datei oder fehlendes `alt` macht die CI rot, fehlende Maße geben eine Warnung |
+| Entwurf | `_drafts/titel.md` oder `published: false` | Erscheint nur mit `--drafts` bzw. `--unpublished` |
+| Lebenslauf | `_data/cv_content.yml` | Zeiträume „2020 – 2025“ mit normalen Leerzeichen. Prosa als `\|`-Block, harter Umbruch als `\\` am Zeilenende |
+| Skills, Skill-Graph | Chips in `_data/cv_content.yml` (`skill_groups`), Projekte in `_data/skill_graph.yml` | Eine Skill-ID ist der Chip-Name klein mit Bindestrichen („Next.js“ → `next-js`). Eine unbekannte ID macht die CI rot, mit Vorschlag |
+| Fraktal-Texte | `_data/mandelbrot.yml` | Inline-Mathe mit doppelten, Display-Mathe mit einfachen Backslashes (oben, MD-3) |
+| Startseite | `_data/home.yml` | Absätze im `\|`-Block mit Leerzeile trennen |
+| Über mich, andere Seiten | `_pages/*.md` | Neue Seite braucht `permalink` und einen Menüeintrag |
+| Menü und Footer | `_data/navigation.yml` (`main`, `footer`) | Menütitel und Seitentitel sind getrennt gepflegt |
+| Kontakt, Social-Links | `_config.yml` → `author.links` | `footer: true` zeigt den Kanal im Footer, `contact: true` als Kontaktkarte. Neue Icons ins Subset (`assets/_sass/base/_icons.scss`) |
+| Hinweis über dem Blog | `_pages/posts.md` → `blog_notice` | Für einen neuen Hinweis auch eine neue `id`, sonst bleibt er bei allen ausgeblendet, die den alten geschlossen haben |
 
 ## Anpassungen
 
@@ -279,7 +290,7 @@ Ablauf:
 {% endfor %}
 ```
 
-Neue Klassen nach BEM bekommen eine eigene Datei unter `assets/_sass/components/` (STYLEGUIDE SCSS-1, SCSS-5). Ein Link mit `target="_blank"` braucht `rel="noopener noreferrer"` (SEC-9).
+Neue Klassen nach BEM bekommen eine eigene Datei unter `assets/_sass/components/` (STYLEGUIDE SCSS-1, SCSS-5). Externe Links bekommen `target="_blank"`, `rel="noopener noreferrer"` und den Hinweis „öffnet in neuem Tab“ beim Build (`_plugins/external-links.rb`, LINK-3).
 
 ### 3. Markdown-Datei erstellen (`_pages/projekte.md`)
 
@@ -340,7 +351,7 @@ toc_collapse: true   # Macht das TOC ausklappbar
 Das ausklappbare TOC unterstützt alle Parameter des nativen TOC von Minimal Mistakes:
 
 - `toc`: Aktiviert das TOC (muss `true` sein)
-- `toc_label`: Die Beschriftung des TOC (Standard: "Inhalt")
+- `toc_label`: Die Beschriftung des TOC (Standard: „Auf dieser Seite“ aus `_data/ui-text.yml`, die meisten Seiten setzen „Inhalt“)
 - `toc_icon`: Das Icon für das TOC (Standard: "file-alt")
 - `toc_sticky`: Wenn `true`, bleibt das TOC beim Scrollen sichtbar
 - `toc_collapse`: Wenn `true`, wird das TOC ausklappbar gemacht
@@ -397,7 +408,7 @@ Leitgedanke: Wissen soll weitergegeben und weiterverwendet werden. Deshalb ist d
 |---|---|
 | **Code**: JavaScript (`assets/js/`), SCSS (`assets/_sass/`), Liquid/HTML-Templates (`_includes/`, `_layouts/`), Skripte (`scripts/`, `tests/`), Konfiguration | [MIT](LICENSE) |
 | **Wissens-Texte**: Blogbeiträge (`_posts/`), Fraktal-Erklärungen (`_data/mandelbrot.yml`, `_pages/mandelbrot.md`, `_includes/fractal/explanation-*.html`), `assets/downloads/` | [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/deed.de) – Weiterverwendung erlaubt, mit Nennung „Hans Müller, auflinie“ und Link |
-| **Persönliches**: Lebenslauf und Profil (`_pages/cv.md`, `_pages/about.md`, `_data/cv_content.yml`, `_data/skill_graph.yml`), Startseiten-Texte (`index.html`) | Alle Rechte vorbehalten |
+| **Persönliches**: Lebenslauf und Profil (`_pages/cv.md`, `_pages/about.md`, `_data/cv_content.yml`, `_data/skill_graph.yml`), Startseiten-Texte (`_data/home.yml`) | Alle Rechte vorbehalten |
 | **Bilder und Marke**: Logo und Favicons (`assets/images/Logo.svg`, `favicon*`, `apple-touch-icon.png`), `mandelbrot-preview.jpg` | Alle Rechte vorbehalten |
 | **`assets/images/background.jpg`** | Adobe-Stock-Lizenz, darf nicht weitergegeben oder weiterverwendet werden |
 

@@ -68,7 +68,7 @@ Das Front Matter enthält die Metadaten des Beitrags, etwa Titel, Datum, Kategor
 ```yaml
 ---
 title: "Titel des Blogbeitrags"
-date: YYYY-MM-DD
+date: 2025-03-04
 categories:
   - Hauptkategorie
 tags:
@@ -90,7 +90,7 @@ Die wichtigsten Parameter sind:
 | Parameter | Beschreibung |
 |-----------|--------------|
 | **title** | Titel des Beitrags, erscheint im Bild oben, in der Übersicht und in Suchmaschinen |
-| **date** | Veröffentlichungsdatum im ISO-Format, bestimmt die Reihenfolge in Übersicht und Archiv |
+| **date** | Veröffentlichungsdatum im ISO-Format, bestimmt die Reihenfolge in Übersicht und Archiv. Steht schon im Dateinamen (`_posts/2025-03-04-titel.md`), im Front Matter nur nötig, um es zu überschreiben. Ein Datum in der Zukunft erscheint erst, wenn die Seite an oder nach diesem Tag neu gebaut wird |
 | **categories** | Grobe thematische Einordnung |
 | **tags** | Schlagwörter zur feineren Einordnung |
 | **header** | Bild oben im Beitrag, mit Abdunklung und Bildunterschrift |
@@ -276,10 +276,10 @@ Ergebnis:
 
 ### Bildintegration
 
-Bilder für Beiträge gehören in den Ordner `assets/images/posts/`. Eingebunden werden sie über ihren Pfad:
+Bilder für Beiträge gehören in den Ordner `assets/images/posts/`. Eingebunden werden sie über ihren Pfad, dahinter stehen Breite und Höhe in Pixeln, damit die Seite beim Laden nicht springt:
 
 ```markdown
-![Semantische Beschreibung]({{ "/assets/images/posts/dateiname.jpg" | relative_url }})
+{% raw %}![Semantische Beschreibung]({{ "/assets/images/posts/dateiname.jpg" | relative_url }}){: width="1200" height="800"}{% endraw %}
 ```
 
 Header- und Teaser-Bilder stehen im Front Matter. So sehen alle Beiträge einheitlich aus:

@@ -38,7 +38,7 @@ bundle exec jekyll serve
 npm run lint:css && npm run lint:js
 ```
 
-Playwright-Tests im Container brauchen einmalig Chromium: `bash .devcontainer/setup-e2e.sh`. Die Vergleichsbilder in `tests/visual/` gelten nur im Playwright-Container wie in der CI (`tests/README.md`).
+Playwright-Tests im Container brauchen einmalig Chromium, Firefox und WebKit: `bash .devcontainer/setup-e2e.sh`. Die Vergleichsbilder in `tests/visual/` gelten nur im Playwright-Container wie in der CI (`tests/README.md`).
 
 Port `4000` ist weitergeleitet (Jekyll).
 
