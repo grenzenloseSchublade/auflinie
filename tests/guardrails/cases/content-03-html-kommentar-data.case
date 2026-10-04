@@ -1,0 +1,9 @@
+# HTML-Kommentar in einem Daten-Text, ein YAML-Kommentar mit # bleibt erlaubt
+guardrail: content
+expect: 1
+grep: _data/navigation\.yml:\d+: HTML-Kommentar
+file: _data/navigation.yml
+mode: append
+---
+# <!-- als YAML-Kommentar harmlos -->
+hinweis: "<!-- landet im Quelltext der Seite -->"

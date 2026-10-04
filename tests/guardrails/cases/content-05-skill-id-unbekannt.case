@@ -1,0 +1,9 @@
+# Skill-ID ohne passenden Chip, die Meldung schlägt den nächstliegenden Namen vor
+guardrail: content
+expect: 1
+grep: Skill-ID „dockr“.*\n.*vermutlich „Docker“
+file: _data/skill_graph.yml
+mode: replace
+old: foundations: [git, docker,
+---
+foundations: [git, dockr,

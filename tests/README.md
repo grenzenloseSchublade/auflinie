@@ -65,8 +65,9 @@ Die Projekte stehen in `playwright.config.js`:
 
 Dazu, ohne Browser und ohne Node:
 
-- **`guardrails/`** – Negativtests der Guardrail-Skripte (`scripts/*-guardrail.sh`)
-  und von `scripts/csp-check.py` (auf der Mini-Site `guardrails/csp-site/`).
+- **`guardrails/`** – Negativtests der Guardrail-Skripte (`scripts/*-guardrail.sh`),
+  von `scripts/csp-check.py` (auf der Mini-Site `guardrails/csp-site/`) und von
+  `scripts/content-check.py` (Quellen und Mini-Site `guardrails/content-site/`).
   Jeder Fall in `guardrails/cases/*.case` baut einen absichtlichen Verstoß (oder einen
   erlaubten Grenzfall) in eine Kopie des Repos und erwartet den passenden Exit-Code.
   Aufbau einer Fall-Datei: Kopf von `guardrails/run.py`. Läuft im Lint-Job:

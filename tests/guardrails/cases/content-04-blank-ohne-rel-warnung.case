@@ -1,0 +1,8 @@
+# target="_blank" ohne rel ist nur eine Warnung, das Build-Plugin ergänzt rel (LINK-3)
+guardrail: content
+expect: 0
+grep: WARNUNG _pages/about\.md:\d+: target="_blank" ohne rel
+file: _pages/about.md
+mode: append
+---
+<a href="https://example.org/" target="_blank">Beispiel</a>

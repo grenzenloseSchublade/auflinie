@@ -10,7 +10,10 @@ Aufbau einer .case-Datei (Kopfzeilen, dann `---`, dann der Inhalt):
 
     # Beschreibung in einer Zeile
     guardrail: scale            (scripts/<name>-guardrail.sh, csp = scripts/csp-check.py
-                                 auf der Mini-Site tests/guardrails/csp-site)
+                                 auf der Mini-Site tests/guardrails/csp-site,
+                                 content = scripts/content-check.py auf den Quellen,
+                                 content-site = derselbe Check mit --site auf der
+                                 Mini-Site tests/guardrails/content-site)
     expect: 1                   (erwarteter Exit-Code)
     grep: VERSTOSS spacing      (optional, Regex, muss in der Ausgabe stehen)
     file: assets/_sass/components/_footer.scss
@@ -35,7 +38,8 @@ import tempfile
 ROOT = pathlib.Path(__file__).resolve().parents[2]
 CASES = sorted((ROOT / "tests/guardrails/cases").glob("*.case"))
 COPY = ["scripts", "assets/_sass", "assets/css", "assets/js", "_layouts", "_includes",
-        ".github", "_config.yml", "service-worker.js", "tests/guardrails/csp-site"]
+        ".github", "_config.yml", "service-worker.js", "tests/guardrails/csp-site",
+        "_posts", "_drafts", "_pages", "_data", "tests/guardrails/content-site"]
 
 
 def parse(path):
@@ -64,6 +68,11 @@ def make_copy(dst):
 def run(copy, guardrail):
     if guardrail == "csp":
         cmd = ["python3", str(copy / "scripts/csp-check.py"), str(copy / "tests/guardrails/csp-site")]
+    elif guardrail == "content":
+        cmd = ["python3", str(copy / "scripts/content-check.py")]
+    elif guardrail == "content-site":
+        cmd = ["python3", str(copy / "scripts/content-check.py"), "--site",
+               str(copy / "tests/guardrails/content-site")]
     else:
         cmd = ["bash", str(copy / "scripts" / f"{guardrail}-guardrail.sh")]
     p = subprocess.run(cmd, capture_output=True, text=True, check=False)

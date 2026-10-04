@@ -78,6 +78,11 @@ jobs:
           cache-version: ruby-${{ steps.versions.outputs.ruby }}-bundler-${{ steps.versions.outputs.bundler }}
       - name: Setup Pages
         uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6
+      # Typische Inhaltsfehler mit Datei, Zeile und Lösung, bevor der Build sie
+      # still durchlässt (STYLEGUIDE.md ARCH-5). Im Build-Job, weil Ruby hier
+      # sicher da ist: Fehlt dem Runner PyYAML, liest das Skript YAML über Ruby
+      - name: Inhalts-Check (Quellen)
+        run: python3 scripts/content-check.py
       - name: Build site
         run: bundle exec jekyll build --strict_front_matter
         env:
@@ -86,6 +91,8 @@ jobs:
       # über den Load-Path), daher ein Zusatzlauf ohne (STYLEGUIDE.md SCSS-3)
       - name: Sass-Deprecation-Check (eigener Code)
         run: bash scripts/sass-deprecation-check.sh
+      - name: Inhalts-Check (gebaute Beiträge, nur Warnungen)
+        run: python3 scripts/content-check.py --site _site
       - name: Gate – Styleguide nie im Deploy (STYLEGUIDE.md SG-1)
         run: test ! -e _site/styleguide && test ! -e _site/assets/css/styleguide.css
       # exclude greift für Theme-Assets nur über _plugins/theme-assets-exclude.rb

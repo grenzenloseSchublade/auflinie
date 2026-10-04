@@ -1,0 +1,12 @@
+# HTML-Kommentar in Code-Block und Inline-Code ist Beispieltext, kein Kommentar
+guardrail: content
+expect: 0
+file: _posts/2025-02-15-erster-beitrag.md
+mode: append
+---
+So sieht ein HTML-Kommentar aus: `<!-- Text -->`.
+
+```html
+<!-- Beispiel im Code-Block -->
+<p>Text</p>
+```

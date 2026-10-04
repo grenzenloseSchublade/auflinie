@@ -1,0 +1,9 @@
+# Bild ohne width/height im Inhalt eines gebauten Beitrags ist eine Warnung (IMG-3)
+guardrail: content-site
+expect: 0
+grep: WARNUNG .*posts/beispiel/index\.html:\d+: Bild ohne width/height \(neu\.jpg\)
+file: tests/guardrails/content-site/posts/beispiel/index.html
+mode: replace
+old: <!-- FALL -->
+---
+<img src="neu.jpg" alt="ohne Maße">

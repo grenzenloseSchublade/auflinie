@@ -1,0 +1,9 @@
+# Display-Mathe mit doppeltem Backslash (MD-3 verlangt dort einfache)
+guardrail: content
+expect: 1
+grep: _data/mandelbrot\.yml:\d+: Display-Mathe
+file: _data/mandelbrot.yml
+mode: append
+---
+fall_display: |-
+  $$\\mathbb{C} \ni c$$

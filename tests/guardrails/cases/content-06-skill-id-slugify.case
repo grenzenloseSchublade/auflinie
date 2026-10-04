@@ -1,0 +1,8 @@
+# IDs nach Jekylls slugify aus Chips mit Sonderzeichen („C#“ → c, „.NET“ → net, „Bash / Linux“ → bash-linux) gelten als bekannt
+guardrail: content
+expect: 0
+file: _data/skill_graph.yml
+mode: replace
+old: skills: [javascript, scss, html5-css3, responsive-design]
+---
+skills: [javascript, scss, html5-css3, responsive-design, c, net, bash-linux]

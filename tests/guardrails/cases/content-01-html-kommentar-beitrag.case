@@ -1,0 +1,8 @@
+# HTML-Kommentar in einem Beitrag geht öffentlich raus (ARCH-5)
+guardrail: content
+expect: 1
+grep: _posts/2025-02-15-erster-beitrag\.md:\d+: HTML-Kommentar
+file: _posts/2025-02-15-erster-beitrag.md
+mode: append
+---
+<!-- Notiz: Absatz noch kürzen -->

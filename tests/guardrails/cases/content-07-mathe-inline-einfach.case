@@ -1,0 +1,9 @@
+# Inline-Mathe mit einfachem Backslash vor { (MD-3 verlangt dort doppelte)
+guardrail: content
+expect: 1
+grep: _data/mandelbrot\.yml:\d+: Inline-Mathe .*kramdown macht aus „\\\{“
+file: _data/mandelbrot.yml
+mode: append
+---
+fall_inline: |-
+  Die Folge $\{z_n\}$ bleibt beschränkt, ebenso $\\{z_n\\}$ (richtig).
