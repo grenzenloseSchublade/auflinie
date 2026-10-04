@@ -1,6 +1,17 @@
 @use "abstracts/tokens" as *;
 @use "abstracts/breakpoints" as *;
 
+// Autorname: <div> statt der Theme-<h3> (_includes/author-profile.html,
+// SEITE-3). Gewicht und Zeilenhöhe kamen bis Oktober 2026 aus der
+// Theme-Regel für h1–h6, margin-bottom: 0 aus ".sidebar h3", die ab $large
+// die 10px von ".author__name" überstimmte. Größe, Schrift und oberer
+// Abstand kommen weiter aus den Klassen-Regeln des Themes.
+.sidebar .author__name {
+  margin-bottom: 0;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
 // Autor-Profil (Sidebar/Floating): „Folgen"-Button + Dropdown
 // in der Site-Designsprache statt Theme-Weiß.
 // Toggle-Logik: assets/js/author-follow.js (Vanilla-Ersatz fürs Theme-jQuery).

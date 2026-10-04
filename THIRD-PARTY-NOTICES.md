@@ -14,6 +14,11 @@ Die Spalte „Beleg“ nennt, woher die Angabe stammt. Was nicht aus der Datei s
 |---|---|---|---|---|
 | [Minimal Mistakes](https://github.com/mmistakes/minimal-mistakes) | 4.28.1, per `remote_theme` auf den Commit `81f00a6` gepinnt | Layouts, Includes und SCSS des Themes, überschriebene Fassungen in `_includes/` und `_layouts/` | MIT, © 2013–2024 Michael Rose and contributors | `LICENSE` im gepinnten Commit |
 
+Lokal überschriebene Theme-Dateien (gleicher Pfad wie im Theme, Jekyll nimmt die Fassung aus dem Repo). Wer das Theme aktualisiert, gleicht sie mit der neuen Fassung ab:
+
+- `_includes/`: `archive-single.html`, `author-profile.html`, `footer.html`, `head.html`, `head/custom.html`, `masthead.html`, `page__date.html`, `page__hero.html`, `page__meta.html`, `page__related.html`, `post_pagination.html`, `scripts.html`, `seo.html`, `skip-links.html`
+- `_layouts/`: `default.html`, `single.html`, `splash.html`
+
 Das Theme bringt selbst Fremdbestandteile mit. Lizenzangaben laut Abschnitt „License“ im README des Themes (gepinnter Commit), Versionen aus den Dateiköpfen:
 
 | Komponente | Version | Wo sie landet | Lizenz | Beleg |
