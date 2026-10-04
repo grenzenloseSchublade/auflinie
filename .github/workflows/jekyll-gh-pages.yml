@@ -91,6 +91,9 @@ jobs:
       # exclude greift für Theme-Assets nur über _plugins/theme-assets-exclude.rb
       - name: Gate – ungenutzte Theme-Skripte nicht im Deploy (STYLEGUIDE.md SEC-8b)
         run: test ! -e _site/assets/js/main.min.js && test ! -e _site/assets/js/vendor && test ! -e _site/assets/js/lunr && test ! -e _site/assets/js/plugins
+      # Fixture für Gastbeiträge (published: false), nur im Review-Build
+      - name: Gate – Test-Gastbeitrag nie im Deploy (STYLEGUIDE.md INH-5)
+        run: test ! -e _site/posts/test-gastbeitrag && ! grep -rqF "Test-Gastbeitrag" _site
       - name: Review-Build mit Styleguide-Ansicht (wird nicht deployt)
         run: bundle exec jekyll build --unpublished -d _site_review
         env:

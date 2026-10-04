@@ -2,9 +2,12 @@
   Lokales Override des Theme-Includes: deutsches Datumsformat (date-de.html)
   statt "%B %-d, %Y" (englische Monatsnamen) und korrekter Singular bei
   "1 Minute zum Lesen".
+  Gastbeiträge: „von <Name>“ als letztes Element (page.author, nur Name,
+  siehe _plugins/gast-autor.rb). Die Weichen stehen inline, ohne Gast
+  bleibt die Ausgabe byte-gleich.
 {% endcomment %}
 {% assign document = post | default: page %}
-{% if document.read_time or document.show_date %}
+{% if document.read_time or document.show_date or document.author.name %}
   <p class="page__meta">
     {% if document.show_date and document.date %}
       {% assign date = document.date %}
@@ -31,6 +34,12 @@
           {{ read_minutes }} Minuten zum Lesen
         {% endif %}
       </span>
+    {% endif %}{% if document.author.name %}
+    {% if document.read_time or document.show_date %}<span class="page__meta-sep"></span>{% endif %}
+    <span class="page__meta-author">
+      <i class="fas {% if include.type == 'grid' %}fa-fw {% endif %}fa-user" aria-hidden="true"></i>
+      von {{ document.author.name | escape }}
+    </span>
     {% endif %}
   </p>
 {% endif %}

@@ -13,6 +13,10 @@ sitemap: false
 {% raw %}---
 title: "Titel des Beitrags"
 excerpt: "Ein bis zwei Sätze, worum es geht. Erscheint in der Übersicht und als Beschreibung in Suchmaschinen."
+# Gastbeitrag: Name, wie er über dem Beitrag stehen soll („von …“). Dafür die
+# Raute vor author entfernen. Mehr als der Name erscheint nicht, kein Profil,
+# kein Bild, keine Links.
+# author: "Vorname Nachname"
 header:
   overlay_image: /assets/images/background.jpg
   overlay_filter: 0.5
@@ -39,6 +43,14 @@ stehen bleiben.
   der erste Absatz ist die Einleitung.
 - Enthält der Beitrag Formeln, im Front Matter „mathjax: true“ ergänzen.
 - Anredefrei schreiben, keine Semikolons, deutsche Anführungszeichen „…“.
+- Bilder im Text mit relative_url einbinden, sonst fehlt der Pfad /auflinie:
+  ![Was das Bild zeigt]({{ "/assets/images/posts/bild.jpg" | relative_url }})
+- Links mit https://, nie http://. Externe Links öffnen beim Bauen
+  automatisch in einem neuen Tab, ein Zusatz wie {:target="_blank"} ist
+  nicht nötig.
+- Hinweise wie diesen nur in einen Liquid-Kommentar wie diesen hier, nie
+  als HTML-Kommentar mit spitzen Klammern: Der stünde öffentlich im
+  Quelltext der Seite.
 {% endcomment %}
 
 Hier steht, worum es in diesem Beitrag geht: das Thema kurz vorstellen und erklären, warum es lesenswert ist. Dieser erste Absatz braucht keine Überschrift, der Titel steht schon oben im Bild.

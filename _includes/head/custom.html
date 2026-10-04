@@ -88,7 +88,9 @@ Critical-CSS (_layouts/default.html). Wer den Token ändert, zieht beide nach. {
 {% comment %} Strukturierte Daten (JSON-LD) für SEO. Jeder Liquid-Wert als
      jsonify | replace: '</', '<\/' ohne umgebende Anführungszeichen
      (STYLEGUIDE SEC-2): jsonify maskiert </ nicht, ein </script> im Text
-     beendete sonst den Block. {% endcomment %}
+     beendete sonst den Block. Gastbeiträge (page.author, nur Name, siehe
+     _plugins/gast-autor.rb): author ist der Gast, publisher bleibt die Seite.
+     Die Weiche steht inline, ohne Gast bleibt die Ausgabe byte-gleich. {% endcomment %}
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -110,8 +112,8 @@ Critical-CSS (_layouts/default.html). Wer den Token ändert, zieht beide nach. {
   {% endif %}
   "author": {
     "@type": "Person",
-    "name": {{ site.author.name | default: site.name | jsonify | replace: '</', '<\/' }},
-    "url": {{ site.url | jsonify | replace: '</', '<\/' }}
+    "name": {% if page.author.name %}{{ page.author.name | jsonify | replace: '</', '<\/' }}{% else %}{{ site.author.name | default: site.name | jsonify | replace: '</', '<\/' }},
+    "url": {{ site.url | jsonify | replace: '</', '<\/' }}{% endif %}
   },
   "publisher": {
     "@type": "Person",

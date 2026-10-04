@@ -25,6 +25,8 @@ Drei Gruppen, alle mit Playwright:
   - `links.spec.js`: externe Links mit `target="_blank"`, `rel="noopener noreferrer"`,
     verstecktem Hinweis „öffnet in neuem Tab“ und Symbol ohne Umbruch davor, interne
     Links unverändert (LINK-3).
+  - `gast-autor.spec.js`: Gastbeitrag (Fixture mit `published: false`, nur im Review-Build)
+    mit „von <Name>“, ohne Sidebar-Profil, Gast als Autor in den Metadaten (INH-5).
 
 Alles läuft in der CI im Build-Job (Schritt „Style-Guide-Review“) und blockiert bei Fehlern den Deploy.
 
