@@ -16,7 +16,7 @@
   "scripts": {
     "lint:css": "stylelint \"assets/_sass/**/*.scss\"",
     "lint:css:fix": "stylelint --fix \"assets/_sass/**/*.scss\"",
-    "lint:js": "eslint \"assets/js/**/*.js\" \"tests/**/*.js\" playwright.config.js",
+    "lint:js": "eslint \"assets/js/**/*.js\" \"tests/**/*.js\" \"scripts/**/*.js\" service-worker.js playwright.config.js",
     "test:e2e": "playwright test",
     "test:visual": "playwright test tests/visual",
     "test:visual:update": "playwright test tests/visual --update-snapshots",

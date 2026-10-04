@@ -11,8 +11,10 @@
 // Der webServer unten liefert _site_review unter /auflinie aus.
 //
 // Screenshots sind plattformabhängig (Schriften, Rendering). Vergleichsbilder
-// deshalb NUR im Playwright-Container erzeugen und prüfen, wie in der CI:
-//   docker run --rm -v "$PWD":/w -w /w mcr.microsoft.com/playwright:v1.63.0-noble \
+// deshalb NUR im Playwright-Container erzeugen und prüfen, wie in der CI.
+// --user hält die neuen Bilder beim eigenen Benutzer statt bei root:
+//   docker run --rm --ipc=host --user "$(id -u):$(id -g)" -e HOME=/tmp \
+//     -v "$PWD":/w -w /w mcr.microsoft.com/playwright:v1.63.0-noble \
 //     npx playwright test tests/visual --update-snapshots
 // Basis-URL überschreibbar via BASE_URL, Site-Verzeichnis via SITE_DIR.
 const { defineConfig, devices } = require('@playwright/test');

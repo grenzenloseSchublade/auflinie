@@ -1,0 +1,9 @@
+# @playwright/test mit ^ statt exakter Version (Image und Bibliothek liefen auseinander)
+guardrail: version-sync
+expect: 1
+grep: exakte Version
+file: package.json
+mode: replace
+old: "@playwright/test": "
+---
+"@playwright/test": "^

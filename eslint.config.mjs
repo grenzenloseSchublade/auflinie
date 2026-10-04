@@ -37,21 +37,37 @@ const WORKER_FILES = [
   'assets/js/fractal-color-utils.js',
 ];
 
+// service-worker.js ist eine Jekyll-Vorlage (Front Matter `---`/`---`,
+// Liquid in CACHE_VERSION und der CACHE_URLS-Liste) und als Quelltext kein
+// gültiges JavaScript. Statt Ruby/Jekyll in den Lint-Job zu ziehen, macht
+// dieser Prozessor vor dem Linten gültiges JS daraus: Front-Matter-Striche
+// werden Kommentare, jedes {{ … }} wird 0, jedes {% … %} verschwindet.
+// Zeilenumbrüche bleiben erhalten, die Zeilennummern der Meldungen stimmen.
+// Ausdrücke wie '.{{ p.url }}', werden so zu '.0', (gültig, Inhalt egal).
+const liquidTemplate = {
+  meta: { name: 'liquid-template' },
+  preprocess(text) {
+    const keepLines = (m) => m.replace(/[^\n]/g, '');
+    return [text
+      .replace(/^---\s*$/gm, '//')
+      .replace(/\{\{[\s\S]*?\}\}/g, (m) => `0${keepLines(m)}`)
+      .replace(/\{%[\s\S]*?%\}/g, keepLines)];
+  },
+  postprocess(messages) {
+    return messages.flat();
+  },
+  supportsAutofix: false,
+};
+
 export default [
   {
-    // service-worker.js ist eine Jekyll-Vorlage (Front Matter `---`/`---`,
-    // Liquid in CACHE_VERSION und der CACHE_URLS-Liste) und als Quelltext
-    // kein gültiges JavaScript. Das gebaute _site/service-worker.js zu prüfen
-    // hieße, Ruby/Jekyll in den Lint-Job zu ziehen, der heute nur Node
-    // braucht. Der Worker bleibt deshalb draußen; Syntaxfehler zeigen sich
-    // spätestens im Build-Job bzw. bei der Registrierung im Browser.
     ignores: [
       'assets/vendor/**',
       '_site/**',
+      '_site_review/**',
       'node_modules/**',
       'vendor/**',
       'tmp/**',
-      'service-worker.js',
     ],
   },
   js.configs.recommended,
@@ -108,6 +124,31 @@ export default [
   {
     files: ['assets/js/*-worker.js'],
     languageOptions: { globals: { runFractalChunkJob: 'readonly' } },
+  },
+  {
+    // Service Worker: Jekyll-Vorlage, über den Prozessor oben gelintet.
+    // Eigener Worker-Scope (self, caches, clients), dieselbe ES2020-Baseline
+    // wie die Site-Skripte (JS-2).
+    files: ['service-worker.js'],
+    processor: liquidTemplate,
+    languageOptions: {
+      ecmaVersion: 2022,
+      sourceType: 'script',
+      globals: { ...globals.serviceworker },
+    },
+    rules: {
+      'no-var': 'error',
+      'prefer-const': 'error',
+    },
+  },
+  {
+    // Werkzeuge in scripts/ (Node, CommonJS), heute style-snapshot.js
+    files: ['scripts/**/*.js'],
+    languageOptions: {
+      ecmaVersion: 2022,
+      sourceType: 'commonjs',
+      globals: { ...globals.node, ...globals.browser },
+    },
   },
   {
     // Playwright-Tests: Node/CommonJS (require). Die Callbacks von

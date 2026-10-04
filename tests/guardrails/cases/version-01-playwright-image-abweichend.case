@@ -1,0 +1,8 @@
+# Playwright-Image in der Doku mit anderer Version als @playwright/test in package.json
+guardrail: version-sync
+expect: 1
+grep: Playwright-Image in tests/README\.md:\d+ ist "v0\.0\.1"
+file: tests/README.md
+mode: append
+---
+    docker run --rm mcr.microsoft.com/playwright:v0.0.1-noble npx playwright test
