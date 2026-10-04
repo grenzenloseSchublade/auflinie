@@ -43,12 +43,15 @@
   const MASTHEAD_HEIGHT_FALLBACK_PX = 74;
   let controller = null;
   let gumshoeInstance = null;
+  let releaseInert = null;
 
   function teardown() {
     if (gumshoeInstance && gumshoeInstance.destroy) { gumshoeInstance.destroy(); }
     gumshoeInstance = null;
     if (controller) { controller.abort(); controller = null; }
-    // Falls beim Teardown ein Dropdown offen war: Body-Scroll wieder freigeben.
+    // Falls beim Teardown ein Dropdown offen war: inert und Body-Scroll
+    // wieder freigeben (Footer und Skip-Links überleben den Swap).
+    if (releaseInert) { releaseInert(); releaseInert = null; }
     document.body.style.overflow = '';
     document.documentElement.style.removeProperty('scroll-padding-top');
   }
@@ -236,6 +239,53 @@
     initGumshoe();
 
     // ── Dropdown ───────────────────────────────────────────────────────────
+    // Hintergrund inert (R-77, OVL-4/A11Y-2): Solange die Liste offen ist,
+    // sind Inhalt, Footer und Skip-Links weder per Tab erreichbar noch für
+    // Screenreader da. Die Leiste liegt tief in #main, deshalb werden entlang
+    // ihrer Vorfahren die Geschwister gesperrt, nicht nur die Kinder von
+    // <body>. Ausgenommen: Leiste und Scrim (Light Dismiss per Klick), der
+    // Masthead (liegt über dem Scrim und bleibt bedienbar, wie beim Drawer),
+    // Skripte und Live-Regionen. Gesetzt erst nach dem Aufklappen: inert
+    // berechnet die Stile der Seite neu, das soll nicht in die
+    // max-height-Animation fallen (gleiche Überlegung wie im Drawer).
+    let inerted = null;
+    let inertTimer = null;
+
+    function cancelInert() {
+      if (inertTimer) { clearTimeout(inertTimer); inertTimer = null; }
+      if (stickyDropdown) { stickyDropdown.removeEventListener('transitionend', onOpenEnd); }
+    }
+
+    function setBackgroundInert() {
+      cancelInert();
+      if (inerted || !isDropdownOpen) { return; }
+      const keep = new Set();
+      [stickyToc, stickyOverlay].forEach(function (el) {
+        for (let n = el; n && n !== document.body; n = n.parentElement) { keep.add(n); }
+      });
+      inerted = [];
+      keep.forEach(function (n) {
+        Array.prototype.forEach.call(n.parentElement.children, function (el) {
+          if (keep.has(el) || el.inert || el.tagName === 'SCRIPT' || el.classList.contains('masthead')
+            || el.matches('[aria-live], [role="status"], [role="alert"]')) { return; }
+          el.inert = true;
+          inerted.push(el);
+        });
+      });
+    }
+
+    function releaseBackground() {
+      cancelInert();
+      if (!inerted) { return; }
+      inerted.forEach(function (el) { el.inert = false; });
+      inerted = null;
+    }
+    releaseInert = releaseBackground;
+
+    function onOpenEnd(e) {
+      if (e.target === stickyDropdown && e.propertyName === 'max-height') { setBackgroundInert(); }
+    }
+
     function openDropdown() {
       isDropdownOpen = true;
       stickyToggle.setAttribute('aria-expanded', 'true');
@@ -243,6 +293,9 @@
       stickyOverlay.classList.add('is-visible');
       stickyOverlay.setAttribute('aria-hidden', 'false');
       document.body.style.overflow = 'hidden';
+      cancelInert();
+      if (stickyDropdown) { stickyDropdown.addEventListener('transitionend', onOpenEnd); }
+      inertTimer = setTimeout(setBackgroundInert, 400); // Fallback (Aufklappen: $duration-moderate)
     }
 
     function closeDropdown() {
@@ -253,6 +306,7 @@
       stickyOverlay.classList.remove('is-visible');
       stickyOverlay.setAttribute('aria-hidden', 'true');
       document.body.style.overflow = '';
+      releaseBackground();
     }
 
     // Per Enter/Leertaste geöffnet (click mit detail 0): Fokus auf den ersten

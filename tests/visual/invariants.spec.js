@@ -128,9 +128,19 @@ test.describe('Sticky-TOC-Dropdown (A11Y-2)', () => {
     await expect(toggle).toHaveAttribute('aria-expanded', 'true');
     await expect(page.locator('#toc-sticky-dropdown a[href]').first()).toBeFocused();
     expect((await focusedIsVisible(page)).ok).toBe(true);
+    // R-77: Hintergrund inert, Leiste, Scrim und Masthead bleiben bedienbar
+    const inertState = () => page.evaluate(() => {
+      const inert = (sel) => !!document.querySelector(sel).closest('[inert]');
+      return {
+        footer: inert('.page__footer'), titel: inert('.page__title, h1'),
+        leiste: inert('#toc-sticky-mobile'), scrim: inert('#toc-sticky-overlay'), masthead: inert('.masthead'),
+      };
+    });
+    await expect.poll(inertState).toEqual({ footer: true, titel: true, leiste: false, scrim: false, masthead: false });
     await page.keyboard.press('Escape');
     await expect(toggle).toHaveAttribute('aria-expanded', 'false');
     await expect(toggle).toBeFocused();
+    expect(await page.evaluate(() => document.querySelectorAll('[inert]').length)).toBe(0);
   });
 
   test('Zeiger: Fokus bleibt am Toggle', async ({ page }) => {
