@@ -77,7 +77,10 @@
     // Button läuft so gar nicht erst in den Footer und springt dann raus).
     // scrollY wird im Scroll-Event gelesen (vor allen rAF-Callbacks), der
     // rAF-Callback schreibt nur (PERF-8).
-    const onFrame = utils().rafThrottle(function () { checkVisibility(lastScrollY); });
+    const onFrame = utils().rafThrottle(function () {
+      if (signal.aborted) return;   // Frame nach dem Teardown verfällt (SPA-3)
+      checkVisibility(lastScrollY);
+    });
     window.addEventListener('scroll', function () {
       lastScrollY = window.scrollY;
       onFrame();

@@ -21,6 +21,9 @@
   let heroSignal = null;
   let heroObserver = null;
   let bgPreloaded = false;
+  /** Power-Hinweis geplant, aber noch nicht gezeigt: Timer-ID (0, solange er auf `load` wartet) */
+  let powerHintPending = false;
+  let powerHintTimer = 0;
 
   const HERO_CRT_BOOT_KEY = 'auflinie:hero-crt:boot';
   const HERO_TUBE_BOOT_NAMES = ['hero-tube-boot-stark', 'hero-tube-boot-dezent'];
@@ -472,8 +475,11 @@
     try { if (sessionStorage.getItem('auflinie:hero-crt:power-hinted') === '1') return; } catch (e) { /* noop: Storage gesperrt (privater Modus) */ }
     if (window.__auflinieHeroCrtHintScheduled) return;
     window.__auflinieHeroCrtHintScheduled = true;
+    powerHintPending = true;
     const fire = function () {
-      window.setTimeout(function () {
+      powerHintTimer = window.setTimeout(function () {
+        powerHintTimer = 0;
+        powerHintPending = false;
         const btn = document.getElementById('hero-crt-power');
         if (!btn) { window.__auflinieHeroCrtHintScheduled = false; return; } // kein Button -> später erneut zulassen
         btn.classList.add('hero-crt-power--hint');
@@ -485,7 +491,15 @@
       }, 1200);
     };
     if (document.readyState === 'complete') fire();
-    else window.addEventListener('load', fire, { once: true });
+    else window.addEventListener('load', fire, { once: true, signal: heroSignal });
+  }
+
+  /** Teardown (SPA-3): geplanten Hinweis verwerfen, der nächste Mount plant ihn neu */
+  function cancelPowerHint() {
+    if (!powerHintPending) return;
+    if (powerHintTimer) { window.clearTimeout(powerHintTimer); powerHintTimer = 0; }
+    powerHintPending = false;
+    window.__auflinieHeroCrtHintScheduled = false;
   }
 
   /**
@@ -535,7 +549,10 @@
 
     if (!heroes.length) return;
 
-    if (heroController) heroController.abort();          // Doppel-Mount absichern
+    if (heroController) {                                // Doppel-Mount absichern
+      heroController.abort();
+      cancelPowerHint();                                 // load-Warten hing am alten Signal, unten neu planen
+    }
     heroController = new AbortController();
     heroSignal = heroController.signal;
 
@@ -561,7 +578,8 @@
       el.classList.remove(HERO_OFFSCREEN_CLASS);
     });
     if (heroObserver) { heroObserver.disconnect(); heroObserver = null; } // Observer-Leak zu
-    if (heroController) { heroController.abort(); heroController = null; heroSignal = null; } // visibilitychange weg
+    if (heroController) { heroController.abort(); heroController = null; heroSignal = null; } // visibilitychange und load-Warten weg
+    cancelPowerHint();
   }
 
   // Kontrakt über spaModule: mount bei jedem spa:load (initial + Swap-in),

@@ -216,7 +216,10 @@
     // Scroll-Listener sie anfordern, deshalb wird der Listener nach dem
     // Anlegen von Gumshoe neu gebunden (bindScroll in initGumshoe).
     let lastScrollY = window.scrollY;
+    // Nach dem Teardown verfällt ein noch angeforderter Frame (SPA-3): er
+    // schriebe sonst scroll-padding-top an <html> der neuen Seite.
     const onScrollFrame = utils().rafThrottle(function () {
+      if (mountSignal.aborted) { return; }
       updateStickyVisibility(lastScrollY);
       updateReadingProgress(lastScrollY);
     });
@@ -351,10 +354,12 @@
         isAnimating = true;
         stickyCurrent.classList.add('is-sliding-out');
         window.setTimeout(function () {
+          if (mountSignal.aborted) { return; }
           stickyCurrent.textContent = displayText;
           stickyCurrent.classList.remove('is-sliding-out');
           stickyCurrent.classList.add('is-sliding-in');
           window.setTimeout(function () {
+            if (mountSignal.aborted) { return; }
             stickyCurrent.classList.remove('is-sliding-in');
             isAnimating = false;
           }, 200);
@@ -377,6 +382,7 @@
     // Initiale Überschrift (nach Gumshoe-Init)
     window.requestAnimationFrame(function () {
       window.setTimeout(function () {
+        if (mountSignal.aborted) { return; }
         const activeLi = originalToc.querySelector('.toc__menu li.active');
         if (activeLi) {
           const link = activeLi.querySelector(':scope > a');
@@ -392,6 +398,7 @@
     window.addEventListener('resize', function () {
       window.clearTimeout(resizeTimeout);
       resizeTimeout = window.setTimeout(function () {
+        if (mountSignal.aborted) { return; }
         cachedMastheadHeight = null;
         updateStickyVisibility();
         updateReadingProgress();
@@ -410,6 +417,7 @@
       let resizeRaf = null;
 
       const updateMaxHeight = function () {
+        if (mountSignal.aborted) { return; }
         if (tocToggle.getAttribute('aria-expanded') === 'true') {
           tocContent.style.maxHeight = tocContent.scrollHeight + 'px';
         }
