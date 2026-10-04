@@ -250,12 +250,13 @@ body.graph-open .skill-graph__canvas-wrap canvas {
   touch-action: none;
 }
 
-// Desktop: breit ($graph-sheet-width, Begründung in variables/_layout.scss),
-// oben bleibt ein Streifen Seite sichtbar. Mobil: volle Breite und Höhe bis
-// knapp unter den Masthead (der Scrim deckt ihn ab, Tippen dort schließt).
+// Höhe überall bis knapp unter den Masthead (Owner 4.10.2026, vorher am
+// Desktop 82vh): der Masthead bleibt sichtbar, kein Vollbild, der Scrim
+// deckt ihn ab (Tippen dort schließt). Desktop: breit ($graph-sheet-width,
+// Begründung in variables/_layout.scss). Mobil: volle Breite.
 // Flache Fenster (Telefon quer, 1024×600): fast volle Höhe, nur ein Streifen
-// Scrim bleibt oben (Light Dismiss). Bis unter den Masthead wäre dort KLEINER
-// als 82vh (390 − 88 − 8 = 294 px gegen 320 px).
+// Scrim bleibt oben (Light Dismiss). Bis unter den Masthead wäre dort zu
+// knapp (390 − 88 − 8 = 294 px).
 body.graph-open .skill-graph__panel {
   position: fixed;
   left: 50%;
@@ -263,7 +264,7 @@ body.graph-open .skill-graph__panel {
   z-index: $z-sheet-panel;
   box-sizing: border-box;
   width: min(#{$graph-sheet-width}, 94vw);
-  height: 82vh;
+  height: calc(100vh - var(--masthead-height) - #{$space-2});
   margin: 0;
   transform: translateX(-50%);
   border: 1px solid $console-panel-border;
@@ -276,14 +277,13 @@ body.graph-open .skill-graph__panel {
   transition: opacity $duration-base ease;
   animation: graph-sheet-up $duration-moderate $ease-decelerate;
 
+  // dvh folgt der sichtbaren Fläche, wenn die Browserleiste ein-/ausfährt
+  @supports (height: 100dvh) {
+    height: calc(100dvh - var(--masthead-height) - #{$space-2});
+  }
+
   @include down(md) {
     width: 100%;
-    height: calc(100vh - var(--masthead-height) - #{$space-2});
-
-    // dvh folgt der sichtbaren Fläche, wenn die Browserleiste ein-/ausfährt
-    @supports (height: 100dvh) {
-      height: calc(100dvh - var(--masthead-height) - #{$space-2});
-    }
   }
 
   @include down-height(short) {
