@@ -195,7 +195,7 @@
   # Themen-Gruppen mit Kontextzeile: pro Gruppe Kern-Skills (core) und dahinter
   # die ergänzende Breite (breadth) – keine Level-Rangordnung, nur eine dezente
   # visuelle Zweiteilung. Chips sind interaktiv (Klick zeigt Verbindungen über
-  # gemeinsame Projekte, siehe _data/skill_graph.yml, docs/README-skill-feature.md);
+  # gemeinsame Projekte, siehe _data/skill_graph.yml, docs/features/skill-feature.md);
   # generische Basis-Skills (git, docker …) sind dort bewusst kantenlos (foundations).
   skill_groups:
     - group: "Machine Learning & Data"
