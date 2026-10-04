@@ -134,6 +134,8 @@ test.describe('Blog-Hinweis im Top Layer (Z-1, früher R-10)', () => {
   test('modal über dem Masthead, Escape schließt und merkt sich das', async ({ page }) => {
     await page.goto('/auflinie/posts/', { waitUntil: 'load' });
     const box = page.locator('#blog-notice');
+    // Nur prüfbar, solange ein Hinweis eingeschaltet ist (blog_notice.enabled in _pages/posts.md)
+    test.skip(await box.count() === 0, 'Blog-Hinweis ausgeschaltet');
     await expect(box).toHaveJSProperty('open', true);
     expect(await box.evaluate((el) => el.matches(':modal'))).toBe(true);
     await expect(page.locator('#blog-notice-close')).toBeFocused();

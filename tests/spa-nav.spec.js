@@ -147,18 +147,18 @@ const spaMounts = (page) => page.evaluate(() => window.__spaMounts);
 test.describe('spaModule-Kontrakt — genau ein Mount pro Modul', () => {
   test('Erstaufbau mit spa-nav.js: nur das initiale spa:load mountet', async ({ page }) => {
     await trackSpaModuleMounts(page);
-    await page.goto(`${BASE}/posts/`);
+    await page.goto(`${BASE}/cv/`);
     await page.waitForFunction(() => window.__spaNavActive === true, null, { timeout: 7000 });
     await page.waitForTimeout(300);
     const mounts = await spaMounts(page);
-    expect(mounts.length).toBeGreaterThan(0);                   // blog-notice.js ist registriert
+    expect(mounts.length).toBeGreaterThan(0);                   // Skill-Feature-Module sind registriert
     for (const calls of mounts) expect(calls).toEqual(['initial-content']);
   });
 
   test('ohne spa-nav.js: der PE-Fallback mountet einmal auf document', async ({ page }) => {
     await trackSpaModuleMounts(page);
     await page.route('**/assets/js/spa-nav.js', (route) => route.abort());
-    await page.goto(`${BASE}/posts/`);
+    await page.goto(`${BASE}/cv/`);
     await page.waitForTimeout(300);
     expect(await page.evaluate(() => window.__spaNavActive)).toBeFalsy();
     const mounts = await spaMounts(page);
@@ -170,8 +170,8 @@ test.describe('spaModule-Kontrakt — genau ein Mount pro Modul', () => {
     await trackSpaModuleMounts(page);
     await gotoHome(page);
     expect(await spaMounts(page)).toEqual([]);                  // Startseite: kein spaModule-Nutzer
-    await page.click('.greedy-nav .visible-links a[href$="/posts/"]');
-    await expect(page).toHaveURL(new RegExp(`${BASE}/posts/?$`));
+    await page.click('.greedy-nav .visible-links a[href$="/cv/"]');
+    await expect(page).toHaveURL(new RegExp(`${BASE}/cv/?$`));
     expect(await survivedSwap(page)).toBe(true);
     await expect.poll(async () => (await spaMounts(page)).length).toBeGreaterThan(0);
     await page.waitForTimeout(300);

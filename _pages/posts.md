@@ -4,7 +4,7 @@ excerpt: "Notizen aus Technik und Alltag – was ich baue, lerne und ausprobiere
 permalink: /posts/
 blog_search: true
 blog_notice:
-  enabled: true
+  enabled: false # Sommerpause vorbei, ausgeschaltet 4. 10. 2026. Neuer Hinweis: Text und neue id setzen, dann true
   id: "sommerpause-2026"
   title: "Sommerpause"
   text: "Aktuell entstehen keine neuen Beiträge – die bestehenden Inhalte bleiben natürlich verfügbar."
