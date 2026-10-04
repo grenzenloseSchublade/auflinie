@@ -12,14 +12,13 @@
 
   // site-utils.js liefert die Helfer. Fallback, falls sie fehlen (z. B. altes
   // HTML aus dem HTTP-Cache trifft kurz nach einem Deploy auf neues Skript):
-  // dann ohne Drosselung und ohne Reduced-Motion-Abfrage, aber ohne Absturz.
+  // dann ohne Drosselung und mit reduzierter Bewegung (Sprung statt Gleiten),
+  // aber ohne Absturz.
   function utils() {
     return window.AuflinieUtils || {
       rafThrottle: function (fn) { return fn; },
       onDocumentResize: function (fn, signal) { fn(); window.addEventListener('resize', fn, { signal: signal }); },
-      prefersReducedMotion: function () {
-        return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
-      },
+      prefersReducedMotion: function () { return true; },   // ohne Helfer: Bewegung reduziert
     };
   }
   const SCROLL_THRESHOLD = 888, MIN_RATIO = 1.5, FOOTER_GAP = 24;

@@ -13,14 +13,34 @@
   'use strict';
 
   /**
-   * Live-Abfrage der Systemeinstellung „Bewegung reduzieren“. Ohne
-   * matchMedia gilt: keine Einschränkung.
+   * Systemeinstellung „Bewegung reduzieren“ als Live-Abfrage (STYLEGUIDE
+   * BEW-1a). Einzige Stelle im JS, die die Media-Query nennt, Nutzer lesen
+   * prefersReducedMotion() oder hören über onReducedMotionChange mit.
+   * Fehlt AuflinieUtils ganz (älteres HTML aus dem HTTP-Cache), behandeln
+   * die Nutzer das als „Bewegung reduzieren“.
+   */
+  const reducedMotionQuery = global.matchMedia
+    ? global.matchMedia('(prefers-reduced-motion: reduce)')
+    : null;
+
+  /**
+   * Ohne matchMedia gilt: keine Einschränkung.
    * @returns {boolean}
    */
   function prefersReducedMotion() {
-    return global.matchMedia
-      ? global.matchMedia('(prefers-reduced-motion: reduce)').matches
-      : false;
+    return reducedMotionQuery ? reducedMotionQuery.matches : false;
+  }
+
+  /**
+   * Ruft fn bei jedem Umschalten der Einstellung auf (Ereignis `change`).
+   * Ohne matchMedia oder ohne addEventListener an der Abfrage (sehr alte
+   * Browser) passiert nichts.
+   * @param {function(Event): void} fn
+   * @param {AbortSignal} [signal] beendet den Listener (Teardown)
+   */
+  function onReducedMotionChange(fn, signal) {
+    if (!reducedMotionQuery || !reducedMotionQuery.addEventListener) return;
+    reducedMotionQuery.addEventListener('change', fn, { signal: signal });
   }
 
   /**
@@ -77,6 +97,7 @@
 
   global.AuflinieUtils = {
     prefersReducedMotion: prefersReducedMotion,
+    onReducedMotionChange: onReducedMotionChange,
     rafThrottle: rafThrottle,
     onDocumentResize: onDocumentResize,
     mq: mq,

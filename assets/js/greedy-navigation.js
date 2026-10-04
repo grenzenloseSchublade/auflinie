@@ -277,15 +277,17 @@
     // innerhalb der Transition raus (_view-transition.scss). Nur ohne VT
     // (Firefox, reduced motion) wie früher schließen —
     // fire-and-forget parallel zur nativen Navigation.
-    // Die matchMedia-Bedingung spiegelt exakt das @view-transition-Gate
-    // aus _view-transition.scss — beide müssen synchron bleiben. Seit dem
-    // Un-Gaten auf alle Viewports (Cross-Doc-VT überall) ist die max-width-
-    // Beschränkung raus; nur noch reduced-motion gated.
-    const vtGate = window.matchMedia('(prefers-reduced-motion: no-preference)');
-
+    // Die Bedingung spiegelt das @view-transition-Gate aus
+    // _view-transition.scss, (prefers-reduced-motion: no-preference) —
+    // beide müssen synchron bleiben. Browser mit PageSwapEvent kennen die
+    // Media-Query, dort ist das Gate genau !prefersReducedMotion() (Helfer
+    // aus site-utils.js, BEW-1a). Ohne Helfer gilt „Bewegung reduzieren“,
+    // der Drawer schließt wie in Firefox. Seit dem Un-Gaten auf alle
+    // Viewports (Cross-Doc-VT überall) ist die max-width-Beschränkung raus.
     hlinks.addEventListener('click', function(e) {
       if (e.target.tagName !== 'A' && !e.target.closest('a')) return;
-      if (!('PageSwapEvent' in window) || !vtGate.matches) {
+      const utils = window.AuflinieUtils;
+      if (!('PageSwapEvent' in window) || !utils || utils.prefersReducedMotion()) {
         closeMenu();
       }
     });

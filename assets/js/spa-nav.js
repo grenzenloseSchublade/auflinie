@@ -330,7 +330,9 @@
   // finishSwap/Cleanup ueberholen koennte. Die Balance spa:load<->spa:unload ist
   // damit strukturell garantiert, nicht per Race-Guard erkauft.
   function swap(doc, href, push, fromPath) {
-    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    // Helfer aus site-utils.js (BEW-1a), ohne ihn gilt „Bewegung reduzieren“:
+    // stiller Swap wie in Firefox.
+    const reduce = !window.AuflinieUtils || window.AuflinieUtils.prefersReducedMotion();
     const drawerOpen = !!(window.__tvSwitch &&
       typeof window.__tvSwitch.drawerOpen === 'function' && window.__tvSwitch.drawerOpen());
 

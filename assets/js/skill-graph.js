@@ -30,13 +30,19 @@
  * Verhalten: Lazy-Init beim ersten Öffnen; die rAF-Loop läuft nur nach dem
  * Ziehen eines Knotens (Nachschwingen, < 5 s) und stoppt bei
  * visibilitychange/Zuklappen; prefers-reduced-motion setzt den gezogenen
- * Knoten direkt ohne Nachschwingen. Auswahl läuft
+ * Knoten direkt ohne Nachschwingen (Helfer aus site-utils.js). Auswahl läuft
  * über den Event-Vertrag `auflinie:skill-select` (source 'graph').
  * Farben: Cyan für Inhalt (Kanten, Verwandtschaft), Magenta nur für die
  * aktive Auswahl (Interaktionszustand, Design-Regel).
  */
 (function () {
   'use strict';
+
+  // Systemeinstellung „Bewegung reduzieren“ über site-utils.js (BEW-1a).
+  // Ohne Helfer gilt sie als gesetzt: Die Simulation springt in die Ruhelage.
+  function reducedMotion() {
+    return !window.AuflinieUtils || window.AuflinieUtils.prefersReducedMotion();
+  }
 
   const SOURCE = 'graph';
   const CYAN = '5, 217, 232';
@@ -115,7 +121,6 @@
     this.gesture = null;
     this.pointers = {};
     this.labelRects = [];
-    this.reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
     const signal = { signal: this.abort.signal };
     this.toggle.addEventListener('click', this.onToggle.bind(this), signal);
@@ -301,7 +306,9 @@
     if (this.fitBtn) {
       this.fitBtn.addEventListener('click', this.fit.bind(this), canvasSignal);
     }
-    this.reduceMotion.addEventListener('change', this.startOrStill.bind(this), { signal: this.abort.signal });
+    if (window.AuflinieUtils) {
+      window.AuflinieUtils.onReducedMotionChange(this.startOrStill.bind(this), this.abort.signal);
+    }
     this.initialized = true;
     // Vor dem Öffnen gewählten Chip nachziehen (sonst öffnet der Graph ohne
     // Markierung, obwohl ein Skill aktiv ist).
@@ -322,7 +329,7 @@
   SkillGraph.prototype.startOrStill = function () {
     if (!this.sim || this.panel.hidden) { return; }
     this.stopLoop();
-    if (this.reduceMotion.matches) {
+    if (reducedMotion()) {
       this.sim.runToEnd();
       this.render();
     } else if (!this.sim.isSettled()) {
@@ -399,7 +406,7 @@
   // Persistent-Shell-Teardown (spa:unload): alle dokumentweiten Ressourcen lösen.
   // this.abort deckt die per {signal} gebundenen Listener ab (Toggle, Canvas-
   // Pointer, Kopfleisten-Knöpfe, document skill-select/visibilitychange/
-  // keydown, reduceMotion); Observer/rAF/Resize-Timer separat. Guards, falls
+  // keydown, Wechsel der Bewegungs-Einstellung); Observer/rAF/Resize-Timer separat. Guards, falls
   // der Konstruktor früh zurückkehrte (fehlende Elemente) oder build() nie lief.
   SkillGraph.prototype.destroy = function () {
     if (this.abort) { this.abort.abort(); }
@@ -971,7 +978,7 @@
     const p = this.toLayout(pos.x, pos.y);
     node.fx = p.x;
     node.fy = p.y;
-    if (this.reduceMotion.matches) {
+    if (reducedMotion()) {
       node.x = node.fx; node.y = node.fy; node.vx = 0; node.vy = 0;
       this.render();
     } else {

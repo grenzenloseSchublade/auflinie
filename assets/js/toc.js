@@ -21,15 +21,13 @@
 
   // site-utils.js liefert die Helfer. Fallback, falls sie fehlen (z. B. altes
   // HTML aus dem HTTP-Cache trifft kurz nach einem Deploy auf neues Skript):
-  // dann ohne Drosselung und ohne Breakpoints (Verhalten wie auf dem Desktop,
-  // kein Sticky-TOC), aber ohne Absturz.
+  // dann ohne Drosselung, ohne Breakpoints (Verhalten wie auf dem Desktop,
+  // kein Sticky-TOC) und mit reduzierter Bewegung, aber ohne Absturz.
   function utils() {
     return window.AuflinieUtils || {
       rafThrottle: function (fn) { return fn; },
       onDocumentResize: function (fn, signal) { fn(); window.addEventListener('resize', fn, { signal: signal }); },
-      prefersReducedMotion: function () {
-        return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
-      },
+      prefersReducedMotion: function () { return true; },   // ohne Helfer: Bewegung reduziert
     };
   }
 

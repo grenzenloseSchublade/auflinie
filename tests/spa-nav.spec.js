@@ -263,3 +263,26 @@ test.describe('Teardown — kein Listener-Leck über Swaps', () => {
     expect(await listenerCounts()).toEqual(nachRunde1);
   });
 });
+
+// Reduced Motion (STYLEGUIDE BEW-1a): Der Swap fragt die Einstellung über
+// AuflinieUtils.prefersReducedMotion ab. Mit Bewegung blendet eine View
+// Transition über, unter „reduce“ tauscht er still.
+test.describe('Reduced Motion beim Swap', () => {
+  for (const [reducedMotion, erwartet] of [['no-preference', 1], ['reduce', 0]]) {
+    test(`${reducedMotion}: ${erwartet} View Transition`, async ({ browser }) => {
+      const ctx = await browser.newContext({ reducedMotion });
+      const page = await ctx.newPage();
+      await gotoHome(page);
+      await page.evaluate(() => {
+        window.__vt = 0;
+        const orig = document.startViewTransition && document.startViewTransition.bind(document);
+        if (orig) document.startViewTransition = (cb) => { window.__vt += 1; return orig(cb); };
+      });
+      await page.click('.greedy-nav .visible-links a[href$="/about/"]');
+      await expect(page).toHaveURL(new RegExp(`${BASE}/about/?$`));
+      expect(await survivedSwap(page)).toBe(true);
+      expect(await page.evaluate(() => window.__vt)).toBe(erwartet);
+      await ctx.close();
+    });
+  }
+});
