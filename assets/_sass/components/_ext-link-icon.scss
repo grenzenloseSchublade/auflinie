@@ -6,7 +6,14 @@
 // Inline-SVG mit currentColor: Linkfarbe auch im Hover. Der Wortverbinder
 // U+2060 vor dem SVG verhindert den Umbruch zwischen letztem Wort und
 // Symbol, der Abstand kommt deshalb als margin und nicht als Leerzeichen.
+// Hinter dem Wortverbinder, also vor dem SVG, brechen Chromium, Firefox
+// und WebKit trotzdem um (das SVG ist ein atomares Inline-Element). Das
+// verhindert nowrap am Span.
 // Ein SVG trägt keine Unterstreichung, die Linie endet am Wort.
+.ext-link-icon {
+  white-space: nowrap;
+}
+
 .ext-link-icon svg {
   display: inline-block;
   width: $fs-icon-external;

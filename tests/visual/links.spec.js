@@ -35,6 +35,9 @@ test.describe('Externe Links im neuen Tab mit Hinweis (LINK-3)', () => {
     // Breite auf derselben Zeile wie der letzte Buchstabe des Linktexts
     const fails = await page.evaluate(() => {
       const p = document.querySelector('.guide-banner__text');
+      // Ohne Übergang: Eine überblendete Breite (bis Oktober 2026 das
+      // Theme-transition: all am <p>) ließe die Messung bei der Ausgangsbreite
+      p.style.transition = 'none';
       const a = p.querySelector('a[target="_blank"]');
       const icon = a.querySelector('.ext-link-icon svg');
       const text = [...a.childNodes].find((n) => n.nodeType === Node.TEXT_NODE);

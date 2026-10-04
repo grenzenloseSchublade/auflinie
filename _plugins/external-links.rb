@@ -7,8 +7,9 @@
 #   - target="_blank" und rel mit noopener und noreferrer (vorhandene
 #     rel-Werte wie me oder nofollow bleiben)
 #   - ein Pfeil-aus-Kasten-Symbol als Inline-SVG (aria-hidden, currentColor).
-#     Ein Wortverbinder (U+2060) davor verhindert den Umbruch zwischen
-#     letztem Wort und Symbol
+#     Ein Wortverbinder (U+2060) davor und white-space: nowrap am Span
+#     (_ext-link-icon.scss) verhindern den Umbruch zwischen letztem Wort
+#     und Symbol
 #   - den Hinweis „öffnet in neuem Tab“ für Screenreader: als
 #     .visually-hidden-Text oder, wenn der Link ein aria-label trägt, im
 #     aria-label (das überdeckt den Linktext)
