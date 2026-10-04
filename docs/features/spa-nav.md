@@ -245,10 +245,11 @@ umgebaut werden, bevor die Seite verdrahtet wird.
 5. **Pfad in `isWired`** aufnehmen.
 6. **Testen:** [`tests/spa-nav.spec.js`](../../tests/spa-nav.spec.js) um die
    Seite erweitern (Swap hin und zurück, Interaktion nach Swap, Zahl der
-   `mount`-Aufrufe). Die Suite läuft in Chromium, Firefox (mit und ohne
-   `reduce`) und WebKit (nur `reduce`, siehe `tests/README.md`). Im echten
-   Browser dazu: kein Listener-Leak über N Swaps (`getEventListeners`/
-   Heap-Diff), Zurück/Vor, bfcache, Fokus, Offline.
+   `mount`-Aufrufe, gleich viele `window`-/`document`-Listener über
+   Swap-Runden, Letzteres nur in Chromium). Die Suite läuft in Chromium,
+   Firefox (mit und ohne `reduce`) und WebKit (nur `reduce`, siehe
+   `tests/README.md`). Im echten Browser dazu: Heap-Diff über N Swaps,
+   Zurück/Vor, bfcache, Fokus, Offline.
 
 ---
 

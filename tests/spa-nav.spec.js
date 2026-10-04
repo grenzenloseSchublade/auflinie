@@ -267,8 +267,12 @@ test.describe('spaModule-Kontrakt — genau ein Mount pro Modul', () => {
 // /about/ wieder mounten (author-follow, back-to-top), räumen dort auch
 // ohne Teardown auf. Ein leerer Teardown fällt nur bei Modulen auf, die
 // /about/ nicht lädt (Probe: toc.js mit leerem Teardown, window 44 → 48).
+// Nur Chromium: Firefox und WebKit haben kein CDP und kein anderes Mittel,
+// Listener von außen zu zählen. Die Module sind engine-unabhängig, ein
+// Leck fiele schon in Chromium auf.
 test.describe('Teardown — kein Listener-Leck über Swaps', () => {
-  test('Listener an window und document bleiben über drei Runden gleich', async ({ page }) => {
+  test('Listener an window und document bleiben über drei Runden gleich', async ({ page, browserName }) => {
+    test.skip(browserName !== 'chromium', 'Listener-Zählung braucht CDP (nur Chromium)');
     await gotoHome(page);
     const cdp = await page.context().newCDPSession(page);
     async function listenerCounts() {
@@ -301,10 +305,15 @@ test.describe('Teardown — kein Listener-Leck über Swaps', () => {
 
 // Reduced Motion (STYLEGUIDE BEW-1a): Der Swap fragt die Einstellung über
 // AuflinieUtils.prefersReducedMotion ab. Mit Bewegung blendet eine View
-// Transition über, unter „reduce“ tauscht er still.
+// Transition über, unter „reduce“ tauscht er still. Der eigene Kontext
+// setzt die Einstellung unabhängig vom Projekt. WebKit läuft ohne Bewegung
+// nicht: Dort kommt der Update-Callback der View Transition im Container
+// erst nach Sekunden (Register R-87, deshalb nur das Projekt webkit-reduce).
 test.describe('Reduced Motion beim Swap', () => {
   for (const [reducedMotion, erwartet] of [['no-preference', 1], ['reduce', 0]]) {
-    test(`${reducedMotion}: ${erwartet} View Transition`, async ({ browser }) => {
+    test(`${reducedMotion}: ${erwartet} View Transition`, async ({ browser, browserName }) => {
+      test.skip(browserName === 'webkit' && reducedMotion === 'no-preference',
+        'View Transition in WebKit ohne GPU zu langsam (R-87)');
       const ctx = await browser.newContext({ reducedMotion });
       const page = await ctx.newPage();
       await gotoHome(page);

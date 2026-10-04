@@ -19,8 +19,9 @@ Drei Gruppen, alle mit Playwright:
     Bekannte Befunde stehen in `visual/a11y-known.json`, nur neue Verstöße brechen ab.
   - `invariants.spec.js`: Verhalten statt Aussehen. Fokusführung, `aria-expanded`, `inert`,
     Escape und Light Dismiss an Drawer, Autor- und TOC-Dropdown und Skill-Graph-Sheet, der
-    Blog-Hinweis im Top Layer, kein unsichtbares Element mit Tastaturfokus und die
-    Breakpoint-Grenzen 767/768 und 1023/1024.
+    Blog-Hinweis im Top Layer, kein unsichtbares Element mit Tastaturfokus, die
+    Breakpoint-Grenzen 767/768 und 1023/1024 und dass Touch nach dem Antippen keinen
+    Theme-Hover festhält (BP-3).
 
 Alles läuft in der CI im Build-Job (Schritt „Style-Guide-Review“) und blockiert bei Fehlern den Deploy.
 
@@ -48,6 +49,10 @@ Die Projekte stehen in `playwright.config.js`:
   Transition kommt im Container erst nach 3 bis 5 s, unter Parallel-Last nach über
   15 s (STYLEGUIDE Register R-87). Der stille Tausch ist derselbe Code ohne View
   Transition, die prüfen Chromium und Firefox.
+- Die Listener-Zählung über Swap-Runden in `spa-nav.spec.js` (STYLEGUIDE SPA-3)
+  braucht das Chrome-DevTools-Protokoll und läuft nur in Chromium. Der Vergleich
+  „mit und ohne Bewegung“ (BEW-1a) setzt die Einstellung im eigenen Kontext und
+  lässt in WebKit den Fall mit Bewegung aus (R-87).
 - WebKit blockt den `speculationrules`-Block per CSP (Register R-86).
   `vendor.spec.js` nimmt genau diese Meldungen in WebKit aus.
 - Laufzeit der vollen Suite mit 2 Workern auf 4 Kernen (wie ein GitHub-Runner):
