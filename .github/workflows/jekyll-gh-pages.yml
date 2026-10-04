@@ -13,13 +13,18 @@ on:
 permissions:
   contents: read
 
+# Eine Gruppe je Ref: Ein neuer Lauf bricht nur den älteren Lauf desselben
+# Branches ab. Mit einer gemeinsamen Gruppe brach ein manueller Start auf
+# einem Test-Branch einen laufenden Produktions-Deploy von main ab.
+# Deployt wird ohnehin nur main/master (Job deploy).
 concurrency:
-  group: "pages"
+  group: pages-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
   lint:
     runs-on: ubuntu-26.04 # fest statt ubuntu-latest (Image-Wechsel bewusst und getestet nachziehen)
+    timeout-minutes: 10 # hängt ein Schritt, endet der Job nach 10 statt nach 360 min (Standard)
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -55,6 +60,7 @@ jobs:
 
   build:
     runs-on: ubuntu-26.04 # fest statt ubuntu-latest (Image-Wechsel bewusst und getestet nachziehen)
+    timeout-minutes: 30 # Reserve für Image-Download und Playwright (etwa 3 min)
     permissions:
       contents: read
       pages: read   # configure-pages liest die Pages-Konfiguration
@@ -101,6 +107,22 @@ jobs:
       # Fixture für Gastbeiträge (published: false), nur im Review-Build
       - name: Gate – Test-Gastbeitrag nie im Deploy (STYLEGUIDE.md INH-5)
         run: test ! -e _site/posts/test-gastbeitrag && ! grep -rqF "Test-Gastbeitrag" _site
+      - name: CSP-Prüfung (gebaute Seiten)
+        run: python3 scripts/csp-check.py _site
+      # Interne Links und Anker, Bilder (Datei vorhanden, alt gesetzt) und
+      # Skripte (Datei vorhanden) im Deploy-Build (STYLEGUIDE.md ARCH-5)
+      - name: Interne Links, Bilder und Skripte (html-proofer)
+        run: bundle exec htmlproofer _site --disable-external --no-enforce-https --checks Links,Images,Scripts --swap-urls "^/auflinie/:/"
+      # Das Deploy-Artefakt entsteht VOR dem Playwright-Schritt: Der Container
+      # läuft als root mit dem ganzen Arbeitsverzeichnis und installiert per
+      # npm ci Fremdcode. Was er danach schreibt, erreicht weder _site im
+      # Artefakt noch die Prüfskripte oben. Schlägt das Review fehl, deployt
+      # der Job deploy trotzdem nicht (needs: build), das Artefakt verfällt
+      # nach einem Tag.
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5
+        with:
+          retention-days: 1
       - name: Review-Build mit Styleguide-Ansicht (wird nicht deployt)
         run: bundle exec jekyll build --unpublished -d _site_review
         env:
@@ -129,14 +151,6 @@ jobs:
           name: playwright-report
           path: playwright-report
           retention-days: 1
-      - name: CSP-Prüfung (gebaute Seiten)
-        run: python3 scripts/csp-check.py _site
-      - name: Check internal links
-        run: bundle exec htmlproofer _site --disable-external --no-enforce-https --checks Links --swap-urls "^/auflinie/:/"
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5
-        with:
-          retention-days: 1
 
   deploy:
     # Nur produktive Branches veröffentlichen (Test-Branches: Build ohne Deploy)
@@ -148,6 +162,7 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-26.04 # fest statt ubuntu-latest (Image-Wechsel bewusst und getestet nachziehen)
+    timeout-minutes: 10
     # lint gehört dazu: sonst deployt ein grüner Build trotz rotem Lint-Job
     # (das Style-Guide-Review läuft im Build-Job)
     needs: [build, lint]
