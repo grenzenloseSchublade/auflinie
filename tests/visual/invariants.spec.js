@@ -1,7 +1,7 @@
 // Automatisches Style-Guide-Review, Teil 4: Bedien-Invarianten aus
 // STYLEGUIDE.md 6.2 und 4.4 (A11Y-2, OVL-3, OVL-4, WCAG 2.4.3/2.4.7).
 // Prüft Verhalten, nicht Aussehen: Fokusführung, aria-expanded, inert,
-// Escape und Light Dismiss an Drawer und Skill-Graph-Sheet, Autor-Dropdown, Info-Leiste,
+// Escape und Light Dismiss an Drawer und Skill-Graph-Sheet, Autor- und TOC-Dropdown, Info-Leiste,
 // Einpassen und Zoom im Skill-Graphen, dass kein
 // unsichtbares Element den Tastaturfokus bekommt, und die Breakpoint-Grenzen
 // 767/768 und 1023/1024 (STYLEGUIDE 3.4).
@@ -102,6 +102,42 @@ test.describe('Autor-Folgen-Dropdown (A11Y-2)', () => {
     await btn.click();
     await expect(btn).toHaveAttribute('aria-expanded', 'true');
     await expect(btn).toBeFocused();
+  });
+});
+
+// TOC-Dropdown der Sticky-Leiste (toc.js): erscheint unter 1024 px, sobald
+// das Original-TOC aus dem Bild gescrollt ist. Gleiche Fokus-Logik wie der
+// Drawer.
+test.describe('Sticky-TOC-Dropdown (A11Y-2)', () => {
+  test.use({ viewport: MOBIL });
+
+  async function stickyToggle(page) {
+    await page.goto('/auflinie/cv/', { waitUntil: 'load' });
+    await page.evaluate(() => {
+      const toc = document.getElementById('toc-original');
+      window.scrollTo(0, toc.getBoundingClientRect().bottom + window.scrollY + 400);
+    });
+    await expect(page.locator('#toc-sticky-mobile')).toHaveClass(/is-visible/);
+    return page.locator('#toc-sticky-toggle');
+  }
+
+  test('Tastatur: Fokus in die Liste, Escape gibt ihn zurück', async ({ page }) => {
+    const toggle = await stickyToggle(page);
+    await toggle.focus();
+    await page.keyboard.press('Enter');
+    await expect(toggle).toHaveAttribute('aria-expanded', 'true');
+    await expect(page.locator('#toc-sticky-dropdown a[href]').first()).toBeFocused();
+    expect((await focusedIsVisible(page)).ok).toBe(true);
+    await page.keyboard.press('Escape');
+    await expect(toggle).toHaveAttribute('aria-expanded', 'false');
+    await expect(toggle).toBeFocused();
+  });
+
+  test('Zeiger: Fokus bleibt am Toggle', async ({ page }) => {
+    const toggle = await stickyToggle(page);
+    await toggle.click();
+    await expect(toggle).toHaveAttribute('aria-expanded', 'true');
+    await expect(toggle).toBeFocused();
   });
 });
 

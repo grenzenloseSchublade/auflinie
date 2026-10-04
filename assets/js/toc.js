@@ -255,9 +255,18 @@
       document.body.style.overflow = '';
     }
 
+    // Per Enter/Leertaste geöffnet (click mit detail 0): Fokus auf den ersten
+    // Link der Liste (A11Y-2). Bei Maus/Touch bleibt er am Toggle, wie bei
+    // Drawer und Autor-Dropdown: das Theme zeichnet schon bei :focus einen
+    // Ring um Links, nach dem Antippen stünde er ohne Grund am ersten Eintrag.
     if (stickyToggle) {
-      stickyToggle.addEventListener('click', function () {
-        if (isDropdownOpen) { closeDropdown(); } else { openDropdown(); }
+      stickyToggle.addEventListener('click', function (e) {
+        if (isDropdownOpen) { closeDropdown(); return; }
+        openDropdown();
+        if (e.detail === 0 && stickyDropdown) {
+          const first = stickyDropdown.querySelector('a[href]');
+          if (first) { first.focus({ preventScroll: true }); }
+        }
       }, signal);
     }
     if (stickyOverlay) {
