@@ -13,11 +13,16 @@ Prüft jede HTML-Datei unter _site:
   - keine http://-URL (STYLEGUIDE SEC-9) in URL-Attributen (href, src,
     srcset, action, content …), in url() eines <style>-Blocks oder in
     einem HTML-Kommentar. Text und Code-Beispiele zählen nicht, ebenso
-    xmlns-Namensräume (sind Bezeichner, keine Adressen)
+    xmlns-Namensräume (sind Bezeichner, keine Adressen).
+    Ausnahme: ein Hyperlink (<a href>, <area href>) auf http:// ist nur eine
+    WARNUNG mit Exit 0. Er lädt nichts, und ein einzelner alter Link in
+    einem Gastbeitrag soll die Veröffentlichung nicht blockieren. Für
+    Ressourcen (src, srcset, <link href>, url()) und Kommentare bleibt
+    http:// ein Fehler
   - jedes target="_blank" trägt rel="noopener noreferrer" (SEC-9, LINK-3).
     Externe Links bekommen beides beim Build über _plugins/external-links.rb
 
-Nutzung: python3 scripts/csp-check.py [_site]   (Exit 0 = sauber, 1 = Verstoß)
+Nutzung: python3 scripts/csp-check.py [_site]   (Exit 0 = sauber oder nur Warnungen, 1 = Verstoß)
 """
 from html.parser import HTMLParser
 import pathlib
@@ -34,6 +39,8 @@ URL_ATTRS = {"href", "src", "srcset", "action", "formaction", "poster", "data", 
              "background", "content", "imagesrcset"}
 HTTP_RE = re.compile(r"\bhttp://", re.I)
 CSS_HTTP_RE = re.compile(r"url\(\s*['\"]?\s*http://", re.I)
+# Hyperlinks: http:// nur als Warnung (SEC-9), alles andere bleibt Fehler
+LINK_TAGS = {"a", "area"}
 
 
 class HttpScan(HTMLParser):
@@ -43,6 +50,7 @@ class HttpScan(HTMLParser):
     def __init__(self):
         super().__init__(convert_charrefs=True)
         self.hits = []
+        self.warn = []
         self.blank = []
         self.in_style = False
 
@@ -56,7 +64,8 @@ class HttpScan(HTMLParser):
         for name, value in attrs:
             name = name.lower()
             if value and (name in URL_ATTRS or name.endswith(":href")) and HTTP_RE.search(value):
-                self.hits.append(f"<{tag} {name}=\"{value[:80]}\">")
+                target = self.warn if tag in LINK_TAGS and name == "href" else self.hits
+                target.append(f"<{tag} {name}=\"{value[:80]}\">")
 
     def handle_startendtag(self, tag, attrs):
         self.handle_starttag(tag, attrs)
@@ -80,7 +89,7 @@ def main(root: str) -> int:
     if not base.is_dir():
         print(f"csp-check: Verzeichnis {root} fehlt (erst jekyll build)")
         return 1
-    fails, policies, count = [], {}, 0
+    fails, warnings, policies, count = [], [], {}, 0
     for f in sorted(base.rglob("*.html")):
         rel = f.relative_to(base).as_posix()
         if any(rel.startswith(d) for d in SKIP_DIRS):
@@ -118,16 +127,22 @@ def main(root: str) -> int:
         scan.feed(html)
         for hit in scan.hits:
             fails.append(f"{rel}: http://-URL (SEC-9): {hit}")
+        for hit in scan.warn:
+            warnings.append(f"{rel}: http://-Link (SEC-9, besser https://): {hit}")
         for hit in scan.blank:
             fails.append(f"{rel}: target=\"_blank\" ohne rel=\"noopener noreferrer\" (SEC-9): {hit}")
     if len(policies) > 1:
         variants = "\n    ".join(f"{len(v)} Seiten, z. B. {v[0]}" for v in policies.values())
         fails.append(f"CSP nicht auf allen Seiten identisch:\n    {variants}")
+    if warnings:
+        print("WARNUNG (blockiert nicht):")
+        print("\n".join("  " + x for x in warnings))
     if fails:
         print("CSP-VERSTOSS:")
         print("\n".join("  " + x for x in fails))
         return 1
-    print(f"csp-check OK: {count} Seiten, eine einheitliche Policy, keine Inline-Skripte, keine http://-URL, target=_blank nur mit noopener")
+    note = f", {len(warnings)} http://-Link(s) als Warnung" if warnings else ""
+    print(f"csp-check OK: {count} Seiten, eine einheitliche Policy, keine Inline-Skripte, keine http://-Ressource, target=_blank nur mit noopener{note}")
     return 0
 
 

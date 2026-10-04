@@ -1,0 +1,9 @@
+# http://-Hyperlink im Inhalt ist nur eine Warnung (SEC-9, kein Fehlalarm)
+guardrail: csp
+expect: 0
+grep: WARNUNG
+file: tests/guardrails/csp-site/index.html
+mode: replace
+old: <!-- FALL -->
+---
+<a href="http://alt.example.org/" target="_blank" rel="noopener noreferrer">alter Link</a>

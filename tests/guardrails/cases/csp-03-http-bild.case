@@ -1,0 +1,9 @@
+# http://-Bild bleibt ein Fehler (SEC-9)
+guardrail: csp
+expect: 1
+grep: http://-URL \(SEC-9\): <img src
+file: tests/guardrails/csp-site/index.html
+mode: replace
+old: <!-- FALL -->
+---
+<img src="http://example.org/bild.png" alt="Bild">

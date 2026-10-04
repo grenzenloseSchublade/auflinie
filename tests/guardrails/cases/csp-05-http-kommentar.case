@@ -1,0 +1,9 @@
+# http:// in einem HTML-Kommentar bleibt ein Fehler (SEC-9)
+guardrail: csp
+expect: 1
+grep: Kommentar: Quelle http://
+file: tests/guardrails/csp-site/index.html
+mode: replace
+old: <!-- FALL -->
+---
+<!-- Quelle http://example.org/ -->
