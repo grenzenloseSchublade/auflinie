@@ -58,8 +58,7 @@ $graph-tool-size: 32px;
   }
 
   &:focus-visible {
-    outline: 2px solid $hover-color;
-    outline-offset: 2px;
+    @include focus-ring;
   }
 
   &[aria-expanded="true"] {
@@ -134,8 +133,7 @@ $graph-tool-size: 32px;
   }
 
   &:focus-visible {
-    outline: 2px solid $hover-color;
-    outline-offset: 2px;
+    @include focus-ring;
   }
 
   // An der Zoom-Grenze (skill-graph.js publishView): gedämpft, bleibt
@@ -367,8 +365,7 @@ body.graph-open .skill-graph__canvas-wrap {
   }
 
   &:focus-visible {
-    outline: 2px solid $hover-color;
-    outline-offset: 2px;
+    @include focus-ring;
   }
 }
 
