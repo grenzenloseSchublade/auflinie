@@ -45,6 +45,11 @@ Critical-CSS (_layouts/default.html). Wer den Token ändert, zieht beide nach. {
 <meta name="color-scheme" content="dark">
 <meta name="theme-color" content="#252a34">
 
+{% comment %} Hero-Bild: bewusst hier hinten und ohne fetchpriority (PERF-9). Weiter
+     vorn startet Chromium den Abruf trotzdem erst mit dem <body>, weil Bilder
+     mit niedriger Priorität im <head> warten. fetchpriority="high" holt es
+     zwar früher, teilt die Bandbreite dann aber mit CSS und Schriften: FCP
+     gemessen 0,2 s später, und die Lighthouse-Schätzung wird schlechter. {% endcomment %}
 {% if site.background_image %}
 <link rel="preload" as="image" href="{{ site.background_image | relative_url }}">
 {% endif %}

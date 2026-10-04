@@ -94,6 +94,15 @@ document → 'spa:load'    detail: { root, url, initial }  // NACH Content + Scr
    Prüfung erst zur `DOMContentLoaded`/`complete`-Zeit — `spa-nav.js` ist das
    **letzte** `defer`-Skript und setzt `__spaNavActive` erst dann.
 
+**Ausnahme Früh-Mount (nur LCP-kritisch, STYLEGUIDE PERF-9):** Das initiale
+`spa:load` kommt erst, wenn alle Defer-Skripte bis `spa-nav.js` geladen sind.
+`hero-crt.js` setzt das Hero-Bild (LCP) deshalb schon bei der eigenen
+Ausführung: Zustand `interactive` und `__spaNavActive` noch nicht gesetzt heißt
+„erstes Laden, Defer-Phase“. Danach überspringen das initiale `spa:load`
+(`detail.initial === true`) und der PE-Fallback den Mount. Swap-ins, Teardown
+und `pageshow` bleiben beim Kontrakt. Ein per Reconcile nachgeladenes Skript
+sieht `__spaNavActive` und mountet wie jedes Modul erst auf `spa:load`.
+
 ### Standard-Skelett
 
 ```js
