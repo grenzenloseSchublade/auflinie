@@ -174,6 +174,10 @@ exclude:
   - design-reference/ # Design-Referenzen, absichtlich nicht deployt (siehe design-reference/README.md)
   - Lebenslauf-soprasteria/ # VERTRAULICH: Arbeitsdokumente, nie in den Build/Deploy (auch in .gitignore)
   - tests/ # Playwright-Regressionstests (#6) — nicht deployen
+  # Playwright-Artefakte eines lokalen Testlaufs (.gitignore). Ohne diese
+  # Einträge kopiert ein lokaler Build sie nach _site (csp-check schlägt an)
+  - playwright-report/
+  - test-results/
   - playwright.config.js
   - eslint.config.mjs # Lint-Konfiguration, gehört nicht auf die Seite
   - scripts/ # Lint-/Analyse-Werkzeuge, gehören nicht auf die Seite
