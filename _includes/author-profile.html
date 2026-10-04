@@ -6,6 +6,10 @@
     früheren <h3> hält theme-overrides/_author.scss.
   - Button „Folgen“ mit type="button" (HTML-1). Auf- und Zuklappen:
     assets/js/author-follow.js.
+  - Ohne das Include author-profile-custom-links.html am Listenende: das
+    Theme-Include enthält nur ein auskommentiertes
+    Beispiel mit http://-Adresse, das sonst in jeder Seite mit Sidebar
+    landete (SEC-9). Eigene Links stehen in _config.yml unter author.links.
   Eingebunden vom Theme-Layout (Sidebar, author_profile: true).
 {% endcomment -%}
 {% assign locale = include.locale | default: site.locale %}
@@ -250,8 +254,6 @@
           </a>
         </li>
       {% endif %}
-
-      {% include author-profile-custom-links.html %}
     </ul>
   </div>
 </div>

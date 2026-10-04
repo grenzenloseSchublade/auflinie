@@ -10,9 +10,14 @@ Prüft jede HTML-Datei unter _site:
   - keine Inline-Event-Handler (onclick=, onload= ...)
   - die Policy ist auf allen Seiten byte-identisch (spa-nav.js behält die
     Policy der Einstiegsseite)
+  - keine http://-URL (STYLEGUIDE SEC-9) in URL-Attributen (href, src,
+    srcset, action, content …), in url() eines <style>-Blocks oder in
+    einem HTML-Kommentar. Text und Code-Beispiele zählen nicht, ebenso
+    xmlns-Namensräume (sind Bezeichner, keine Adressen)
 
 Nutzung: python3 scripts/csp-check.py [_site]   (Exit 0 = sauber, 1 = Verstoß)
 """
+from html.parser import HTMLParser
 import pathlib
 import re
 import sys
@@ -23,6 +28,42 @@ SCRIPT_RE = re.compile(r"<script\b([^>]*)>(.*?)</script>", re.S | re.I)
 HANDLER_RE = re.compile(r"<[a-z][^>]*\son[a-z]+\s*=", re.I)
 # Theme-Reste, die nie ausgeliefert, aber evtl. mitkopiert werden
 SKIP_DIRS = {"assets/vendor"}
+URL_ATTRS = {"href", "src", "srcset", "action", "formaction", "poster", "data", "cite",
+             "background", "content", "imagesrcset"}
+HTTP_RE = re.compile(r"\bhttp://", re.I)
+CSS_HTTP_RE = re.compile(r"url\(\s*['\"]?\s*http://", re.I)
+
+
+class HttpScan(HTMLParser):
+    """Sammelt http://-Fundstellen in URL-Attributen, <style>-url() und Kommentaren (SEC-9)."""
+
+    def __init__(self):
+        super().__init__(convert_charrefs=True)
+        self.hits = []
+        self.in_style = False
+
+    def handle_starttag(self, tag, attrs):
+        self.in_style = tag == "style"
+        for name, value in attrs:
+            name = name.lower()
+            if value and (name in URL_ATTRS or name.endswith(":href")) and HTTP_RE.search(value):
+                self.hits.append(f"<{tag} {name}=\"{value[:80]}\">")
+
+    def handle_startendtag(self, tag, attrs):
+        self.handle_starttag(tag, attrs)
+        self.in_style = False
+
+    def handle_endtag(self, tag):
+        if tag == "style":
+            self.in_style = False
+
+    def handle_data(self, data):
+        if self.in_style and CSS_HTTP_RE.search(data):
+            self.hits.append("<style> mit url(http://…)")
+
+    def handle_comment(self, data):
+        if HTTP_RE.search(data):
+            self.hits.append(f"Kommentar: {' '.join(data.split())[:80]}")
 
 
 def main(root: str) -> int:
@@ -64,6 +105,10 @@ def main(root: str) -> int:
             fails.append(f"{rel}: Inline-Script ({snippet} …)")
         for m in HANDLER_RE.finditer(html):
             fails.append(f"{rel}: Inline-Event-Handler: {m.group(0)[:80]}")
+        scan = HttpScan()
+        scan.feed(html)
+        for hit in scan.hits:
+            fails.append(f"{rel}: http://-URL (SEC-9): {hit}")
     if len(policies) > 1:
         variants = "\n    ".join(f"{len(v)} Seiten, z. B. {v[0]}" for v in policies.values())
         fails.append(f"CSP nicht auf allen Seiten identisch:\n    {variants}")
@@ -71,7 +116,7 @@ def main(root: str) -> int:
         print("CSP-VERSTOSS:")
         print("\n".join("  " + x for x in fails))
         return 1
-    print(f"csp-check OK: {count} Seiten, eine einheitliche Policy, keine Inline-Skripte")
+    print(f"csp-check OK: {count} Seiten, eine einheitliche Policy, keine Inline-Skripte, keine http://-URL")
     return 0
 
 
