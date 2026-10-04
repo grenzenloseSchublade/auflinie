@@ -19,11 +19,12 @@ Lokal überschriebene Theme-Dateien (gleicher Pfad wie im Theme, Jekyll nimmt di
 - `_includes/`: `archive-single.html`, `author-profile.html`, `footer.html`, `head.html`, `head/custom.html`, `masthead.html`, `page__date.html`, `page__hero.html`, `page__meta.html`, `post_pagination.html`, `scripts.html`, `seo.html`, `skip-links.html`
 - `_layouts/`: `default.html`, `single.html`, `splash.html`
 
+Dazu ersetzt `assets/_sass/_theme-bridge.scss` die Datei `_sass/minimal-mistakes.scss` des Themes: Sie übernimmt deren Partial-Liste ohne `magnific-popup` (Magnific Popup) und `search`, beide landen deshalb nicht in `main.css`. Auch diese Liste wird bei jedem Theme-Update abgeglichen.
+
 Das Theme bringt selbst Fremdbestandteile mit. Lizenzangaben laut Abschnitt „License“ im README des Themes (gepinnter Commit), Versionen aus den Dateiköpfen:
 
 | Komponente | Version | Wo sie landet | Lizenz | Beleg |
 |---|---|---|---|---|
-| Magnific Popup (CSS) | – | `main.css` | MIT, © 2014–2016 Dmitry Semenov | Theme-README, Dateikopf ohne Lizenz |
 | Susy | – | Sass-Mixins im Theme | BSD-3-Clause, © 2017 Miriam Eric Suzanne | Theme-README, **ungeprüft**, ob Code in `main.css` landet |
 | Breakpoint | – | Sass-Mixins im Theme | MIT/GPL | Theme-README, **ungeprüft**, ob Code in `main.css` landet |
 | Pure Liquid Jekyll Table of Contents | – | Theme-Include `toc.html` (genutzt über `toc-wrapper.html`) | MIT, © 2017 Vladimir Jimenez | Theme-README |

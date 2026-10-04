@@ -21,7 +21,48 @@ $global-transition:
   border-color $duration-base ease-in-out,
   opacity $duration-base ease-in-out;
 
-/* stylelint-disable at-rule-disallowed-list -- Theme ist @import-basiert (SCSS-4) */
+// Partial-Liste aus _sass/minimal-mistakes.scss des gepinnten Commits
+// (4.28.1, 81f00a6) statt @import "minimal-mistakes", ohne die
+// ungenutzten Partials magnific-popup (keine Bild-Lightbox) und search
+// (search: false in _config.yml, ARCH-1). Bei jedem Theme-Update mit der
+// neuen minimal-mistakes.scss abgleichen: neue Partials ergänzen,
+// geänderte Reihenfolge übernehmen.
+/* stylelint-disable at-rule-disallowed-list, no-invalid-position-at-import-rule -- Theme ist @import-basiert (SCSS-4), Reihenfolge wie im Theme */
 @import "minimal-mistakes/skins/dark";
-@import "minimal-mistakes";
-/* stylelint-enable at-rule-disallowed-list */
+
+/* Copyright comment */
+@import "minimal-mistakes/copyright";
+
+/* Variables */
+@import "minimal-mistakes/variables";
+
+/* Mixins and functions */
+@import "minimal-mistakes/vendor/breakpoint/breakpoint";
+@include breakpoint-set("to ems", true);
+@import "minimal-mistakes/vendor/susy/susy";
+@import "minimal-mistakes/mixins";
+
+/* Core CSS */
+@import "minimal-mistakes/reset";
+@import "minimal-mistakes/base";
+@import "minimal-mistakes/forms";
+@import "minimal-mistakes/tables";
+@import "minimal-mistakes/animations";
+
+/* Components */
+@import "minimal-mistakes/buttons";
+@import "minimal-mistakes/notices";
+@import "minimal-mistakes/masthead";
+@import "minimal-mistakes/navigation";
+@import "minimal-mistakes/footer";
+@import "minimal-mistakes/syntax";
+
+/* Utility classes */
+@import "minimal-mistakes/utilities";
+
+/* Layout specific */
+@import "minimal-mistakes/page";
+@import "minimal-mistakes/archive";
+@import "minimal-mistakes/sidebar";
+@import "minimal-mistakes/print";
+/* stylelint-enable at-rule-disallowed-list, no-invalid-position-at-import-rule */
