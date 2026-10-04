@@ -14,6 +14,8 @@ Prüft jede HTML-Datei unter _site:
     srcset, action, content …), in url() eines <style>-Blocks oder in
     einem HTML-Kommentar. Text und Code-Beispiele zählen nicht, ebenso
     xmlns-Namensräume (sind Bezeichner, keine Adressen)
+  - jedes target="_blank" trägt rel="noopener noreferrer" (SEC-9, LINK-3).
+    Externe Links bekommen beides beim Build über _plugins/external-links.rb
 
 Nutzung: python3 scripts/csp-check.py [_site]   (Exit 0 = sauber, 1 = Verstoß)
 """
@@ -35,15 +37,22 @@ CSS_HTTP_RE = re.compile(r"url\(\s*['\"]?\s*http://", re.I)
 
 
 class HttpScan(HTMLParser):
-    """Sammelt http://-Fundstellen in URL-Attributen, <style>-url() und Kommentaren (SEC-9)."""
+    """Sammelt http://-Fundstellen in URL-Attributen, <style>-url() und Kommentaren
+    sowie target="_blank" ohne noopener/noreferrer (SEC-9)."""
 
     def __init__(self):
         super().__init__(convert_charrefs=True)
         self.hits = []
+        self.blank = []
         self.in_style = False
 
     def handle_starttag(self, tag, attrs):
         self.in_style = tag == "style"
+        found = {name.lower(): value or "" for name, value in attrs}
+        if found.get("target", "").lower() == "_blank":
+            rel = found.get("rel", "").lower().split()
+            if "noopener" not in rel or "noreferrer" not in rel:
+                self.blank.append(f"<{tag} href=\"{found.get('href', '')[:80]}\" target=\"_blank\">")
         for name, value in attrs:
             name = name.lower()
             if value and (name in URL_ATTRS or name.endswith(":href")) and HTTP_RE.search(value):
@@ -109,6 +118,8 @@ def main(root: str) -> int:
         scan.feed(html)
         for hit in scan.hits:
             fails.append(f"{rel}: http://-URL (SEC-9): {hit}")
+        for hit in scan.blank:
+            fails.append(f"{rel}: target=\"_blank\" ohne rel=\"noopener noreferrer\" (SEC-9): {hit}")
     if len(policies) > 1:
         variants = "\n    ".join(f"{len(v)} Seiten, z. B. {v[0]}" for v in policies.values())
         fails.append(f"CSP nicht auf allen Seiten identisch:\n    {variants}")
@@ -116,7 +127,7 @@ def main(root: str) -> int:
         print("CSP-VERSTOSS:")
         print("\n".join("  " + x for x in fails))
         return 1
-    print(f"csp-check OK: {count} Seiten, eine einheitliche Policy, keine Inline-Skripte, keine http://-URL")
+    print(f"csp-check OK: {count} Seiten, eine einheitliche Policy, keine Inline-Skripte, keine http://-URL, target=_blank nur mit noopener")
     return 0
 
 

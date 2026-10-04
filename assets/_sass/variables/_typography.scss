@@ -89,6 +89,10 @@ $fp-fs-lg: 14px; // Erklärbox, Gesten-Hinweis
 $fp-fs-xl: 16px; // Info-Panel, Loading
 $fp-fs-icon: 20px; // Zoom-Glyphe
 
+// Symbol hinter externen Links (STYLEGUIDE ICON-2, LINK-3): kleiner als ein
+// Fließtext-Icon (1em), damit es neben dem Linktext zurücktritt
+$fs-icon-external: 0.75em;
+
 // =============================================================================
 // Laufweiten (letter-spacing, STYLEGUIDE TYP-7)
 // =============================================================================

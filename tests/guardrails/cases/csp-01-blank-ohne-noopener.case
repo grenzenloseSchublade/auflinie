@@ -1,0 +1,9 @@
+# target="_blank" ohne noopener/noreferrer (SEC-9, LINK-3)
+guardrail: csp
+expect: 1
+grep: target="_blank" ohne rel
+file: tests/guardrails/csp-site/index.html
+mode: replace
+old: <!-- FALL -->
+---
+<a href="https://example.org/" target="_blank" rel="nofollow">ohne noopener</a>

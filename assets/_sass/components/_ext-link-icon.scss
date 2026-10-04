@@ -1,0 +1,16 @@
+@use "abstracts/tokens" as *;
+
+// Symbol hinter externen Links (STYLEGUIDE LINK-3, ICON-1)
+// Das Markup setzt _plugins/external-links.rb beim Build:
+//   <span class="ext-link-icon" aria-hidden="true">U+2060<svg …></span>
+// Inline-SVG mit currentColor: Linkfarbe auch im Hover. Der Wortverbinder
+// U+2060 vor dem SVG verhindert den Umbruch zwischen letztem Wort und
+// Symbol, der Abstand kommt deshalb als margin und nicht als Leerzeichen.
+// Ein SVG trägt keine Unterstreichung, die Linie endet am Wort.
+.ext-link-icon svg {
+  display: inline-block;
+  width: $fs-icon-external;
+  height: $fs-icon-external;
+  margin-inline-start: $space-1;
+  vertical-align: baseline;
+}

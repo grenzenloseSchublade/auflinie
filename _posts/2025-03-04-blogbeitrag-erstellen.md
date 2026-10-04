@@ -1,7 +1,7 @@
 ---
 title: "Erstellung von Blogbeiträgen"
 date: 2025-03-04
-last_modified_at: 2026-10-01
+last_modified_at: 2026-10-04
 author_profile: true
 categories:
   - Tutorial
@@ -192,13 +192,7 @@ Markdown ist eine schlanke Auszeichnungssprache. Die wichtigsten Elemente im Üb
 
 Ergebnis: [Externe Referenz](https://google.de)
 
-**Externe Links in neuem Tab öffnen:**
-
-```markdown
-[Externe Referenz](https://google.de){:target="_blank" rel="noopener noreferrer"}
-```
-
-Ergebnis: [Externe Referenz](https://google.de){:target="_blank" rel="noopener noreferrer"}
+Externe Links öffnen automatisch in einem neuen Tab, das kleine Symbol hinter dem Link zeigt das an. Ein Zusatz im Markdown ist dafür nicht nötig.
 
 **Interne Links:**
 

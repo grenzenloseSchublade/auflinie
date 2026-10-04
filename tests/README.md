@@ -22,6 +22,9 @@ Drei Gruppen, alle mit Playwright:
     Blog-Hinweis im Top Layer, kein unsichtbares Element mit Tastaturfokus, die
     Breakpoint-Grenzen 767/768 und 1023/1024 und dass Touch nach dem Antippen keinen
     Theme-Hover festhält (BP-3).
+  - `links.spec.js`: externe Links mit `target="_blank"`, `rel="noopener noreferrer"`,
+    verstecktem Hinweis „öffnet in neuem Tab“ und Symbol ohne Umbruch davor, interne
+    Links unverändert (LINK-3).
 
 Alles läuft in der CI im Build-Job (Schritt „Style-Guide-Review“) und blockiert bei Fehlern den Deploy.
 
@@ -60,7 +63,8 @@ Die Projekte stehen in `playwright.config.js`:
 
 Dazu, ohne Browser und ohne Node:
 
-- **`guardrails/`** – Negativtests der Guardrail-Skripte (`scripts/*-guardrail.sh`).
+- **`guardrails/`** – Negativtests der Guardrail-Skripte (`scripts/*-guardrail.sh`)
+  und von `scripts/csp-check.py` (auf der Mini-Site `guardrails/csp-site/`).
   Jeder Fall in `guardrails/cases/*.case` baut einen absichtlichen Verstoß (oder einen
   erlaubten Grenzfall) in eine Kopie des Repos und erwartet den passenden Exit-Code.
   Aufbau einer Fall-Datei: Kopf von `guardrails/run.py`. Läuft im Lint-Job:

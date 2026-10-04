@@ -9,7 +9,8 @@ bekommt, die er schon einmal geschlossen hatte.
 Aufbau einer .case-Datei (Kopfzeilen, dann `---`, dann der Inhalt):
 
     # Beschreibung in einer Zeile
-    guardrail: scale            (scripts/<name>-guardrail.sh)
+    guardrail: scale            (scripts/<name>-guardrail.sh, csp = scripts/csp-check.py
+                                 auf der Mini-Site tests/guardrails/csp-site)
     expect: 1                   (erwarteter Exit-Code)
     grep: VERSTOSS spacing      (optional, Regex, muss in der Ausgabe stehen)
     file: assets/_sass/components/_footer.scss
@@ -34,7 +35,7 @@ import tempfile
 ROOT = pathlib.Path(__file__).resolve().parents[2]
 CASES = sorted((ROOT / "tests/guardrails/cases").glob("*.case"))
 COPY = ["scripts", "assets/_sass", "assets/css", "assets/js", "_layouts", "_includes",
-        ".github", "_config.yml", "service-worker.js"]
+        ".github", "_config.yml", "service-worker.js", "tests/guardrails/csp-site"]
 
 
 def parse(path):
@@ -61,8 +62,11 @@ def make_copy(dst):
 
 
 def run(copy, guardrail):
-    p = subprocess.run(["bash", str(copy / "scripts" / f"{guardrail}-guardrail.sh")],
-                       capture_output=True, text=True, check=False)
+    if guardrail == "csp":
+        cmd = ["python3", str(copy / "scripts/csp-check.py"), str(copy / "tests/guardrails/csp-site")]
+    else:
+        cmd = ["bash", str(copy / "scripts" / f"{guardrail}-guardrail.sh")]
+    p = subprocess.run(cmd, capture_output=True, text=True, check=False)
     return p.returncode, p.stdout + p.stderr
 
 

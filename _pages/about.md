@@ -60,7 +60,7 @@ Austausch und Zusammenarbeit sind willkommen – am einfachsten über GitHub.
   - LinkedIn: https://linkedin.com/in/username, Icon "linkedin"
 {% endcomment %}
 <div class="contact-container">
-  <a href="https://github.com/grenzenloseSchublade" class="contact-card" target="_blank" rel="noopener noreferrer" aria-label="GitHub: @grenzenloseSchublade">
+  <a href="https://github.com/grenzenloseSchublade" class="contact-card" aria-label="GitHub: @grenzenloseSchublade">
     <div class="contact-icon">
       {% include brand-icon.html icon="github" %}
     </div>
