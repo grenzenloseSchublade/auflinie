@@ -1,19 +1,19 @@
 #!/bin/bash
-# Opt-in Setup für die SPA-Navigations-Regressionstests (#6) im Devcontainer.
-# Bewusst NICHT in post-create.sh / package.json-Lock: hält den Container-Setup
-# schnell (kein ~150-MB-Browser-Download bei jedem Rebuild) und `npm ci` strikt.
-# Einmalig ausführen, wenn du die E2E-Tests laufen lassen willst:
+# Opt-in: Browser für die Playwright-Tests (tests/) im Dev Container.
+# @playwright/test selbst installiert schon post-create.sh per npm ci, in der
+# Version aus package-lock.json (STYLEGUIDE DOC-7). Hier kommt nur Chromium
+# samt System-Bibliotheken dazu, passend zu genau dieser Version. Bewusst
+# nicht in post-create.sh: hält das Anlegen des Containers schnell (kein
+# Browser-Download von rund 150 MB bei jedem Rebuild).
+# Einmalig ausführen, wenn die Tests im Container laufen sollen:
 #     bash .devcontainer/setup-e2e.sh
 set -euo pipefail
 
-echo "Installiere @playwright/test (lokal, ohne package.json/Lock zu ändern)..."
-npm install --no-save --no-package-lock @playwright/test
-
-echo "Installiere Chromium + System-Libs (braucht sudo/apt im Container)..."
+echo "Installiere Chromium und System-Bibliotheken für Playwright (braucht sudo/apt)..."
 npx playwright install --with-deps chromium
 
 echo ""
-echo "Fertig. So testen:"
-echo "  1) Seite servieren:   bundle exec jekyll serve   (-> http://localhost:4000/auflinie/)"
-echo "  2) Tests laufen:       npm run test:e2e           (oder: npx playwright test)"
-echo "     anderes Setup:      BASE_URL=http://127.0.0.1:PORT npm run test:e2e"
+echo "Fertig. So laufen die Tests:"
+echo "  1) Seite bauen:   JEKYLL_ENV=production bundle exec jekyll build --unpublished -d _site_review"
+echo "  2) Tests:         npx playwright test   (startet tests/serve.js selbst)"
+echo "Vergleichsbilder (tests/visual/) gelten nur im Playwright-Container wie in der CI (tests/README.md)."

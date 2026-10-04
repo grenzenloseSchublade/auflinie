@@ -1,92 +1,57 @@
-# Dev Container: Python 3.11 & Jekyll
+# Dev Container
 
-Vollständig konfigurierte Entwicklungsumgebung für Jekyll-Projekte mit Python 3.11, Ruby 3.4.11 und Node.js LTS.
+Entwicklungsumgebung für Jekyll (Ruby) und das Node-Werkzeug (Stylelint, ESLint, Playwright), auf Basis von `mcr.microsoft.com/devcontainers/python:3.11`.
 
-## Stack
+## Versionen
 
-- **Python** 3.11
-- **Ruby** 3.4.11 (über Dev-Container-Feature)
-- **Jekyll** + Bundler (vendor/bundle)
-- **Node.js** LTS + Corepack
-- **GitHub CLI**
+Die einzige Quelle jeder Version ist eine Datei im Repo (STYLEGUIDE DOC-7):
 
-## Ports
+| Werkzeug | Quelle | Installiert von |
+|---|---|---|
+| Ruby | `.ruby-version` | Ruby-Feature, vorgebaut. Die Nummer in `devcontainer.json` spiegelt die Datei |
+| Bundler | `Gemfile.lock` (`BUNDLED WITH`) | `gem install bundler` in `post-create.sh` |
+| Gems | `Gemfile.lock` | `bundle install` nach `vendor/bundle` |
+| Node | `.nvmrc` | Node-Feature. Die Nummer in `devcontainer.json` spiegelt die Datei |
+| npm-Pakete | `package-lock.json` | `npm ci` |
 
-- `4000` - Jekyll dev server
-- `8888` - Python
+Die Features brauchen eine Nummer in `devcontainer.json`, ein Bau von Ruby aus dem Quelltext kostete beim Anlegen Minuten. Dass beide Nummern zu `.ruby-version` und `.nvmrc` passen, prüft die CI mit `scripts/version-sync-check.sh`.
 
-## Setup
+## Ablauf
 
-```bash
-# Container starten
-F1 -> "Reopen in Container"
+| Schritt | Was passiert | Wann |
+|---|---|---|
+| Image-Bau | Features: Ruby, Node, GitHub CLI, Claude Code | einmal, Docker cached das Image |
+| `onCreateCommand` | entfernt das Yarn-APT-Repository (verhindert GPG-Fehler) | einmal beim Anlegen |
+| `postCreateCommand` | `post-create.sh`: Rechte am Claude-Volume, Bundler, `bundle install`, `npm ci` | einmal beim Anlegen |
 
-# Verifizieren
-ruby -v
-bundle -v
-bundle exec jekyll -v
-```
-
-## Shortcut 
-
-| Aspekt             | Was passiert                | Wann                | Warum                                           |
-| ------------------ | --------------------------- | ------------------- | ----------------------------------------------- |
-| onCreateCommand    | Entfernt Yarn-Repo          | Einmalig beim Build | Verhindert GPG-Fehler                           |
-| postCreateCommand  | Ruby + pip + bundle install | Einmalig beim Build | Installiert alle Dependencies                   |
-| postStartCommand   | Jekyll-Version-Check        | Bei jedem Start     | Validiert Jekyll funktioniertcode.visualstudio​ |
-| bundle config path | Setzt vendor/bundle         | Beim Build          | Gems lokal installierenbundler​                 |
-| KEIN PATH          | vendor/bundle NICHT im PATH | -                   | Verhindert Permission-Fehler                    |
-
-
-## postCreateCommand
-
-1. System-Dependencies installieren
-2. rbenv + Ruby 3.4.11 kompilieren
-3. gem update --system 4.0.10
-4. pip upgrade
-5. bundle install (vendor/bundle)
-
-**Erste Installation: 3-5 Min. (Ruby-Kompilierung)**
-
-## Lifecycle
-
-```
-onCreateCommand: Entfernt Yarn-APT-Repository (GPG-Fix)
-postCreateCommand: Ruby + pip + bundle install (nur Build)
-postStartCommand: Jekyll-Check (jeden Start)
-```
-
-## Usage
+## Nutzung
 
 ```bash
-# Jekyll starten
+# Prüfen
+ruby -v && bundle -v && node --version
+
+# Jekyll lokal
 bundle exec jekyll serve
-# → http://localhost:4000
+# → http://localhost:4000/auflinie/
 
-# Gems hinzufügen
-bundle add gemname
-
-# Python
-python script.py
+# Lint
+npm run lint:css && npm run lint:js
 ```
 
-## Troubleshooting
+Playwright-Tests im Container brauchen einmalig Chromium: `bash .devcontainer/setup-e2e.sh`. Die Vergleichsbilder in `tests/visual/` gelten nur im Playwright-Container wie in der CI (`tests/README.md`).
+
+Port `4000` ist weitergeleitet (Jekyll).
+
+## Fehlersuche
 
 | Problem | Lösung |
-|---------|--------|
-| "bundle: not found" | `source ~/.bashrc && bundle ...` |
-| Slow startup (1. Build) | Normal - Ruby wird kompiliert |
-| Yarn GPG-Fehler | ✅ onCreateCommand behebt das |
-| Permission denied | ✅ vendor/bundle nicht im PATH |
+|---|---|
+| `bundle: not found` | Terminal neu öffnen, dann `bundle -v` |
+| Yarn-GPG-Fehler beim Bau | erledigt `onCreateCommand` |
 
 ## Ändern
 
-**Ruby-Version:** `.devcontainer/post-create.sh` → `rbenv install X.X.X`
-
-**Extensions:** `devcontainer.json` → `customizations.vscode.extensions`
-
-**Ports:** `devcontainer.json` → `forwardPorts`
-
----
-
-**Status:** Production-Ready | **Updated:** Jan 2026
+- Ruby, Node: Versionsdatei im Repo und die Feature-Nummer in `devcontainer.json` im selben Commit ändern (die CI prüft den Gleichstand), dann „Rebuild Container“
+- Bundler: nur `Gemfile.lock`
+- Extensions: `devcontainer.json` → `customizations.vscode.extensions`
+- Ports: `devcontainer.json` → `forwardPorts`

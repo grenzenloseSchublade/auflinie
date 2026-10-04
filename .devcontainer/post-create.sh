@@ -13,22 +13,24 @@ if [ -d /home/vscode/.claude ]; then
     sudo chown -R vscode:vscode /home/vscode/.claude
 fi
 
-# Ruby kommt aus dem Devcontainer-Feature (ghcr.io/devcontainers/features/ruby,
-# Version in devcontainer.json an .ruby-version angleichen) — kein rbenv-Source-
-# Build mehr; Container-Setup dauert Sekunden statt Minuten.
+# Ruby und Node kommen vorgebaut aus den Dev-Container-Features, ihre Nummern
+# in devcontainer.json spiegeln .ruby-version und .nvmrc (kein Quelltext-Build,
+# Anlegen in Sekunden statt Minuten). Gleichstand prüft die CI
+# (scripts/version-sync-check.sh, STYLEGUIDE DOC-7).
 
 echo "Installing Bundler (Version aus Gemfile.lock)..."
-gem install bundler -v 4.0.10 --no-document
+BUNDLER_VERSION="$(awk '/^BUNDLED WITH$/ { getline; print $1 }' Gemfile.lock)"
+gem install bundler -v "${BUNDLER_VERSION}" --no-document
 
 echo "Installing Jekyll dependencies..."
 bundle config set --local path vendor/bundle
 bundle install
 
-echo "Installing lint tooling (Stylelint)..."
+echo "Installing lint and test tooling (npm ci)..."
 npm ci
 
 echo ""
-echo "Optional: SPA-E2E-Tests (#6) einrichten mit:  bash .devcontainer/setup-e2e.sh"
+echo "Optional: Browser für die Playwright-Tests einrichten mit:  bash .devcontainer/setup-e2e.sh"
 echo ""
 echo "===================================="
 echo "Setup complete!"
