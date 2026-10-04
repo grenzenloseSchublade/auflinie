@@ -10,6 +10,11 @@
     Theme-Include enthält nur ein auskommentiertes
     Beispiel mit http://-Adresse, das sonst in jeder Seite mit Sidebar
     landete (SEC-9). Eigene Links stehen in _config.yml unter author.links.
+  - Avatar mit width/height (HTML-3): Das Seitenverhältnis steht vor dem
+    Laden fest, die Sidebar springt nicht (CLS). Die Werte sind die
+    Eigengröße von Logo.svg. Ein anderes Bild verzerrt nicht, nach dem
+    Laden gilt sein eigenes Verhältnis (Theme: height: auto), die Breite
+    begrenzt das Theme-CSS.
   Eingebunden vom Theme-Layout (Sidebar, author_profile: true).
 {% endcomment -%}
 {% assign locale = include.locale | default: site.locale %}
@@ -21,7 +26,7 @@
   {% if author.avatar %}
     <div class="author__avatar">
       <a href="{{ author.home | default: '/' | absolute_url }}">
-        <img src="{{ author.avatar | relative_url }}" alt="{{ author.name }}" itemprop="image" class="u-photo">
+        <img src="{{ author.avatar | relative_url }}" alt="{{ author.name }}" itemprop="image" class="u-photo" width="200" height="200">
       </a>
     </div>
   {% endif %}
