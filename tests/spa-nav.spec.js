@@ -232,6 +232,10 @@ test.describe('spaModule-Kontrakt — genau ein Mount pro Modul', () => {
 // Listener nicht abräumt, stapelte sie je Besuch. Gezählt über das
 // Chrome-DevTools-Protokoll, Stand jeweils auf /about/ nach einer Runde
 // über /cv/ und die Startseite (alle Module schon einmal geladen).
+// Grenze: Module, die im mount den alten Controller abbrechen und auf
+// /about/ wieder mounten (author-follow, back-to-top), räumen dort auch
+// ohne Teardown auf. Ein leerer Teardown fällt nur bei Modulen auf, die
+// /about/ nicht lädt (Probe: toc.js mit leerem Teardown, window 44 → 48).
 test.describe('Teardown — kein Listener-Leck über Swaps', () => {
   test('Listener an window und document bleiben über drei Runden gleich', async ({ page }) => {
     await gotoHome(page);
