@@ -73,11 +73,8 @@
     }
   }
 
-  // Focus-State (Accessibility)
-  &:focus {
-    outline: none;
-  }
-
+  // Focus-State (Accessibility): Ring nur per Tastatur, Maus und Tipp
+  // lassen keinen Fokus-Stil stehen (KOMP-2)
   &:focus:not(:focus-visible) {
     box-shadow: none;
   }

@@ -277,7 +277,7 @@
       }
     }
 
-    &:focus {
+    &:focus-visible {
       outline: none;
       box-shadow: $shadow-ring-cyan-strong, $shadow-key-edge;
     }
@@ -329,7 +329,8 @@
     margin: 0;
   }
 
-  &:focus {
+  // Eingabefeld: :focus-visible greift auch beim Klick (Textfeld)
+  &:focus-visible {
     border-color: $fp-accent;
     box-shadow: $glow-focus;
   }

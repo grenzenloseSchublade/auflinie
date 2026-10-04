@@ -74,7 +74,7 @@
 // Eine Stelle für Farbanpassungen — Maße/Padding bleiben beim Aufrufer.
 // Nutzer: _buttons.scss (.btn--primary/.btn--outline), _offline.scss
 // (Reload-Button), _sw-update-toast.scss (Primär), _posts.scss (Pager).
-// Hover nur bei echten Zeigern (BP-3), der Fokus-Zustand gleicht ihm.
+// Hover nur bei echten Zeigern (BP-3), der Tastatur-Fokus gleicht ihm.
 @mixin btn-role-primary {
   background-color: $cyan-a16;
   border: 1px solid $cyan-a50;
@@ -86,7 +86,7 @@
     }
   }
 
-  &:focus {
+  &:focus-visible {
     @include -btn-role-primary-active;
   }
 }
@@ -108,7 +108,7 @@
     }
   }
 
-  &:focus {
+  &:focus-visible {
     @include -btn-role-outline-active;
   }
 }
@@ -117,6 +117,14 @@
   border-color: $link-color;
   background-color: $cyan-a12;
   color: $white;
+}
+
+// Fokus-Ring (KOMP-4): der globale Magenta-Ring. Nur an :focus-visible
+// hängen, nie an :focus (KOMP-2), sonst bleibt er nach Klick oder Tipp
+// stehen. In Scroll-Containern und clippenden Leisten negativ ($offset -2px).
+@mixin focus-ring($offset: 2px) {
+  outline: 2px solid $hover-color;
+  outline-offset: $offset;
 }
 
 // Hintergrund-Blur inkl. -webkit-Prefix (Safari < 18 braucht ihn noch) —

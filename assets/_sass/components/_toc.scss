@@ -70,8 +70,7 @@
   }
 
   &:focus-visible {
-    outline: 2px solid $hover-color;
-    outline-offset: -2px;
+    @include focus-ring(-2px);
   }
 }
 
@@ -361,8 +360,7 @@
     }
 
     &:focus-visible {
-      outline: 2px solid $hover-color;
-      outline-offset: -2px; // Innen, damit es im Container bleibt
+      @include focus-ring(-2px); // Innen, damit es im Container bleibt
     }
 
     // Touch: größere Ziele nur dort, wo grob gezeigt wird
@@ -505,8 +503,7 @@
 }
 
 .toc-toggle:focus-visible .nav__title {
-  outline: 2px solid $hover-color;
-  outline-offset: -2px;
+  @include focus-ring(-2px);
 }
 
 // =============================================================================

@@ -272,8 +272,7 @@ $cv-z-selection-info: 6;
     }
 
     &:focus-visible {
-      outline: 2px solid $hover-color;
-      outline-offset: 2px;
+      @include focus-ring;
     }
   }
 
@@ -420,8 +419,7 @@ li.cv-skill-chip {
   align-items: center;
 
   &:focus-visible {
-    outline: 2px solid $hover-color;
-    outline-offset: 3px;
+    @include focus-ring(3px);
   }
 }
 

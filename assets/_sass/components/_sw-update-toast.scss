@@ -106,8 +106,7 @@
   transition: background-color $duration-base ease, color $duration-base ease, border-color $duration-base ease;
 
   &:focus-visible {
-    outline: 2px solid $hover-color;
-    outline-offset: 2px;
+    @include focus-ring;
   }
 }
 

@@ -83,7 +83,10 @@ html {
 // ============================================
 // Konsistente und sichtbare Focus-Styles für Keyboard-Navigation
 
-// Globaler Focus-Style für alle interaktiven Elemente
+// Globaler Focus-Style für alle interaktiven Elemente. Die Ringe hier stehen
+// ausgeschrieben: Dieses Modul lädt vor abstracts/mixins, ein @use darauf
+// verschöbe den Platzhalter %section-base in der Kaskade (_custom.scss).
+// Komponenten nutzen focus-ring() mit denselben Werten (KOMP-4).
 :focus-visible {
   outline: 2px solid $hover-color;
   outline-offset: 2px;

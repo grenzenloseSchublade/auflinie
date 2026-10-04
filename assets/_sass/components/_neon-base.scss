@@ -22,6 +22,7 @@
 // =============================================================================
 
 @use "abstracts/tokens" as *;
+@use "abstracts/mixins" as *;
 
 // skala-Ausnahme: [Block] Neon-Choreografie (MO-4, Owner-Stilelement). Flacker-
 // Takte und Glow-Leitern sind Effektdaten, keine UI-Skala.
@@ -230,8 +231,8 @@
 // Tastatur-Fokus sichtbar halten (WCAG 2.4.7): dezenter Ring nur bei
 // :focus-visible — Maus-Klick bleibt ringfrei
 .neon-orbit-trigger:focus-visible {
-  outline: 2px solid $hover-color;
-  outline-offset: 4px;
+  @include focus-ring(4px);
+
   border-radius: $radius-sm;
 }
 
