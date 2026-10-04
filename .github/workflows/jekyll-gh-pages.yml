@@ -104,8 +104,8 @@ jobs:
       # zusätzliches Artefakt (Storage-Limit, kontoweit).
       # Drei Engines aus demselben Image: Chromium alles, Firefox und WebKit
       # die Verhaltens-Tests (Projekte in playwright.config.js, etwa 3 min
-      # statt 30 s). Der Bericht entsteht nur bei Fehlern, mit Traces nur der
-      # fehlgeschlagenen Tests.
+      # statt 30 s). Hochgeladen wird der Bericht nur bei Fehlern (1 Tag),
+      # Traces gibt es nur von fehlgeschlagenen Tests.
       # Image-Version = @playwright/test in package.json, per Digest gepinnt.
       - name: Style-Guide-Review (Playwright, Chromium, Firefox, WebKit)
         run: >
