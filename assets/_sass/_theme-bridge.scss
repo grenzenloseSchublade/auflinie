@@ -11,6 +11,16 @@
 // minimal_mistakes_skin in _config.yml wirkt deshalb nicht mehr.
 // Fällt weg, sobald das Theme auf @use umstellt (STYLEGUIDE.md SCSS-4).
 @use "abstracts/tokens" as *;
+
+// Theme-Default ist `all 0.2s ease-in-out`. Überblendet werden nur Farbe,
+// Hintergrund, Rahmenfarbe und Deckkraft, Größe, Abstand und Position
+// springen (ARCH-3, MO-1). Gleiche Dauer und Kurve wie das Theme.
+$global-transition:
+  color $duration-base ease-in-out,
+  background-color $duration-base ease-in-out,
+  border-color $duration-base ease-in-out,
+  opacity $duration-base ease-in-out;
+
 /* stylelint-disable at-rule-disallowed-list -- Theme ist @import-basiert (SCSS-4) */
 @import "minimal-mistakes/skins/dark";
 @import "minimal-mistakes";

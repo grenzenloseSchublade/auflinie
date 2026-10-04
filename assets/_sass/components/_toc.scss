@@ -460,8 +460,9 @@
   box-sizing: border-box;
   gap: $space-2;
 
-  // Das Theme gibt jedem span ein transition: all (R-11), der frühere <h4>
-  // hatte keins. So bleibt der :active-Grund ohne Überblendung wie bisher
+  // Das Theme überblendet an jedem span den Hintergrund ($global-transition),
+  // der frühere <h4> hatte kein transition. So erscheint der :active-Grund
+  // beim Tippen sofort, wie bisher
   transition: none;
 }
 
