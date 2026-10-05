@@ -6,6 +6,6 @@
 importScripts('fractal-color-utils.js', 'fractal-worker-core.js');
 
 self.onmessage = function (e) {
-    // -0.5: Standard-Zentrum der Mandelbrot-Menge
-    runFractalChunkJob(e.data, { julia: false, defaultViewX: -0.5 });
+  // -0.5: Standard-Zentrum der Mandelbrot-Menge
+  runFractalChunkJob(e.data, { julia: false, defaultViewX: -0.5 });
 };

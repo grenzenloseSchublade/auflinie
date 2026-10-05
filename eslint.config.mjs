@@ -12,8 +12,8 @@ import noUnsanitized from 'eslint-plugin-no-unsanitized';
 
 // Globale Namen, die Site-Skripte ohne `window.`-Präfix lesen. Die Site lädt
 // klassische Skripte (kein Bundler, keine Module), die Kopplung läuft über
-// window/self. Eigene Helfer wie spaModule, SkillGraphData, SkillGraphSim und
-// GreedyNav werden durchgängig als window.X bzw. global.X angesprochen und
+// window/self. Eigene Helfer wie AuflinieUtils, SkillGraphData und
+// SkillGraphSim werden durchgängig als window.X bzw. global.X angesprochen und
 // brauchen deshalb keinen Eintrag. readonly: Lesen erlaubt, Überschreiben
 // fällt auf.
 const projectGlobals = {

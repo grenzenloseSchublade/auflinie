@@ -6,7 +6,7 @@
 // Einheitlicher Sprungmarken-Offset für Anker, TOC, Skip-Links und Fokus
 // (WCAG 2.4.11, STYLEGUIDE 6.1): EIN scroll-padding am Viewport statt
 // scroll-margin pro Zieltyp. Wirkt auf jedes Scroll-into-View — Hash-Sprung,
-// scrollIntoView() in spa-nav.js und Tastaturfokus unter dem fixen Masthead.
+// scrollIntoView() und Tastaturfokus unter dem fixen Masthead.
 // --anchor-offset = Masthead + 20px Luft. Bei sichtbarer Sticky-TOC setzt
 // toc.js inline calc(var(--anchor-offset) + Höhe der Leiste) (PERF-6). Die früheren
 // scroll-margin-top-Regeln (Überschriften, .fractal-panel, :target,

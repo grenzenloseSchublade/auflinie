@@ -2,12 +2,17 @@
 
 Drei Gruppen, alle mit Playwright:
 
-- **`spa-nav.spec.js`** – Regressionstests der Persistent-Shell-Navigation
-  (`assets/js/spa-nav.js`, siehe [`docs/features/spa-nav.md`](../docs/features/spa-nav.md)),
-  dazu der `spaModule`-Kontrakt: je Seiten-Modul genau ein Mount bei Erstaufbau,
-  PE-Fallback, Swap und bfcache-Rückkehr, kein Listener-Leck über Swap-Runden.
+- **`navigation.spec.js`** – Seitenwechsel per Cross-Document-View-Transition
+  (siehe [`docs/features/seitenwechsel.md`](../docs/features/seitenwechsel.md)):
+  jedes Seiten-Modul setzt beim vollen Laden seinen Marker genau einmal, ohne
+  Seitenfehler, Titel und `aria-current` nach einem Klick, die Kopfzeile ist ein
+  eigener Snapshot, die View Transition läuft mobil mit CRT und unter Reduced
+  Motion ohne CRT mit Dauer null, die Speculation Rules sind gültig.
+- **`sw.spec.js`** – Service Worker mit echter Registrierung (Projekt `sw`):
+  offline kommen precachte Seiten samt Skripten aus dem Cache, unbekannte als
+  `offline.html`.
 - **`vendor.spec.js`** – Prüfung nach jedem Versionswechsel in `assets/vendor/`:
-  MathJax setzt auf `/mandelbrot/` alle Formeln (direkt und nach SPA-Navigation,
+  MathJax setzt auf `/mandelbrot/` alle Formeln (direkt, nach Neuladen und nach Zurück,
   ohne Seitenfehler und CSP-Verstoß), die noUiSlider-Griffe sind benannt und per
   Tastatur bedienbar, das Preset (Tom Select) ist wählbar.
 - **`visual/`** – automatisches Style-Guide-Review (Regeln: [`STYLEGUIDE.md`](../STYLEGUIDE.md), SG-1 bis SG-3):
@@ -38,7 +43,8 @@ Drei Gruppen, alle mit Playwright:
     mit „von <Name>“, ohne Sidebar-Profil, Gast als Autor in den Metadaten (INH-5).
   - `precache.spec.js`: Jede Datei unter `/assets/`, die eine Seite aus der
     Precache-Liste lädt, steht selbst in `CACHE_URLS` von `service-worker.js`
-    (ohne Downloads und Styleguide-Ansicht).
+    (ohne Downloads und Styleguide-Ansicht). Umgekehrt existiert jeder
+    Asset-Eintrag in `CACHE_URLS`.
 
 Alles läuft in der CI im Build-Job (Schritt „Style-Guide-Review“) und blockiert bei Fehlern den Deploy.
 
@@ -48,11 +54,12 @@ Die Projekte stehen in `playwright.config.js`:
 
 | Projekt | Engine | Tests |
 |---|---|---|
-| `spa-nav`, `vendor`, `desktop`, `mobil` | Chromium | alles |
-| `firefox` | Firefox | `spa-nav`, `vendor`, `invariants`, `a11y`, `blog-search` |
-| `firefox-reduce` | Firefox, Reduced Motion | `spa-nav`, `vendor` (Primärplattform des Owners, STYLEGUIDE BRW-2) |
+| `navigation`, `vendor`, `desktop`, `mobil` | Chromium | alles außer `sw` |
+| `sw` | Chromium, Service Worker erlaubt | `sw` (alle anderen Projekte blockieren den Worker) |
+| `firefox` | Firefox | `navigation`, `vendor`, `invariants`, `a11y`, `blog-search` |
+| `firefox-reduce` | Firefox, Reduced Motion | `navigation`, `vendor` (Primärplattform des Owners, STYLEGUIDE BRW-2) |
 | `webkit` | WebKit | `invariants`, `a11y`, `blog-search` |
-| `webkit-reduce` | WebKit, Reduced Motion | `spa-nav`, `vendor` |
+| `webkit-reduce` | WebKit, Reduced Motion | `navigation`, `vendor` |
 
 - Screenshot-Vergleich (`styleguide.spec.js`) und Kontrast (`contrast.spec.js`) laufen
   bewusst nur in Chromium: Schriftglättung, Farbmischung und Rendering sind
@@ -60,16 +67,17 @@ Die Projekte stehen in `playwright.config.js`:
   aber keine Regel, die besser geprüft wäre.
 - Im Container gibt es keine GPU. Firefox und WebKit malen die Seiten mit dem
   CRT-Hero dort nur mit wenigen Bildern pro Sekunde, WebKit während des Boots
-  mit unter einem. Die Tests warten deshalb auf Ereignisse (`spa:load`, Ende der
+  mit unter einem. Die Tests warten deshalb auf Ereignisse (Laden, Ende der
   Übergänge) statt auf feste Zeiten.
-- SPA-Wechsel prüft WebKit nur mit Reduced Motion: Der Update-Callback der View
-  Transition kommt im Container erst nach 3 bis 5 s, unter Parallel-Last nach über
-  15 s (STYLEGUIDE Register R-87). Der stille Tausch ist derselbe Code ohne View
-  Transition, die prüfen Chromium und Firefox.
-- Die Listener-Zählung über Swap-Runden in `spa-nav.spec.js` (STYLEGUIDE SPA-3)
-  braucht das Chrome-DevTools-Protokoll und läuft nur in Chromium. Der Vergleich
-  „mit und ohne Bewegung“ (BEW-1a) setzt die Einstellung im eigenen Kontext und
-  lässt in WebKit den Fall mit Bewegung aus (R-87).
+- Seitenwechsel prüft WebKit nur mit Reduced Motion, dort hat die View
+  Transition Dauer null (STYLEGUIDE Register R-87). Der Vergleich „mit und ohne
+  Bewegung“ (BEW-3) setzt die Einstellung im eigenen Kontext und lässt in WebKit
+  den Fall mit Bewegung aus. Firefox kennt keine Cross-Document-View-Transition,
+  der Test überspringt sich dort.
+- Die bfcache-Rückkehr lässt sich headless nicht prüfen: Chromium meldet in
+  `notRestoredReasons` den Grund „masked“, Playwright schaltet den Cache ohnehin
+  ab. Belegt ist sie in der Messung mit sichtbarem Browser unter Xvfb
+  (`docs/features/seitenwechsel.md`).
 - WebKit blockt den `speculationrules`-Block per CSP (Register R-86).
   `vendor.spec.js` nimmt genau diese Meldungen in WebKit aus.
 - Laufzeit der vollen Suite mit 2 Workern (gemessen 5. 10. 2026 im Container):

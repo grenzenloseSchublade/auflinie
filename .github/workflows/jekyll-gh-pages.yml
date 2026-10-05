@@ -138,7 +138,7 @@ jobs:
           JEKYLL_ENV: production
       # Automatisches Style-Guide-Review (STYLEGUIDE.md, Abschnitt 16):
       # Screenshot-Vergleich der Styleguide-Ansicht, Kontrast der Tokens,
-      # axe-core WCAG 2.2 AA, SPA-Navigations-Invarianten. Läuft im
+      # axe-core WCAG 2.2 AA, Seitenwechsel und Service Worker. Läuft im
       # Playwright-Container, damit Schriften und Rendering mit den
       # Vergleichsbildern übereinstimmen (lokal identisch, siehe
       # playwright.config.js). Im Build-Job statt eigenem Job: kein

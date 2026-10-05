@@ -6,5 +6,5 @@
 importScripts('fractal-color-utils.js', 'fractal-worker-core.js');
 
 self.onmessage = function (e) {
-    runFractalChunkJob(e.data, { julia: true });
+  runFractalChunkJob(e.data, { julia: true });
 };

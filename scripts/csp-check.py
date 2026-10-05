@@ -8,8 +8,8 @@ Prüft jede HTML-Datei unter _site:
   - keine ausführbaren Inline-Skripte (Datenblöcke wie JSON-LD und
     speculationrules sind erlaubt)
   - keine Inline-Event-Handler (onclick=, onload= ...)
-  - die Policy ist auf allen Seiten byte-identisch (spa-nav.js behält die
-    Policy der Einstiegsseite)
+  - die Policy ist auf allen Seiten byte-identisch (eine Policy für die
+    ganze Seite, Abweichungen fielen sonst erst im Browser auf)
   - keine http://-URL (STYLEGUIDE SEC-9) in URL-Attributen (href, src,
     srcset, action, content …), in url() eines <style>-Blocks oder in
     einem HTML-Kommentar. Text und Code-Beispiele zählen nicht, ebenso

@@ -101,41 +101,39 @@
           return;
         }
 
-        if (config.enableServiceWorker !== false) {
-          // Bestimme den Pfad zum Root der Website
-          const rootPath = getRootPath();
-          
-          // Service Worker-Pfad relativ zum Root der Website
-          const swPath = rootPath + 'service-worker.js';
-          
-          // Registriere den Service Worker mit dem Scope des Root-Verzeichnisses
-          // updateViaCache: 'none' -> der SW-Skript-Fetch umgeht bei jedem
-          // Update-Check den HTTP-Cache; ein neuer Build wird zuverlässig erkannt.
-          navigator.serviceWorker.register(swPath, { scope: rootPath, updateViaCache: 'none' })
-            .then(registration => {
-              // Toast-Lücke: wählte der Nutzer früher "Später", wartet der neue
-              // Worker weiter, aber updatefound feuert nicht erneut — daher
-              // beim Laden direkt prüfen
-              if (registration.waiting && navigator.serviceWorker.controller) {
-                showUpdateToast(registration);
-              }
+        // Bestimme den Pfad zum Root der Website
+        const rootPath = getRootPath();
+        
+        // Service Worker-Pfad relativ zum Root der Website
+        const swPath = rootPath + 'service-worker.js';
+        
+        // Registriere den Service Worker mit dem Scope des Root-Verzeichnisses
+        // updateViaCache: 'none' -> der SW-Skript-Fetch umgeht bei jedem
+        // Update-Check den HTTP-Cache; ein neuer Build wird zuverlässig erkannt.
+        navigator.serviceWorker.register(swPath, { scope: rootPath, updateViaCache: 'none' })
+          .then(registration => {
+            // Toast-Lücke: wählte der Nutzer früher "Später", wartet der neue
+            // Worker weiter, aber updatefound feuert nicht erneut — daher
+            // beim Laden direkt prüfen
+            if (registration.waiting && navigator.serviceWorker.controller) {
+              showUpdateToast(registration);
+            }
 
-              // Auf Updates prüfen
-              registration.addEventListener('updatefound', () => {
-                const newWorker = registration.installing;
-                
-                newWorker.addEventListener('statechange', () => {
-                  if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                    // Neuer Service Worker ist installiert - zeige Update-Toast
-                    showUpdateToast(registration);
-                  }
-                });
+            // Auf Updates prüfen
+            registration.addEventListener('updatefound', () => {
+              const newWorker = registration.installing;
+              
+              newWorker.addEventListener('statechange', () => {
+                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                  // Neuer Service Worker ist installiert - zeige Update-Toast
+                  showUpdateToast(registration);
+                }
               });
-            })
-            .catch(error => {
-              console.error('sw-register: ServiceWorker-Registrierung fehlgeschlagen', error);
             });
-        }
+          })
+          .catch(error => {
+            console.error('sw-register: ServiceWorker-Registrierung fehlgeschlagen', error);
+          });
       });
     }
   }

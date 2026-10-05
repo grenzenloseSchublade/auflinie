@@ -11,8 +11,8 @@
     <style> und style-Attribute, kramdown style="text-align" in Tabellen.
   - worker-src 'self': Fraktal-Worker. Kein blob:, die MathJax-Sprachausgabe
     ist abgeschaltet (assets/js/mathjax-config.js).
-  - Die Policy muss auf ALLEN Seiten byte-identisch sein: spa-nav.js tauscht
-    nur den Inhalt, es gilt die Policy der Einstiegsseite.
+  - Die Policy ist auf ALLEN Seiten byte-identisch (eine Quelle, diese
+    Datei), Abweichungen fielen sonst erst im Browser auf.
   Prüfung: scripts/csp-check.py (CI, nach jekyll build).
 {% endcomment %}
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'inline-speculation-rules'; style-src 'self' 'unsafe-inline'; img-src 'self'; font-src 'self'; connect-src 'self'; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">

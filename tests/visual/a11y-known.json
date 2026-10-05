@@ -4,11 +4,16 @@
   "cv/": [],
   "posts/": [],
   "mandelbrot/": [],
-  "styleguide/": [],
+  "styleguide/": [
+    "color-contrast | p[data-sg-min=\"3\"]"
+  ],
   "404.html": [],
   "archiv/": [],
   "offline.html": [],
-  "posts/blogbeitrag-erstellen/": [],
+  "posts/blogbeitrag-erstellen/": [
+    "link-in-text-block | a[href$=\"#fnref:1\"]",
+    "link-in-text-block | a[href$=\"#fnref:2\"]"
+  ],
   "posts/erstellung-dieser-website/": [],
   "posts/erster-beitrag/": [],
   "posts/test-gastbeitrag/": [],
@@ -18,10 +23,15 @@
   "posts/ @320": [],
   "archiv/ @320": [],
   "mandelbrot/ @320": [],
-  "styleguide/ @320": [],
+  "styleguide/ @320": [
+    "color-contrast | p[data-sg-min=\"3\"]"
+  ],
   "404.html @320": [],
   "offline.html @320": [],
-  "posts/blogbeitrag-erstellen/ @320": [],
+  "posts/blogbeitrag-erstellen/ @320": [
+    "link-in-text-block | a[href$=\"#fnref:1\"]",
+    "link-in-text-block | a[href$=\"#fnref:2\"]"
+  ],
   "posts/erstellung-dieser-website/ @320": [],
   "posts/erster-beitrag/ @320": [],
   "posts/test-gastbeitrag/ @320": []

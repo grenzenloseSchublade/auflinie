@@ -24,8 +24,8 @@
 # andere Byte bleibt gleich. Kommentare, <script>, <style>, <textarea> und
 # <template> werden übersprungen. Code-Beispiele sind ohnehin maskiert (&lt;a).
 #
-# Nicht zur Laufzeit per JavaScript: spa-nav.js tauscht fertiges HTML ein,
-# das so schon den Hinweis trägt. Läuft nur ohne --safe (eigener
+# Nicht zur Laufzeit per JavaScript: Das ausgelieferte HTML trägt den
+# Hinweis schon, auch ohne Skript. Läuft nur ohne --safe (eigener
 # Actions-Build, Dev Container).
 
 require "uri"

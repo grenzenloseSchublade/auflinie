@@ -1,9 +1,10 @@
 # TV-Umschalt-Effekt: Varianten, Dosierung, Technik
 
-Der Seitenwechsel nutzt Cross-Document View Transitions (mobil, Chrome):
+Jeder interne Seitenwechsel ist ein volles Laden mit Cross-Document View
+Transition (Chromium und Safari, siehe `docs/features/seitenwechsel.md`):
 Der Header steht als eigener Snapshot fest, ein offener Nav-Drawer slidet
-innerhalb der Transition raus, und der Inhalt wechselt im Stil eines
-Röhrenfernsehers. Dieses Dokument hält die vier Effekt-Varianten samt
+innerhalb der Transition raus, und mobil wechselt der Inhalt dosiert im Stil
+eines Röhrenfernsehers. Dieses Dokument hält die vier Effekt-Varianten samt
 Recherche-Grundlagen fest und erklärt Umschaltung und Dosierung.
 
 ## Varianten umschalten
@@ -201,6 +202,8 @@ Der volle Effekt läuft NICHT bei jedem Klick — er markiert Ortswechsel:
    (home / about / mandelbrot / cv / archiv / posts …) — Post → Post oder
    Pagination bleiben ruhig.
 3. **Cooldown:** höchstens einmal pro 6 s (sessionStorage-Zeitstempel, `COOLDOWN_MS`).
+4. **Mobil und mit Bewegung:** nur unter 768 px und nicht unter
+   `prefers-reduced-motion: reduce`.
 
 In allen anderen Fällen: ruhiger UA-Crossfade — der Header steht immer,
 ein offener Drawer slidet trotzdem raus.
@@ -212,13 +215,19 @@ ein offener Drawer slidet trotzdem raus.
   `assets/js/head-early.js` (eingebunden in `_includes/head.html`) liest sie
   im `pagereveal` (nie auf defer/async umstellen!). Guards: Pfad-Match +
   10 s-TTL.
-- View Transitions laufen nur unter `(prefers-reduced-motion: no-preference)`
-  (`_view-transition.scss`, Gegenstück: der Klick-Handler der Drawer-Links in
-  `greedy-navigation.js` mit `AuflinieUtils.prefersReducedMotion()`). Den
-  CRT-Effekt gibt es nur mobil, also unter 768 px: `tv-switch.js` fragt
-  `AuflinieUtils.mq.downMd`, dieselbe Grenze wie `down(md)` beim
-  Vollbild-Hero (STYLEGUIDE BP-6). Ohne Browser-Support (Firefox) normale
-  Navigation.
+- `@view-transition` gilt ohne Media-Query-Gate (ARCH-2). Unter
+  `prefers-reduced-motion: reduce` nimmt der Gürtel am Ende von
+  `_view-transition.scss` jede Animation von den VT-Pseudo-Elementen, die
+  Transition hat Dauer null (harter Schnitt, Kopfzeile steht), und
+  `tv-switch.js` setzt keinen CRT-Type. Gegenstück: der Klick-Handler der
+  Drawer-Links in `greedy-navigation.js` schließt den Drawer nur ohne
+  `PageSwapEvent` selbst (STYLEGUIDE BP-6). Den CRT-Effekt gibt es nur mobil,
+  also unter 768 px: `tv-switch.js` fragt `AuflinieUtils.mq.downMd`, dieselbe
+  Grenze wie `down(md)` beim Vollbild-Hero (BP-6). Ohne Browser-Support
+  (Firefox) normale Navigation ohne Effekt.
+- Mit offenem Drawer setzt `greedy-navigation.js` im `pageswap` den Burger
+  vom ✕ zurück (Übergänge unter `html.vt-capture` aus), sonst hielte der
+  stehende Masthead-Snapshot das ✕, während der Drawer herausgleitet.
 - Offline identisch (Service-Worker-Voll-Precache).
 
 ## Recherche-Quellen (Auswahl)

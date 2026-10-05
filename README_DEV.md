@@ -37,11 +37,12 @@ Alle Regeln zu Gestaltung, Code, Sprache, Sicherheit und Arbeitsweise stehen in 
 
 ## TV-Umschalt-Effekt sichtbar machen (Troubleshooting)
 
-Der Seitenwechsel-Effekt (View Transitions, grüner Phosphor-Blink) erscheint nur, wenn ALLE Bedingungen erfüllt sind:
+Jeder interne Seitenwechsel ist ein volles Laden mit Cross-Document View Transition (`docs/features/seitenwechsel.md`). Der Kanalwechsel-Effekt (CRT, Varianten in `docs/features/tv-umschalt.md`) erscheint nur, wenn ALLE Bedingungen erfüllt sind (`crtAllowed()` in `assets/js/tv-switch.js`):
 - Fensterbreite unter 768px (Vollbild-Hero: Header reicht bis an den unteren Rand — auch im schmal gezogenen Desktop-Fenster)
-- Start auf der Startseite über „Über mich“ oder „Fraktale erkunden“, ungescrollt
-- Browser: Chrome/Edge 126+ oder Safari 18.2+ (Firefox kann Cross-Document-Transitions noch nicht → normaler Wechsel)
-- **Systemeinstellung „Bewegung reduzieren“/„Animationen entfernen“ ist AUS** (Android: Bedienungshilfen bzw. Entwickleroptionen → Animationsmaßstab; iOS: Bedienungshilfen → Bewegung) — der Effekt respektiert `prefers-reduced-motion`
+- Die alte Seite steht ganz oben (ungescrollt) und der Link wechselt den Bereich (erstes Pfad-Segment, etwa Startseite → „Über mich“). Beitrag → Beitrag bleibt ruhig
+- Seit dem letzten Effekt sind mindestens 6 s vergangen (Cooldown, Zeitstempel in `sessionStorage`)
+- Browser: Chrome/Edge 126+ oder Safari 18.2+ (Firefox kann Cross-Document-Transitions noch nicht → normaler Wechsel ohne Effekt)
+- **Systemeinstellung „Bewegung reduzieren“/„Animationen entfernen“ ist AUS** (Android: Bedienungshilfen bzw. Entwickleroptionen → Animationsmaßstab, iOS: Bedienungshilfen → Bewegung). Mit der Einstellung läuft die View Transition ohne Bewegung als harter Schnitt, die Kopfzeile steht trotzdem
 
 ## Interaktive Komponenten
 
