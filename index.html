@@ -22,14 +22,16 @@ site_schema: true # Theme-JSON-LD der Site (seo.html)
 {% include home/fractal-showcase.html %}
 
 {%- assign latest = site.data.home.latest_posts %}
-<h3 class="archive__subtitle">{{ latest.title }}</h3>
+<section class="home-latest">
+  <h2 class="archive__subtitle">{{ latest.title }}</h2>
 
-<div class="entries-grid">
-  {% for post in site.posts limit: latest.count %}
-    {% include archive-single.html type="grid" %}
-  {% endfor %}
-</div>
+  <div class="entries-grid">
+    {% for post in site.posts limit: latest.count %}
+      {% include archive-single.html type="grid" %}
+    {% endfor %}
+  </div>
 
-<div class="text-center">
-  <a href="{{ '/posts/' | relative_url }}" class="btn btn--primary">{{ latest.button }}</a>
-</div>
+  <div class="text-center">
+    <a href="{{ '/posts/' | relative_url }}" class="btn btn--primary">{{ latest.button }}</a>
+  </div>
+</section>

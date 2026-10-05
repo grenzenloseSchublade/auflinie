@@ -92,6 +92,17 @@
   margin: $section-spacing 0;
 }
 
+// „Neueste Beiträge“: H2 im eigenen Abschnitt (SEITE-3, R-85), sieht aus
+// wie zuvor als H3. Die Theme-Regel `.page__content h2` (0,1,1) setzt
+// Linie und Abstand am Element, die H3 bekam ihre Farbe aus
+// `.page__content > h3` (base/_headings.scss). Mit (0,2,0) an der Klasse
+// bleibt alles wie vorher.
+.home-latest .archive__subtitle {
+  padding-bottom: $space-2;
+  border-bottom: 1px solid $white-a08;
+  color: $white-a92;
+}
+
 // Einheitliche Content-Spalte auf der Splash-Startseite: das Theme-Splash-Layout
 // kennt keine .page-Verengung — ohne Kappung liefen Kachel, Beitrags-Grid und
 // Zwischenüberschrift auf volle Container-Breite ($max-width), der Intro-Text

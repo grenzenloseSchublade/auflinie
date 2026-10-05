@@ -38,6 +38,17 @@
   }
 }
 
+// Kartentitel (archive-single.html) sind je nach Abschnitt H2 oder H3
+// (heading_level, SEITE-3). Den unteren Innenabstand gab bisher die
+// Theme-Regel `.page__content h2` (0,1,1). An der Klasse hängt er an jeder
+// Ebene gleich, (0,2,0) wie die Theme-Regel `.page__content
+// .archive__item-title` daneben. Außerhalb von .page__content („Das könnte
+// auch interessieren“) hatten die Titel keinen, dort bleibt es so.
+.page__content .archive__item-title {
+  // skala-Ausnahme: Spiegelwert der Theme-Regel `.page__content h2` (R-85)
+  padding-bottom: 0.5em;
+}
+
 // Globaler Hover-Akzent für Archiv/Teaser-Items (list + grid)
 // Hover-Effekt: NUR Glow-Rahmen, keine Text-/Hintergrundänderung
 .archive__item {

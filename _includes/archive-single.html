@@ -1,14 +1,23 @@
 {% comment %}
-  Lokales Override des Theme-Includes (Minimal Mistakes 4.28.1). Einzige
-  Abweichung: Das Teaser-Bild lädt mit loading="lazy" und
-  decoding="async" (IMG-3). Es erscheint nur in Kachel-Ansichten unterhalb
-  des ersten Viewports (Startseite „Neueste Beiträge“, „Das könnte auch
-  interessieren“). Sonst Theme-Fassung, bei Theme-Updates gegenlesen.
+  Lokales Override des Theme-Includes (Minimal Mistakes 4.28.1). Zwei
+  Abweichungen, sonst Theme-Fassung, bei Theme-Updates gegenlesen:
+  1. Das Teaser-Bild lädt mit loading="lazy" und decoding="async" (IMG-3).
+     Es erscheint nur in Kachel-Ansichten unterhalb des ersten Viewports
+     (Startseite „Neueste Beiträge“, „Das könnte auch interessieren“).
+  2. Die Ebene des Kartentitels ist einstellbar (SEITE-3). Das Theme setzt
+     fest H2. Karten stehen hier fast immer unter einer H2 (Startseite,
+     Archiv-Jahre, „Das könnte auch interessieren“ aus dem unveränderten
+     Theme-Include page__related.html), deshalb ist H3 der Default.
   Eingebunden in index.html, _pages/posts.md, _pages/archiv.md und im
-  Theme-Include page__related.html. Parameter wie im Theme: type ("grid"
-  oder leer für die Liste), locale (Default site.locale).
+  Theme-Include page__related.html. Parameter:
+    type          "grid" oder leer für die Liste (wie im Theme)
+    locale        Default site.locale (wie im Theme)
+    heading_level 2 oder 3, Default 3. 2 nur, wo die Karten direkt unter
+                  der H1 stehen (Blog-Übersicht _pages/posts.md)
 {% endcomment %}
 {% assign locale = include.locale | default: site.locale %}
+{% assign heading_level = include.heading_level | default: 3 | plus: 0 %}
+{% if heading_level == 2 %}{% assign title_tag = 'h2' %}{% else %}{% assign title_tag = 'h3' %}{% endif %}
 {% if post.header.teaser %}
   {% capture teaser %}{{ post.header.teaser }}{% endcapture %}
 {% else %}
@@ -28,13 +37,13 @@
         <img src="{{ teaser | relative_url }}" alt="" loading="lazy" decoding="async">
       </div>
     {% endif %}
-    <h2 class="archive__item-title no_toc p-name" itemprop="headline">
+    <{{ title_tag }} class="archive__item-title no_toc p-name" itemprop="headline">
       {% if post.link %}
         <a href="{{ post.link }}">{{ title }}</a> <a class="u-url" href="{{ post.url | relative_url }}" rel="permalink"><i class="fas fa-link" aria-hidden="true" title="permalink"></i><span class="sr-only">Permalink</span></a>
       {% else %}
         <a class="u-url" href="{{ post.url | relative_url }}" rel="permalink">{{ title }}</a>
       {% endif %}
-    </h2>
+    </{{ title_tag }}>
     {% include page__meta.html locale=locale type=include.type %}
     {% if post.excerpt %}<p class="archive__item-excerpt p-summary" itemprop="description">{{ post.excerpt | markdownify | strip_html | truncate: 160 }}</p>{% endif %}
   </article>

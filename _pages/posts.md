@@ -48,7 +48,7 @@ read_time: false
     {%- comment -%} strip_html + escape: Markup fliegt aus dem Suchtext, und
     ein gerades Anführungszeichen im Titel/Excerpt zerreißt das Attribut nicht {%- endcomment -%}
     <div class="post-item" data-search="{{ post.title | strip_html | strip | downcase | escape }} {{ post.excerpt | strip_html | strip | downcase | escape }}{% if post.author.name %} {{ post.author.name | strip | downcase | escape }}{% endif %}">
-      {% include archive-single.html %}
+      {% include archive-single.html heading_level=2 %}
     </div>
   {% endfor %}
 </div>
