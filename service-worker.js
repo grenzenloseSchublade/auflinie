@@ -52,8 +52,6 @@ const CACHE_URLS = [
   './assets/js/author-follow.js',
   './assets/js/back-to-top.js',
   './assets/js/neon-orbit-toggle.js',
-  './assets/js/spa-nav.js',
-  './assets/js/spa-module.js',
   './assets/js/toc.js',
   './assets/js/blog-search.js',
   './assets/js/blog-notice.js',
@@ -71,7 +69,6 @@ const CACHE_URLS = [
   // MathJax (selbst gehostet; die vielen Font-Range-Dateien laufen über den
   // Runtime-Cache-First-Pfad und sind nach erstem Gebrauch offline verfügbar)
   './assets/js/mathjax-config.js',
-  './assets/js/mathjax-typeset.js',
   './assets/vendor/mathjax/tex-chtml.js',
   './assets/vendor/mathjax/input/tex/extensions/noerrors.js',
   './assets/vendor/mathjax/ui/menu.js',
@@ -162,10 +159,7 @@ self.addEventListener('fetch', event => {
 
   // Navigationen (HTML-Seiten): cache-first aus dem Voll-Precache, Details
   // siehe handleNavigation. Frische kommt über den SW-Update-Pfad (Toast).
-  // X-SPA-Nav: clientseitige Navigation (spa-nav.js) holt die Ziel-HTML per
-  // fetch — das ist KEINE 'navigate'-Anfrage, soll aber denselben cache-first-
-  // Pfad + Offline-Fallback nutzen wie eine echte Navigation.
-  if (event.request.mode === 'navigate' || event.request.headers.get('X-SPA-Nav')) {
+  if (event.request.mode === 'navigate') {
     event.respondWith(handleNavigation(event.request));
     return;
   }
@@ -225,7 +219,7 @@ async function handleNavigation(request) {
   }
 }
 
-// Cache-First-Strategie für Bilder
+// Cache-First-Strategie für Bilder, Schriften, CSS und JS
 async function cacheFirst(request) {
   const cachedResponse = await matchOwn(request);
   if (cachedResponse) {
@@ -240,8 +234,9 @@ async function cacheFirst(request) {
     }
     return networkResponse;
   } catch (error) {
-    // Fallback-Bild oder leere Response zurückgeben
-    return new Response('Bild nicht verfügbar', { status: 404 });
+    // Offline und nicht im Cache: leere 404-Antwort (nur in Konsole und
+    // Netzwerk-Tab zu sehen, die Seite zeigt den Text nicht)
+    return new Response('Nicht im Cache und offline', { status: 404 });
   }
 }
 

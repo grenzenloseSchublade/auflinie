@@ -26,3 +26,17 @@ test('Precache-Liste enthält jedes Asset der gebauten Seiten', async ({ request
   }
   expect([...missing]).toEqual([]);
 });
+
+// Gegenrichtung: Jeder Eintrag in CACHE_URLS existiert. Ein toter Eintrag
+// (gelöschte Datei, etwa nach dem Ausbau der SPA-Navigation) fiele sonst
+// nicht auf, weil die Installation einzelne Fehler still übergeht.
+test('Precache-Liste nennt nur vorhandene Dateien', async ({ request }) => {
+  const sw = await (await request.get(BASE + 'service-worker.js')).text();
+  const assets = [...sw.matchAll(/'\.\/([^']*)'/g)].map((m) => m[1]).filter((u) => u.startsWith('assets/'));
+  expect(assets.length).toBeGreaterThan(10);
+  const dead = [];
+  for (const a of assets) {
+    if (!(await request.get(BASE + a)).ok()) dead.push(a);
+  }
+  expect(dead).toEqual([]);
+});
