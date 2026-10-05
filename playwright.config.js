@@ -1,5 +1,5 @@
-// Playwright: SPA-Navigations-Regressionstests (tests/spa-nav.spec.js),
-// Vendor-Regressionstests (tests/vendor.spec.js: MathJax, noUiSlider,
+// Playwright: Seitenwechsel und Seiten-Module (tests/navigation.spec.js),
+// Service Worker offline (tests/sw.spec.js), Vendor-Regressionstests (tests/vendor.spec.js: MathJax, noUiSlider,
 // Tom Select auf /mandelbrot/) und das automatische Style-Guide-Review (tests/visual/: Screenshot-Vergleich der
 // Styleguide-Ansicht, Kontrast, axe-core WCAG 2.2 AA).
 // Chromium prüft alles, Firefox und WebKit die Verhaltens-Tests (Projekte
@@ -21,7 +21,7 @@ const { defineConfig, devices } = require('@playwright/test');
 
 const PORT = 4100;
 // Verhaltens-Tests, die zusätzlich in Firefox und WebKit laufen (siehe projects)
-const NAV_SPECS = ['spa-nav.spec.js', 'vendor.spec.js'];
+const NAV_SPECS = ['navigation.spec.js', 'vendor.spec.js'];
 const UI_SPECS = ['visual/invariants.spec.js', 'visual/a11y.spec.js', 'visual/blog-search.spec.js'];
 const REDUCE = { contextOptions: { reducedMotion: 'reduce' } };
 const FIREFOX = { ...devices['Desktop Firefox'], viewport: { width: 1280, height: 900 } };
@@ -60,7 +60,9 @@ module.exports = defineConfig({
     reuseExistingServer: !process.env.CI,
   },
   projects: [
-    { name: 'spa-nav', testMatch: 'spa-nav.spec.js', use: { ...devices['Desktop Chrome'] } },
+    { name: 'navigation', testMatch: 'navigation.spec.js', use: { ...devices['Desktop Chrome'] } },
+    // Service Worker echt registriert (sonst überall 'block', siehe use oben)
+    { name: 'sw', testMatch: 'sw.spec.js', use: { ...devices['Desktop Chrome'], serviceWorkers: 'allow' } },
     { name: 'vendor', testMatch: 'vendor.spec.js', use: { ...devices['Desktop Chrome'], viewport: { width: 1280, height: 900 } } },
     { name: 'desktop', testMatch: 'visual/**/*.spec.js', use: { ...devices['Desktop Chrome'], viewport: { width: 1280, height: 900 } } },
     { name: 'mobil', testMatch: 'visual/styleguide.spec.js', use: { ...devices['Pixel 7'] } },
@@ -71,14 +73,12 @@ module.exports = defineConfig({
     // die Pflege, ohne eine Regel besser zu prüfen. Die Namen der Chromium-
     // Projekte bleiben, sie stecken im Pfad der Vergleichsbilder.
     { name: 'firefox', testMatch: [...NAV_SPECS, ...UI_SPECS], use: FIREFOX },
-    // Primärplattform des Owners: Firefox mit Reduced Motion (BRW-2), dort
-    // tauscht spa-nav.js still ohne View Transition
+    // Primärplattform des Owners: Firefox mit Reduced Motion (BRW-2)
     { name: 'firefox-reduce', testMatch: NAV_SPECS, use: { ...FIREFOX, ...REDUCE } },
     { name: 'webkit', testMatch: UI_SPECS, use: WEBKIT },
-    // SPA-Wechsel in WebKit nur mit Reduced Motion: Im Container ohne GPU
-    // läuft der Update-Callback der View Transition erst nach 3 bis 5 s, unter
-    // Parallel-Last nach über 15 s (Register R-87). Der stille Tausch ist
-    // derselbe Code ohne die View Transition, die Chromium und Firefox prüfen.
+    // Seitenwechsel in WebKit nur mit Reduced Motion: Im Container ohne GPU
+    // malt WebKit Animationen mit unter einem Bild pro Sekunde (Register
+    // R-87). Unter Reduced Motion läuft die View Transition mit Dauer null.
     { name: 'webkit-reduce', testMatch: NAV_SPECS, use: { ...WEBKIT, ...REDUCE } },
   ],
 });
