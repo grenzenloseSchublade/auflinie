@@ -10,10 +10,7 @@
   "404.html": [],
   "archiv/": [],
   "offline.html": [],
-  "posts/blogbeitrag-erstellen/": [
-    "link-in-text-block | a[href$=\"#fnref:1\"]",
-    "link-in-text-block | a[href$=\"#fnref:2\"]"
-  ],
+  "posts/blogbeitrag-erstellen/": [],
   "posts/erstellung-dieser-website/": [],
   "posts/erster-beitrag/": [],
   "posts/test-gastbeitrag/": [],
@@ -28,10 +25,7 @@
   ],
   "404.html @320": [],
   "offline.html @320": [],
-  "posts/blogbeitrag-erstellen/ @320": [
-    "link-in-text-block | a[href$=\"#fnref:1\"]",
-    "link-in-text-block | a[href$=\"#fnref:2\"]"
-  ],
+  "posts/blogbeitrag-erstellen/ @320": [],
   "posts/erstellung-dieser-website/ @320": [],
   "posts/erster-beitrag/ @320": [],
   "posts/test-gastbeitrag/ @320": []

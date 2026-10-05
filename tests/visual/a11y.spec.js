@@ -7,7 +7,8 @@
 // Bekannte, noch offene Befunde stehen in a11y-known.json (Baseline, jeder
 // Eintrag „Regel | Selektor“, Schlüssel = Pfad, bei 320 px mit „ @320“). Der
 // Test schlägt nur bei NEUEN Verstößen fehl. Behobene Einträge meldet er als
-// Hinweis, damit die Baseline schrumpft.
+// Hinweis, damit die Baseline schrumpft. Befunde an Inhaltsmustern stehen
+// seitenunabhängig in KNOWN_PATTERNS.
 // Baseline neu schreiben (nur bewusst, Diff prüfen!): npm run test:a11y:baseline
 const fs = require('fs');
 const path = require('path');
@@ -18,6 +19,15 @@ const { PAGES } = require('./pages');
 const KNOWN_FILE = path.join(__dirname, 'a11y-known.json');
 const known = fs.existsSync(KNOWN_FILE) ? JSON.parse(fs.readFileSync(KNOWN_FILE, 'utf8')) : {};
 const collected = {};
+
+// Bekannte Befunde, die an einem Inhaltsmuster hängen statt an einer Seite.
+// Ein neuer Beitrag mit diesem Muster machte die CI sonst rot, obwohl er nur
+// Inhalt ist (STYLEGUIDE ARCH-5). Ein Muster fällt weg, sobald der Befund
+// behoben ist.
+const KNOWN_PATTERNS = [
+  // R-95: Der Fußnoten-Rücksprung hebt sich nur über die Farbe ab (Owner)
+  /^link-in-text-block \| (\.reversefootnote|a\[href\$="#fnref:\d+"\])$/,
+];
 
 // settle: feste Wartezeit für axe (Fraktal-Rendering, Einblendungen). Der
 // Reflow-Test misst nur Breiten und wartet bloß auf Schriften und Übergänge.
@@ -40,7 +50,8 @@ async function axeCheck(page, key) {
     .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa'])
     .analyze();
   const found = [...new Set(violations.flatMap((v) => v.nodes.map((n) => `${v.id} | ${n.target.join(' ')}`)))]
-    .sort();
+    .sort()
+    .filter((f) => !KNOWN_PATTERNS.some((re) => re.test(f)));
   collected[key] = found;
   const base = new Set(known[key] || []);
   const fresh = found.filter((f) => !base.has(f));
