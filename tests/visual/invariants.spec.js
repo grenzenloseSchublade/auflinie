@@ -477,6 +477,24 @@ test.describe('Breakpoint-Grenzen (BP-1, BP-2, BP-6)', () => {
       });
     });
   }
+
+  // Beim Ziehen des Fensters über die md-Grenze: fractal-panel.js schaltet
+  // die Zoom-Knöpfe gedrosselt im nächsten Frame um (JS-12). Direkt im
+  // resize-Event las WebKit die Media Query noch mit der alten Breite, die
+  // Knöpfe zeigten den Stand vor dem Resize.
+  test('Fraktal-Zoomknöpfe folgen der md-Grenze beim Resize', async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await page.goto('/auflinie/mandelbrot/', { waitUntil: 'load' });
+    const zoom = () => page.$$eval('[data-role="mobile-zoom"]', (els) => [...new Set(els.map((e) => e.style.display))].join());
+    // Längere Frist: WebKit rendert unter Last langsam, der Umschalter läuft
+    // erst im nächsten Frame (rAF-gedrosselt).
+    const frist = { timeout: 15000 };
+    await expect.poll(zoom, frist).toBe('none');
+    await page.setViewportSize({ width: 767, height: 900 });
+    await expect.poll(zoom, frist).toBe('flex');
+    await page.setViewportSize({ width: 768, height: 900 });
+    await expect.poll(zoom, frist).toBe('none');
+  });
 });
 
 // Touch hält keinen Theme-Hover fest (BP-3, früher R-79): Das Theme stellt

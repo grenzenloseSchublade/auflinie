@@ -1000,15 +1000,19 @@
       // Canvas-Resize übernimmt der ResizeObserver (deckt window-resize mit ab);
       // hier nur die Mobile-Controls nachziehen — der frühere doppelte
       // resizeAndRender-Aufruf pro resize-Event entfällt.
-      window.addEventListener('resize', () => {
-        this.updateMobileControls();
-      });
+      // rAF-gedrosselt (JS-12, PERF-8): updateMobileControls schreibt
+      // style.display. Direkt im Event lief das vor den Messungen anderer
+      // resize-Listener (toc.js, back-to-top.js), an der md-Grenze erzwang das
+      // ein zusätzliches Layout. Ohne site-utils.js (altes HTML) ungedrosselt.
+      const utils = window.AuflinieUtils;
+      const throttle = utils && utils.rafThrottle ? utils.rafThrottle : (fn) => fn;
+      window.addEventListener('resize', throttle(() => this.updateMobileControls()));
 
       if (typeof ResizeObserver !== 'undefined') {
         this.resizeObserver = new ResizeObserver(() => this.resizeAndRender());
         this.views.forEach((view) => this.resizeObserver.observe(view.frame));
       } else {
-        window.addEventListener('resize', () => this.resizeAndRender());
+        window.addEventListener('resize', throttle(() => this.resizeAndRender()));
       }
     }
 
