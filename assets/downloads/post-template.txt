@@ -50,8 +50,7 @@ stehen bleiben.
   Seite beim Laden nicht springt:
   ![Was das Bild zeigt]({{ "/assets/images/posts/bild.jpg" | relative_url }}){: width="1200" height="800"}
 - Links mit https://, nie http://. Externe Links öffnen beim Bauen
-  automatisch in einem neuen Tab, ein Zusatz wie {:target="_blank"} ist
-  nicht nötig.
+  automatisch in einem neuen Tab, ein Zusatz dafür ist nicht nötig.
 - Hinweise wie diesen nur in einen Liquid-Kommentar wie diesen hier, nie
   als HTML-Kommentar mit spitzen Klammern: Der stünde öffentlich im
   Quelltext der Seite.
