@@ -77,6 +77,22 @@
   }
 
   /**
+   * Führt fn aus, sobald die Seite wirklich zu sehen ist: sofort, oder bei
+   * einem Prerender über die Speculation Rules (PERF-4) erst mit der
+   * Aktivierung. Für Einmal-Effekte, die sonst ungesehen im Hintergrund
+   * abliefen (CRT-Einschalten, Power-Hinweis, Blog-Hinweis).
+   * @param {function(): void} fn
+   */
+  function whenActivated(fn) {
+    const doc = global.document;
+    if (doc.prerendering) {
+      doc.addEventListener('prerenderingchange', function () { fn(); }, { once: true });
+    } else {
+      fn();
+    }
+  }
+
+  /**
    * Schaltet alles außerhalb der übergebenen Elemente inert (modale Ebenen:
    * Drawer, TOC-Dropdown, Skill-Graph-Sheet, STYLEGUIDE OVL-4). Entlang der
    * Vorfahren jedes Elements bis <body> werden die Geschwister gesperrt.
@@ -132,6 +148,7 @@
     rafThrottle: rafThrottle,
     onDocumentResize: onDocumentResize,
     inertOutside: inertOutside,
+    whenActivated: whenActivated,
     mq: mq,
   };
 })(window);

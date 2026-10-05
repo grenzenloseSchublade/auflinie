@@ -40,6 +40,13 @@
   /** Vorlauf (ms), mit dem der Timer vor dem nächsten Bild wieder Frames anfordert, gut ein Frame bei 60 Hz (PERF-7) */
   const HERO_CRT_NOISE_RAF_LEAD_MS = 20;
 
+  /** Einmal-Effekte erst, wenn die Seite zu sehen ist (Prerender, site-utils.js). Ohne Helfer sofort */
+  function whenActivated(fn) {
+    const utils = window.AuflinieUtils;
+    if (utils && utils.whenActivated) utils.whenActivated(fn);
+    else fn();
+  }
+
   function readEnableImageCaching() {
     const raw = (document.documentElement.getAttribute('data-enable-image-caching') || '')
       .toString()
@@ -373,9 +380,13 @@
       return;
     }
 
+    // Im Prerender (Speculation Rules) liefe das Einschalten ungesehen ab:
+    // erst mit der Aktivierung starten
     function kick() {
-      if (!overlay.classList.contains('loaded')) return;
-      startCrtBootSequence(overlay);
+      whenActivated(function() {
+        if (!overlay.classList.contains('loaded')) return;
+        startCrtBootSequence(overlay);
+      });
     }
 
     if (document.readyState === 'complete') {
@@ -495,8 +506,10 @@
         try { sessionStorage.setItem('auflinie:hero-crt:power-hinted', '1'); } catch (e) { /* noop: Storage gesperrt (privater Modus) */ }
       }, 1200);
     };
-    if (document.readyState === 'complete') fire();
-    else window.addEventListener('load', fire, { once: true, signal: heroSignal });
+    // Im Prerender erst nach der Aktivierung, sonst pulste er ungesehen
+    const fireWhenActivated = function () { whenActivated(fire); };
+    if (document.readyState === 'complete') fireWhenActivated();
+    else window.addEventListener('load', fireWhenActivated, { once: true, signal: heroSignal });
   }
 
   /** Teardown (SPA-3): geplanten Hinweis verwerfen, der nächste Mount plant ihn neu */

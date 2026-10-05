@@ -30,7 +30,11 @@
     // Klick auf den Abdunkler trifft das <dialog> selbst, das Panel füllt es aus
     box.addEventListener('click', function (e) { if (e.target === box) { box.close(); } });
 
-    box.showModal();
+    // Im Prerender (Speculation Rules) erst mit der Aktivierung öffnen, ein
+    // vorher geöffneter Dialog stünde beim Aufruf schon fertig da
+    const utils = window.AuflinieUtils;
+    if (utils && utils.whenActivated) utils.whenActivated(function () { box.showModal(); });
+    else box.showModal();
   }
 
   // Alle Listener hängen am Dialog und sterben mit dem DOM beim Swap

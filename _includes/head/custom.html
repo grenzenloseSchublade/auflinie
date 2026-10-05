@@ -53,19 +53,17 @@ Critical-CSS (_layouts/default.html). Wer den Token ändert, zieht beide nach. {
 {% if site.background_image %}
 <link rel="preload" as="image" href="{{ site.background_image | relative_url }}">
 {% endif %}
-{% comment %} Speculation Rules: Prerender interner Links (Chromium) – macht zusätzlich
-     zum SW-Cache auch das RENDERN der Zielseite instant; /mandelbrot/ wegen
-     Worker-/MathJax-Last ausgenommen; andere Browser ignorieren das folgenlos.
-     Drawer-Links ausgenommen: der Prerender startete sonst mitten im
-     Drawer-Exit (moderate feuert ab Chrome 138 schon nach Scroll-Stopp)
-     und stahl dem Compositor die CPU – der SW-Voll-Precache macht die
-     Drawer-Ziele ohnehin instant.
-     Wired-Set (/, /about/, /cv/, /posts/*) komplett ausgenommen: diese Ziele
-     fängt spa-nav.js als SPA-Swap ab (preventDefault) -> ein Prerender würde
-     beim Klick verworfen (verschwendete Renderarbeit + Bandbreite). Für sie
-     übernehmen Prefetch-on-Intent + SW-Precache; MathJax-Posts (needsFullLoad
-     -> Voll-Reload) bleiben über den SW-Cache trotzdem schnell. Prerender
-     wirkt damit nur noch auf NICHT verdrahtete Ziele (Archive o.ä.).
+{% comment %} Speculation Rules: Prerender interner Links (Chromium, moderate = bei
+     Hover oder Druck auf den Link). Macht zusätzlich zum SW-Cache auch das
+     Rendern der Zielseite sofort fertig, die View Transition läuft beim
+     Aktivieren wie bei jedem Laden. Andere Browser ignorieren den Block.
+     Einmal-Effekte (CRT-Einschalten, Power-Hinweis, Blog-Hinweis) warten im
+     Prerender auf die Aktivierung (AuflinieUtils.whenActivated).
+     Ausgenommen: /mandelbrot/, weil Fraktal-Worker und MathJax dort schon
+     beim Hover rechnen würden, auch wenn der Klick ausbleibt. Drawer-Links,
+     weil der Prerender sonst mitten im Drawer-Exit startete und dem
+     Compositor die CPU stahl, der SW-Voll-Precache macht die Drawer-Ziele
+     ohnehin schnell.
      site.baseurl-Verkettung ist hier die erlaubte Ausnahme (STYLEGUIDE LIQ-3):
      href_matches erwartet ein URL-Pattern mit Platzhalter. {% endcomment %}
 <script type="speculationrules">
@@ -74,10 +72,6 @@ Critical-CSS (_layouts/default.html). Wer den Token ändert, zieht beide nach. {
     "where": { "and": [
       { "href_matches": "{{ site.baseurl }}/*" },
       { "not": { "href_matches": "{{ site.baseurl }}/mandelbrot/*" } },
-      { "not": { "href_matches": "{{ site.baseurl }}/" } },
-      { "not": { "href_matches": "{{ site.baseurl }}/about/*" } },
-      { "not": { "href_matches": "{{ site.baseurl }}/cv/*" } },
-      { "not": { "href_matches": "{{ site.baseurl }}/posts/*" } },
       { "not": { "selector_matches": ".greedy-nav .hidden-links a" } }
     ]},
     "eagerness": "moderate"
