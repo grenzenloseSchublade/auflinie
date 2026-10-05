@@ -1,21 +1,19 @@
 /**
- * blog-notice.js — Blog-Hinweis (Markup: _includes/blog-notice.html), am
- * Persistent-Shell-Kontrakt (window.spaModule). Früher Inline-Skript im
- * Include: das lief nach einem SPA-Swap nie (innerHTML führt <script> nicht
- * aus) und verstieß gegen die CSP ohne 'unsafe-inline' (Security-Audit
- * 10/2026, I10).
+ * blog-notice.js — Blog-Hinweis (Markup: _includes/blog-notice.html).
+ * Seiten-Modul (STYLEGUIDE 10.2): mountet einmal beim Laden, Marker
+ * data-blog-notice-mounted. Früher Inline-Skript im Include, das gegen die
+ * CSP ohne 'unsafe-inline' verstieß (Security-Audit 10/2026, I10).
  * Natives <dialog> per showModal() (Top Layer, R-10): Escape, Fokusfalle und
  * inert für den Rest der Seite kommen vom Browser, showModal() setzt den
  * Fokus auf den Knopf. Gespeichert wird im close-Event, das deckt Knopf,
- * Abdunkler und Escape ab. Ein SPA-Swap entfernt den Dialog ohne close.
- * Einmaligkeit pro Besucher über localStorage (Schlüssel je Hinweis-id).
+ * Abdunkler und Escape ab. Einmaligkeit pro Besucher über localStorage
+ * (Schlüssel je Hinweis-id).
  */
 (function () {
   'use strict';
 
-  function mount(root) {
-    const scope = root || document;
-    const box = scope.querySelector('#blog-notice');
+  function mount() {
+    const box = document.querySelector('#blog-notice');
     if (!box || box.hasAttribute('data-blog-notice-mounted')) return;
     box.setAttribute('data-blog-notice-mounted', '');
     if (typeof box.showModal !== 'function') return;
@@ -37,8 +35,5 @@
     else box.showModal();
   }
 
-  // Alle Listener hängen am Dialog und sterben mit dem DOM beim Swap
-  function teardown() {}
-
-  window.spaModule({ name: 'blog-notice', mount: mount, teardown: teardown });
+  mount();
 })();

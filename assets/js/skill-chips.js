@@ -17,33 +17,24 @@
  * - Die Auswahl-Optik lebt vollständig im CSS (Zustände: .has-selection am
  *   Container, .is-selected/.is-related am Chip).
  *
- * Persistent-Shell-Kontrakt (spa-nav.js, siehe docs/features/spa-nav.md): mount auf
- * spa:load (idempotent), teardown auf spa:unload. Der Container-Click ist
- * element-scoped (stirbt mit dem DOM); die zwei DOKUMENTWEITEN Listener
- * (keydown, auflinie:skill-select) hängen an einem AbortController und werden
- * im Teardown gelöst — sonst leakten sie über Swaps.
+ * Seiten-Modul (STYLEGUIDE 10.2): mountet einmal beim Laden, Marker
+ * data-skill-chips-mounted.
  */
 (function () {
   'use strict';
 
   const SOURCE = 'chips';
-  let controller = null;   // dokumentweite Listener dieses Mounts
 
-  function mount(root) {
-    const scope = root || document;
-    const container = scope.querySelector('.cv-skills');
-    const dataTag = scope.querySelector('script[data-skill-graph-data]');
-    const contextLine = scope.querySelector('[data-role="skill-context"]');
+  function mount() {
+    const container = document.querySelector('.cv-skills');
+    const dataTag = document.querySelector('script[data-skill-graph-data]');
+    const contextLine = document.querySelector('[data-role="skill-context"]');
     if (!container || !dataTag || !contextLine) { return; }
     if (container.hasAttribute('data-skill-chips-mounted')) { return; }   // idempotent
     container.setAttribute('data-skill-chips-mounted', '');
 
     const data = window.SkillGraphData.parse(dataTag, 'skill-chips');
     if (!data) { return; }
-
-    if (controller) { controller.abort(); }
-    controller = new AbortController();
-    const signal = { signal: controller.signal };
 
     // Basis-Skills (generische Dev-Infra): bewusst ohne Projektkanten
     const foundations = new Set(Array.isArray(data.foundations) ? data.foundations : []);
@@ -117,22 +108,20 @@
       }));
     }
 
-    // Element-scoped (Container lebt in .initial-content) -> stirbt mit dem DOM.
     container.addEventListener('click', function (event) {
       const btn = event.target.closest('.cv-skill-chip__button');
       if (!btn) { return; }
       const skillId = btn.getAttribute('data-skill');
       if (selected === skillId) { clearSelection(); } else { applySelection(skillId); }
       dispatch();
-    }, signal);
+    });
 
-    // DOKUMENTWEIT -> an den AbortController (Teardown auf spa:unload).
     document.addEventListener('keydown', function (event) {
       if (event.key === 'Escape' && selected !== null) {
         clearSelection();
         dispatch();
       }
-    }, signal);
+    });
 
     // Lose Kopplung: Auswahl aus anderen Ansichten übernehmen (ohne Re-Dispatch)
     document.addEventListener('auflinie:skill-select', function (event) {
@@ -142,10 +131,8 @@
       } else if (event.detail.skill !== selected) {
         applySelection(event.detail.skill);
       }
-    }, signal);
+    });
   }
 
-  function teardown() { if (controller) { controller.abort(); controller = null; } }
-
-  window.spaModule({ name: 'skill-chips', mount: mount, teardown: teardown });
+  mount();
 })();

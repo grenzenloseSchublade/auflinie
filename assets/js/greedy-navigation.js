@@ -242,13 +242,12 @@
       releaseTimer = setTimeout(releaseMenuOpen, 320); // Fallback (Slide: 240ms)
     }
 
-    // Instant-Close (ohne Slide-Animation): für den Same-Document-Swap
-    // (spa-nav.js). Der Drawer muss VOR dem View-Transition-Snapshot zu sein,
-    // sonst klappt er WÄHREND der Kanalwechsel-Animation ein statt davor.
-    // Auch der bfcache-Reset (pageshow, unten) schließt hierüber.
+    // Instant-Close (ohne Slide-Animation) für den bfcache-Reset (pageshow,
+    // unten): Die Seite kommt mit offenem Drawer zurück, er soll vor dem
+    // ersten Bild zu sein.
     function closeInstant() {
       cancelRelease();
-      releaseBackground(); // vor dem Swap: spa-nav fokussiert danach #main
+      releaseBackground();
       hlinks.style.transition = 'none';
       hlinks.classList.add('hidden');
       btn.classList.remove('close');
@@ -256,10 +255,6 @@
       document.body.classList.remove('menu-open', 'menu-closing');
       requestAnimationFrame(function() { hlinks.style.transition = ''; });
     }
-
-    // Für andere Skripte: Drawer gezielt schließen können,
-    // ohne die Klassen-Logik zu duplizieren
-    window.GreedyNav = { close: closeMenu, closeInstant: closeInstant };
 
     btn.addEventListener('click', function(e) {
       if (hlinks.classList.contains('hidden')) {

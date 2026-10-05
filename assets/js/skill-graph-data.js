@@ -4,8 +4,7 @@
  * Vorher lebten parseData und der Skill→Projekte-Map-Aufbau als wortgleiche
  * Kopien in skill-chips.js und skill-graph.js. renderSelection schreibt die
  * Auswahl-Anzeige (Konsole über den Chips, Info-Leiste im Graph-Sheet) und
- * braucht dafür als einziger Helfer das DOM (document.createElement). Der
- * Persistent-Shell-Helfer (window.spaModule) liegt sitewide in spa-module.js.
+ * braucht dafür als einziger Helfer das DOM (document.createElement).
  *
  * Ladereihenfolge: per defer VOR skill-chips.js bzw. skill-graph*.js
  * (_includes/scripts.html).
@@ -110,8 +109,4 @@
       }
     }
   };
-
-  // window.spaModule (Persistent-Shell-Kontrakt) lebt sitewide in
-  // assets/js/spa-module.js — auch Nicht-Skill-Module (Fraktal-Panels)
-  // brauchen ihn.
 })(typeof self !== 'undefined' ? self : window);

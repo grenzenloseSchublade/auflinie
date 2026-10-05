@@ -1,22 +1,20 @@
 /**
- * blog-search.js — Blog-Suche/Filter, an den Persistent-Shell-Kontrakt
- * (spa-nav.js) gebunden.
- * Rein element-scoped (input/clear sterben mit dem alten DOM) -> kein Teardown,
- * nur idempotent gegen Doppel-Init. Läuft initial UND nach jedem Swap.
- * Registrierung über window.spaModule (spa-module.js, vorher geladen).
+ * blog-search.js — Blog-Suche/Filter auf der Blog-Übersicht.
+ * Seiten-Modul (STYLEGUIDE 10.2): mountet einmal beim Laden, Marker
+ * data-blog-search-mounted. Nur mit blog_search im Front Matter geladen
+ * (_includes/scripts.html).
  */
 (function () {
   'use strict';
 
-  function mount(root) {
-    const scope = root || document;
-    const input = scope.querySelector('#blog-search-input');
+  function mount() {
+    const input = document.querySelector('#blog-search-input');
     if (!input || input.hasAttribute('data-blog-search-mounted')) return;
     input.setAttribute('data-blog-search-mounted', '');
 
-    const clearBtn = scope.querySelector('#blog-search-clear');
-    const entries = scope.querySelectorAll('#blog-entries .post-item');
-    const emptyMessage = scope.querySelector('#blog-empty-message');
+    const clearBtn = document.querySelector('#blog-search-clear');
+    const entries = document.querySelectorAll('#blog-entries .post-item');
+    const emptyMessage = document.querySelector('#blog-empty-message');
 
     function normalize(v) { return (v || '').toLowerCase().trim(); }
     function applyFilter() {
@@ -31,10 +29,10 @@
     }
     input.addEventListener('input', applyFilter);
     if (clearBtn) clearBtn.addEventListener('click', function () { input.value = ''; applyFilter(); input.focus(); });
+    // Zurück ohne bfcache (Firefox lädt neu): Der Browser stellt den
+    // Suchtext wieder her, die Liste muss dazu passen
+    if (input.value) applyFilter();
   }
 
-  // Kein Teardown nötig: alle Listener hängen an Knoten im Inhalt.
-  function teardown() {}
-
-  window.spaModule({ name: 'blog-search', mount: mount, teardown: teardown });
+  mount();
 })();

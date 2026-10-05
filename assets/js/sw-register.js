@@ -168,14 +168,13 @@
   }
   
   /**
-   * P3 — Freshness unter SPA-Swaps: Persistent-Shell-Navigationen sind fetch()-
-   * Aufrufe, KEINE Voll-Navigationen. Der Browser prüft dadurch seltener
-   * automatisch auf einen neuen Service Worker -> der "Neue Version"-Toast käme
-   * nach einem Deploy erst spät. Bei spa:load (gedrosselt, production-only)
-   * einen Update-Check anstoßen. Anderer Belang als der Nav-Lifecycle in
-   * spa-nav.js, daher bewusst hier und nicht dort.
+   * Freshness in lange offenen Tabs: Bei jedem Seitenaufruf prüft der Browser
+   * selbst auf einen neuen Service Worker. Wer einen Tab lange stehen lässt,
+   * bekäme den "Neue Version"-Toast nach einem Deploy aber erst beim nächsten
+   * Klick. Deshalb zusätzlich bei Rückkehr zum Tab und bei Fokus prüfen
+   * (gedrosselt, production-only).
    */
-  function wireSpaUpdateChecks() {
+  function wireUpdateChecks() {
     if (!('serviceWorker' in navigator) || !config.enableServiceWorker) return;
     const THROTTLE = 12 * 1000;   // nur gegen Doppel-Feuern; sonst so oft wie möglich
     let last = 0;
@@ -195,8 +194,6 @@
       }).catch(function () {});
     }
 
-    // Hart: jede Navigation (auch Erst-Load), Rückkehr zum Tab und Fokus.
-    document.addEventListener('spa:load', checkForUpdate);
     document.addEventListener('visibilitychange', function () {
       if (document.visibilityState === 'visible') { checkForUpdate(); }
     });
@@ -223,8 +220,7 @@
   }
 
   /**
-   * Offline-Hinweis (Markup in _layouts/default.html, außerhalb von
-   * .initial-content und damit swap-fest). Früher Inline-Skript im Layout,
+   * Offline-Hinweis (Markup in _layouts/default.html). Früher Inline-Skript im Layout,
    * ausgelagert für die CSP ohne 'unsafe-inline'. Einmal beim Laden
    * abgleichen: Liefert der Service Worker die Seite offline aus dem Cache,
    * erscheint der Hinweis sofort, nicht erst beim nächsten Wechsel.
@@ -242,6 +238,6 @@
   // Service Worker registrieren
   wireOfflineNotice();
   registerServiceWorker();
-  wireSpaUpdateChecks();
+  wireUpdateChecks();
   wireControllerReload();
 })();

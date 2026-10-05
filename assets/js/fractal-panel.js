@@ -348,16 +348,6 @@
       }, 1600);
     }
 
-    // Teardown: Timer und rAF, die sonst destroy() überleben — ein später
-    // clickTimer (applyTap -> requestRender) oder Vorschau-Frame würde nach
-    // einem Content-Swap auf dem entsorgten Renderer neue Worker starten.
-    dispose() {
-      if (this._previewRaf) { cancelAnimationFrame(this._previewRaf); this._previewRaf = null; }
-      if (this.gestureHintTimer) { clearTimeout(this.gestureHintTimer); this.gestureHintTimer = null; }
-      if (this.clickTimer) { clearTimeout(this.clickTimer); this.clickTimer = null; }
-      this.renderer.dispose();
-    }
-
     resetView() {
       Object.assign(this.view, this.config.view);
       this.renderer.animateTo(this.config.view, 180);
@@ -366,7 +356,7 @@
 
     // --- Events ------------------------------------------------------------
 
-    bindEvents(signal) {
+    bindEvents() {
       const canvas = this.canvas;
       const panel = this.panel;
 
@@ -387,7 +377,7 @@
         }
         if (event.button !== 0) return;
         this.beginZoomBox(cssPos, canvasPos);
-      }, { signal: signal });
+      });
 
       canvas.addEventListener('pointermove', (event) => {
         if (event.pointerType === 'touch') return;
@@ -405,7 +395,7 @@
         if (Math.abs(dx) > 0.1 || Math.abs(dy) > 0.1) this.didDrag = true;
         this.lastPan = canvasPos;
         this.panBy(dx, dy, 180, 'pan');
-      }, { signal: signal });
+      });
 
       canvas.addEventListener('pointerup', (event) => {
         if (event.pointerType === 'touch') return;
@@ -418,17 +408,17 @@
         this.lastPan = null;
         this.pointerId = null;
         this.showCursorInHud(canvasPos);
-      }, { signal: signal });
+      });
 
       canvas.addEventListener('pointercancel', (event) => {
         if (event.pointerType === 'touch') return;
         if (this.pointerId !== event.pointerId) return;
         this.cancelInteraction();
-      }, { signal: signal });
+      });
 
-      canvas.addEventListener('contextmenu', (event) => event.preventDefault(), { signal: signal });
+      canvas.addEventListener('contextmenu', (event) => event.preventDefault());
 
-      canvas.addEventListener('mouseleave', () => this.showCenterInHud(), { signal: signal });
+      canvas.addEventListener('mouseleave', () => this.showCenterInHud());
 
       // Klick wählt c (nur Canvas mit tapSelectsC, z.B. Mandelbrot im Explorer).
       // Verzögert, damit ein Doppelklick den Klick abbrechen kann.
@@ -444,7 +434,7 @@
             this.clickTimer = null;
             panel.applyTap(this, pos);
           }, 220);
-        }, { signal: signal });
+        });
       }
 
       canvas.addEventListener('wheel', (event) => {
@@ -455,7 +445,7 @@
         this.animateZoomTo(targetZoom, pos);
         panel.requestRender(this, { debounce: 220, reason: 'wheel' });
         this.showCursorInHud(pos);
-      }, { passive: false, signal: signal });
+      }, { passive: false });
 
       canvas.addEventListener('dblclick', (event) => {
         event.preventDefault();
@@ -467,7 +457,7 @@
         const targetZoom = FractalUtils.clamp(this.view.zoomLevel / 2, MIN_ZOOM, panel.getMaxZoom());
         this.animateZoomTo(targetZoom, pos);
         panel.requestRender(this, { debounce: 180, reason: 'dblclick-out' });
-      }, { signal: signal });
+      });
 
       // Touch — kooperative Gesten wie bei eingebetteten Karten:
       // 1 Finger scrollt die Seite (touch-action: pan-y, kein preventDefault),
@@ -487,7 +477,7 @@
           this.touchStart = this.touchCanvasCoords(event.touches[0]);
           this.showCursorInHud(this.touchStart);
         }
-      }, { passive: false, signal: signal });
+      }, { passive: false });
 
       canvas.addEventListener('touchmove', (event) => {
         if (this.pinch.active && event.touches.length === 2) {
@@ -514,7 +504,7 @@
             this.flashGestureHint();
           }
         }
-      }, { passive: false, signal: signal });
+      }, { passive: false });
 
       canvas.addEventListener('touchend', (event) => {
         if (this.pinch.active && event.touches.length < 2) {
@@ -528,7 +518,7 @@
           this.touchStart = null;
           this.showCenterInHud();
         }
-      }, { signal: signal });
+      });
 
       // Tastatursteuerung (Canvas hat tabindex="0")
       canvas.addEventListener('keydown', (event) => {
@@ -550,16 +540,16 @@
           default: return;
         }
         event.preventDefault();
-      }, { signal: signal });
+      });
 
       // Mobile Zoom-Buttons
       const zoomIn = this.frame.querySelector('[data-role="zoom-in"]');
       const zoomOut = this.frame.querySelector('[data-role="zoom-out"]');
       if (zoomIn) {
-        zoomIn.addEventListener('click', () => this.zoomAtCenter(1.2, 200, 'zoom-in'), { signal: signal });
+        zoomIn.addEventListener('click', () => this.zoomAtCenter(1.2, 200, 'zoom-in'));
       }
       if (zoomOut) {
-        zoomOut.addEventListener('click', () => this.zoomAtCenter(1 / 1.2, 200, 'zoom-out'), { signal: signal });
+        zoomOut.addEventListener('click', () => this.zoomAtCenter(1 / 1.2, 200, 'zoom-out'));
       }
     }
   }
@@ -570,8 +560,6 @@
       this.root = root;
       this.variant = variant;
       this.workerBase = root.dataset.workerBase || '/assets/js';
-      this.abort = new AbortController();
-      this.timers = new Set(); // verzögerte Re-Layouts, im destroy() abgeräumt
       this.isSpacePanning = false;
 
       this.state = {
@@ -602,9 +590,8 @@
       this.initSliders();
       this.initSelects();
       this.bindControls();
-      const signal = this.abort.signal;
-      this.views.forEach((view) => view.bindEvents(signal));
-      this.bindGlobal(signal);
+      this.views.forEach((view) => view.bindEvents());
+      this.bindGlobal();
 
       // Initialzustand
       setButtonLabel(this.$('extreme-zoom'), 'Extremzoom: Aus');
@@ -780,7 +767,7 @@
           } else {
             this.iterInput.value = this.state.maxIterations;
           }
-        }, { signal: this.abort.signal });
+        });
       }
 
       if (!this.variant.cControls) return;
@@ -821,7 +808,7 @@
             } else {
               input.value = this.state[prop].toFixed(2);
             }
-          }, { signal: this.abort.signal });
+          });
         }
       };
       bindCSlider(this.realSlider, this.realInput, 'realPart');
@@ -849,7 +836,7 @@
         this.colorSchemeSelect.addEventListener('change', () => {
           this.state.colorScheme = this.colorSchemeSelect.value;
           this.requestRender(null, { immediate: true, reason: 'colorScheme' });
-        }, { signal: this.abort.signal });
+        });
       }
 
       const presetSelect = this.$('preset');
@@ -870,7 +857,6 @@
     }
 
     bindControls() {
-      const signal = this.abort.signal;
       const root = this.root;
 
       const focusButton = this.$('focus-mode');
@@ -881,9 +867,9 @@
           focusButton.classList.toggle('is-active', active);
           focusButton.setAttribute('aria-pressed', String(active));
           if (!root.classList.contains('is-fullscreen')) {
-            this.later(() => this.resizeAndRender(), 100);
+            setTimeout(() => this.resizeAndRender(), 100);
           }
-        }, { signal: signal });
+        });
       }
 
       const advancedButton = this.$('advanced-toggle');
@@ -896,14 +882,14 @@
           setButtonLabel(advancedButton, isOpen ? 'Optionen ausblenden' : 'Erweiterte Optionen');
           advancedButton.title = isOpen ? 'Erweiterte Optionen ausblenden' : 'Erweiterte Optionen anzeigen';
           if (!root.classList.contains('is-fullscreen')) {
-            this.later(() => this.resizeAndRender(), 100);
+            setTimeout(() => this.resizeAndRender(), 100);
           }
-        }, { signal: signal });
+        });
       }
 
       const resetButton = this.$('reset');
       if (resetButton) {
-        resetButton.addEventListener('click', () => this.variant.reset(this), { signal: signal });
+        resetButton.addEventListener('click', () => this.variant.reset(this));
       }
 
       const recalcButton = this.$('recalc');
@@ -911,7 +897,7 @@
         recalcButton.addEventListener('click', () => {
           if (this.colorSchemeSelect) this.state.colorScheme = this.colorSchemeSelect.value;
           this.requestRender(null, { immediate: true, reason: 'apply' });
-        }, { signal: signal });
+        });
       }
 
       const intensityButton = this.$('intensity');
@@ -926,7 +912,7 @@
           // sichtbaren Wort — Pflicht, weil der Text mobil ausgeblendet ist.
           intensityButton.setAttribute('aria-label', intensityLabel + ' – Farbintensität');
           this.requestRender(null, { preview: true, debounce: 200, reason: 'palette' });
-        }, { signal: signal });
+        });
       }
 
       const extremeButton = this.$('extreme-zoom');
@@ -952,7 +938,7 @@
             if (clamped) this.requestRender(null, { immediate: true, reason: 'limit-clamp' });
           }
           this.views.forEach((view) => view.updateZoomWarning());
-        }, { signal: signal });
+        });
       }
 
       const crtToggle = this.$('crt-toggle');
@@ -961,12 +947,12 @@
           const off = root.classList.toggle('is-crt-off');
           crtToggle.classList.toggle('is-active', !off);
           crtToggle.setAttribute('aria-pressed', String(!off));
-        }, { signal: signal });
+        });
       }
 
       const downloadButton = this.$('download');
       if (downloadButton) {
-        downloadButton.addEventListener('click', () => this.download(), { signal: signal });
+        downloadButton.addEventListener('click', () => this.download());
       }
 
       const fullscreenButton = this.$('fullscreen');
@@ -977,15 +963,15 @@
           } else if (document.exitFullscreen) {
             document.exitFullscreen();
           }
-        }, { signal: signal });
+        });
         document.addEventListener('fullscreenchange', () => {
           // Nur reagieren, wenn DIESES Panel betroffen ist (nicht das andere auf der Seite)
           const isFullscreen = document.fullscreenElement === root;
           if (!isFullscreen && !root.classList.contains('is-fullscreen')) return;
           root.classList.toggle('is-fullscreen', isFullscreen);
           setButtonLabel(fullscreenButton, isFullscreen ? 'Vollbild aus' : 'Vollbild');
-          this.later(() => this.resizeAndRender(), 80);
-        }, { signal: signal });
+          setTimeout(() => this.resizeAndRender(), 80);
+        });
       }
 
       const explanationToggle = this.$('explanation-toggle');
@@ -999,30 +985,30 @@
           explanationToggle.innerHTML = isOpen
             ? 'Erklärung ausblenden <span class="toggle-icon" aria-hidden="true">▲</span>'
             : 'Erklärung anzeigen <span class="toggle-icon" aria-hidden="true">▼</span>';
-        }, { signal: signal });
+        });
       }
     }
 
-    bindGlobal(signal) {
+    bindGlobal() {
       window.addEventListener('keydown', (event) => {
         if (event.code === 'Space') this.isSpacePanning = true;
-      }, { signal: signal });
+      });
       window.addEventListener('keyup', (event) => {
         if (event.code === 'Space') this.isSpacePanning = false;
-      }, { signal: signal });
+      });
 
       // Canvas-Resize übernimmt der ResizeObserver (deckt window-resize mit ab);
       // hier nur die Mobile-Controls nachziehen — der frühere doppelte
       // resizeAndRender-Aufruf pro resize-Event entfällt.
       window.addEventListener('resize', () => {
         this.updateMobileControls();
-      }, { signal: signal });
+      });
 
       if (typeof ResizeObserver !== 'undefined') {
         this.resizeObserver = new ResizeObserver(() => this.resizeAndRender());
         this.views.forEach((view) => this.resizeObserver.observe(view.frame));
       } else {
-        window.addEventListener('resize', () => this.resizeAndRender(), { signal: signal });
+        window.addEventListener('resize', () => this.resizeAndRender());
       }
     }
 
@@ -1036,36 +1022,13 @@
         if (view.mobileZoom) view.mobileZoom.style.display = isMobile ? 'flex' : 'none';
       });
     }
-
-    /** setTimeout, das destroy() mit abräumt (Persistent-Shell-Kontrakt). */
-    later(fn, ms) {
-      const id = setTimeout(() => {
-        this.timers.delete(id);
-        fn();
-      }, ms);
-      this.timers.add(id);
-    }
-
-    destroy() {
-      this.abort.abort();
-      this.timers.forEach((id) => clearTimeout(id));
-      this.timers.clear();
-      if (this.resizeObserver) this.resizeObserver.disconnect();
-      this.views.forEach((view) => view.dispose());
-      if (this.colorTomSelect) this.colorTomSelect.destroy();
-      if (this.presetTomSelect) this.presetTomSelect.destroy();
-    }
   }
 
-  // ── Persistent-Shell-Kontrakt (spa-nav.js, siehe docs/features/spa-nav.md) ─────────
-  // mount idempotent (Mounted-Attribut), teardown fährt Worker, Observer und
-  // TomSelect-Instanzen über destroy() herunter — sonst rechneten verwaiste
-  // Panels nach einem Content-Swap weiter.
-  let instances = [];
-
-  function mount(root) {
-    const scope = root || document;
-    scope.querySelectorAll('[data-fractal-panel]').forEach((rootElement) => {
+  // ── Seiten-Modul (STYLEGUIDE 10.2): mountet einmal beim Laden ──────────────
+  // Marker data-fractal-panel-mounted. Als Defer-Skript nach den
+  // Abhängigkeiten aus fractal/deps.html steht das DOM fertig.
+  function mount() {
+    document.querySelectorAll('[data-fractal-panel]').forEach((rootElement) => {
       if (rootElement.hasAttribute('data-fractal-panel-mounted')) { return; }
       const variant = VARIANTS[rootElement.dataset.fractalPanel];
       if (!variant) {
@@ -1077,25 +1040,9 @@
         return;
       }
       rootElement.setAttribute('data-fractal-panel-mounted', '');
-      instances.push(new FractalPanel(rootElement, variant));
+      new FractalPanel(rootElement, variant);   // die Instanz lebt über ihre Listener weiter
     });
-    window.FractalPanels = instances;
   }
 
-  function teardown() {
-    instances.forEach((panel) => { try { panel.destroy(); } catch (e) { /* noop */ } });
-    instances = [];
-    window.FractalPanels = instances;
-  }
-
-  if (typeof window.spaModule === 'function') {
-    window.spaModule({ name: 'fractal-panel', mount: mount, teardown: teardown });
-  } else {
-    // Fallback ohne spa-module.js (sollte sitewide geladen sein): altes Verhalten
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', function () { mount(document); });
-    } else {
-      mount(document);
-    }
-  }
+  mount();
 })();

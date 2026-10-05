@@ -1,11 +1,8 @@
 /**
- * back-to-top.js — Back-to-Top-Button, an den Persistent-Shell-Kontrakt
- * (spa-nav.js) gebunden.
- * window scroll/resize sind dokumentweit -> MÜSSEN im Teardown gelöst werden
- * (via AbortController), sonst zeigt der Listener nach einem Swap auf ein
- * entferntes .back-to-top und stapelt sich pro Besuch.
- * Braucht site-utils.js (window.AuflinieUtils) und spa-module.js
- * (window.spaModule), beide vorher geladen (_includes/scripts.html).
+ * back-to-top.js — Back-to-Top-Button (Markup _includes/back-to-top.html).
+ * Seiten-Modul (STYLEGUIDE 10.2): mountet einmal beim Laden, Marker
+ * data-back-to-top-mounted. Braucht site-utils.js (window.AuflinieUtils),
+ * vorher geladen (_includes/scripts.html).
  */
 (function () {
   'use strict';
@@ -22,17 +19,11 @@
     };
   }
   const SCROLL_THRESHOLD = 888, MIN_RATIO = 1.5, FOOTER_GAP = 24;
-  let controller = null;
 
-  function mount(root) {
-    const scope = root || document;
-    const btn = scope.querySelector('.back-to-top');
+  function mount() {
+    const btn = document.querySelector('.back-to-top');
     if (!btn || btn.hasAttribute('data-back-to-top-mounted')) return;
     btn.setAttribute('data-back-to-top-mounted', '');
-
-    if (controller) controller.abort();
-    controller = new AbortController();
-    const signal = controller.signal;
 
     // Maße aus dem Cache (PERF-8): Viewport- und Seitenhöhe, Lage des Footers
     // im Dokument und der Grund-Abstand aus dem CSS ändern sich nur mit dem
@@ -77,19 +68,18 @@
     // scrollY wird im Scroll-Event gelesen (vor allen rAF-Callbacks), der
     // rAF-Callback schreibt nur (PERF-8).
     const onFrame = utils().rafThrottle(function () {
-      if (signal.aborted) return;   // Frame nach dem Teardown verfällt (SPA-3)
       checkVisibility(lastScrollY);
     });
     window.addEventListener('scroll', function () {
       lastScrollY = window.scrollY;
       onFrame();
-    }, { passive: true, signal: signal });
+    }, { passive: true });
     utils().onDocumentResize(function () {
       measure();
       lastScrollY = window.scrollY;
       onFrame();
-    }, signal);
-    btn.addEventListener('click', function (e) {   // element-scoped -> stirbt mit dem DOM, kein signal nötig
+    });
+    btn.addEventListener('click', function (e) {
       e.preventDefault();
       // Reduced Motion: springen statt gleiten (STYLEGUIDE BEW-4). Live
       // abgefragt, damit ein Umschalten der Systemeinstellung sofort wirkt.
@@ -100,7 +90,5 @@
     checkVisibility(lastScrollY);
   }
 
-  function teardown() { if (controller) { controller.abort(); controller = null; } }
-
-  window.spaModule({ name: 'back-to-top', mount: mount, teardown: teardown });
+  mount();
 })();

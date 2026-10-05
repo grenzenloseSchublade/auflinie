@@ -2,9 +2,8 @@
  * neon-orbit-toggle.js — Neon-Schriftzug im Startseiten-Hero: Klicks oder
  * Enter/Leertaste auf .neon-orbit-trigger steuern die Umlaut-Punkte
  * (Orbit, Farbwechsel, Scatter, Zustand je .neon-name). Pausiert die
- * Dauer-Animationen außerhalb des Viewports (Klasse neon-paused). Am
- * Persistent-Shell-Kontrakt (window.spaModule aus spa-module.js). Nur auf der
- * Startseite geladen (_includes/scripts.html), Keyframes in
+ * Dauer-Animationen außerhalb des Viewports (Klasse neon-paused).
+ * Seiten-Modul, mountet einmal beim Laden. Nur auf der Startseite geladen (_includes/scripts.html), Keyframes in
  * components/_neon-base.scss und components/_neon-orbit.scss.
  */
 (() => {
@@ -42,7 +41,6 @@
       orbitStartTimeMs: 0,
     };
     stateByScope.set(scope, state);
-    activeScopes.add(scope);   // für teardownNeon (Timer stoppen), auch bei Tastaturnutzung
     return state;
   };
 
@@ -348,20 +346,10 @@
     state.clickTimer = null;
   };
 
-  // ── Persistent-Shell-Kontrakt (spa-nav.js) ─────────────────────────────────
-  // Aktive Scopes mitführen (WeakMap ist nicht iterierbar) -> Teardown kann Timer stoppen.
-  const activeScopes = new Set();
-  let neonController = null;
-  let paintObserver = null;
-
-  function mountNeon(root) {
-    const scope = root || document;
-    const triggers = scope.querySelectorAll(".neon-orbit-trigger");
+  // ── Seiten-Modul (STYLEGUIDE 10.2): mountet einmal beim Laden ──────────────
+  function mountNeon() {
+    const triggers = document.querySelectorAll(".neon-orbit-trigger");
     if (!triggers.length) return;
-
-    if (neonController) neonController.abort();
-    neonController = new AbortController();
-    const signal = neonController.signal;
 
     const onActivate = (event) => {
       event.preventDefault();
@@ -375,11 +363,11 @@
     };
 
     triggers.forEach((el) => {
-      el.addEventListener("click", onActivate, { signal });
+      el.addEventListener("click", onActivate);
       el.addEventListener("keydown", (ev) => {
         if (ev.key !== "Enter" && ev.key !== " ") return;
         onActivate(ev);
-      }, { signal });
+      });
     });
 
     // Dauer-Animationen (box-/text-shadow = Paint-teuer) pausieren, sobald der
@@ -387,22 +375,14 @@
     // wenn keine Choreografie läuft (siehe _neon-base.scss), damit deren
     // Timer-Zustandsmaschine nicht aus dem Tritt gerät
     if ("IntersectionObserver" in window) {
-      if (paintObserver) paintObserver.disconnect();
-      paintObserver = new IntersectionObserver((entries) => {
+      const paintObserver = new IntersectionObserver((entries) => {
         entries.forEach((entry) => {
           entry.target.classList.toggle("neon-paused", !entry.isIntersecting);
         });
       });
-      scope.querySelectorAll(".neon-name").forEach((el) => paintObserver.observe(el));
+      document.querySelectorAll(".neon-name").forEach((el) => paintObserver.observe(el));
     }
   }
 
-  function teardownNeon() {
-    if (neonController) { neonController.abort(); neonController = null; }   // Trigger-Listener weg
-    if (paintObserver) { paintObserver.disconnect(); paintObserver = null; } // Observer-Leak zu
-    activeScopes.forEach((s) => { const st = stateByScope.get(s); if (st) clearTimers(st); }); // Timer stoppen
-    activeScopes.clear();
-  }
-
-  window.spaModule({ name: 'neon-orbit-toggle', mount: mountNeon, teardown: teardownNeon });
+  mountNeon();
 })();

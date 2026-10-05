@@ -9,10 +9,9 @@
   ScrollSpy: Verwendet Gumshoe (standalone Library) für performantes Tracking.
 
   Das Verhalten (Sticky-Mobile, ScrollSpy-Anbindung, Dropdown, Collapse) liegt in
-  assets/js/toc.js – externalisiert aus dem früheren Inline-Script und an den
-  Persistent-Shell-Kontrakt (spa:load/spa:unload) gebunden, damit die TOC nach
-  einem Content-Swap re-initialisiert und ihre Listener nicht leaken. Geladen in
-  _includes/scripts.html (nach gumshoe, nur bei page.toc).
+  assets/js/toc.js – externalisiert aus dem früheren Inline-Script (CSP ohne
+  'unsafe-inline'). Geladen in _includes/scripts.html (nach gumshoe, nur bei
+  page.toc).
 {% endcomment %}
 
 {% assign toc_id_source = page.url | default: page.title | default: "toc" %}

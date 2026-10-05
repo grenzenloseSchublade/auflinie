@@ -19,12 +19,10 @@
  * Öffner im Kapitel. Beides ist entfallen: ein Knopf, ein Weg.
  *
  * Fällt dieses Modul aus, bleibt der Graph über skill-graph.js voll funktionsfähig
- * (das Panel zeigt sich dann inline). Am Persistent-Shell-Kontrakt.
+ * (das Panel zeigt sich dann inline). Seiten-Modul, mountet einmal beim Laden.
  */
 (function () {
   'use strict';
-
-  let instances = [];
 
   // Touch-Hinweis (Owner: Kasten mittig über dem Graphen), eine Zeile je Geste
   const TOUCH_HINT_LINES = [
@@ -40,9 +38,6 @@
     this.ok = !!(this.toggle && this.panel);
     if (!this.ok) { return; }
 
-    this.abort = new AbortController();
-    const signal = { signal: this.abort.signal };
-
     // ✕ in die Kopfleiste (rechts außen, nur im offenen Sheet sichtbar, CSS)
     this.closeBtn = document.createElement('button');
     this.closeBtn.type = 'button';
@@ -53,7 +48,7 @@
     cross.textContent = '✕';
     this.closeBtn.appendChild(cross);
     (this.panel.querySelector('.skill-graph__head') || this.panel).appendChild(this.closeBtn);
-    this.closeBtn.addEventListener('click', this.close.bind(this), signal);
+    this.closeBtn.addEventListener('click', this.close.bind(this));
 
     // Touch-Onboarding: beim ersten Öffnen auf Touch-Geräten kurz eingeblendet,
     // blendet nach ein paar Sekunden wieder aus (session-gated). Sitzt im
@@ -73,15 +68,14 @@
     // BEVOR skill-chips/skill-graph (Bubble-Phase am document) die Auswahl
     // lösen und per Event selectedSkill auf null setzen. Sonst schlösse
     // dasselbe Esc das Sheet gleich mit (Staffelung, OVL-3).
-    document.addEventListener('keydown', this.onKeydown.bind(this),
-      { signal: this.abort.signal, capture: true });
+    document.addEventListener('keydown', this.onKeydown.bind(this), { capture: true });
     // Aktive Skill-Auswahl mitverfolgen (Event-Vertrag mit skill-graph/skill-chips):
     // Esc-Staffelung — erstes Esc löst nur die Auswahl, zweites schließt das Sheet.
     this.selectedSkill = null;
     const self = this;
     document.addEventListener('auflinie:skill-select', function (event) {
       self.selectedSkill = (event.detail && event.detail.skill) || null;
-    }, signal);
+    });
 
     // Panel öffnet/schließt über [hidden] (skill-graph.js) — hier nur reagieren.
     this.observer = new MutationObserver(this.onHidden.bind(this));
@@ -172,31 +166,15 @@
     this.close();
   };
 
-  GraphSheet.prototype.destroy = function () {
-    if (this.abort) { this.abort.abort(); }
-    if (this.observer) { this.observer.disconnect(); this.observer = null; }
-    if (this.touchHintTimer) { clearTimeout(this.touchHintTimer); this.touchHintTimer = null; }
-    this.leaveModal();
-    document.body.classList.remove('graph-open');
-    if (this.closeBtn && this.closeBtn.parentNode) { this.closeBtn.parentNode.removeChild(this.closeBtn); }
-    if (this.touchHint && this.touchHint.parentNode) { this.touchHint.parentNode.removeChild(this.touchHint); }
-  };
-
-  // ── Persistent-Shell-Kontrakt (spa-nav.js, siehe docs/features/spa-nav.md) ─────────
-  function mount(root) {
-    const scope = root || document;
-    scope.querySelectorAll('[data-skill-graph]').forEach(function (el) {
-      if (el.hasAttribute('data-graph-sheet-mounted')) { return; }   // idempotent
+  // Seiten-Modul (STYLEGUIDE 10.2): mountet einmal beim Laden, Marker
+  // data-graph-sheet-mounted
+  function mount() {
+    document.querySelectorAll('[data-skill-graph]').forEach(function (el) {
+      if (el.hasAttribute('data-graph-sheet-mounted')) { return; }
       el.setAttribute('data-graph-sheet-mounted', '');
-      const g = new GraphSheet(el);
-      if (g.ok) { instances.push(g); }
+      new GraphSheet(el);   // die Instanz lebt über ihre Listener weiter
     });
   }
 
-  function teardown() {
-    instances.forEach(function (g) { if (g && g.destroy) { g.destroy(); } });
-    instances = [];
-  }
-
-  window.spaModule({ name: 'skill-graph-sheet', mount: mount, teardown: teardown });
+  mount();
 })();

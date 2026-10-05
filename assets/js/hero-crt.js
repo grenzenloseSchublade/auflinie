@@ -4,26 +4,16 @@
  * Lädt das Bild aus data-background-image vor und setzt es samt
  * Retro-Verlauf, danach steuert es den CRT-Effekt (Einschalt-Sequenz,
  * Canvas-Rauschen, Power-Knopf für den Lesemodus mit Hinweis-Puls).
- * Am Persistent-Shell-Kontrakt (window.spaModule aus spa-module.js), beim
- * ersten Laden mit Früh-Mount vor dem initialen spa:load (Option early,
- * PERF-9). Nur auf Seiten mit Overlay-Hero geladen (_includes/scripts.html).
+ * Seiten-Modul, mountet einmal beim Laden (PERF-9). Nur auf Seiten mit
+ * Overlay-Hero geladen (_includes/scripts.html).
  */
 
 (function() {
   'use strict';
 
-  // Persistent-Shell-Kontrakt (spa-nav.js): dokumentweite Listener dieses
-  // Mounts hängen an heroSignal und werden im Teardown zentral gelöst.
   const HERO_SEL = '.page__hero--overlay[data-background-image]';
   /** Klasse am Overlay, solange der Hero außerhalb des Viewports liegt. Hält per CSS die Endlos-Animationen an (PERF-7, `_hero.scss`) */
   const HERO_OFFSCREEN_CLASS = 'page__hero--crt-offscreen';
-  let heroController = null;
-  let heroSignal = null;
-  let heroObserver = null;
-  let bgPreloaded = false;
-  /** Power-Hinweis geplant, aber noch nicht gezeigt: Timer-ID (0, solange er auf `load` wartet) */
-  let powerHintPending = false;
-  let powerHintTimer = 0;
 
   const HERO_CRT_BOOT_KEY = 'auflinie:hero-crt:boot';
   const HERO_TUBE_BOOT_NAMES = ['hero-tube-boot-stark', 'hero-tube-boot-dezent'];
@@ -189,7 +179,7 @@
     return !!(overlay._heroCrtNoiseTimerId || overlay._heroCrtNoiseRafId);
   }
 
-  /** Flash-Timeout aus `bindHomeHeroCrtPowerToggle`; bei Navigation/DOM-Entfernung aufräumen */
+  /** Flash-Timeout aus `bindHomeHeroCrtPowerToggle` verwerfen (schneller Doppelklick) */
   function clearHeroCrtFlashTimeout(overlay) {
     if (overlay._heroCrtFlashTimeoutId) {
       window.clearTimeout(overlay._heroCrtFlashTimeoutId);
@@ -286,6 +276,7 @@
 
     const noiseMinIntervalMs = 1000 / HERO_CRT_NOISE_TARGET_FPS;
 
+    // Pause bei verdecktem Tab (auch beim Prerender und im bfcache)
     if (!overlay._heroCrtNoiseVisibilityAttached) {
       overlay._heroCrtNoiseVisibilityAttached = true;
       document.addEventListener('visibilitychange', function() {
@@ -298,7 +289,7 @@
             overlay.classList.contains('loaded')) {
           startHeroCanvasNoise(overlay);
         }
-      }, heroSignal ? { signal: heroSignal } : false);
+      });
     }
 
     // Frames erst kurz vor dem nächsten Bild anfordern (PERF-7): früher lief
@@ -444,10 +435,6 @@
       if (imageUrl) {
         preloadImage(imageUrl)
           .then(() => {
-            // Löst der Preload erst NACH einem SPA-Swap aus, ist das Element
-            // schon detacht — enhanceHeroCrtAfterLoad würde dann eine rAF-Loop
-            // (+ Boot-Timer) starten, die kein Teardown mehr erreicht.
-            if (!element.isConnected) return;
             // Overlay-Filter anwenden, falls vorhanden
             const overlayFilter = element.getAttribute('data-overlay-filter');
             const retroGrade = retroGradeFor(element);
@@ -486,15 +473,10 @@
   // 0.01ms und räumt sie wieder ab.
   function schedulePowerHint() {
     try { if (sessionStorage.getItem('auflinie:hero-crt:power-hinted') === '1') return; } catch (e) { /* noop: Storage gesperrt (privater Modus) */ }
-    if (window.__auflinieHeroCrtHintScheduled) return;
-    window.__auflinieHeroCrtHintScheduled = true;
-    powerHintPending = true;
     const fire = function () {
-      powerHintTimer = window.setTimeout(function () {
-        powerHintTimer = 0;
-        powerHintPending = false;
+      window.setTimeout(function () {
         const btn = document.getElementById('hero-crt-power');
-        if (!btn) { window.__auflinieHeroCrtHintScheduled = false; return; } // kein Button -> später erneut zulassen
+        if (!btn) return;
         btn.classList.add('hero-crt-power--hint');
         // Nur das Ende des Pulses (am ::after des Buttons, MO-6): animationend
         // bubbelt, andere Animationen im Button räumten die Klasse sonst zu früh ab.
@@ -509,15 +491,7 @@
     // Im Prerender erst nach der Aktivierung, sonst pulste er ungesehen
     const fireWhenActivated = function () { whenActivated(fire); };
     if (document.readyState === 'complete') fireWhenActivated();
-    else window.addEventListener('load', fireWhenActivated, { once: true, signal: heroSignal });
-  }
-
-  /** Teardown (SPA-3): geplanten Hinweis verwerfen, der nächste Mount plant ihn neu */
-  function cancelPowerHint() {
-    if (!powerHintPending) return;
-    if (powerHintTimer) { window.clearTimeout(powerHintTimer); powerHintTimer = 0; }
-    powerHintPending = false;
-    window.__auflinieHeroCrtHintScheduled = false;
+    else window.addEventListener('load', fireWhenActivated, { once: true });
   }
 
   /**
@@ -530,10 +504,8 @@
    * @param {NodeList} heroes
    */
   function observeHeroVisibility(heroes) {
-    if (heroObserver) heroObserver.disconnect();
-    heroObserver = null;
     if (!('IntersectionObserver' in window)) return;
-    heroObserver = new IntersectionObserver(function(entries) {
+    const observer = new IntersectionObserver(function(entries) {
       entries.forEach(function(entry) {
         const overlay = entry.target;
         overlay.classList.toggle(HERO_OFFSCREEN_CLASS, !entry.isIntersecting);
@@ -548,68 +520,28 @@
         }
       });
     });
-    Array.prototype.forEach.call(heroes, function(el) { heroObserver.observe(el); });
+    Array.prototype.forEach.call(heroes, function(el) { observer.observe(el); });
   }
 
-  // ── Persistent-Shell-Kontrakt (spa-nav.js): Mount bei jedem spa:load ────────
-  function mountHero(root) {
-    const scope = root || document;
-    const heroes = scope.querySelectorAll(HERO_SEL);
+  // Seiten-Modul (STYLEGUIDE 10.2): mountet einmal beim Laden. Als
+  // Defer-Skript läuft diese Datei im Zustand 'interactive', das DOM ist
+  // vollständig geparst und das Stylesheet geladen, das Hero-Bild (LCP)
+  // wird also so früh wie möglich gesetzt (PERF-9). Nach einer
+  // bfcache-Rückkehr läuft alles weiter, das Rauschen startet über
+  // visibilitychange neu.
+  function mountHero() {
+    const heroes = document.querySelectorAll(HERO_SEL);
 
-    config.enableImageCaching = readEnableImageCaching();
-    config.backgroundImage = document.documentElement.getAttribute('data-background-image');
-
-    // Globales Hintergrundbild einmal vorwärmen (früher in cacheBackgroundImages)
-    if (!bgPreloaded && config.backgroundImage) {
-      bgPreloaded = true;
-      preloadImage(config.backgroundImage).catch(function() {});
-    }
+    // Globales Hintergrundbild vorwärmen (früher in cacheBackgroundImages)
+    if (config.backgroundImage) preloadImage(config.backgroundImage).catch(function() {});
 
     if (!heroes.length) return;
-
-    if (heroController) {                                // Doppel-Mount absichern
-      heroController.abort();
-      cancelPowerHint();                                 // load-Warten hing am alten Signal, unten neu planen
-    }
-    heroController = new AbortController();
-    heroSignal = heroController.signal;
-
-    const toLoad = [];
-    Array.prototype.forEach.call(heroes, function(el) {
-      el._heroCrtNoiseVisibilityAttached = false;        // Re-Bind an den NEUEN Signal erlauben
-      if (el.classList.contains('loaded')) startHeroCanvasNoise(el);  // bfcache/Re-Mount: nur Rauschen an
-      else toLoad.push(el);
-    });
-    if (config.enableImageCaching !== false && toLoad.length) applyBackgroundImages(toLoad);
+    if (config.enableImageCaching !== false) applyBackgroundImages(heroes);
 
     observeHeroVisibility(heroes);
     bindHomeHeroCrtPowerToggle();
     schedulePowerHint();
   }
 
-  function teardownHero() {
-    document.querySelectorAll(HERO_SEL).forEach(function(el) {
-      clearHeroCrtFlashTimeout(el);
-      stopHeroCanvasNoise(el);          // Rausch-Timer und -rAF stoppen
-      el._heroCrtNoiseOffscreen = false;
-      abortCrtBootFlow(el);             // Preboot/Boot-Timer + load-wait-Listener
-      el.classList.remove(HERO_OFFSCREEN_CLASS);
-    });
-    if (heroObserver) { heroObserver.disconnect(); heroObserver = null; } // Observer-Leak zu
-    if (heroController) { heroController.abort(); heroController = null; heroSignal = null; } // visibilitychange und load-Warten weg
-    cancelPowerHint();
-  }
-
-  // Kontrakt über spaModule: mount bei jedem spa:load (initial + Swap-in),
-  // teardown bei spa:unload, bfcache-Restore (pageshow) wirft den Effekt
-  // wieder an. Früh-Mount beim ersten Laden (early, PERF-9): Als
-  // Defer-Skript läuft diese Datei im Zustand 'interactive', das DOM ist
-  // vollständig geparst und das Stylesheet geladen. Das initiale spa:load
-  // käme erst nach dem Download ALLER Defer-Skripte bis spa-nav.js. So lange
-  // wartete das Hero-Bild (LCP), obwohl es längst geladen war. spaModule
-  // mountet deshalb sofort, das initiale spa:load und der PE-Fallback
-  // überspringen den Mount danach. Swap-ins (initial: false) und bfcache
-  // bleiben beim Kontrakt, ein Reconcile-Nachladen erkennt spaModule an
-  // __spaNavActive.
-  window.spaModule({ name: 'hero-crt', mount: mountHero, teardown: teardownHero, early: true });
+  mountHero();
 })();

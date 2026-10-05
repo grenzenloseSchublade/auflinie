@@ -7,21 +7,15 @@
  * Button zurück. Das Markup kommt aus dem Theme-Include author-profile.html,
  * deshalb setzt das Skript id und aria-controls selbst.
  *
- * An den Persistent-Shell-Kontrakt (spa-nav.js) gebunden: das Autor-Markup
- * liegt INNERHALB von .initial-content und wird bei jedem Swap ersetzt. Ohne
- * Re-Mount wäre der Button danach tot; ohne Teardown zeigten die dokumentweiten
- * Listener auf detachierte Nodes. Daher: idempotenter Mount auf spa:load,
- * dokumentweite Listener via AbortController an spa:unload abräumen.
- * Registrierung über window.spaModule (spa-module.js, vorher geladen).
+ * Seiten-Modul (STYLEGUIDE 10.2): mountet einmal beim Laden, als
+ * Defer-Skript steht das DOM dann fertig. Der Marker
+ * data-author-follow-mounted schützt vor einem zweiten Mount.
  */
 (function () {
   'use strict';
 
-  let controller = null;
-
-  function mount(root) {
-    const scope = root || document;
-    const wrapper = scope.querySelector('.author__urls-wrapper');
+  function mount() {
+    const wrapper = document.querySelector('.author__urls-wrapper');
     if (!wrapper || wrapper.hasAttribute('data-author-follow-mounted')) return;
     const btn = wrapper.querySelector('button');
     const list = wrapper.querySelector('.author__urls');
@@ -38,7 +32,6 @@
       btn.setAttribute('aria-expanded', 'false');
     }
 
-    // Element-scoped -> stirbt mit dem alten DOM beim Swap, kein Teardown nötig.
     // Per Enter/Leertaste geöffnet (click mit detail 0): Fokus auf den ersten
     // Link der Liste. Bei Maus/Touch bleibt er am Button, wie beim Drawer
     // (greedy-navigation.js): das Theme zeichnet schon bei :focus einen Ring
@@ -54,13 +47,9 @@
       }
     });
 
-    // Dokumentweit -> überlebt den Swap und muss aktiv abgeräumt werden.
-    if (controller) controller.abort();
-    controller = new AbortController();
-    const signal = controller.signal;
     document.addEventListener('click', function (e) {
       if (!wrapper.contains(e.target)) close();
-    }, { signal: signal });
+    });
     document.addEventListener('keydown', function (e) {
       if (e.key !== 'Escape' || !list.classList.contains('is--visible')) return;
       // Fokus nur zurückholen, wenn er im Dropdown oder am Button liegt.
@@ -68,10 +57,8 @@
       const fokusDrin = wrapper.contains(document.activeElement);
       close();
       if (fokusDrin) btn.focus();
-    }, { signal: signal });
+    });
   }
 
-  function teardown() { if (controller) { controller.abort(); controller = null; } }
-
-  window.spaModule({ name: 'author-follow', mount: mount, teardown: teardown });
+  mount();
 })();

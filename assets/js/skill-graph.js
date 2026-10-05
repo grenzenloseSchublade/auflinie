@@ -99,7 +99,6 @@
     this.fitBtn = root.querySelector('[data-role="graph-fit"]');
     if (!this.toggle || !this.panel || !this.canvas || !this.wrap) { return; }
 
-    this.abort = new AbortController();
     this.initialized = false;
     this.rafId = null;
     this.selected = null;      // hervorgehobener Knoten (nur Skills mit Knoten)
@@ -122,11 +121,10 @@
     this.pointers = {};
     this.labelRects = [];
 
-    const signal = { signal: this.abort.signal };
-    this.toggle.addEventListener('click', this.onToggle.bind(this), signal);
-    document.addEventListener('auflinie:skill-select', this.onExternalSelect.bind(this), signal);
-    document.addEventListener('visibilitychange', this.onVisibility.bind(this), signal);
-    document.addEventListener('keydown', this.onKeydown.bind(this), signal);
+    this.toggle.addEventListener('click', this.onToggle.bind(this));
+    document.addEventListener('auflinie:skill-select', this.onExternalSelect.bind(this));
+    document.addEventListener('visibilitychange', this.onVisibility.bind(this));
+    document.addEventListener('keydown', this.onKeydown.bind(this));
   }
 
   SkillGraph.prototype.onToggle = function () {
@@ -144,7 +142,7 @@
       if (this.openRaf !== null) { cancelAnimationFrame(this.openRaf); }
       this.openRaf = requestAnimationFrame(function () {
         self.openRaf = null;
-        if (self.abort.signal.aborted || self.panel.hidden) { return; }
+        if (self.panel.hidden) { return; }
         if (!self.initialized) { self.build(); }
         if (!self.sim) { return; }
         self.syncLayout();
@@ -265,7 +263,6 @@
     this.sim = new window.SkillGraphSim(this.nodes, this.edges, vw, vh, { aspect: layoutAspect(w, h) });
 
     // Resize: Positionen proportional skalieren, kein Reheat
-    // resizeTimer an der Instanz (self), damit destroy() ihn löschen kann.
     this.resizeTimer = null;
     this.observer = new ResizeObserver(function () {
       clearTimeout(self.resizeTimer);
@@ -277,37 +274,34 @@
     });
     this.observer.observe(this.wrap);
 
-    const canvasSignal = { signal: this.abort.signal };
-    this.canvas.addEventListener('pointerdown', this.onPointerDown.bind(this), canvasSignal);
-    this.canvas.addEventListener('pointermove', this.onPointerMove.bind(this), canvasSignal);
-    this.canvas.addEventListener('pointerup', this.onPointerUp.bind(this), canvasSignal);
-    this.canvas.addEventListener('pointercancel', this.onPointerUp.bind(this), canvasSignal);
+    this.canvas.addEventListener('pointerdown', this.onPointerDown.bind(this));
+    this.canvas.addEventListener('pointermove', this.onPointerMove.bind(this));
+    this.canvas.addEventListener('pointerup', this.onPointerUp.bind(this));
+    this.canvas.addEventListener('pointercancel', this.onPointerUp.bind(this));
     // touch-action wird beim Touch-KONTAKT ausgewertet — die Style-Umschaltung
     // im pointerdown desselben Fingers (onPointerDown) greift erst für SPÄTERE
     // Finger. Nicht-passiver touchstart-Handler entzieht Zwei-Finger-Gesten und
     // Knoten-Treffer dem Browser-Scroll sofort; Ein-Finger-Touch auf leerer
     // Fläche scrollt inline weiter (touch-action: pan-y bleibt wirksam).
-    this.canvas.addEventListener('touchstart', this.onTouchStart.bind(this),
-      { signal: this.abort.signal, passive: false });
+    this.canvas.addEventListener('touchstart', this.onTouchStart.bind(this), { passive: false });
     // Mausrad im modalen Sheet: zoomt wie im Fraktal-Panel (OVL-2), waagerecht
     // (Trackpad, Shift+Rad) verschiebt. Inline ohne Sheet scrollt das Rad
     // weiter die Seite.
-    this.canvas.addEventListener('wheel', this.onWheel.bind(this),
-      { signal: this.abort.signal, passive: false });
+    this.canvas.addEventListener('wheel', this.onWheel.bind(this), { passive: false });
     if (this.resetBtn) {
-      this.resetBtn.addEventListener('click', this.reset.bind(this), canvasSignal);
+      this.resetBtn.addEventListener('click', this.reset.bind(this));
     }
     if (this.zoomInBtn) {
-      this.zoomInBtn.addEventListener('click', this.zoomBy.bind(this, ZOOM_STEP), canvasSignal);
+      this.zoomInBtn.addEventListener('click', this.zoomBy.bind(this, ZOOM_STEP));
     }
     if (this.zoomOutBtn) {
-      this.zoomOutBtn.addEventListener('click', this.zoomBy.bind(this, 1 / ZOOM_STEP), canvasSignal);
+      this.zoomOutBtn.addEventListener('click', this.zoomBy.bind(this, 1 / ZOOM_STEP));
     }
     if (this.fitBtn) {
-      this.fitBtn.addEventListener('click', this.fit.bind(this), canvasSignal);
+      this.fitBtn.addEventListener('click', this.fit.bind(this));
     }
     if (window.AuflinieUtils) {
-      window.AuflinieUtils.onReducedMotionChange(this.startOrStill.bind(this), this.abort.signal);
+      window.AuflinieUtils.onReducedMotionChange(this.startOrStill.bind(this));
     }
     this.initialized = true;
     // Vor dem Öffnen gewählten Chip nachziehen (sonst öffnet der Graph ohne
@@ -401,19 +395,6 @@
       cancelAnimationFrame(this.rafId);
       this.rafId = null;
     }
-  };
-
-  // Persistent-Shell-Teardown (spa:unload): alle dokumentweiten Ressourcen lösen.
-  // this.abort deckt die per {signal} gebundenen Listener ab (Toggle, Canvas-
-  // Pointer, Kopfleisten-Knöpfe, document skill-select/visibilitychange/
-  // keydown, Wechsel der Bewegungs-Einstellung); Observer/rAF/Resize-Timer separat. Guards, falls
-  // der Konstruktor früh zurückkehrte (fehlende Elemente) oder build() nie lief.
-  SkillGraph.prototype.destroy = function () {
-    if (this.abort) { this.abort.abort(); }
-    if (this.openRaf != null) { cancelAnimationFrame(this.openRaf); this.openRaf = null; }
-    this.stopLoop();
-    if (this.observer) { this.observer.disconnect(); this.observer = null; }
-    if (this.resizeTimer) { clearTimeout(this.resizeTimer); this.resizeTimer = null; }
   };
 
   SkillGraph.prototype.onVisibility = function () {
@@ -1069,26 +1050,18 @@
     }
   };
 
-  // ── Persistent-Shell-Kontrakt (spa-nav.js, siehe docs/features/spa-nav.md) ─────────
-  let instances = [];
-
-  function mountGraph(root) {
-    const scope = root || document;
+  // ── Seiten-Modul (STYLEGUIDE 10.2): mountet einmal beim Laden ──────────────
+  function mountGraph() {
     if (typeof window.SkillGraphSim === 'undefined') {
       console.warn('skill-graph: Engine skill-graph-sim.js fehlt — Panel bleibt inaktiv');
       return;
     }
-    scope.querySelectorAll('[data-skill-graph]').forEach(function (el) {
-      if (el.hasAttribute('data-skill-graph-mounted')) { return; }   // idempotent
+    document.querySelectorAll('[data-skill-graph]').forEach(function (el) {
+      if (el.hasAttribute('data-skill-graph-mounted')) { return; }
       el.setAttribute('data-skill-graph-mounted', '');
-      instances.push(new SkillGraph(el));
+      new SkillGraph(el);   // die Instanz lebt über ihre Listener weiter
     });
   }
 
-  function teardownGraph() {
-    instances.forEach(function (g) { if (g && g.destroy) { g.destroy(); } });
-    instances = [];
-  }
-
-  window.spaModule({ name: 'skill-graph', mount: mountGraph, teardown: teardownGraph });
+  mountGraph();
 })();

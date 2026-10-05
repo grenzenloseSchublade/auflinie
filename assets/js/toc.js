@@ -1,20 +1,16 @@
 /**
  * toc.js — Sticky-Mobile-Header, Gumshoe-ScrollSpy, Dropdown, optionales Collapse.
  *
- * Externalisiert aus dem früheren Inline-Script in _includes/toc-wrapper.html
- * und an den Persistent-Shell-Kontrakt (spa-nav.js, siehe docs/features/spa-nav.md)
- * gebunden (window.spaModule): mount auf spa:load, teardown auf spa:unload. Alle dokument-/
- * fensterweiten Listener (window scroll/resize, document keydown/gumshoe*) und
- * die Gumshoe-Instanz hängen an einem AbortController bzw. werden im Teardown
- * gelöst — sonst leakten sie über Content-Swaps.
+ * Externalisiert aus dem früheren Inline-Script in _includes/toc-wrapper.html.
+ * Seiten-Modul (STYLEGUIDE 10.2): mountet einmal beim Laden, Marker
+ * data-toc-mounted.
  *
  * Feature-detect per DOM (keine Liquid-Abhängigkeit mehr): das Collapse wird
  * nur verdrahtet, wenn der Toggle (.toc-toggle) vorhanden ist; die frühere
  * toc_id kommt aus dem gerenderten Toggle-id-Attribut.
  *
- * Braucht gumshoe.min.js, site-utils.js (window.AuflinieUtils) und
- * spa-module.js (window.spaModule), alle vorher geladen
- * (_includes/scripts.html).
+ * Braucht gumshoe.min.js und site-utils.js (window.AuflinieUtils), beide
+ * vorher geladen (_includes/scripts.html).
  */
 (function () {
   'use strict';
@@ -40,20 +36,7 @@
   // Spiegel zu variables/_css-properties.scss: --masthead-height (Grundwert
   // in :root). Greift nur, wenn das Token fehlt.
   const MASTHEAD_HEIGHT_FALLBACK_PX = 74;
-  let controller = null;
   let gumshoeInstance = null;
-  let releaseInert = null;
-
-  function teardown() {
-    if (gumshoeInstance && gumshoeInstance.destroy) { gumshoeInstance.destroy(); }
-    gumshoeInstance = null;
-    if (controller) { controller.abort(); controller = null; }
-    // Falls beim Teardown ein Dropdown offen war: inert und Body-Scroll
-    // wieder freigeben (Footer und Skip-Links überleben den Swap).
-    if (releaseInert) { releaseInert(); releaseInert = null; }
-    document.body.style.overflow = '';
-    document.documentElement.style.removeProperty('scroll-padding-top');
-  }
 
   // Höhe der sichtbaren Sticky-TOC in den Sprungmarken-Versatz geben (WCAG
   // 2.4.11). Spiegel zu variables/_css-properties.scss: --anchor-offset ist
@@ -69,8 +52,8 @@
     targets.forEach(function (el) { el.style.setProperty('--sticky-toc-height', height + 'px'); });
   }
 
-  function mount(root) {
-    const scope = root || document;
+  function mount() {
+    const scope = document;
     const stickyToc = scope.querySelector('#toc-sticky-mobile');
     const stickyToggle = scope.querySelector('#toc-sticky-toggle');
     const stickyDropdown = scope.querySelector('#toc-sticky-dropdown');
@@ -81,15 +64,9 @@
     const offsetTargets = Array.prototype.slice.call(scope.querySelectorAll('[data-sticky-toc-offset]'));
 
     if (!stickyToc || !originalToc) { return; }
-    if (stickyToc.hasAttribute('data-toc-mounted')) { return; }   // idempotent
+    if (stickyToc.hasAttribute('data-toc-mounted')) { return; }
     stickyToc.setAttribute('data-toc-mounted', '');
 
-    if (controller) { controller.abort(); }
-    controller = new AbortController();
-    const signal = { signal: controller.signal };
-    // Mount-Generation für den Gumshoe-Retry: nach Teardown (abort) darf die
-    // 50ms-Schleife keine verwaiste Instanz einer alten Generation erzeugen.
-    const mountSignal = controller.signal;
     let gumshoeRetries = 0;
 
     let isDropdownOpen = false;
@@ -154,7 +131,6 @@
     }
 
     function initGumshoe() {
-      if (mountSignal.aborted) { return; }    // Seite/Mount schon abgeräumt
       if (typeof Gumshoe === 'undefined') {   // async geladen -> kurz warten
         if (gumshoeRetries++ >= 100) { return; }   // ~5s: gumshoe.min.js lädt nicht — aufgeben statt endlos pollen
         window.setTimeout(initGumshoe, 50);
@@ -179,12 +155,12 @@
         if (link && isBelowLg()) { updateCurrentHeading(link.textContent.trim()); }
         if (link) { link.setAttribute('aria-current', 'true'); }
         syncDropdownActive(link);
-      }, signal);
+      });
 
       document.addEventListener('gumshoeDeactivate', function (event) {
         const link = event.detail.link;
         if (link) { link.removeAttribute('aria-current'); }
-      }, signal);
+      });
     }
 
     function reinitGumshoe() {
@@ -214,10 +190,7 @@
     // Scroll-Listener sie anfordern, deshalb wird der Listener nach dem
     // Anlegen von Gumshoe neu gebunden (bindScroll in initGumshoe).
     let lastScrollY = window.scrollY;
-    // Nach dem Teardown verfällt ein noch angeforderter Frame (SPA-3): er
-    // schriebe sonst scroll-padding-top an <html> der neuen Seite.
     const onScrollFrame = utils().rafThrottle(function () {
-      if (mountSignal.aborted) { return; }
       updateStickyVisibility(lastScrollY);
       updateReadingProgress(lastScrollY);
     });
@@ -227,14 +200,14 @@
     }
     function bindScroll() {
       window.removeEventListener('scroll', onScroll);
-      window.addEventListener('scroll', onScroll, { passive: true, signal: controller.signal });
+      window.addEventListener('scroll', onScroll, { passive: true });
     }
     bindScroll();
 
     utils().onDocumentResize(function () {
       scrollMax = document.documentElement.scrollHeight - window.innerHeight;
       tocBottomDoc = originalToc.getBoundingClientRect().bottom + window.scrollY;
-    }, controller.signal);
+    });
 
     updateStickyVisibility();
     updateReadingProgress();
@@ -272,7 +245,6 @@
       releaseInertNow();
       releaseInertNow = null;
     }
-    releaseInert = releaseBackground;
 
     function onOpenEnd(e) {
       if (e.target === stickyDropdown && e.propertyName === 'max-height') { setBackgroundInert(); }
@@ -313,21 +285,21 @@
           const first = stickyDropdown.querySelector('a[href]');
           if (first) { first.focus({ preventScroll: true }); }
         }
-      }, signal);
+      });
     }
     if (stickyOverlay) {
-      stickyOverlay.addEventListener('click', closeDropdown, signal);
+      stickyOverlay.addEventListener('click', closeDropdown);
     }
     document.addEventListener('keydown', function (e) {
       if (e.key === 'Escape' && isDropdownOpen) {
         closeDropdown();
         stickyToggle.focus();
       }
-    }, signal);
+    });
     if (stickyDropdown) {
       stickyDropdown.addEventListener('click', function (e) {
         if (e.target.tagName === 'A') { closeDropdown(); }
-      }, signal);
+      });
     }
 
     // ── Aktuelle Überschrift im Sticky-Header (mit Slide-Animation) ─────────
@@ -342,12 +314,10 @@
         isAnimating = true;
         stickyCurrent.classList.add('is-sliding-out');
         window.setTimeout(function () {
-          if (mountSignal.aborted) { return; }
           stickyCurrent.textContent = displayText;
           stickyCurrent.classList.remove('is-sliding-out');
           stickyCurrent.classList.add('is-sliding-in');
           window.setTimeout(function () {
-            if (mountSignal.aborted) { return; }
             stickyCurrent.classList.remove('is-sliding-in');
             isAnimating = false;
           }, 200);
@@ -370,7 +340,6 @@
     // Initiale Überschrift (nach Gumshoe-Init)
     window.requestAnimationFrame(function () {
       window.setTimeout(function () {
-        if (mountSignal.aborted) { return; }
         const activeLi = originalToc.querySelector('.toc__menu li.active');
         if (activeLi) {
           const link = activeLi.querySelector(':scope > a');
@@ -386,13 +355,12 @@
     window.addEventListener('resize', function () {
       window.clearTimeout(resizeTimeout);
       resizeTimeout = window.setTimeout(function () {
-        if (mountSignal.aborted) { return; }
         cachedMastheadHeight = null;
         updateStickyVisibility();
         updateReadingProgress();
         reinitGumshoe();
       }, 100);
-    }, signal);
+    });
 
     // ── Optionales Collapse des Original-TOC (nur wenn Toggle vorhanden) ─────
     const tocToggle = originalToc.querySelector('.toc-toggle');
@@ -462,21 +430,16 @@
       tocToggle.addEventListener('click', function () {
         const isExpanded = tocToggle.getAttribute('aria-expanded') === 'true';
         setExpanded(!isExpanded);
-      }, signal);
+      });
 
       tocContent.addEventListener('transitionend', function (e) {
         if (e.target === tocContent && e.propertyName === 'max-height'
           && tocToggle.getAttribute('aria-expanded') === 'true') {
           tocContent.style.maxHeight = 'none';
         }
-      }, signal);
+      });
     }
   }
 
-  // spa-module.js lädt direkt nach site-utils.js und damit vor toc.js
-  // (_includes/scripts.html). Älteres HTML aus dem HTTP-Cache lud es erst
-  // danach: dann ohne TOC-Verhalten, aber ohne Absturz.
-  if (typeof window.spaModule === 'function') {
-    window.spaModule({ name: 'toc', mount: mount, teardown: teardown });
-  }
+  mount();
 })();

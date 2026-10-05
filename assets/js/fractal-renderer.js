@@ -211,15 +211,6 @@
       this.isRendering = false;
     }
 
-    // Vollständiges Teardown (FractalPanel.destroy): auch geplante Renders und
-    // laufende Preview-Animationen stoppen — ein anstehender pendingTimer
-    // würde sonst auf einem toten Panel neue Worker starten.
-    dispose() {
-      this.cancelActiveWorkers();
-      if (this.pendingTimer) { clearTimeout(this.pendingTimer); this.pendingTimer = null; }
-      if (this.animationFrame) { cancelAnimationFrame(this.animationFrame); this.animationFrame = null; }
-    }
-
     render(options) {
       const settings = options || {};
       const preview = !!settings.preview;
