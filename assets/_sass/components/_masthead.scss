@@ -426,7 +426,7 @@ body {
     // Exit beschleunigend und kürzer als der Entrance (Material-Muster:
     // Abgänge accelerate); visibility-Delay MUSS synchron zur Dauer bleiben
     // skala-Ausnahme: Drawer-Choreografie (MO-4), gekoppelt an greedy-navigation.js
-    transition: transform 0.24s cubic-bezier(0.4, 0, 1, 1), visibility 0s 0.24s;
+    transition: transform 0.24s $ease-accelerate, visibility 0s 0.24s;
   }
 }
 

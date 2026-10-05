@@ -99,8 +99,7 @@ html {
 
 // Spezifische Focus-Styles für Buttons
 button:focus-visible,
-.btn:focus-visible,
-.zoom-button:focus-visible {
+.btn:focus-visible {
   outline: 2px solid $hover-color;
   outline-offset: 2px;
   box-shadow: $shadow-focus-ring;

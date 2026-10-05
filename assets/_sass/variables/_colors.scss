@@ -78,7 +78,6 @@ $crt-screen-bg: #10141a; // Röhren-Schwarz der CRT-Seitenwechsel
 // 2. Alpha-Stufen (Primitive)
 // =============================================================================
 // Cyan aus $link-color
-$cyan-a00: rgba($link-color, 0); // Verlaufs-/Glow-Ende, bewusst Cyan statt Schwarz
 $cyan-a08: rgba($link-color, 0.08);
 $cyan-a10: rgba($link-color, 0.1); // Nav-Hover-Grund (Owner: bleibt, KOMP-3)
 $cyan-a12: rgba($link-color, 0.12);
