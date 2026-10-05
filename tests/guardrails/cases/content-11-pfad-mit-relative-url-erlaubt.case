@@ -1,0 +1,11 @@
+# Pfade über relative_url, externe Links und Code-Beispiele sind erlaubt (ARCH-5)
+guardrail: content
+expect: 0
+file: _posts/2025-02-15-erster-beitrag.md
+mode: append
+---
+![Ein Bild]({{ "/assets/images/posts/bild.jpg" | relative_url }}){: width="1200" height="800"} und [extern](https://example.org/) und `![x](/assets/a.jpg)`
+
+```markdown
+[Link](/posts/)
+```

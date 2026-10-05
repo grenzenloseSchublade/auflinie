@@ -1,0 +1,8 @@
+# Bild und Link ab der Wurzel ohne relative_url: live fehlt /auflinie (ARCH-5, LIQ-3)
+guardrail: content
+expect: 1
+grep: _posts/2025-02-15-erster-beitrag\.md:\d+: Pfad „/assets/images/posts/bild\.jpg“ ohne relative_url
+file: _posts/2025-02-15-erster-beitrag.md
+mode: append
+---
+![Ein Bild](/assets/images/posts/bild.jpg){: width="1200" height="800"} und [ein Link](/posts/)

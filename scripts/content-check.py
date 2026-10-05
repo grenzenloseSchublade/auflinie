@@ -16,9 +16,12 @@ Quellen (ohne Argument):
      Kante sonst still, nur die Browser-Konsole warnte.
   4. FEHLER: Mathe in _data/*.yml entgegen MD-3. Inline `$…$` braucht
      doppelte Backslashes, Display `$$…$$` einfache.
+  5. FEHLER: Pfad ab der Wurzel ohne relative_url in _posts, _drafts, _pages
+     (`](/…)`, `[x]: /…`, `src="/…"`, `href="/…"`, LIQ-3). Build und
+     html-proofer finden die Datei unter _site, live fehlt /auflinie davor.
 
 Gebaute Seiten (--site <dir>, nach dem Jekyll-Build):
-  5. WARNUNG: <img> ohne width/height im Inhalt eines Beitrags (posts/**,
+  6. WARNUNG: <img> ohne width/height im Inhalt eines Beitrags (posts/**,
      IMG-3). Ohne Maße springt das Layout beim Laden.
 
 Nutzung:
@@ -64,6 +67,10 @@ FENCE_RE = re.compile(r"^\s*(```|~~~)")
 INLINE_CODE_RE = re.compile(r"`+[^`]*`+")
 BLANK_TAG_RE = re.compile(r"<a\b[^>]*\btarget\s*=\s*[\"']?_blank[^>]*>", re.I)
 IAL_BLANK_RE = re.compile(r"\{:[^}]*target\s*=\s*[\"']?_blank[^}]*\}", re.I)
+# Pfad ab der Wurzel ohne relative_url: Markdown-Link oder -Bild, Referenz-Link,
+# src/href in HTML. „//host“ ist ein externer Link und zählt nicht.
+ROOT_URL_RE = re.compile(r"\]\(\s*<?(/(?!/)[^)\s>]*)|^\s*\[[^\]]+\]:\s*(/(?!/)\S*)"
+                         r"|\b(?:src|href)\s*=\s*[\"'](/(?!/)[^\"']*)", re.I)
 
 
 def source_lines(path):
@@ -102,6 +109,13 @@ def check_sources():
                           "steht aber öffentlich im Quelltext.",
                           "als YAML-Kommentar mit # schreiben." if yml else
                           "{% comment %} … {% endcomment %} nutzen, das entfernt Jekyll beim Bauen.")
+                if not yml:
+                    for m in ROOT_URL_RE.finditer(line):
+                        url = next(g for g in m.groups() if g)
+                        error(path, no, f"Pfad „{url}“ ohne relative_url. Lokal und in den übrigen "
+                              "Prüfungen fällt das nicht auf, auf der Website fehlt aber /auflinie "
+                              "davor, Bild oder Link gehen ins Leere.",
+                              f'{{{{ "{url}" | relative_url }}}} statt {url} schreiben.')
                 for tag in BLANK_TAG_RE.findall(line) + IAL_BLANK_RE.findall(line):
                     if "noopener" not in tag.lower():
                         warn(path, no, 'target="_blank" ohne rel="noopener noreferrer".',
@@ -290,7 +304,7 @@ def main(argv):
         print(e)
     if errors:
         print(f"\nInhalts-Check ({scope}): {len(errors)} Fehler, {len(warnings)} Warnung(en). "
-              "Hintergrund: STYLEGUIDE.md ARCH-5, Pflege-Tabelle im README.")
+              "Hilfe: docs/pflege.md, Abschnitt „Prüfen vor dem Push“.")
         return 1
     print(f"Inhalts-Check OK ({scope}{f', {len(warnings)} Warnung(en)' if warnings else ''})")
     return 0
