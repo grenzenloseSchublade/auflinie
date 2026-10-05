@@ -1,10 +1,12 @@
 #!/bin/bash
-# Skalen-Guardrail (Ratchet, STYLEGUIDE SP-1, RAD-1, Z-3, MO-1, MO-2)
+# Skalen-Guardrail (Ratchet, STYLEGUIDE SP-1, RAD-1, Z-3, MO-1, MO-2, TYP-7)
 #
-# Zählt Zahlenliterale, die eine Skala aus assets/_sass/variables/_scales.scss
-# ersetzen soll, außerhalb von assets/_sass/variables/: Abstände (margin,
-# padding, gap), border-radius, box-shadow, z-index, Dauern und Kurven in
-# transition/animation sowie transition ohne konkrete Eigenschaft. Lokale
+# Zählt Zahlenliterale, die eine Skala aus assets/_sass/variables/ ersetzen
+# soll, außerhalb von assets/_sass/variables/: Abstände (margin, padding,
+# gap), border-radius, box-shadow, z-index, Dauern und Kurven in
+# transition/animation, transition ohne konkrete Eigenschaft und Laufweiten
+# (letter-spacing, Kategorie tracking). Dazu die Argumente der Mixins
+# card-panel() und mono-label() (scripts/scale-literals.py). Lokale
 # Sass-Variablen außerhalb von variables/ ($lokal: 13px) zählen dort, wo
 # eine dieser Deklarationen sie liest, wie das Literal selbst.
 # Grenzwerte je Kategorie stehen in scripts/scale-baseline.txt. Die CI
