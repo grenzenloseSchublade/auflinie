@@ -133,7 +133,8 @@ kramdown:
 MathJax 4 ist selbst gehostet (`assets/vendor/mathjax/` und das Font-Paket `assets/vendor/mathjax-newcm-font/`), es gibt keinen CDN-Aufruf. Geladen wird es nur auf Seiten mit `mathjax: true` im Front Matter:
 
 - `_config.yml` stellt kramdown auf `math_engine: mathjax`. kramdown gibt die Formeln dann als `\(…\)` und `\[…\]` aus.
-- `_includes/head/custom.html` bindet bei `page.mathjax` drei Skripte mit `defer` ein: `assets/js/mathjax-config.js` (die Konfiguration als Datei, kein Inline-Skript wegen der CSP), `assets/vendor/mathjax/tex-chtml.js` und `assets/js/mathjax-typeset.js` (setzt nach einem SPA-Seitenwechsel den neuen Inhalt).
+- `_includes/head/custom.html` bindet bei `page.mathjax` zwei Skripte mit `defer` ein: `assets/js/mathjax-config.js` (die Konfiguration als Datei, kein Inline-Skript wegen der CSP) und `assets/js/mathjax-typeset.js` (setzt nach einem SPA-Seitenwechsel den neuen Inhalt).
+- Den Kern `assets/vendor/mathjax/tex-chtml.js` hängt `mathjax-config.js` erst an, wenn er gebraucht wird: sofort, wenn die erste Formel höchstens zwei Bildschirmhöhen tief steht, sonst sobald eine Formel bis auf eine Bildschirmhöhe heranrückt, bei der ersten Eingabe oder nach dem Laden der Seite im Leerlauf. Nach einem SPA-Seitenwechsel lädt er sofort. So teilt sich der Kern mobil nicht Bandbreite und Hauptthread mit dem Hero-Bild.
 - Die Version steht in `THIRD-PARTY-NOTICES.md`, `tests/vendor.spec.js` prüft nach einem Versionswechsel, ob alle Formeln gesetzt werden.
 
 ### Verwendung in Markdown-Dateien
@@ -168,7 +169,7 @@ Wenn mathematische Formeln nicht korrekt angezeigt werden:
 
 2. Diese Punkte prüfen:
    - `mathjax: true` ist im Frontmatter der Seite gesetzt
-   - `assets/vendor/mathjax/tex-chtml.js` wird ohne Fehler geladen (Netzwerk-Tab, Konsole)
+   - `assets/vendor/mathjax/tex-chtml.js` wird ohne Fehler geladen (Netzwerk-Tab, Konsole). Steht die erste Formel weiter unten, lädt der Kern erst beim Scrollen dorthin
    - Die LaTeX-Syntax verwendet `$$` für Display-Math und `$` für Inline-Math
    - Der Browser-Cache wurde geleert
 
