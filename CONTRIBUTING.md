@@ -22,6 +22,10 @@ Ideen für neue Funktionen oder Verbesserungen kommen als Issue mit:
 - Begründung, warum diese Funktion nützlich wäre
 - Mögliche Implementierungsansätze
 
+### Gastbeitrag schreiben
+
+Gastbeiträge kommen als Markdown-Datei nach der Vorlage `assets/downloads/post-template.md` (Download im Beitrag „Blogbeitrag erstellen“), Bilder als eigene Dateien. Was der Gast liefert und wie der Beitrag eingepflegt wird, steht in [`docs/pflege.md`](docs/pflege.md#gastbeitrag-einspielen).
+
 ### Code beitragen
 
 1. Repository forken
@@ -45,7 +49,7 @@ Ideen für neue Funktionen oder Verbesserungen kommen als Issue mit:
 
 ### Technische Anforderungen
 
-- **JavaScript**: modernes JavaScript (ES6+)
+- **JavaScript**: klassische Skripte bis ES2020, ohne Bundler (STYLEGUIDE JS-1)
 - **Performance**: besonders bei rechenintensiven Operationen wichtig
   - Web Worker für parallele Berechnungen
   - progressives Rendering
@@ -62,7 +66,7 @@ Da es sich um ein mathematisches Projekt handelt, ist die Genauigkeit der Implem
 ## Ideen für zukünftige Entwicklungen
 
 Hier sind einige Ideen für zukünftige Erweiterungen:
-- Implementierung weiterer Fraktaltypen (z.B. Newton-Fraktale, Burning Ship)
+- Implementierung weiterer Fraktaltypen (z. B. Newton-Fraktale, Burning Ship)
 - 3D-Visualisierungen von Fraktalen
 - Animationen zur Veranschaulichung der Entstehung von Fraktalen
 - Optimierung für mobile Geräte
