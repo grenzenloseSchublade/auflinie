@@ -213,7 +213,8 @@ ein offener Drawer slidet trotzdem raus.
   im `pagereveal` (nie auf defer/async umstellen!). Guards: Pfad-Match +
   10 s-TTL.
 - View Transitions laufen nur unter `(prefers-reduced-motion: no-preference)`
-  (`_view-transition.scss`, `vtGate` in `greedy-navigation.js`). Den
+  (`_view-transition.scss`, Gegenstück: der Klick-Handler der Drawer-Links in
+  `greedy-navigation.js` mit `AuflinieUtils.prefersReducedMotion()`). Den
   CRT-Effekt gibt es nur mobil, also unter 768 px: `tv-switch.js` fragt
   `AuflinieUtils.mq.downMd`, dieselbe Grenze wie `down(md)` beim
   Vollbild-Hero (STYLEGUIDE BP-6). Ohne Browser-Support (Firefox) normale

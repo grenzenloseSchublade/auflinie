@@ -1,13 +1,14 @@
 // =============================================================================
 // Cross-Document View Transitions: CRT-Umschalt + Drawer-Exit
 // =============================================================================
-// Aktiv nur mobil + ohne reduced-motion. Type "crt" wird pro Navigation
-// gesetzt, wenn die alte Seite oben stand UND ein Bereichswechsel vorliegt
-// UND der Cooldown abgelaufen ist (Dosierung in tv-switch.js); Type "drawer"
-// schiebt alle CRT-Starts um den Drawer-Exit + 70ms-Beat nach hinten.
+// Die View Transition läuft auf allen Viewports ohne reduced-motion, der
+// CRT-Type nur mobil. Type "crt" wird pro Navigation gesetzt, wenn die alte
+// Seite oben stand UND ein Bereichswechsel vorliegt UND der Cooldown
+// abgelaufen ist (Dosierung in tv-switch.js). Type "drawer" startet den CRT
+// überlappend zum Drawer-Exit, um $crt-drawer-offset (180 ms) versetzt.
 // Ohne Types: UA-Default-Crossfade — der Masthead steht immer.
 // -----------------------------------------------------------------------------
-// EFFEKT-VARIANTEN: drei Ausbaustufen des Röhren-Ausschaltens, per
+// EFFEKT-VARIANTEN: vier Varianten des Röhren-Ausschaltens, per
 // $crt-variante umschaltbar (nur die gewählte wird kompiliert). Details,
 // Timelines und Recherche-Quellen: docs/features/tv-umschalt.md
 @use "sass:list";
