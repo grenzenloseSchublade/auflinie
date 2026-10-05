@@ -19,9 +19,9 @@ Drei Gruppen, alle mit Playwright:
     Review-Builds und der Styleguide-Ansicht (Liste in `visual/pages.js`, neue Beiträge
     sind automatisch dabei), einmal in Fensterbreite und einmal bei 320 px, dort mit
     Reflow-Prüfung (kein waagerechtes Scrollen, WCAG 1.4.10). Bekannte Befunde stehen in
-    `visual/a11y-known.json`, nur neue Verstöße brechen ab. Befunde, die an einem
-    Inhaltsmuster hängen (Aufgabenliste, breiter Code-Block), nimmt `KNOWN_PATTERNS` mit
-    Verweis aufs Register aus, sonst machte jeder neue Beitrag die CI rot.
+    `visual/a11y-known.json`, nur neue Verstöße brechen ab. Markdown-Inhalte (Codeblöcke,
+    Aufgabenlisten) macht `_plugins/inhalts-a11y.rb` beim Build zugänglich, ein neuer
+    Beitrag braucht dafür keine Ausnahme.
   - `invariants.spec.js`: Verhalten statt Aussehen. Fokusführung, `aria-expanded`, `inert`,
     Escape und Light Dismiss an Drawer, Autor- und TOC-Dropdown und Skill-Graph-Sheet, der
     Blog-Hinweis im Top Layer, kein unsichtbares Element mit Tastaturfokus (Tab-Runde auf

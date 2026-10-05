@@ -16,22 +16,6 @@ const AxeBuilder = require('@axe-core/playwright').default;
 const { PAGES } = require('./pages');
 
 const KNOWN_FILE = path.join(__dirname, 'a11y-known.json');
-// Bekannte Befunde, die an einem Inhaltsmuster hängen statt an einer Seite:
-// Jeder Beitrag mit Aufgabenliste oder breitem Code-Block hat sie. Als
-// Baseline-Zeile je Seite machte sonst jeder neue Beitrag die CI rot, ohne
-// dass im Beitrag etwas zu beheben wäre (STYLEGUIDE ARCH-5). Behoben wird
-// zentral, die Registereinträge nennen den Weg.
-const KNOWN_PATTERNS = [
-  // R-89: Kontrollkästchen der Markdown-Aufgabenliste (kramdown) ohne Namen
-  /^label \| \.task-list-item(:nth-child\(\d+\))? > input$/,
-  // R-91: breite Code-Blöcke scrollen, sind aber nicht per Tastatur erreichbar
-  /^scrollable-region-focusable \| (.* )?(code > (\.rouge-table|table)|pre)$/,
-];
-// Bekannte Reflow-Befunde bei 320 px: Seite → Registereintrag (STYLEGUIDE 17).
-// Der Reflow-Test der Seite steht auf fixme, axe läuft dort weiter.
-const KNOWN_REFLOW = {
-  'posts/erstellung-dieser-website/': 'R-90: das Wort „Erstellung“ im Hero-Titel ist breiter als 320 px',
-};
 const known = fs.existsSync(KNOWN_FILE) ? JSON.parse(fs.readFileSync(KNOWN_FILE, 'utf8')) : {};
 const collected = {};
 
@@ -56,7 +40,6 @@ async function axeCheck(page, key) {
     .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa'])
     .analyze();
   const found = [...new Set(violations.flatMap((v) => v.nodes.map((n) => `${v.id} | ${n.target.join(' ')}`)))]
-    .filter((f) => !KNOWN_PATTERNS.some((re) => re.test(f)))
     .sort();
   collected[key] = found;
   const base = new Set(known[key] || []);
@@ -84,7 +67,6 @@ test.describe('320 px (WCAG 1.4.10 Reflow)', () => {
     });
 
     test(`Reflow: /${p}`, async ({ page }) => {
-      test.fixme(!!KNOWN_REFLOW[p], KNOWN_REFLOW[p]);
       await open(page, p, { settle: false });
       // Reflow: Die Seite scrollt nicht waagerecht. Breite Inhalte dürfen in
       // einem eigenen Scroll-Container stehen (Code, Tabellen, 1.4.10
