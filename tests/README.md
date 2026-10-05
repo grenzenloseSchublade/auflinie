@@ -7,7 +7,9 @@ Drei Gruppen, alle mit Playwright:
   jedes Seiten-Modul setzt beim vollen Laden seinen Marker genau einmal, ohne
   Seitenfehler, Titel und `aria-current` nach einem Klick, die Kopfzeile ist ein
   eigener Snapshot, die View Transition läuft mobil mit CRT und unter Reduced
-  Motion ohne CRT mit Dauer null, die Speculation Rules sind gültig.
+  Motion ohne CRT mit Dauer null, die Speculation Rules sind gültig. „Zurück“
+  nach einem Anker-Sprung lädt nicht neu, „Zurück“ in einen Eintrag der alten
+  SPA zeigt den Inhalt zur URL (Übergang R-96).
 - **`sw.spec.js`** – Service Worker mit echter Registrierung (Projekt `sw`):
   offline kommen precachte Seiten samt Skripten aus dem Cache, unbekannte als
   `offline.html`.

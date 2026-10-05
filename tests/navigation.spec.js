@@ -100,6 +100,37 @@ test.describe('Navigation', () => {
     await expect(aktuell).toHaveAttribute('href', `${BASE}/about/`);
   });
 
+  // Übergang R-96 (sw-register.js, entfällt ab 2026-12-01): Einträge der
+  // alten SPA lagen per pushState im selben Dokument. Nachgestellt wie beim
+  // Update per Toast: Eintrag anlegen, dann neu laden.
+  test('Zurück in einen Eintrag der alten SPA lädt die Seite zur URL', async ({ page }) => {
+    await page.goto(`${BASE}/cv/`);
+    await page.evaluate((url) => history.pushState({ spa: true, docId: 'alt', url }, '', url), `${BASE}/posts/`);
+    await page.reload();
+    await expect(page.locator('h1').first()).toContainText('Blog');
+    await page.goBack();
+    await expect(page).toHaveURL(new RegExp(`${BASE}/cv/$`));
+    await expect(page.locator('h1').first()).toContainText('Lebenslauf');
+  });
+
+  test('Anker-Sprung und Zurück laden nicht neu, Zurück zwischen Seiten schon', async ({ page }) => {
+    await page.goto(`${BASE}/`);
+    await page.locator('.greedy-nav .visible-links a[href$="/cv/"]').click();
+    await expect(page).toHaveURL(new RegExp(`${BASE}/cv/$`));
+    await page.evaluate(() => { window.__gleicheSeite = true; });
+    const anker = page.locator('#toc-original .toc__menu a[href^="#"]').first();
+    const ziel = await anker.getAttribute('href');
+    await anker.click();
+    await expect(page).toHaveURL(new RegExp(`${BASE}/cv/${ziel}$`));
+    await page.goBack();
+    await expect(page).toHaveURL(new RegExp(`${BASE}/cv/$`));
+    await page.waitForTimeout(300);   // ein Reload käme hier an
+    expect(await page.evaluate(() => window.__gleicheSeite)).toBe(true);
+    await page.goBack();
+    await expect(page).toHaveURL(new RegExp(`${BASE}/$`));
+    await expect(page.locator('h1').first()).not.toContainText('Lebenslauf');
+  });
+
   test('Kopfzeile ist ein eigener View-Transition-Snapshot', async ({ page }) => {
     await page.goto(`${BASE}/about/`);
     const name = await page.evaluate(() => (CSS.supports('view-transition-name: none')

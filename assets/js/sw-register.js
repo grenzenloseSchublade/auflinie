@@ -233,7 +233,30 @@
     sync();
   }
 
+  /**
+   * Übergang nach dem SPA-Ausbau (Register R-96, kann ab 2026-12-01 entfallen):
+   * Die alte SPA-Navigation (bis c19da3f) legte ihre Einträge per pushState
+   * im selben Dokument an (State {spa, docId, url}). Wer im alten Stand
+   * weiterklickt und per Update-Toast auf den neuen Stand wechselt, hat diese
+   * Einträge noch in der History. „Zurück“ springt dann im neuen Dokument nur
+   * die URL um, der Inhalt bleibt. Der neue Stand legt selbst keine Einträge
+   * an, ein popstate mit anderem Pfad kann also nur aus der alten SPA stammen
+   * und lädt die Seite zur URL neu. Reine Anker-Sprünge (TOC, Fußnoten)
+   * behalten den Pfad und bleiben unberührt, ebenso die Rückkehr aus dem
+   * bfcache (kein popstate).
+   */
+  function wireLegacySpaHistory() {
+    const loadedPath = window.location.pathname;
+    window.addEventListener('popstate', (event) => {
+      const legacyEntry = event.state && event.state.spa === true;
+      if (legacyEntry || window.location.pathname !== loadedPath) {
+        window.location.reload();
+      }
+    });
+  }
+
   // Service Worker registrieren
+  wireLegacySpaHistory();
   wireOfflineNotice();
   registerServiceWorker();
   wireUpdateChecks();
