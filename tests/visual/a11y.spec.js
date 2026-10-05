@@ -35,9 +35,12 @@ const KNOWN_REFLOW = {
 const known = fs.existsSync(KNOWN_FILE) ? JSON.parse(fs.readFileSync(KNOWN_FILE, 'utf8')) : {};
 const collected = {};
 
-async function open(page, p) {
+// settle: feste Wartezeit für axe (Fraktal-Rendering, Einblendungen). Der
+// Reflow-Test misst nur Breiten und wartet bloß auf Schriften und Übergänge.
+async function open(page, p, { settle = true } = {}) {
   await page.goto(`/auflinie/${p}`, { waitUntil: 'load' });
-  await page.waitForTimeout(p === 'mandelbrot/' ? 3000 : 800);
+  if (settle) await page.waitForTimeout(p === 'mandelbrot/' ? 3000 : 800);
+  else await page.evaluate(() => document.fonts.ready);
   // Einblendungen (CRT-Boot, Fade-in) zu Ende laufen lassen: axe liest die
   // berechnete Deckkraft, ein halb eingeblendeter Text gälte als zu blass.
   // Chromium ist nach 800 ms fertig, WebKit malt im Container ohne GPU
@@ -82,7 +85,7 @@ test.describe('320 px (WCAG 1.4.10 Reflow)', () => {
 
     test(`Reflow: /${p}`, async ({ page }) => {
       test.fixme(!!KNOWN_REFLOW[p], KNOWN_REFLOW[p]);
-      await open(page, p);
+      await open(page, p, { settle: false });
       // Reflow: Die Seite scrollt nicht waagerecht. Breite Inhalte dürfen in
       // einem eigenen Scroll-Container stehen (Code, Tabellen, 1.4.10
       // nimmt sie aus), sie verbreitern dann nicht die Seite.

@@ -60,7 +60,7 @@ jobs:
 
   build:
     runs-on: ubuntu-26.04 # fest statt ubuntu-latest (Image-Wechsel bewusst und getestet nachziehen)
-    timeout-minutes: 30 # Reserve für Image-Download und Playwright (etwa 3 min)
+    timeout-minutes: 30 # Reserve für Image-Download und Playwright (etwa 4,5 min)
     permissions:
       contents: read
       pages: read   # configure-pages liest die Pages-Konfiguration
@@ -140,7 +140,7 @@ jobs:
       # playwright.config.js). Im Build-Job statt eigenem Job: kein
       # zusätzliches Artefakt (Storage-Limit, kontoweit).
       # Drei Engines aus demselben Image: Chromium alles, Firefox und WebKit
-      # die Verhaltens-Tests (Projekte in playwright.config.js, etwa 3 min
+      # die Verhaltens-Tests (Projekte in playwright.config.js, etwa 4,5 min
       # statt 30 s). Hochgeladen wird der Bericht nur bei Fehlern (1 Tag),
       # Traces gibt es nur von fehlgeschlagenen Tests.
       # Image-Version = @playwright/test in package.json, per Digest gepinnt.

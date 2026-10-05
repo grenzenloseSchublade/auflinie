@@ -69,8 +69,9 @@ Die Projekte stehen in `playwright.config.js`:
   lässt in WebKit den Fall mit Bewegung aus (R-87).
 - WebKit blockt den `speculationrules`-Block per CSP (Register R-86).
   `vendor.spec.js` nimmt genau diese Meldungen in WebKit aus.
-- Laufzeit der vollen Suite mit 2 Workern auf 4 Kernen (wie ein GitHub-Runner):
-  etwa 3 min, davon etwa 30 s Chromium.
+- Laufzeit der vollen Suite mit 2 Workern (gemessen 5. 10. 2026 im Container):
+  etwa 4,5 min für 357 Tests, vor der Ausweitung von axe und Tab-Runde auf alle
+  Beiträge und 320 px etwa 2,6 min für 219 Tests.
 
 Dazu, ohne Browser und ohne Node:
 
