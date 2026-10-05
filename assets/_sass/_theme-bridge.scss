@@ -21,6 +21,16 @@ $global-transition:
   border-color $duration-base ease-in-out,
   opacity $duration-base ease-in-out;
 
+// Theme-Default ist `intro 0.3s both`: Masthead, Breadcrumbs, #main, Hero
+// und Footer blenden bei jedem Laden aus fast unsichtbar ein (Verzögerung
+// 0,15 bis 0,45 s). Seit dem Ausbau der SPA-Navigation (ARCH-2) ist jeder
+// Seitenwechsel ein volles Laden. Die Kopfzeile bliebe sonst nicht stehen,
+// sondern blendete jedes Mal neu ein. Den Übergang macht die View
+// Transition (_view-transition.scss). Den Stacking-Kontext, den die
+// Animation auf #main erzeugte, setzt layouts/_pages.scss jetzt
+// ausdrücklich (Z-1).
+$intro-transition: none;
+
 // Partial-Liste aus _sass/minimal-mistakes.scss des gepinnten Commits
 // (4.28.1, 81f00a6) statt @import "minimal-mistakes", ohne die
 // ungenutzten Partials magnific-popup (keine Bild-Lightbox) und search

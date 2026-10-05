@@ -3,6 +3,15 @@
 @use "abstracts/tokens" as *;
 @use "abstracts/breakpoints" as *;
 
+// Eigener Stacking-Kontext für #main (STYLEGUIDE Z-1): Sticky-TOC,
+// Back-to-Top und Skill-Graph-Sheet liegen darin und bleiben so unter
+// Masthead und Drawer. Früher entstand der Kontext nebenbei durch die
+// Theme-Einblendung ($intro-transition), die seit dem Ausbau der
+// SPA-Navigation aus ist (_theme-bridge.scss).
+#main {
+  isolation: isolate;
+}
+
 // Benutzerdefinierte Klasse für volle Breite auf allen Geräten
 .full-width-page {
   .page {

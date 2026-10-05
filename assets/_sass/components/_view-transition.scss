@@ -1,10 +1,12 @@
 // =============================================================================
 // Cross-Document View Transitions: CRT-Umschalt + Drawer-Exit
 // =============================================================================
-// Die View Transition läuft auf allen Viewports ohne reduced-motion, der
-// CRT-Type nur mobil. Type "crt" wird pro Navigation gesetzt, wenn die alte
-// Seite oben stand UND ein Bereichswechsel vorliegt UND der Cooldown
-// abgelaufen ist (Dosierung in tv-switch.js). Type "drawer" startet den CRT
+// Jeder interne Seitenwechsel ist ein volles Laden (ARCH-2), die View
+// Transition läuft auf allen Viewports, unter reduced-motion mit Dauer null
+// (Block am Dateiende). Der CRT-Type nur mobil und nur mit Bewegung.
+// Type "crt" wird pro Navigation gesetzt, wenn die alte Seite oben stand
+// UND ein Bereichswechsel vorliegt UND der Cooldown abgelaufen ist
+// (Dosierung in tv-switch.js). Type "drawer" startet den CRT
 // überlappend zum Drawer-Exit, um $crt-drawer-offset (180 ms) versetzt.
 // Ohne Types: UA-Default-Crossfade — der Masthead steht immer.
 // -----------------------------------------------------------------------------
@@ -67,22 +69,19 @@ $glitch-variante: "aus" !default;
 // 200ms = nahtlos anschließend, 270ms = alter Beat.
 $crt-drawer-offset: 180ms;
 
-// Cross-Document View Transitions (echte Voll-Navigationen, KEIN SPA-Swap):
-// erzeugt die Illusion, dass der Masthead über den Reload hinweg STEHEN bleibt
-// — der Browser hält den alten masthead-Snapshot (view-transition-name unten,
-// animation:none = kein Fade/Morph), während der Content-Root crossfadet.
-// Greift auf ALLEN Viewports (früher nur mobil), damit auch Voll-Reload-Seiten
-// (z.B. /mandelbrot/, MathJax-Fallback, Wechsel wired<->non-wired) den
-// stehenden Header bekommen. NUR bei erlaubter Bewegung: der Browser skippt VT
-// bei prefers-reduced-motion NICHT automatisch (bewusst hier gegatet, WCAG).
-// Support: Chromium 126+ / Safari 18.2+; Firefox kann Cross-Doc-VT (noch) nicht
-// und ignoriert die Regel folgenlos -> dort normale Navigation. Der CRT-Effekt
-// (types crt/drawer) bleibt wie gehabt dosiert (tv-switch.js). Same-Document-
-// Swaps (spa-nav.js) laufen unabhängig davon.
-@media (prefers-reduced-motion: no-preference) {
-  @view-transition {
-    navigation: auto;
-  }
+// Cross-Document View Transitions: erzeugen die Illusion, dass der Masthead
+// über das Laden hinweg STEHEN bleibt. Der Browser hält den alten
+// masthead-Snapshot (view-transition-name unten, animation: none = kein Fade
+// und kein Morph), während der Content-Root überblendet. Auf allen
+// Viewports und bewusst OHNE reduced-motion-Gate (ARCH-2): Unter reduce
+// läuft die Transition mit Dauer null (Gürtel am Dateiende). Der alte
+// Stand bleibt stehen, bis die neue Seite malen kann, dann folgt ein harter
+// Schnitt ohne Bewegung bei stehender Kopfzeile. Support: Chromium 126+ und Safari 18.2+. Firefox kennt
+// Cross-Document-VT (noch) nicht und ignoriert die Regel folgenlos, dort
+// normales Laden. Der CRT-Effekt (Types crt und drawer) bleibt dosiert
+// (tv-switch.js), unter reduce nie.
+@view-transition {
+  navigation: auto;
 }
 
 // --- Filter-Defs der Antennen-Störung (_includes/vt-antenne-defs.html) -------
@@ -97,16 +96,6 @@ $crt-drawer-offset: 180ms;
 // --- Masthead: stehende Landmarke ---------------------------------------------
 .masthead {
   view-transition-name: masthead;
-}
-
-// Same-Document-SPA-Swap (spa-nav.js setzt html.spa-vt für die Dauer der
-// Transition): der Masthead-DOM wird dabei NICHT ersetzt und soll KEIN eigener
-// Snapshot sein — ein fixierter Element-Snapshot würde die Schrift um wenige
-// Pixel versetzen. Ohne Name bleibt der Live-Header fix stehen, nur der Root
-// (Inhalt) blendet über. Betrifft ausschließlich den SPA-Pfad; die
-// Cross-Document-CRT-Choreografie (ohne .spa-vt) behält den Masthead-Snapshot.
-html.spa-vt .masthead {
-  view-transition-name: none;
 }
 
 // Group MIT abschalten: die UA-Default-Animation (0.25s Geometrie-Morph)
@@ -182,6 +171,16 @@ html:active-view-transition-type(crt)::view-transition-group(masthead) {
 html.vt-capture body::before {
   transition: none;
   opacity: 0;
+}
+
+// Im selben pageswap setzt greedy-navigation.js den Burger vom ✕ zurück.
+// Ohne Übergang zeigt der Masthead-Snapshot sofort die drei Striche statt
+// des ersten Frames der Rückdrehung (Spezifität (0,2,1) und (0,2,2) schlägt
+// body .navicon in _masthead.scss).
+html.vt-capture .navicon,
+html.vt-capture .navicon::before,
+html.vt-capture .navicon::after {
+  transition: none;
 }
 
 // --- CRT-Umschalt (Type "crt") — Variante: siehe $crt-variante oben -------------
@@ -1042,12 +1041,14 @@ html.vt-capture body::before {
   }
 }
 
-// --- reduced-motion: harte zweite Verteidigungslinie (spa-nav Phase 1) --------
-// spa-nav umgeht startViewTransition unter reduce bereits im JS. Dies ist der
-// CSS-Gürtel für JEDEN aktuellen/künftigen VT-Pfad, falls der JS-Gate je fällt.
-// (Cross-Doc-@view-transition ist ohnehin no-preference-gegatet -> hier No-Op,
-// rein defensiv, WCAG 2.3.3.)
+// --- reduced-motion: View Transition mit Dauer null ---------------------------
+// @view-transition gilt auch unter reduce (ARCH-2). Dieser Gürtel nimmt jede
+// Animation von den VT-Pseudo-Elementen, auch die UA-Überblendung und
+// künftige Animationen: Die Transition endet sofort, der Wechsel ist ein
+// harter Schnitt bei stehender Kopfzeile (WCAG 2.3.3). tv-switch.js setzt
+// unter reduce keinen CRT-Type, der Drawer-Exit fällt hier mit weg.
 @media (prefers-reduced-motion: reduce) {
+  ::view-transition,
   ::view-transition-group(*),
   ::view-transition-old(*),
   ::view-transition-new(*) {

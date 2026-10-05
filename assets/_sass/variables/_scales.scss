@@ -115,7 +115,8 @@ $glow-key-inner: inset 0 0 4px $cyan-a20;
 // DOM-Reihenfolge. Lokale Stapel in einem eigenen Stacking-Kontext (Hero,
 // Fraktal-Panel, CRT) bleiben bei 0 bis 10 und stehen in ihrer Komponente
 // (Z-2). Achtung: TOC, Back-to-Top, Skill-Graph und Blog-Hinweis liegen in
-// #main und damit im Stacking-Kontext der Theme-Einblendung (Register R-10).
+// #main und damit in dessen Stacking-Kontext (isolation in
+// layouts/_pages.scss, STYLEGUIDE Z-1).
 $z-toc-overlay: 997; // Scrim hinter dem aufgeklappten Sticky-TOC
 $z-toc-sticky: 998; // mitlaufende TOC-Leiste (mobil)
 $z-scrim: 998; // Drawer-Dimmer body::before

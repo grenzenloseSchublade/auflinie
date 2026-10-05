@@ -47,8 +47,12 @@
     // Layout/Chrome) sähe der Ganzseiten-Effekt unruhig aus. Ihn auf Desktop
     // NUR auf die Hero-Region zu scopen wäre ein eigener Schritt (Task #10).
     // Weiterhin dosiert: Bereichswechsel + Scroll-Top + Cooldown (markiert
-    // Kapitel). Firefox kann kein Cross-Doc-VT; reduced-motion schaltet
-    // @view-transition ohnehin ab.
+    // Kapitel). Firefox kann kein Cross-Doc-VT. Unter reduced motion läuft
+    // die View Transition mit Dauer null (ARCH-2), ein CRT-Type wäre dort
+    // wirkungslos und verbrauchte nur den Cooldown. Ohne site-utils.js
+    // (altes HTML aus dem Cache) gilt wie bei isMobile: kein CRT.
+    const utils = window.AuflinieUtils;
+    if (!utils || utils.prefersReducedMotion()) return false;
     if (!isMobile()) return false;
     if (window.scrollY > 4) return false;
     if (!toPath || area(fromPath) === area(toPath)) return false;
@@ -93,15 +97,4 @@
   window.addEventListener('pageshow', function (e) {
     if (e.persisted) document.documentElement.classList.remove('vt-capture');
   });
-
-  // Für spa-nav.js (Same-Document-Swaps): dieselbe Dosierung wiederverwenden,
-  // damit der Kanalwechsel auch bei clientseitiger Navigation greift, nicht nur
-  // bei echten Reloads. crtAllowed hat einen Seiteneffekt (schreibt den
-  // Cooldown) — daher genau EIN Aufruf pro Navigationsentscheidung.
-  window.__tvSwitch = {
-    crtAllowed: crtAllowed,
-    drawerOpen: function () {
-      return !!document.querySelector('.greedy-nav .hidden-links:not(.hidden)');
-    }
-  };
 })();

@@ -272,22 +272,28 @@
     // Klick auf Menü-Link: Drawer OFFEN lassen, wenn eine Cross-Document
     // View Transition den Exit übernimmt — der pageswap-Snapshot braucht
     // den offenen Zustand, ::view-transition-old(nav-drawer) slidet ihn
-    // innerhalb der Transition raus (_view-transition.scss). Nur ohne VT
-    // (Firefox, reduced motion) wie früher schließen —
+    // innerhalb der Transition raus (_view-transition.scss). Unter reduced
+    // motion läuft die Transition mit Dauer null, der Snapshot verschwindet
+    // mit dem Schnitt. Nur ohne VT (Firefox) wie früher schließen —
     // fire-and-forget parallel zur nativen Navigation.
-    // Die Bedingung spiegelt das @view-transition-Gate aus
-    // _view-transition.scss, (prefers-reduced-motion: no-preference) —
-    // beide müssen synchron bleiben. Browser mit PageSwapEvent kennen die
-    // Media-Query, dort ist das Gate genau !prefersReducedMotion() (Helfer
-    // aus site-utils.js, BEW-1a). Ohne Helfer gilt „Bewegung reduzieren“,
-    // der Drawer schließt wie in Firefox. Seit dem Un-Gaten auf alle
-    // Viewports (Cross-Doc-VT überall) ist die max-width-Beschränkung raus.
+    // Die Bedingung spiegelt das @view-transition aus _view-transition.scss
+    // (ohne Media-Query-Gate seit ARCH-2), beide müssen synchron bleiben
+    // (STYLEGUIDE BP-6).
     hlinks.addEventListener('click', function(e) {
       if (e.target.tagName !== 'A' && !e.target.closest('a')) return;
-      const utils = window.AuflinieUtils;
-      if (!('PageSwapEvent' in window) || !utils || utils.prefersReducedMotion()) {
-        closeMenu();
-      }
+      if (!('PageSwapEvent' in window)) closeMenu();
+    });
+
+    // Der Masthead-Snapshot steht während der ganzen Transition (der neue
+    // ist versteckt, _view-transition.scss). Mit offenem Drawer hielte er
+    // das ✕, während der Drawer schon herausgleitet. Deshalb den Burger vor
+    // dem Old-Snapshot zurücksetzen. html.vt-capture (tv-switch.js, gleicher
+    // pageswap) nimmt ihm dabei die Übergänge, das ✕ springt also sofort.
+    // Der Drawer selbst bleibt offen (eigener Snapshot nav-drawer). Kehrt
+    // die Seite aus dem bfcache zurück, setzt pageshow unten alles zurück.
+    window.addEventListener('pageswap', function(e) {
+      if (!e.viewTransition || hlinks.classList.contains('hidden')) return;
+      btn.classList.remove('close');
     });
 
     // BFCache-Rückkehr: die Seite wurde ggf. mit offenem Drawer eingefroren

@@ -63,7 +63,8 @@ for (const reducedMotion of ['no-preference', 'reduce']) {
       await expect.poll(() => page.evaluate(() => document.querySelector('.initial-content').inert)).toBe(true);
       expect(await page.evaluate(() => document.getElementById('footer').inert)).toBe(true);
       expect(await page.evaluate(() => document.querySelector('.masthead').inert)).toBe(false);
-      expect(await page.evaluate(() => document.getElementById('spa-route-announcer').inert)).toBe(false);
+      // Live-Regionen bleiben erreichbar (inertOutside in site-utils.js)
+      expect(await page.evaluate(() => document.getElementById('offline-notification').inert)).toBe(false);
 
       await page.keyboard.press('Escape');
       await expect(toggle).toHaveAttribute('aria-expanded', 'false');
