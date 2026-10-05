@@ -1249,7 +1249,7 @@ Neue Guardrail-Skripte folgen dem Muster von `fs-guardrail.sh`: Marker in der Ze
 Vor jedem Push:
 
 - **REV-1** Lint-Job wie in 16.1: `npm run lint:css`, `npm run lint:js`, `python3 scripts/scss-format.py`, `bash scripts/fs-guardrail.sh`, `bash scripts/color-guardrail.sh`, `bash scripts/scale-guardrail.sh`, `bash scripts/bp-guardrail.sh`, `bash scripts/security-guardrail.sh`, `bash scripts/version-sync-check.sh` und `python3 tests/guardrails/run.py` grün
-- **REV-2** Build-Job wie in 16.1: Docker-Build mit `--strict_front_matter` grün (kein lokales Ruby, `--user` gesetzt), `bash scripts/sass-deprecation-check.sh`, die Gates aus dem Workflow, Review-Build `--unpublished -d _site_review` mit `npx playwright test` im Container, `python3 scripts/csp-check.py _site` und html-proofer
+- **REV-2** Build-Job wie in 16.1: `python3 scripts/content-check.py`, Docker-Build mit `--strict_front_matter` grün (kein lokales Ruby, `--user` gesetzt), `bash scripts/sass-deprecation-check.sh`, `python3 scripts/content-check.py --site _site`, die Gates aus dem Workflow, Review-Build `--unpublished -d _site_review` mit `npx playwright test` im Container, `python3 scripts/csp-check.py _site` und html-proofer
 - **REV-3** Nur Tokens, keine neuen Literale (Farbe, Größe, Abstand, Breakpoint, z-index, Dauer)
 - **REV-4** Kontrast in allen Zuständen geprüft, gegen den echten Grund
 - **REV-5** Fokus sichtbar, Tastaturbedienung, Reduced Motion

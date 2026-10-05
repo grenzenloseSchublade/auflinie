@@ -208,7 +208,7 @@ Inhalte stehen in Markdown oder in `_data/*.yml`, das Markup in Includes (STYLEG
 | Lebenslauf | `_data/cv_content.yml` | Zeiträume „2020 – 2025“ mit normalen Leerzeichen. Prosa als `\|`-Block, harter Umbruch als `\\` am Zeilenende |
 | Skills, Skill-Graph | Chips in `_data/cv_content.yml` (`skill_groups`), Projekte in `_data/skill_graph.yml` | Eine Skill-ID ist der Chip-Name klein mit Bindestrichen („Next.js“ → `next-js`). Eine unbekannte ID macht die CI rot, mit Vorschlag |
 | Fraktal-Texte | `_data/mandelbrot.yml` | Inline-Mathe mit doppelten, Display-Mathe mit einfachen Backslashes (oben, MD-3) |
-| Startseite | `_data/home.yml` | Absätze im `\|`-Block mit Leerzeile trennen |
+| Startseite | `_data/home.yml` | Absätze im `\|`-Block mit Leerzeile trennen. Ein neues Kachelbild in jeder Breite unter `image.srcset` und in `CACHE_URLS` (`service-worker.js`, Offline-Cache) eintragen |
 | Über mich, andere Seiten | `_pages/*.md` | Neue Seite braucht `permalink` und einen Menüeintrag |
 | Menü und Footer | `_data/navigation.yml` (`main`, `footer`) | Menütitel und Seitentitel sind getrennt gepflegt |
 | Kontakt, Social-Links | `_config.yml` → `author.links` | `footer: true` zeigt den Kanal im Footer, `contact: true` als Kontaktkarte. Neue Icons ins Subset (`assets/_sass/base/_icons.scss`) |

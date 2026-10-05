@@ -203,8 +203,8 @@ umgebaut werden, bevor die Seite verdrahtet wird.
   `speculationrules`, `pagereveal`-Setter.
 - **Aktiv-Marker:** `.current`/`aria-current` auf beiden Nav-Listen nach
   Jekyll-Semantik (exakt oder Präfix) — der Masthead-DOM bleibt stehen.
-- **A11y:** Fokus (nur vorwärts) auf `<main id="main">` (**nicht** das
-  dekorative Neon-Hero-`h1`); Route-Ansage über die Live-Region
+- **A11y:** Fokus (nur vorwärts) auf `#main`, den Inhalt hinter dem Hero in
+  `<main id="inhalt">` (**nicht** das dekorative Neon-Hero-`h1`); Route-Ansage über die Live-Region
   `#spa-route-announcer` (`role=status`, vor dem Setzen geleert).
 - **History:** `scrollRestoration='manual'` + `docId`-markierte States **nur** auf
   wired Seiten; `popstate` swappt nur bei eigenem `docId`; bfcache-Guard über

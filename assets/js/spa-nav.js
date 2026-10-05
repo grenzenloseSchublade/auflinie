@@ -533,7 +533,8 @@
     announce(document.title);
   }
 
-  // ── §2 A11y: Fokus auf <main id="main">, NICHT auf das dekorative Hero-h1 ──
+  // ── §2 A11y: Fokus auf #main (Inhalt hinter dem Hero, in <main id="inhalt">),
+  //    NICHT auf das dekorative Hero-h1 ──
   function focusMain() {
     const root = document.querySelector('.initial-content');
     const main = (root && (root.querySelector('#main') || root.querySelector('main, [role="main"]'))) || root;
