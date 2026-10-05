@@ -6,7 +6,7 @@
 {% endcomment %}
 {%- assign footer_channels = site.author.links | where: "footer", true -%}
 <div class="page__footer-follow site-footer">
-  <nav class="site-footer__nav" aria-label="Footer-Navigation">
+  <nav class="site-footer__nav" aria-label="Fußzeile">
     {%- for link in site.data.navigation.footer %}
     {%- assign main_item = site.data.navigation.main | where: "url", link.url | first %}
     {% unless forloop.first %}<span class="site-footer__sep" aria-hidden="true">·</span>
