@@ -23,7 +23,8 @@ test.describe('Externe Links im neuen Tab mit Hinweis (LINK-3)', () => {
 
   test('Link mit aria-label trägt den Hinweis im aria-label', async ({ page }) => {
     await page.goto('/auflinie/about/', { waitUntil: 'load' });
-    const card = page.locator('a.contact-card');
+    // Erste externe Karte, eine Mail-Karte (mailto:) bleibt ohne Hinweis
+    const card = page.locator('a.contact-card[href^="https://"]').first();
     await expect(card).toHaveAttribute('target', '_blank');
     await expect(card).toHaveAttribute('aria-label', new RegExp(`\\(${HINT}\\)$`));
     await expect(card.locator('.visually-hidden')).toHaveCount(0);

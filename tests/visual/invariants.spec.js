@@ -8,6 +8,7 @@
 // keinen Theme-Hover festhält (BP-3).
 const { test, expect } = require('@playwright/test');
 const { PAGES } = require('./pages');
+const { ohneBlogHinweis } = require('../blog-hinweis');
 
 const MOBIL = { width: 390, height: 844 };
 
@@ -414,6 +415,7 @@ const MIN_TAB_STOPS = { 'offline.html': 5 };
 test.describe('Kein unsichtbarer Fokus (WCAG 2.4.7)', () => {
   for (const p of PAGES) {
     test(`Tab durch /${p}`, async ({ page }) => {
+      await ohneBlogHinweis(page);
       await page.goto(`/auflinie/${p}`, { waitUntil: 'load' });
       await page.waitForTimeout(500);
       const invisible = [];
@@ -500,6 +502,7 @@ test.describe('Touch hält keinen Theme-Hover (BP-3)', () => {
       test.use({ viewport: { width, height: 844 }, hasTouch: true, isMobile: true, contextOptions: { reducedMotion: 'reduce' } });
 
       test(`/${path}`, async ({ page }) => {
+        await ohneBlogHinweis(page);
         await page.goto(`/auflinie/${path}`, { waitUntil: 'load' });
         await page.addStyleTag({ content: '*, *::before, *::after { transition: none !important; }' });
         expect(await page.evaluate(() => matchMedia('(hover: none)').matches)).toBe(true);

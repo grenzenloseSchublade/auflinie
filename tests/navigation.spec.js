@@ -54,7 +54,9 @@ test.describe('Seiten-Module beim vollen Laden', () => {
       await page.goto(`${BASE}${pfad}`, { waitUntil: 'load' });
       await page.waitForTimeout(300);
       const mounts = await page.evaluate(() => window.__mounts);
-      const erwartet = Object.fromEntries(module.map((m) => [`data-${m}-mounted`, MEHRFACH[m] || 1]));
+      // Ein eingeschalteter Blog-Hinweis (blog_notice) bringt sein Modul mit
+      const extra = await page.locator('#blog-notice').count() ? ['blog-notice'] : [];
+      const erwartet = Object.fromEntries([...module, ...extra].map((m) => [`data-${m}-mounted`, MEHRFACH[m] || 1]));
       expect(mounts).toEqual(erwartet);
       // Jedes Skript genau einmal im Dokument
       const srcs = await page.evaluate(() => Array.from(document.scripts).map((s) => s.src).filter(Boolean));

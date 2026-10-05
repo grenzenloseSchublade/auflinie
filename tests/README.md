@@ -48,6 +48,12 @@ Drei Gruppen, alle mit Playwright:
 
 Alles läuft in der CI im Build-Job (Schritt „Style-Guide-Review“) und blockiert bei Fehlern den Deploy.
 
+Inhalte bleiben ohne Teständerung pflegbar (STYLEGUIDE ARCH-5): Tests ohne Bezug
+zum Blog-Hinweis behandeln ihn über `blog-hinweis.js` als schon geschlossen, ein
+eingeschalteter Hinweis blockiert sie also nicht. Als Beispiele dienen der Skill
+„Python“, die Seite „Über mich“ und die Beiträge „Erstellung dieser Website“ und
+„Blogbeitrag erstellen“ (Hinweis in `docs/pflege.md`).
+
 ## Browser
 
 Die Projekte stehen in `playwright.config.js`:

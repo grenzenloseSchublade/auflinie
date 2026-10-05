@@ -4,6 +4,7 @@
 // und gibt den Fokus ins Suchfeld. Die Suchbegriffe kommen aus den Einträgen
 // selbst, ein neuer Beitrag ändert den Test nicht.
 const { test, expect } = require('@playwright/test');
+const { ohneBlogHinweis } = require('../blog-hinweis');
 
 const URL = '/auflinie/posts/';
 
@@ -13,6 +14,7 @@ async function visibleTitles(page) {
 
 test.describe('Blog-Suche (/posts/)', () => {
   test.beforeEach(async ({ page }) => {
+    await ohneBlogHinweis(page);
     await page.goto(URL, { waitUntil: 'load' });
     await expect(page.locator('#blog-search-input')).toHaveAttribute('data-blog-search-mounted', '');
   });
