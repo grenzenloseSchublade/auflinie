@@ -1,8 +1,8 @@
 /**
  * mathjax-config.js — MathJax-Konfiguration und verzögertes Laden des Kerns.
- * Eigene Datei (statt inline im Head), damit spa-nav.js sie beim
- * Seitentausch nachladen kann: der Script-Reconcile überträgt nur
- * script[src], keine Inline-Blöcke.
+ * Eigene Datei statt inline im Head: Die CSP erlaubt kein Inline-Skript
+ * (STYLEGUIDE SEC-4). Nach dem Laden setzt MathJax die Formeln der Seite
+ * selbst, nach einer bfcache-Rückkehr stehen sie schon.
  *
  * Den Kern (vendor/mathjax/tex-chtml.js, mit Schrift rund 380 KB) hängt
  * dieses Skript erst an, wenn er gebraucht wird: sofort, wenn die erste
@@ -62,7 +62,7 @@
       ready: function () {
         // WICHTIG (v4): defaultReady() liefert das Startup-Promise zurück —
         // ohne return bleibt MathJax.startup.promise für immer pending und
-        // jeder typesetPromise-Aufruf (SPA-Hook!) hängt daran fest.
+        // jeder typesetPromise-Aufruf hängt daran fest.
         const readyPromise = MathJax.startup.defaultReady();
 
         // Fehlerbehandlung für veraltete Attribute
@@ -113,7 +113,7 @@
   }
 
   function arm() {
-    // Seitentausch (spa-nav.js) oder spätes Laden: sofort
+    // Spätes Laden (Seite schon vollständig geladen): sofort
     if (document.readyState === 'complete' || !('IntersectionObserver' in window)) { loadCore(); return; }
     const targets = formulaElements();
     if (!targets.length) { return; }

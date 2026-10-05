@@ -1,7 +1,7 @@
 // Regressionstests für die selbst gehosteten Bibliotheken (assets/vendor/):
 // MathJax, noUiSlider, Tom Select. Sie laufen nach jedem Versionswechsel
 // und prüfen nur, was die Seite davon wirklich nutzt: /mandelbrot/ setzt alle
-// Formeln (direkt geladen und nach SPA-Navigation), ohne Seitenfehler und
+// Formeln (direkt geladen, nach Neuladen und nach Zurück), ohne Seitenfehler und
 // ohne CSP-Verstoß, und das Fraktal-Panel bleibt bedienbar.
 const { test, expect } = require('@playwright/test');
 
@@ -42,7 +42,7 @@ async function watchErrors(page, browserName) {
 
 // Wartet, bis MathJax fertig ist: Anzahl der gesetzten Formeln stabil und im
 // Inhalt kein ungesetztes TeX ($ ... $) mehr. startup.promise eignet sich
-// nicht als Signal (bleibt in 4.1 pending, siehe mathjax-typeset.js).
+// nicht als Signal (bleibt in 4.1 pending, siehe mathjax-config.js).
 async function renderedMath(page) {
   await page.waitForFunction(() => {
     const root = document.querySelector('.page__content');
@@ -72,7 +72,7 @@ async function renderedMath(page) {
 }
 
 test.describe('Vendor-Bibliotheken auf /mandelbrot/', () => {
-  test('MathJax setzt alle Formeln, auch nach SPA-Navigation', async ({ page, browserName }) => {
+  test('MathJax setzt alle Formeln, auch nach Neuladen und Zurück', async ({ page, browserName }) => {
     const errors = await watchErrors(page, browserName);
 
     await page.goto(`${BASE}/mandelbrot/`);
@@ -83,15 +83,19 @@ test.describe('Vendor-Bibliotheken auf /mandelbrot/', () => {
     test.info().annotations.push({ type: 'mjx-container', description: String(direct.count) });
     console.log('mjx-container auf /mandelbrot/: ' + direct.count);
 
-    // Über die Persistent-Shell weg und wieder hin: der Typeset-Hook
-    // (mathjax-typeset.js) muss denselben Stand liefern.
+    // Neu laden: MathJax setzt dieselben Formeln wieder selbst
+    await page.evaluate(() => { window.__mjxCount = undefined; });
+    await page.reload();
+    expect(await renderedMath(page)).toEqual(direct);
+
+    // Weg und zurück: aus dem bfcache stehen die Formeln schon, ohne
+    // bfcache (Playwright schaltet ihn in Chromium ab) lädt die Seite neu
     await page.click('.greedy-nav .visible-links a[href$="/about/"]');
     await expect(page).toHaveURL(new RegExp(`${BASE}/about/?$`));
-    await page.evaluate(() => { window.__mjxCount = undefined; });
-    await page.click('.greedy-nav a[href*="/mandelbrot/"]');
+    await page.goBack();
     await expect(page).toHaveURL(new RegExp(`${BASE}/mandelbrot/?`));
-    const swapped = await renderedMath(page);
-    expect(swapped).toEqual(direct);
+    await page.evaluate(() => { window.__mjxCount = undefined; });
+    expect(await renderedMath(page)).toEqual(direct);
 
     expect(errors).toEqual([]);
   });
