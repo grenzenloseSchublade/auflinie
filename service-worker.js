@@ -89,7 +89,10 @@ const CACHE_URLS = [
   './assets/images/background.jpg',
   './assets/images/mandelbrot-preview-400.jpg',
   './assets/images/mandelbrot-preview-800.jpg',
-  './assets/webfonts/fa-solid-900-subset.woff2',
+  // Beitragsbilder: jede Datei unter assets/images/posts/ kommt von selbst
+  // dazu, ein neues Bild im Beitrag braucht hier keinen Eintrag (STYLEGUIDE ARCH-5)
+{% for f in site.static_files %}{% if f.path contains '/assets/images/posts/' %}  '.{{ f.path }}',
+{% endif %}{% endfor %}  './assets/webfonts/fa-solid-900-subset.woff2',
   './assets/webfonts/fa-regular-400-subset.woff2',
   './assets/webfonts/fa-brands-400-subset.woff2'{% unless site.text_font == "system" %},
   // Textschrift (STYLEGUIDE TYP-13), nur bei text_font: ubuntu
