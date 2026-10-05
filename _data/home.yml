@@ -18,10 +18,18 @@ fractal_showcase:
   url: "/mandelbrot/"
   link_label: "Zur interaktiven Fraktal-Erkundung" # Name des Bildlinks für Screenreader
   image:
-    src: "/assets/images/mandelbrot-preview.jpg"
+    src: "/assets/images/mandelbrot-preview-800.jpg"
     alt: "Ausschnitt der Mandelbrot-Menge mit spiralförmigen Ausläufern"
-    width: 1920 # Pixelmaße der Datei (IMG-3)
-    height: 1080
+    width: 800 # Pixelmaße der Datei unter src (IMG-3)
+    height: 450
+    # Weitere Breiten desselben Bildes (IMG-4), der Browser wählt passend zur
+    # Anzeige. Neue Datei hier und in CACHE_URLS (service-worker.js) eintragen.
+    # Vorlage in voller Größe: mandelbrot-preview.jpg (1920 × 1080)
+    srcset:
+      - src: "/assets/images/mandelbrot-preview-400.jpg"
+        width: 400
+      - src: "/assets/images/mandelbrot-preview-800.jpg"
+        width: 800
 
 # Beitragsliste unter der Kachel (index.html)
 latest_posts:
