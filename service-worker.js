@@ -32,54 +32,56 @@ async function matchOwn(request, options) {
 // netzunabhängig; Frische kommt über den SW-Update-Pfad (Browser prüft
 // service-worker.js bei Navigationen, GH-Pages max-age=600 ⇒ ≤10 min Verzug,
 // dann Update-Toast). Die Seitenliste wird aus Jekyll generiert und wächst mit.
-const CACHE_URLS = [
+{% assign asset_v = site.time | date: '%s' %}const CACHE_URLS = [
   // Seiten
 {% assign nav_pages = site.html_pages | where_exp: "p", "p.sitemap != false" %}{% for p in nav_pages %}{% unless p.url contains "404" %}  '.{{ p.url }}',
 {% endunless %}{% endfor %}{% for post in site.posts %}  '.{{ post.url }}',
 {% endfor %}  './404.html',
   './offline.html',
   // Styles/Skripte. Jede Datei, die eine gebaute Seite unter /assets/ lädt,
-  // steht hier (Ausnahmen: assets/downloads/, styleguide.css). Prüft
-  // tests/visual/precache.spec.js
-  './assets/css/main.css',
-  './assets/js/head-early.js',
-  './assets/js/site-utils.js',
-  './assets/js/offline.js',
-  './assets/js/greedy-navigation.js',
-  './assets/js/hero-crt.js',
-  './assets/js/sw-register.js',
-  './assets/js/tv-switch.js',
-  './assets/js/author-follow.js',
-  './assets/js/back-to-top.js',
-  './assets/js/neon-orbit-toggle.js',
-  './assets/js/toc.js',
-  './assets/js/blog-search.js',
-  './assets/js/blog-notice.js',
-  './assets/js/skill-chips.js',
-  './assets/js/skill-graph-data.js',
-  './assets/js/skill-graph-sim.js',
-  './assets/js/skill-graph.js',
-  './assets/js/skill-graph-sheet.js',
-  './assets/js/fractal-panel.js',
-  './assets/js/fractal-renderer.js',
+  // steht hier (Ausnahmen: assets/downloads/, styleguide.css), und zwar mit
+  // derselben URL wie im HTML: JS und CSS aus dem HTML tragen ?v=<Build-Zeit>
+  // (head.html). Ohne Version stehen nur Dateien, die Skripte selbst laden
+  // (Worker, MathJax-Komponenten). Prüft tests/visual/precache.spec.js
+  './assets/css/main.css?v={{ asset_v }}',
+  './assets/js/head-early.js?v={{ asset_v }}',
+  './assets/js/site-utils.js?v={{ asset_v }}',
+  './assets/js/offline.js?v={{ asset_v }}',
+  './assets/js/greedy-navigation.js?v={{ asset_v }}',
+  './assets/js/hero-crt.js?v={{ asset_v }}',
+  './assets/js/sw-register.js?v={{ asset_v }}',
+  './assets/js/tv-switch.js?v={{ asset_v }}',
+  './assets/js/author-follow.js?v={{ asset_v }}',
+  './assets/js/back-to-top.js?v={{ asset_v }}',
+  './assets/js/neon-orbit-toggle.js?v={{ asset_v }}',
+  './assets/js/toc.js?v={{ asset_v }}',
+  './assets/js/blog-search.js?v={{ asset_v }}',
+  './assets/js/blog-notice.js?v={{ asset_v }}',
+  './assets/js/skill-chips.js?v={{ asset_v }}',
+  './assets/js/skill-graph-data.js?v={{ asset_v }}',
+  './assets/js/skill-graph-sim.js?v={{ asset_v }}',
+  './assets/js/skill-graph.js?v={{ asset_v }}',
+  './assets/js/skill-graph-sheet.js?v={{ asset_v }}',
+  './assets/js/fractal-panel.js?v={{ asset_v }}',
+  './assets/js/fractal-renderer.js?v={{ asset_v }}',
   './assets/js/fractal-color-utils.js',
   './assets/js/fractal-worker-core.js',
   './assets/js/julia-worker.js',
   './assets/js/mandelbrot-worker.js',
   // MathJax (selbst gehostet; die vielen Font-Range-Dateien laufen über den
   // Runtime-Cache-First-Pfad und sind nach erstem Gebrauch offline verfügbar)
-  './assets/js/mathjax-config.js',
+  './assets/js/mathjax-config.js?v={{ asset_v }}',
   './assets/vendor/mathjax/tex-chtml.js',
   './assets/vendor/mathjax/input/tex/extensions/noerrors.js',
   './assets/vendor/mathjax/ui/menu.js',
   './assets/vendor/mathjax/a11y/assistive-mml.js',
   './assets/vendor/mathjax-newcm-font/chtml.js',
   // Vendor (vormals CDN)
-  './assets/vendor/nouislider.min.js',
-  './assets/vendor/nouislider.min.css',
-  './assets/vendor/tom-select.complete.min.js',
-  './assets/vendor/tom-select.css',
-  './assets/vendor/gumshoe.min.js',
+  './assets/vendor/nouislider.min.js?v={{ asset_v }}',
+  './assets/vendor/nouislider.min.css?v={{ asset_v }}',
+  './assets/vendor/tom-select.complete.min.js?v={{ asset_v }}',
+  './assets/vendor/tom-select.css?v={{ asset_v }}',
+  './assets/vendor/gumshoe.min.js?v={{ asset_v }}',
   // Sonstiges
   './assets/images/Logo.svg',
   './assets/images/favicon.ico',
@@ -158,7 +160,8 @@ self.addEventListener('fetch', event => {
   const requestUrl = new URL(event.request.url);
   if (requestUrl.origin !== self.location.origin || !requestUrl.pathname.startsWith(SCOPE_PATH)) return;
 
-  const url = event.request.url;
+  // Endung am Pfad prüfen: JS und CSS tragen ?v=<Build-Zeit> (head.html)
+  const path = requestUrl.pathname;
 
   // Navigationen (HTML-Seiten): cache-first aus dem Voll-Precache, Details
   // siehe handleNavigation. Frische kommt über den SW-Update-Pfad (Toast).
@@ -168,13 +171,13 @@ self.addEventListener('fetch', event => {
   }
 
   // Spezielle Behandlung für Bilder und Schriften: Cache-First
-  if (url.match(/\.(jpg|jpeg|png|gif|webp|svg|ico|woff2?)$/)) {
+  if (path.match(/\.(jpg|jpeg|png|gif|webp|svg|ico|woff2?)$/)) {
     event.respondWith(cacheFirst(event.request));
   }
   // CSS und JS: Cache-First — alles ist precached und friert pro Build ein
   // (Versionskonsistenz mit dem cache-first-HTML); Updates kommen als
   // Ganzes über den neuen Worker
-  else if (url.match(/\.(css|js)$/)) {
+  else if (path.match(/\.(css|js)$/)) {
     event.respondWith(cacheFirst(event.request));
   }
   // Für alle anderen Ressourcen: Network-First-Strategie

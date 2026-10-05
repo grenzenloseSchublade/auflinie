@@ -15,16 +15,25 @@ test('Precache-Liste enthält jedes Asset der gebauten Seiten', async ({ request
   const pages = [...cached].filter((u) => u === '' || u.endsWith('/') || u.endsWith('.html'));
   expect(pages.length).toBeGreaterThan(5);
 
+  // Verglichen wird die volle URL samt ?v=: cacheFirst im Service Worker
+  // findet nur, was mit genau dieser URL im Cache liegt
   const missing = new Set();
+  const unversioned = new Set();
   for (const p of pages) {
     const res = await request.get(BASE + p);
     if (!res.ok()) continue;   // z. B. die Styleguide-Ansicht, nur im Review-Build
     const html = await res.text();
-    for (const m of html.matchAll(/(?:src|href)="\/auflinie\/(assets\/[^"#?]+)"/g)) {
-      if (!cached.has(m[1]) && !EXEMPT.some((re) => re.test(m[1]))) missing.add(`${m[1]} (${p || '/'})`);
+    for (const m of html.matchAll(/(?:src|href)="\/auflinie\/(assets\/[^"#?]+)(\?[^"#]*)?"/g)) {
+      const [, file, query = ''] = m;
+      // JS und CSS aus dem HTML tragen die Build-Version (head.html), sonst
+      // nimmt WebKits Speicher-Cache nach einem Deploy die alte Datei
+      if (/\.(js|css)$/.test(file) && !/^\?v=\d+$/.test(query)) unversioned.add(`${file}${query} (${p || '/'})`);
+      if (EXEMPT.some((re) => re.test(file))) continue;
+      if (!cached.has(file + query)) missing.add(`${file}${query} (${p || '/'})`);
     }
   }
   expect([...missing]).toEqual([]);
+  expect([...unversioned]).toEqual([]);
 });
 
 // Gegenrichtung: Jeder Eintrag in CACHE_URLS existiert. Ein toter Eintrag

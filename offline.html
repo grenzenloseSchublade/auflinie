@@ -39,4 +39,4 @@ noindex: true # robots-Meta in head/custom.html (STYLEGUIDE SEC-12)
 </div>
 </main>
 
-<script src="{{ '/assets/js/offline.js' | relative_url }}"></script> 
+<script src="{{ '/assets/js/offline.js' | relative_url }}?v={{ site.time | date: '%s' }}"></script> 

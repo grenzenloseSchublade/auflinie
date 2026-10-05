@@ -32,8 +32,13 @@ schaltet in Chromium den Preload-Scanner ab. Was erst hinter dem blockierenden
 head-early.js steht, fordert der Parser deshalb erst an, wenn diese Datei
 geladen und ausgeführt ist (gemessen: eine volle Roundtrip-Zeit später). Die
 Preload-Links blockieren nichts, das Stylesheet bleibt unten an seinem Platz:
-ein Stylesheet vor einem Skript hielte das Skript bis zum CSS-Ende an. {% endcomment %}
-<link rel="preload" href="{{ '/assets/css/main.css' | relative_url }}" as="style">
+ein Stylesheet vor einem Skript hielte das Skript bis zum CSS-Ende an.
+Jede JS- und CSS-URL aus HTML trägt ?v=<Build-Zeit> (hier, scripts.html,
+head/custom.html, fractal/deps.html, offline.html). Ohne Version nahm WebKits
+Speicher-Cache nach einem Deploy bis zu 10 min (max-age=600) die alte Datei
+zum neuen HTML. Dieselben URLs stehen in CACHE_URLS (service-worker.js), die
+Liste prüft tests/visual/precache.spec.js. {% endcomment %}
+<link rel="preload" href="{{ '/assets/css/main.css' | relative_url }}?v={{ site.time | date: '%s' }}" as="style">
 {% comment %} Font Awesome: self-hosted Subset (assets/_sass/base/_icons.scss + assets/webfonts/) statt 100-KB-CDN-Komplett-CSS {% endcomment %}
 <link rel="preload" href="{{ '/assets/webfonts/fa-solid-900-subset.woff2' | relative_url }}" as="font" type="font/woff2" crossorigin>
 {%- comment %} Textschrift (STYLEGUIDE TYP-13): nur die aufrechte Datei vorladen, sie
@@ -46,13 +51,13 @@ Bei text_font: system gibt es kein @font-face und keinen Preload. {% endcomment 
 
 {%- comment %} Frühere Inline-Skripte (no-js-Tausch, pagereveal) als Datei: die CSP
 erlaubt keine Inline-Skripte. Bewusst ohne defer/async (vor dem ersten Render). {% endcomment %}
-<script src="{{ '/assets/js/head-early.js' | relative_url }}"></script>
+<script src="{{ '/assets/js/head-early.js' | relative_url }}?v={{ site.time | date: '%s' }}"></script>
 
 {% comment %} For all browsers {% endcomment %}
-<link rel="stylesheet" href="{{ '/assets/css/main.css' | relative_url }}">
+<link rel="stylesheet" href="{{ '/assets/css/main.css' | relative_url }}?v={{ site.time | date: '%s' }}">
 
 {% if site.head_scripts %}
   {% for script in site.head_scripts %}
-    <script src="{{ script | relative_url }}"></script>
+    <script src="{{ script | relative_url }}?v={{ site.time | date: '%s' }}"></script>
   {% endfor %}
 {% endif %}

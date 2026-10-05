@@ -9,14 +9,14 @@
      tv-switch.js, greedy-navigation.js, fractal-panel.js, hero-crt.js,
      blog-notice.js). Seiten-Module mounten als Defer-Skripte einmal beim
      Laden, das DOM steht dann fertig (STYLEGUIDE 10.2) {% endcomment %}
-<script src="{{ '/assets/js/site-utils.js' | relative_url }}" defer></script>
+<script src="{{ '/assets/js/site-utils.js' | relative_url }}?v={{ site.time | date: '%s' }}" defer></script>
 
 {% if page.toc %}
 {% comment %} Gumshoe ScrollSpy (standalone, kein jQuery) – nur auf Seiten mit TOC {% endcomment %}
-<script src="{{ '/assets/vendor/gumshoe.min.js' | relative_url }}" defer></script>
+<script src="{{ '/assets/vendor/gumshoe.min.js' | relative_url }}?v={{ site.time | date: '%s' }}" defer></script>
 {% comment %} TOC-Verhalten (Sticky-Mobile, ScrollSpy-Anbindung, Dropdown, Collapse) –
      externalisiert aus toc-wrapper.html. NACH gumshoe. {% endcomment %}
-<script src="{{ '/assets/js/toc.js' | relative_url }}" defer></script>
+<script src="{{ '/assets/js/toc.js' | relative_url }}?v={{ site.time | date: '%s' }}" defer></script>
 {% endif %}
 
 {% if site.search == true %}
@@ -34,42 +34,42 @@
 {% include /comments-providers/scripts.html %}
 
 {% comment %} Service Worker (global) {% endcomment %}
-<script src="{{ '/assets/js/sw-register.js' | relative_url }}" defer></script>
+<script src="{{ '/assets/js/sw-register.js' | relative_url }}?v={{ site.time | date: '%s' }}" defer></script>
 
 {% if page.header.overlay_image %}
 {% comment %} Hero-Hintergrund + CRT-Effekt: nur auf Seiten mit Overlay-Hero {% endcomment %}
-<script src="{{ '/assets/js/hero-crt.js' | relative_url }}" defer></script>
+<script src="{{ '/assets/js/hero-crt.js' | relative_url }}?v={{ site.time | date: '%s' }}" defer></script>
 {% endif %}
 
 {% if page.blog_search %}
 {% comment %} Blog-Suche/Filter: Flag im Front Matter – der frühere URL-Vergleich
      (page.url == "/posts/") griff mit Paginierung nicht, die Suche fehlte live {% endcomment %}
-<script src="{{ '/assets/js/blog-search.js' | relative_url }}" defer></script>
+<script src="{{ '/assets/js/blog-search.js' | relative_url }}?v={{ site.time | date: '%s' }}" defer></script>
 {% endif %}
 
 {% if page.blog_notice.enabled %}
 {% comment %} Blog-Hinweis (Markup: _includes/blog-notice.html) {% endcomment %}
-<script src="{{ '/assets/js/blog-notice.js' | relative_url }}" defer></script>
+<script src="{{ '/assets/js/blog-notice.js' | relative_url }}?v={{ site.time | date: '%s' }}" defer></script>
 {% endif %}
 
 {% if page.neon_name %}
 {% comment %} Neon-Namenseffekt: Flag neon_name im Front Matter (heute nur Startseite) {% endcomment %}
-<script src="{{ '/assets/js/neon-orbit-toggle.js' | relative_url }}" defer></script>
+<script src="{{ '/assets/js/neon-orbit-toggle.js' | relative_url }}?v={{ site.time | date: '%s' }}" defer></script>
 {% endif %}
 
 {% if page.skill_graph.enabled or page.skill_graph.graph %}
 {% comment %} Interaktives Skill-Feature (CV): Flag im Front Matter, Muster blog_search {% endcomment %}
 {% comment %} Gemeinsamer Daten-Helfer VOR den Modulen {% endcomment %}
-<script src="{{ '/assets/js/skill-graph-data.js' | relative_url }}" defer></script>
-<script src="{{ '/assets/js/skill-chips.js' | relative_url }}" defer></script>
+<script src="{{ '/assets/js/skill-graph-data.js' | relative_url }}?v={{ site.time | date: '%s' }}" defer></script>
+<script src="{{ '/assets/js/skill-chips.js' | relative_url }}?v={{ site.time | date: '%s' }}" defer></script>
 {% endif %}
 
 {% if page.skill_graph.graph %}
 {% comment %} Skill-Graph: Engine vor UI, defer erhält die Reihenfolge {% endcomment %}
-<script src="{{ '/assets/js/skill-graph-sim.js' | relative_url }}" defer></script>
-<script src="{{ '/assets/js/skill-graph.js' | relative_url }}" defer></script>
+<script src="{{ '/assets/js/skill-graph-sim.js' | relative_url }}?v={{ site.time | date: '%s' }}" defer></script>
+<script src="{{ '/assets/js/skill-graph.js' | relative_url }}?v={{ site.time | date: '%s' }}" defer></script>
 {% comment %} Präsentations-Wrapper: modales Sheet (ändert den Graph-Kern nicht) {% endcomment %}
-<script src="{{ '/assets/js/skill-graph-sheet.js' | relative_url }}" defer></script>
+<script src="{{ '/assets/js/skill-graph-sheet.js' | relative_url }}?v={{ site.time | date: '%s' }}" defer></script>
 {% endif %}
 
 {% if page.fractal_panels %}
@@ -78,10 +78,10 @@
 
 {% if site.after_footer_scripts %}
   {% for script in site.after_footer_scripts %}
-    <script src="{{ script | relative_url }}" defer></script>
+    <script src="{{ script | relative_url }}?v={{ site.time | date: '%s' }}" defer></script>
   {% endfor %}
 {% endif %}
 
 {% comment %} Back-to-Top: sitewide, selbst-guardend (ohne .back-to-top tut es nichts).
      Das Markup steht in single.html (back-to-top.html). {% endcomment %}
-<script src="{{ '/assets/js/back-to-top.js' | relative_url }}" defer></script>
+<script src="{{ '/assets/js/back-to-top.js' | relative_url }}?v={{ site.time | date: '%s' }}" defer></script>
