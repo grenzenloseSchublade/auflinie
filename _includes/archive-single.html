@@ -1,9 +1,13 @@
 {% comment %}
   Lokales Override des Theme-Includes (Minimal Mistakes 4.28.1). Zwei
   Abweichungen, sonst Theme-Fassung, bei Theme-Updates gegenlesen:
-  1. Das Teaser-Bild lädt mit loading="lazy" und decoding="async" (IMG-3).
-     Es erscheint nur in Kachel-Ansichten unterhalb des ersten Viewports
-     (Startseite „Neueste Beiträge“, „Das könnte auch interessieren“).
+  1. Das Teaser-Bild trägt width und height (IMG-3), gelesen aus der Datei
+     per Filter bildmasse (_plugins/bildmasse.rb). Wer bloggt, trägt nur
+     header.teaser ein. Ohne lesbare Maße bleiben die Attribute weg und
+     scripts/content-check.py --site warnt. Dazu loading="lazy" und
+     decoding="async": Kachel-Ansichten stehen unterhalb des ersten
+     Viewports (Startseite „Neueste Beiträge“, „Das könnte auch
+     interessieren“).
   2. Die Ebene des Kartentitels ist einstellbar (SEITE-3). Das Theme setzt
      fest H2. Karten stehen hier fast immer unter einer H2 (Startseite,
      Archiv-Jahre, „Das könnte auch interessieren“ aus dem unveränderten
@@ -34,7 +38,8 @@
   <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork"{% if post.locale %} lang="{{ post.locale }}"{% endif %}>
     {% if include.type == "grid" and teaser %}
       <div class="archive__item-teaser">
-        <img src="{{ teaser | relative_url }}" alt="" loading="lazy" decoding="async">
+        {% assign teaser_size = teaser | bildmasse %}
+        <img src="{{ teaser | relative_url }}" alt=""{% if teaser_size %} width="{{ teaser_size.width }}" height="{{ teaser_size.height }}"{% endif %} loading="lazy" decoding="async">
       </div>
     {% endif %}
     <{{ title_tag }} class="archive__item-title no_toc p-name" itemprop="headline">

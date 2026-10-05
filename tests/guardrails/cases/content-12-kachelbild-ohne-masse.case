@@ -1,0 +1,11 @@
+# Kachelbild (header.teaser) ohne width/height auf einer gebauten Seite ist eine Warnung (IMG-3)
+guardrail: content-site
+expect: 0
+grep: WARNUNG .*content-site/index\.html:\d+: Kachelbild ohne width/height \(/auflinie/assets/images/posts/bild\.svg\)
+file: tests/guardrails/content-site/index.html
+mode: replace
+old: <!-- KACHEL -->
+---
+<div class="grid__item"><article class="archive__item"><div class="archive__item-teaser">
+  <img src="/auflinie/assets/images/posts/bild.svg" alt="" loading="lazy" decoding="async">
+</div></article></div>

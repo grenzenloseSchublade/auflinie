@@ -1,0 +1,11 @@
+# Kachelbild mit width/height: keine Warnung (IMG-3)
+guardrail: content-site
+expect: 0
+grep: Inhalts-Check OK \(gebaute Beiträge in [^,)]*\)
+file: tests/guardrails/content-site/index.html
+mode: replace
+old: <!-- KACHEL -->
+---
+<div class="grid__item"><article class="archive__item"><div class="archive__item-teaser">
+  <img src="/auflinie/assets/images/posts/bild.webp" alt="" width="1200" height="630" loading="lazy" decoding="async">
+</div></article></div>

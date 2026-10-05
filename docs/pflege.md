@@ -235,7 +235,7 @@ Die Copyright-Zeile steht noch als HTML in `_includes/footer.html` (STYLEGUIDE R
 1. Datei vorbereiten. Titelbilder höchstens 1920 × 1080 px und möglichst unter 150 KB, Fotos als JPEG. Die Fraktal-Kachel braucht zwei Breiten, 400 und 800 px.
 2. Ablegen. Bilder eines Beitrags nach `assets/images/posts/`, alles andere nach `assets/images/`.
 3. Verweis ändern:
-   - Titelbild einer Seite oder eines Beitrags: `header.overlay_image` (und `header.teaser` für die Kachel) im Kopf der Datei,
+   - Titelbild einer Seite oder eines Beitrags: `header.overlay_image` (und `header.teaser` für die Kachel, deren Maße der Build selbst aus der Datei liest) im Kopf der Datei,
    - Titelbild als Standard und Vorschau für Link-Teilen: `background_image` und `og_image` in `_config.yml`,
    - Fraktal-Kachel der Startseite: `fractal_showcase.image` in `_data/home.yml`, jede Breite unter `srcset` mit ihrer `width`, dazu `alt`, `width` und `height` der Hauptdatei.
 4. Nur für Bilder außerhalb von `assets/images/posts/`: den neuen Namen in `CACHE_URLS` in `service-worker.js` eintragen (bei der Kachel jede Breite) und den alten entfernen. Sonst meldet der Test `precache.spec.js` die fehlende Datei.

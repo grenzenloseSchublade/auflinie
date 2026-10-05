@@ -33,8 +33,9 @@ Drei Gruppen, alle mit Playwright:
     Escape und Light Dismiss an Drawer, Autor- und TOC-Dropdown und Skill-Graph-Sheet, der
     Blog-Hinweis im Top Layer, kein unsichtbares Element mit Tastaturfokus (Tab-Runde auf
     allen Seiten aus `visual/pages.js`), die
-    Breakpoint-Grenzen 767/768 und 1023/1024 und dass Touch nach dem Antippen keinen
-    Theme-Hover festhält (BP-3).
+    Breakpoint-Grenzen 767/768 und 1023/1024, dass Touch nach dem Antippen keinen
+    Theme-Hover festhält (BP-3) und dass Kachelbilder die Maße ihrer Datei tragen
+    (`_plugins/bildmasse.rb`, IMG-3).
   - `links.spec.js`: externe Links mit `target="_blank"`, `rel="noopener noreferrer"`,
     verstecktem Hinweis „öffnet in neuem Tab“ und Symbol ohne Umbruch davor, interne
     Links unverändert (LINK-3).

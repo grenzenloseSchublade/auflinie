@@ -4,10 +4,11 @@
 // Escape und Light Dismiss an Drawer und Skill-Graph-Sheet, Autor- und TOC-Dropdown, Info-Leiste,
 // Einpassen und Zoom im Skill-Graphen, dass kein
 // unsichtbares Element den Tastaturfokus bekommt, die Breakpoint-Grenzen
-// 767/768 und 1023/1024 (STYLEGUIDE 3.4) und dass Touch nach dem Antippen
-// keinen Theme-Hover festhält (BP-3).
+// 767/768 und 1023/1024 (STYLEGUIDE 3.4), dass Touch nach dem Antippen
+// keinen Theme-Hover festhält (BP-3) und dass Kachelbilder die Maße ihrer
+// Datei tragen (IMG-3).
 const { test, expect } = require('@playwright/test');
-const { PAGES } = require('./pages');
+const { PAGES, POSTS } = require('./pages');
 const { ohneBlogHinweis } = require('../blog-hinweis');
 
 const MOBIL = { width: 390, height: 844 };
@@ -537,6 +538,33 @@ test.describe('Touch hält keinen Theme-Hover (BP-3)', () => {
         expect(geprueft, 'keine sichtbaren Ziele, Test greift nicht').toBeGreaterThan(1);
         expect(haengt, haengt.join('\n')).toEqual([]);
       });
+    });
+  }
+});
+
+// Kachelbilder tragen die echten Maße ihrer Datei (IMG-3, früher R-94):
+// _plugins/bildmasse.rb liest sie beim Build aus header.teaser. Stimmen sie
+// nicht (falsch gelesen, EXIF-Drehung vergessen), reserviert der Browser vor
+// dem Laden die falsche Fläche und das Layout springt doch. Fehlen sie ganz,
+// warnt scripts/content-check.py --site, hier zählt nur die Richtigkeit.
+test.describe('Kachelbilder mit den Maßen ihrer Datei (IMG-3)', () => {
+  for (const path of ['', ...POSTS]) {
+    test(`/${path}`, async ({ page }) => {
+      await ohneBlogHinweis(page);
+      await page.goto(`/auflinie/${path}`, { waitUntil: 'load' });
+      // Ohne Attribute (Format nicht lesbar) nur die Warnung, kein roter Lauf (ARCH-5)
+      const mitMassen = page.locator('.archive__item-teaser img[width][height]');
+      const bilder = await mitMassen.evaluateAll((imgs) => Promise.all(imgs.map(async (img) => {
+        img.loading = 'eager';
+        await img.decode().catch(() => {});
+        return {
+          src: img.getAttribute('src'),
+          attr: `${img.getAttribute('width')}x${img.getAttribute('height')}`,
+          datei: `${img.naturalWidth}x${img.naturalHeight}`,
+        };
+      })));
+      const falsch = bilder.filter((b) => b.attr !== b.datei).map((b) => `${b.src}: ${b.attr}, Datei ${b.datei}`);
+      expect(falsch, falsch.join('\n')).toEqual([]);
     });
   }
 });

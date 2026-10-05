@@ -23,6 +23,9 @@ Quellen (ohne Argument):
 Gebaute Seiten (--site <dir>, nach dem Jekyll-Build):
   6. WARNUNG: <img> ohne width/height im Inhalt eines Beitrags (posts/**,
      IMG-3). Ohne Maße springt das Layout beim Laden.
+  7. WARNUNG: Kachelbild eines Beitrags (header.teaser, .archive__item-teaser
+     auf allen Seiten) ohne width/height. Die Maße liest _plugins/bildmasse.rb
+     aus der Datei, ohne Treffer lässt der Build sie weg (IMG-3).
 
 Nutzung:
   python3 scripts/content-check.py              (Quellen)
@@ -241,12 +244,14 @@ def check_math():
 # --- Gebaute Seiten ----------------------------------------------------------
 
 class ImgScan(HTMLParser):
-    """<img> ohne width oder height innerhalb von .page__content."""
+    """<img> ohne width oder height innerhalb jedes Elements mit der
+    Klasse `container` (Default .page__content)."""
 
     VOID = {"area", "base", "br", "col", "embed", "hr", "img", "input", "link", "meta", "source", "track", "wbr"}
 
-    def __init__(self):
+    def __init__(self, container="page__content"):
         super().__init__(convert_charrefs=True)
+        self.container = container
         self.stack = []
         self.depth_content = None
         self.hits = []
@@ -259,7 +264,7 @@ class ImgScan(HTMLParser):
         if tag in self.VOID:
             return
         self.stack.append(tag)
-        if self.depth_content is None and "page__content" in (a.get("class") or "").split():
+        if self.depth_content is None and self.container in (a.get("class") or "").split():
             self.depth_content = len(self.stack)
 
     def handle_endtag(self, tag):
@@ -281,6 +286,14 @@ def check_site(site):
             warn(path, no, f"Bild ohne width/height ({src}). Beim Laden springt das Layout (IMG-3).",
                  "Im Beitrag die Pixelmaße angeben, etwa ![Alt](/assets/images/posts/bild.jpg)"
                  '{: width="1200" height="800"}.')
+    for path in sorted(site.rglob("*.html")):
+        scan = ImgScan("archive__item-teaser")
+        scan.feed(path.read_text(encoding="utf-8"))
+        for no, src in scan.hits:
+            warn(path, no, f"Kachelbild ohne width/height ({src}). Der Build liest die Maße aus der "
+                 "Datei, das ging hier nicht. Beim Laden springt das Layout (IMG-3).",
+                 "header.teaser im Beitrag auf ein JPEG, PNG, WebP oder GIF zeigen lassen, Pfad "
+                 "ab der Wurzel, etwa /assets/images/posts/bild.jpg.")
 
 
 def main(argv):
