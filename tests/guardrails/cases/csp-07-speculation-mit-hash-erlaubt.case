@@ -1,0 +1,9 @@
+# Speculation Rules mit passendem Hash in script-src sind erlaubt (SEC-3, kein Fehlalarm)
+guardrail: csp
+expect: 0
+file: tests/guardrails/csp-site/index.html
+mode: replace
+old: <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; object-src 'none'">
+---
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-98ovAUm8fEdJ8AlxVOVuZkqXLfAcUo/lwPwDz94x/O4='; object-src 'none'">
+<script type="speculationrules">{"prerender":[]}</script>

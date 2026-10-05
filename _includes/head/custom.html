@@ -64,7 +64,10 @@ Critical-CSS (_layouts/default.html). Wer den Token ändert, zieht beide nach. {
      Compositor die CPU stahl, der SW-Voll-Precache macht die Drawer-Ziele
      ohnehin schnell.
      site.baseurl-Verkettung ist hier die erlaubte Ausnahme (STYLEGUIDE LIQ-3):
-     href_matches erwartet ein URL-Pattern mit Platzhalter. {% endcomment %}
+     href_matches erwartet ein URL-Pattern mit Platzhalter.
+     Die CSP (head.html) erlaubt den Block per sha256-Hash über den gebauten
+     Inhalt zwischen den Tags. Jede Änderung daran, auch an Leerzeichen oder
+     an baseurl, braucht den neuen Hash dort, scripts/csp-check.py nennt ihn. {% endcomment %}
 <script type="speculationrules">
 {
   "prerender": [{

@@ -1,0 +1,9 @@
+# Speculation Rules ohne passenden Hash in script-src: die CSP blockte sie still (SEC-3)
+guardrail: csp
+expect: 1
+grep: Speculation Rules ohne passenden Hash
+file: tests/guardrails/csp-site/index.html
+mode: replace
+old: <!-- FALL -->
+---
+<script type="speculationrules">{"prerender":[]}</script>

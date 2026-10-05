@@ -86,8 +86,9 @@ Die Projekte stehen in `playwright.config.js`:
   `notRestoredReasons` den Grund „masked“, Playwright schaltet den Cache ohnehin
   ab. Belegt ist sie in der Messung mit sichtbarem Browser unter Xvfb
   (`docs/features/seitenwechsel.md`).
-- WebKit blockt den `speculationrules`-Block per CSP (Register R-86).
-  `vendor.spec.js` nimmt genau diese Meldungen in WebKit aus.
+- Die CSP erlaubt den `speculationrules`-Block per Hash (SEC-3), keine Engine
+  meldet dazu etwas. `navigation.spec.js` zählt deshalb jeden CSP-Fehler und jede
+  CSP-Warnung als Befund, `vendor.spec.js` jeden CSP-Verstoß.
 - Laufzeit der vollen Suite mit 2 Workern (gemessen 5. 10. 2026 im Container):
   etwa 4,5 min für 358 Tests, vor der Ausweitung von axe und Tab-Runde auf alle
   Beiträge und 320 px etwa 2,6 min für 219 Tests.

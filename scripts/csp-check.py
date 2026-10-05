@@ -7,6 +7,11 @@ Prüft jede HTML-Datei unter _site:
   - script-src ohne 'unsafe-inline'/'unsafe-eval', keine Wildcard-Quellen
   - keine ausführbaren Inline-Skripte (Datenblöcke wie JSON-LD und
     speculationrules sind erlaubt)
+  - der speculationrules-Block ist per sha256-Hash in script-src erlaubt,
+    und der Hash passt zum gebauten Block (SEC-3). Ändert sich der Block in
+    _includes/head/custom.html, nennt die Meldung den neuen Hash für
+    _includes/head.html. Sonst blockte die CSP die Regeln still, Prerender
+    fiele ohne Fehler im Build weg
   - keine Inline-Event-Handler (onclick=, onload= ...)
   - die Policy ist auf allen Seiten byte-identisch (eine Policy für die
     ganze Seite, Abweichungen fielen sonst erst im Browser auf)
@@ -25,6 +30,8 @@ Prüft jede HTML-Datei unter _site:
 Nutzung: python3 scripts/csp-check.py [_site]   (Exit 0 = sauber oder nur Warnungen, 1 = Verstoß)
 """
 from html.parser import HTMLParser
+import base64
+import hashlib
 import pathlib
 import re
 import sys
@@ -90,6 +97,7 @@ def main(root: str) -> int:
         print(f"csp-check: Verzeichnis {root} fehlt (erst jekyll build)")
         return 1
     fails, warnings, policies, count = [], [], {}, 0
+    spec_missing = {}   # erwarteter Hash -> Seiten ohne passenden Eintrag
     for f in sorted(base.rglob("*.html")):
         rel = f.relative_to(base).as_posix()
         if any(rel.startswith(d) for d in SKIP_DIRS):
@@ -117,6 +125,12 @@ def main(root: str) -> int:
             if re.search(r"\bsrc\s*=", attrs):
                 continue
             t = re.search(r'type\s*=\s*"([^"]+)"', attrs)
+            if t and t.group(1).strip().lower() == "speculationrules":
+                digest = base64.b64encode(hashlib.sha256(body.encode("utf-8")).digest()).decode()
+                source = f"'sha256-{digest}'"
+                if not script_src or source not in script_src.group(1).split():
+                    spec_missing.setdefault(source, []).append(rel)
+                continue
             if t and t.group(1).strip().lower() in DATA_TYPES:
                 continue
             snippet = " ".join(body.split())[:60]
@@ -131,6 +145,9 @@ def main(root: str) -> int:
             warnings.append(f"{rel}: http://-Link (SEC-9, besser https://): {hit}")
         for hit in scan.blank:
             fails.append(f"{rel}: target=\"_blank\" ohne rel=\"noopener noreferrer\" (SEC-9): {hit}")
+    for source, pages in spec_missing.items():
+        fails.append(f"Speculation Rules ohne passenden Hash in script-src ({len(pages)} Seiten, z. B. {pages[0]}): "
+                     f"{source} in die CSP in _includes/head.html eintragen (SEC-3)")
     if len(policies) > 1:
         variants = "\n    ".join(f"{len(v)} Seiten, z. B. {v[0]}" for v in policies.values())
         fails.append(f"CSP nicht auf allen Seiten identisch:\n    {variants}")
@@ -142,7 +159,7 @@ def main(root: str) -> int:
         print("\n".join("  " + x for x in fails))
         return 1
     note = f", {len(warnings)} http://-Link(s) als Warnung" if warnings else ""
-    print(f"csp-check OK: {count} Seiten, eine einheitliche Policy, keine Inline-Skripte, keine http://-Ressource, target=_blank nur mit noopener{note}")
+    print(f"csp-check OK: {count} Seiten, eine einheitliche Policy, keine Inline-Skripte, Speculation Rules per Hash erlaubt, keine http://-Ressource, target=_blank nur mit noopener{note}")
     return 0
 
 

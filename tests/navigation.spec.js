@@ -20,9 +20,11 @@ async function watch(page) {
   const errors = [];
   page.on('pageerror', (err) => errors.push('pageerror: ' + err.message));
   page.on('console', (msg) => {
+    // CSP-Warnungen zählen mit: Firefox meldete das frühere Schlüsselwort
+    // 'inline-speculation-rules' nur als Warnung (heute Hash, SEC-3)
+    if (msg.type() === 'warning' && /Content.Security.Policy/i.test(msg.text())) errors.push('console.warning: ' + msg.text());
     if (msg.type() !== 'error') return;
     if (msg.text().startsWith('sw-register: ServiceWorker-Registrierung')) return;   // serviceWorkers: 'block'
-    if (/inline-speculation-rules|does not appear in the script-src directive/.test(msg.text())) return;   // WebKit, R-86
     errors.push('console: ' + msg.text());
   });
   await page.addInitScript(() => {
