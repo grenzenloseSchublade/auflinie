@@ -6,6 +6,21 @@ Dies ist eine persönliche Website, die mit Jekyll und dem Minimal Mistakes Them
 
 Diese Website kombiniert Jekyll mit dem Minimal Mistakes Theme, um eine ansprechende und funktionale Plattform zu bieten.
 
+**Inhalte ändern (Beitrag, Lebenslauf, Startseite, Menü, Bilder): [`docs/pflege.md`](docs/pflege.md).**
+
+## Dokumentation
+
+| Datei | Inhalt |
+|---|---|
+| [`docs/pflege.md`](docs/pflege.md) | Pflege-Anleitung: jede Inhaltsart in höchstens fünf Schritten, Prüfen vor dem Push, Wartung |
+| [`STYLEGUIDE.md`](STYLEGUIDE.md) | einzige normative Quelle für Gestaltung, Code, Sprache, Sicherheit und Arbeitsweise |
+| [`README_DEV.md`](README_DEV.md) | Entwicklungsumgebung, Hilfsskripte, Hero und CRT |
+| [`tests/README.md`](tests/README.md) | Tests, Browser-Projekte, lokale Ausführung |
+| [`docs/features/seitenwechsel.md`](docs/features/seitenwechsel.md) | Seitenwechsel per Cross-Document View Transition |
+| [`docs/features/tv-umschalt.md`](docs/features/tv-umschalt.md) | TV-Umschalt-Effekt: Varianten, Dosierung, Technik |
+| [`docs/features/skill-feature.md`](docs/features/skill-feature.md) | Skill-Chips und Skill-Graph im Lebenslauf |
+| [`docs/audits/`](docs/audits/) | Audit- und Sicherheitsbericht vom 1. 10. 2026 (Momentaufnahmen, nicht normativ) |
+
 ## TODO
 
 - [x] Bilder und Grafiken optimieren (ungenutzte Assets entfernt — ~450 KB; Font-Awesome-Subset statt Komplett-CSS)
@@ -197,22 +212,20 @@ Wenn mathematische Formeln nicht korrekt angezeigt werden:
 
 ## Inhalte pflegen
 
-Inhalte stehen in Markdown oder in `_data/*.yml`, das Markup in Includes (STYLEGUIDE ARCH-4). Die CI meldet typische Fehler mit Datei, Zeile und Lösung. Vor dem Push lokal: `python3 scripts/content-check.py`.
+**Anleitung: [`docs/pflege.md`](docs/pflege.md)**. Jeder Fall in höchstens fünf Schritten, mit Datei, Beispiel, typischen Fallen und dem Lesen der CI-Meldungen (STYLEGUIDE ARCH-5). Kurzfassung:
 
-| Fall | Datei | Fallen |
-|---|---|---|
-| Neuer Beitrag | `_posts/JJJJ-MM-TT-titel.md` nach der Vorlage `assets/downloads/post-template.txt` (Download im Leitfaden „Blogbeitrag erstellen“) | Das Datum im Dateinamen ist das Veröffentlichungsdatum, ein Datum in der Zukunft erscheint erst ab diesem Tag beim nächsten Build. Kein `<!-- -->`, Notizen als `{% comment %}` (sonst rot) |
-| Gastbeitrag | wie ein Beitrag, dazu `author: "Vorname Nachname"` | Nur der Name erscheint, kein Profil (INH-5) |
-| Bild im Beitrag | Datei nach `assets/images/posts/`, Einbindung `![Alt]({{ "/assets/images/posts/bild.jpg" \| relative_url }}){: width="1200" height="800"}` | Ohne `relative_url` fehlt `/auflinie`. Fehlende Datei oder fehlendes `alt` macht die CI rot, fehlende Maße geben eine Warnung |
-| Entwurf | `_drafts/titel.md` oder `published: false` | Erscheint nur mit `--drafts` bzw. `--unpublished` |
-| Lebenslauf | `_data/cv_content.yml` | Zeiträume „2020 – 2025“ mit normalen Leerzeichen. Prosa als `\|`-Block, harter Umbruch als `\\` am Zeilenende |
-| Skills, Skill-Graph | Chips in `_data/cv_content.yml` (`skill_groups`), Projekte in `_data/skill_graph.yml` | Eine Skill-ID ist der Chip-Name klein mit Bindestrichen („Next.js“ → `next-js`). Eine unbekannte ID macht die CI rot, mit Vorschlag |
-| Fraktal-Texte | `_data/mandelbrot.yml` | Inline-Mathe mit doppelten, Display-Mathe mit einfachen Backslashes (oben, MD-3) |
-| Startseite | `_data/home.yml` | Absätze im `\|`-Block mit Leerzeile trennen. Ein neues Kachelbild in jeder Breite unter `image.srcset` und in `CACHE_URLS` (`service-worker.js`, Offline-Cache) eintragen |
-| Über mich, andere Seiten | `_pages/*.md` | Neue Seite braucht `permalink` und einen Menüeintrag |
-| Menü und Footer | `_data/navigation.yml` (`main`, `footer`) | Menütitel und Seitentitel sind getrennt gepflegt |
-| Kontakt, Social-Links | `_config.yml` → `author.links` | `footer: true` zeigt den Kanal im Footer, `contact: true` als Kontaktkarte. Neue Icons ins Subset (`assets/_sass/base/_icons.scss`) |
-| Hinweis über dem Blog | `_pages/posts.md` → `blog_notice` | Für einen neuen Hinweis auch eine neue `id`, sonst bleibt er bei allen ausgeblendet, die den alten geschlossen haben |
+| Fall | Datei |
+|---|---|
+| Blogbeitrag, Gastbeitrag | `_posts/JJJJ-MM-TT-titel.md` nach `assets/downloads/post-template.txt`, Bilder in `assets/images/posts/` |
+| Lebenslauf, Skills | `_data/cv_content.yml`, Skill-Graph `_data/skill_graph.yml` |
+| Startseite | `_data/home.yml` |
+| Über mich, neue Seite | `_pages/*.md` |
+| Fraktal-Texte | `_data/mandelbrot.yml` |
+| Menü und Footer | `_data/navigation.yml` |
+| Kontakt, Social-Links | `_config.yml` → `author.links` |
+| Hinweis über dem Blog | `_pages/posts.md` → `blog_notice` |
+
+Vor dem Push lokal: `python3 scripts/content-check.py`. Die CI meldet typische Fehler mit Datei, Zeile und Lösung.
 
 ## Anpassungen
 
