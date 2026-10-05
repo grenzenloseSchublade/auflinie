@@ -875,7 +875,7 @@ Ein neues Token kommt in die passende Datei unter `variables/` und ist danach ü
 
 ### 10.1 Sprachstand und Aufbau
 
-- **JS-1** [MUSS · Ist · CI-P1] Baseline ES2020 (Optional Chaining wird bereits genutzt). Klassische Skripte mit `defer`, keine ES-Module, kein Bundler. **Ausnahme:** `head-early.js` lädt parser-blockierend im `<head>` **ohne** `defer` oder `async`. Der `pagereveal`-Handoff muss vor dem ersten Render laufen. Nie auf `defer` oder `async` umstellen.
+- **JS-1** [MUSS · Ist · CI] Baseline ES2020 (Optional Chaining wird bereits genutzt). ESLint parst `assets/js` mit `ecmaVersion: 2020`, neuere Syntax ist ein Fehler. Klassische Skripte mit `defer`, keine ES-Module, kein Bundler. **Ausnahme:** `head-early.js` lädt parser-blockierend im `<head>` **ohne** `defer` oder `async`. Der `pagereveal`-Handoff muss vor dem ersten Render laufen. Nie auf `defer` oder `async` umstellen.
 - **JS-2** [MUSS · Ist · CI] Code nutzt `const`/`let`, kein `var`. ESLint prüft `no-var` und `prefer-const` für alle Dateien unter `assets/js` und `service-worker.js`, ohne Ausnahme (die letzten Altdateien `greedy-navigation.js` und `fractal-panel.js` sind migriert).
 - **JS-3** [MUSS · Ist · CI-P2] Jede Main-Thread-Datei ist eine IIFE mit `'use strict'` als erster Anweisung. Exporte nur über einen expliziten Namespace auf `window` oder `self`. Erfüllt seit 2. 10. 2026 (zuletzt `head-early.js`, `neon-orbit-toggle.js`, `offline.js`), ein ESLint-Check (`strict`) fehlt.
 - **JS-4** [MUSS · Soll · Review] Dateikopf `/** <datei>.js — Zweck`, dazu Zuständigkeit, Abhängigkeiten, Ladereihenfolge, Event-Verträge. Vorbilder: `spa-module.js`, `skill-graph-sheet.js`, `head-early.js`. Bestand: R-16.
@@ -1023,7 +1023,7 @@ Die Seite ist statisch, hat keine Nutzerkonten und keine Formulare. Die realisti
 
 ### 11.11 Secrets
 
-- **SEC-11** [MUSS · Ist · Review] Keine Tokens, Schlüssel oder Passwörter im Repo, auch nicht in Beispielen. `.env` und `.env.*` bleiben ignoriert, `.env.example` enthält nur Platzhalter. Der Workflow braucht keine Secrets außer dem automatischen `GITHUB_TOKEN`. **[Offen]** Secret Scanning mit Push Protection aktivieren (Status prüfen).
+- **SEC-11** [MUSS · Ist · Review] Keine Tokens, Schlüssel oder Passwörter im Repo, auch nicht in Beispielen. `.env` und `.env.*` bleiben ignoriert. Eine `.env.example` gibt es nicht, kein Plugin braucht einen Token (die frühere Vorlage nannte `jekyll-gist` und `jekyll-github-metadata`, beide nicht im Bundle). Der Workflow braucht keine Secrets außer dem automatischen `GITHUB_TOKEN`. Secret Scanning mit Push Protection ist aktiv (geprüft 5. 10. 2026 per `gh api repos/grenzenloseSchublade/auflinie`).
 
 ### 11.12 Veröffentlichung und Indexierung
 
@@ -1194,7 +1194,7 @@ Kein SemVer (eine Website hat keine öffentliche API). Ein `CHANGELOG.md` im For
 | Check | Wo | Prüft |
 |---|---|---|
 | Stylelint (`npm run lint:css`) | CI `lint` | SCSS-Regeln laut `.stylelintrc.json`, darunter SCSS-2, SCSS-7 (`keyframes-name-pattern`), SCSS-12 (`declaration-no-important`), TYP-8 (`font-weight-notation: numeric`), BP-5 |
-| ESLint (`npm run lint:js`, `eslint.config.mjs`) | CI `lint` | `assets/js`, `service-worker.js` (Jekyll-Vorlage, Liquid per Prozessor ersetzt), `scripts/*.js`, `tests/`: JS-2 (`no-var`, `prefer-const`, ohne Ausnahme), dazu `js/recommended` und `no-unsanitized` (SEC-1) |
+| ESLint (`npm run lint:js`, `eslint.config.mjs`) | CI `lint` | `assets/js`, `service-worker.js` (Jekyll-Vorlage, Liquid per Prozessor ersetzt), `scripts/*.js`, `tests/`: JS-1 (Parser für `assets/js` auf ES2020), JS-2 (`no-var`, `prefer-const`, ohne Ausnahme), dazu `js/recommended` und `no-unsanitized` (SEC-1) |
 | `scripts/fs-guardrail.sh` | CI `lint` | TYP-1 |
 | `scripts/color-guardrail.sh` | CI `lint` | FARB-1, FARB-5, FARB-6, FARB-8 (SCSS), FARB-9, ungepaarte `[Block]`-Marker |
 | `scripts/scale-guardrail.sh` (Ratchet, Grenzwerte `scripts/scale-baseline.txt`) | CI `lint` | SP-1, RAD-1, Z-3, MO-1, MO-2, TYP-7: keine neuen Literale für Abstand, Radius, Schatten, z-index, Dauer, Kurve und Laufweite, auch nicht über lokale Sass-Variablen oder als Argument von `card-panel()` und `mono-label()`, kein neues `transition: all`, ungepaarte `[Block]`-Marker |
@@ -1223,7 +1223,6 @@ Kein SemVer (eine Website hat keine öffentliche API). Ein `CHANGELOG.md` im For
 
 | Priorität | Check | Fängt |
 |---|---|---|
-| 1 | `node --check` über `assets/js/*.js` im Lint-Job | JS-1 |
 | 1 | Stylelint-Flags `--report-needless-disables --report-descriptionless-disables --report-invalid-scope-disables` | SCSS-18 |
 | 1 | Stylelint: `color-named: never`, `selector-max-id: 0` | FARB-8, SCSS-9 |
 | 1 | Stylelint `declaration-property-value-disallowed-list`: `outline: none` (`transition: all` und `rgba($hover-color` fangen schon die Guardrails) | 2.4.7 |
@@ -1472,3 +1471,4 @@ Prozess und Doku:
 | 2026-10-05 | HTML-3 und SEO (Audit-Befunde 13, 22 und 52): Der Avatar in `author-profile.html` trägt `width="200" height="200"` (Eigengröße von `Logo.svg`), die Sidebar springt beim Laden nicht mehr (mit 1 s verzögertem Bild vorher 0,0031 bis 0,0035 auf `/about/`, `/cv/`, `/mandelbrot/`, jetzt kein Eintrag). Element-Screenshots der Sidebar bei 390 bis 1440 px byte-gleich. Die Microdata-Headline der Startseite (`splash.html`) nimmt `seo_title` vor dem Titel und lautet „Hans Müller“ statt „Hans Muller“. |
 | 2026-10-05 | Lesezeit einheitlich (Audit-Befund 53): Derselbe Beitrag zeigte 27 Minuten unter „Das könnte auch interessieren“ und 32 Minuten sonst. `page__meta.html` zählte `document.content`, je nach Renderreihenfolge rohes Markdown oder fertiges HTML samt Zeilennummern der Codeblöcke. `_plugins/lesezeit.rb` zählt vor dem Rendern jeden Beitrag einmal aus dem umgewandelten Markdown ohne Zeilennummern-Spalte (wie `strip_html \| number_of_words`) und legt `read_words` ab. „Erstellung dieser Website“ zeigt jetzt überall 31, „Blogbeitrag erstellen“ 6 Minuten. |
 | 2026-10-05 | Typografie und Bedientexte (Audit-Befunde 55 bis 59, ohne Umformulierung von Inhalt oder Ton): Ohne Web Worker steht im Fraktal-Panel jetzt der Satz aus 7.3 („Die Darstellung ist in diesem Browser nicht möglich.“) statt „Render-Fallback aktiv“ und „Web Worker nicht verfügbar“. Geschütztes Leerzeichen bei „M. Sc.“, „B. Sc.“, „e. V.“, „z. B.“, „100 dpi“, „98 %“ und „92 %“ (`cv_content.yml`, `mandelbrot.yml`). Minuszeichen U+2212 im Formatter `formatComplex` auch für den Realteil, in den Preset-Namen, im HUD-Startwert, im Julia-Titel und in „Re ∈ [−2, 0.25]“, Rechenwerte bleiben ASCII. Durchkopplung: GitHub-Pages-Integration, Minimal-Mistakes-Theme, VS-Code-Konfiguration, Content-Management, IBM-Forschungszentrum, CI/CD-Pipelines, „+/−-Buttons“ (Anker der Überschrift 2.3 unverändert). Der Canvas der interaktiven Julia-Menge heißt „Julia-Menge – interaktiv …“ statt „Interaktive Julia-Menge – interaktiv …“. Offen aus Befund 59: `aria-label="Footer-Navigation"` in `footer.html`, die Datei liegt in einer anderen Etappe. |
+| 2026-10-05 | Sicherheit und Werkzeuge (Audit-Befunde 6, 7, 8 und 17): SEC-11 ohne Offen-Vermerk, Secret Scanning mit Push Protection ist aktiv (geprüft per `gh api`). `.env.example` entfernt (sie lud zu einem GitHub-Token für `jekyll-gist` und `jekyll-github-metadata` ein, beide nicht im Bundle), die Ausnahme in `.gitignore` ebenso. `tests/serve.js` prüft den Pfad relativ zur Wurzel, `..%2f` in einen Geschwisterordner (`_site_review2`) liefert 403 statt 200. ESLint parst Site- und Worker-Skripte mit `ecmaVersion: 2020`, JS-1 damit auf CI (16.1), die 16.2-Zeile `node --check` entfällt. |

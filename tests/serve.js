@@ -20,7 +20,12 @@ http.createServer((req, res) => {
   if (!url.pathname.startsWith(BASE)) { res.writeHead(404); return res.end(); }
   let rel = decodeURIComponent(url.pathname.slice(BASE.length)) || '/';
   let file = path.join(root, rel);
-  if (!file.startsWith(root)) { res.writeHead(403); return res.end(); }
+  // Relativ zur Wurzel prüfen: startsWith(root) ließe Geschwisterordner wie
+  // _site_review2 durch (/auflinie/..%2f_site_review2/…)
+  const inside = path.relative(root, file);
+  if (inside === '..' || inside.startsWith('..' + path.sep) || path.isAbsolute(inside)) {
+    res.writeHead(403); return res.end();
+  }
   if (fs.existsSync(file) && fs.statSync(file).isDirectory()) {
     if (!rel.endsWith('/')) { res.writeHead(301, { Location: url.pathname + '/' }); return res.end(); }
     file = path.join(file, 'index.html');

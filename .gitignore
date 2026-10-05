@@ -13,7 +13,6 @@ tmp/
 Thumbs.db
 .env
 .env.*
-!.env.example
 
 # Playwright-Testartefakte (Reports/Traces) — Tests selbst sind committet
 playwright-report/

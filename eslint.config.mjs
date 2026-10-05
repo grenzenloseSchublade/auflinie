@@ -90,10 +90,12 @@ export default [
   },
   {
     // Site-Skripte: klassische <script>-Dateien mit IIFE, keine ES-Module.
+    // ecmaVersion 2020 = Baseline aus STYLEGUIDE JS-1: Syntax aus ES2021
+    // und neuer (??=, ||=, Klassenfelder) ist ein Parserfehler.
     files: ['assets/js/**/*.js'],
     ignores: WORKER_FILES,
     languageOptions: {
-      ecmaVersion: 2022,
+      ecmaVersion: 2020,
       sourceType: 'script',
       globals: { ...globals.browser, ...projectGlobals },
     },
@@ -112,7 +114,7 @@ export default [
     // ihre Funktionen per /* exported */, die nutzenden bekommen sie hier.
     files: WORKER_FILES,
     languageOptions: {
-      ecmaVersion: 2022,
+      ecmaVersion: 2020,
       sourceType: 'script',
       globals: { ...globals.worker },
     },
