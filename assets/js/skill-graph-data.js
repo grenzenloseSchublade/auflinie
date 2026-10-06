@@ -6,11 +6,19 @@
  * Auswahl-Anzeige (Konsole über den Chips, Info-Leiste im Graph-Sheet) und
  * braucht dafür als einziger Helfer das DOM (document.createElement).
  *
+ * Texte: Bedientexte stehen in _data/skill_graph.yml unter texts und kommen
+ * mit demselben JSON-Tag an (texts liest sie, ARCH-4). Im Skript stehen nur
+ * die Trennzeichen der Anzeige („ – “ und „ · “).
+ *
  * Ladereihenfolge: per defer VOR skill-chips.js bzw. skill-graph*.js
  * (_includes/scripts.html).
  */
 (function (global) {
   'use strict';
+
+  // Trennzeichen der Auswahl-Anzeige: „Skill – Rolle“, Projekte mit „ · “
+  const ROLE_SEPARATOR = ' – ';
+  const PROJECT_SEPARATOR = ' · ';
 
   global.SkillGraphData = {
     /**
@@ -32,6 +40,22 @@
         return null;
       }
       return data;
+    },
+
+    /**
+     * Bedientexte aus den Daten (texts in _data/skill_graph.yml). Fehlt der
+     * Block, kommt mit Warnung ein leeres Objekt zurück, die Aufrufer lassen
+     * den Text dann weg, statt eine zweite Fassung im Skript zu pflegen.
+     * (data null: parse hat schon gewarnt.)
+     * @param {Object|null} data    Ergebnis von parse
+     * @param {string}      prefix  Warn-Präfix des Aufrufers
+     * @returns {Object}
+     */
+    texts: function (data, prefix) {
+      if (data && !data.texts) {
+        console.warn(prefix + ': texts fehlt in den skill_graph-Daten, Bedientexte bleiben leer');
+      }
+      return (data && data.texts) || {};
     },
 
     /**
@@ -78,8 +102,11 @@
      * @param {string}  label     Anzeigename des Skills
      * @param {Array<{label: string}>} projects  Projekte des Skills
      * @param {string}  kind      'foundation' (Basis-Werkzeug) oder 'plain'
+     * @param {{with_projects?: string, foundation?: string, no_projects?: string}} [texts]
+     *                            texts.selection aus den Daten
      */
-    renderSelection: function (el, label, projects, kind) {
+    renderSelection: function (el, label, projects, kind, texts) {
+      const t = texts || {};
       el.textContent = '';
 
       const labelEl = document.createElement('span');
@@ -89,13 +116,15 @@
 
       const roleEl = document.createElement('span');
       roleEl.className = 'cv-skills__selection-rolle';
+      let role;
       if (projects.length) {
-        roleEl.textContent = ' – gemeinsam im Einsatz bei';
+        role = t.with_projects;
       } else if (kind === 'foundation') {
-        roleEl.textContent = ' – Basis-Werkzeug, quer durch fast alle Projekte im Einsatz.';
+        role = t.foundation;
       } else {
-        roleEl.textContent = ' – Teil des Werkzeugkastens, ohne feste Projektzuordnung.';
+        role = t.no_projects;
       }
+      roleEl.textContent = role ? ROLE_SEPARATOR + role : '';
       el.appendChild(roleEl);
 
       if (projects.length) {
@@ -104,7 +133,7 @@
         listEl.className = 'cv-skills__selection-projekte';
         listEl.textContent = projects.map(function (project) {
           return project.label;
-        }).join(' · ');
+        }).join(PROJECT_SEPARATOR);
         el.appendChild(listEl);
       }
     }

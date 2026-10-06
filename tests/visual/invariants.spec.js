@@ -175,20 +175,28 @@ test.describe('Sticky-TOC-Dropdown (A11Y-2)', () => {
 // stabil. Der Maßstab steht als data-zoom am Canvas, die Zahl der Knoten
 // außerhalb bzw. angeschnitten als data-outside, die Bildschirmlage des
 // gewählten Knotens als data-sel-x/-y (skill-graph.js publishView).
+// Die erwarteten Texte kommen aus dem Datenblock der Seite (texts in
+// _data/skill_graph.yml): Die Tests prüfen Verhalten, nicht den Wortlaut, eine
+// Textänderung dort braucht keinen angepassten Test.
+async function skillTexts(page) {
+  return page.evaluate(() => JSON.parse(document.querySelector('script[data-skill-graph-data]').textContent).texts);
+}
+
 async function openSheet(page, before) {
   await page.goto('/auflinie/cv/', { waitUntil: 'load' });
   if (before) await before();
+  const texts = await skillTexts(page);
   const opener = page.locator('[data-role="graph-toggle"]');
   await opener.scrollIntoViewIfNeeded();
-  await expect(opener).toHaveText('Skill-Graph öffnen');
-  await expect(opener).toHaveAccessibleName('Skill-Graph öffnen');
+  await expect(opener).toHaveText(texts.graph.open);
+  await expect(opener).toHaveAccessibleName(texts.graph.open);
   await opener.click();
   const panel = page.locator('[data-role="graph-panel"]');
   await expect(panel).toHaveAttribute('role', 'dialog');
   await expect(panel).toHaveAttribute('aria-modal', 'true');
   const canvas = page.locator('[data-role="canvas"]');
   await expect(canvas).toHaveAttribute('data-zoom', /\d/);
-  return { opener, panel, canvas };
+  return { opener, panel, canvas, texts };
 }
 
 const zoomOf = async (canvas) => Number(await canvas.getAttribute('data-zoom'));
@@ -257,7 +265,7 @@ test.describe('Skill-Graph-Sheet (OVL-3, OVL-4)', () => {
 
   test('Info-Leiste zeigt nach Knotenklick Skill und Projekte, Esc gestaffelt', async ({ page }) => {
     // Chip vor dem Öffnen wählen: das Sheet hebt Python hervor, wo es liegt
-    const { panel, canvas } = await openSheet(page, () =>
+    const { panel, canvas, texts } = await openSheet(page, () =>
       page.locator('.cv-skill-chip__button[data-skill="python"]').click());
     const info = page.locator('[data-role="graph-context"]');
     await expect(info.locator('.cv-skills__selection-skill')).toHaveText('Python');
@@ -266,7 +274,7 @@ test.describe('Skill-Graph-Sheet (OVL-3, OVL-4)', () => {
 
     // Erstes Esc löst nur die Auswahl, das Sheet bleibt offen
     await page.keyboard.press('Escape');
-    await expect(info).toHaveText('Ein Klick auf einen Skill zeigt verwandte Skills und gemeinsame Projekte.');
+    await expect(info).toHaveText(texts.hint);
     await expect(info).not.toHaveClass(/is-active/);
     await expect(panel).toHaveAttribute('role', 'dialog');
 
@@ -275,7 +283,7 @@ test.describe('Skill-Graph-Sheet (OVL-3, OVL-4)', () => {
     // sich durch Esc nicht bewegt)
     await canvas.click({ position: { x, y } });
     await expect(info.locator('.cv-skills__selection-skill')).toHaveText('Python');
-    await expect(info.locator('.cv-skills__selection-rolle')).toHaveText(' – gemeinsam im Einsatz bei');
+    await expect(info.locator('.cv-skills__selection-rolle')).toHaveText(' – ' + texts.selection.with_projects);
     await expect(info.locator('.cv-skills__selection-projekte')).toContainText(' · ');
     await expect(info).toHaveClass(/is-active/);
     // Gleicher Inhalt wie die Konsole über den Chips (ein Renderer)
@@ -313,14 +321,24 @@ test.describe('Skill-Graph-Sheet (OVL-3, OVL-4)', () => {
   }
 
   test('Zoom-Knöpfe ändern den Maßstab, Einpassen stellt ihn wieder her', async ({ page }) => {
-    const { canvas } = await openSheet(page);
+    const { canvas, texts } = await openSheet(page);
+    // Label in Name (WCAG 2.5.3, STYLEGUIDE 7.7): Der Name jedes Knopfs beginnt
+    // mit seinem sichtbaren Zeichen bzw. Text, gleich welcher Wortlaut in
+    // texts.graph steht
+    for (const role of ['graph-zoom-in', 'graph-zoom-out', 'graph-fit', 'graph-reset']) {
+      const btn = page.locator(`[data-role="${role}"]`);
+      // textContent statt innerText: die Knöpfe stehen per CSS in Versalien
+      const visible = (await btn.textContent()).replace(/\s+/g, ' ').trim();
+      expect((await btn.getAttribute('aria-label')).startsWith(visible),
+        `${role}: label in _data/skill_graph.yml beginnt nicht mit dem sichtbaren „${visible}“`).toBe(true);
+    }
     const fit = await zoomOf(canvas);
-    await page.getByRole('button', { name: /^\+ Vergrößern/ }).click();
+    await page.getByRole('button', { name: texts.graph.zoom_in.label, exact: true }).click();
     expect(await zoomOf(canvas)).toBeGreaterThan(fit);
-    await page.getByRole('button', { name: /^− Verkleinern/ }).click();
-    await page.getByRole('button', { name: /^− Verkleinern/ }).click();
+    await page.getByRole('button', { name: texts.graph.zoom_out.label, exact: true }).click();
+    await page.getByRole('button', { name: texts.graph.zoom_out.label, exact: true }).click();
     expect(await zoomOf(canvas)).toBeLessThan(fit);
-    await page.getByRole('button', { name: /^Einpassen/ }).click();
+    await page.getByRole('button', { name: texts.graph.fit.label, exact: true }).click();
     expect(await zoomOf(canvas)).toBeCloseTo(fit, 3);
     // Tastatur bei Fokus im Sheet: + vergrößert, 0 passt ein
     await page.keyboard.press('+');
@@ -330,9 +348,9 @@ test.describe('Skill-Graph-Sheet (OVL-3, OVL-4)', () => {
   });
 
   test('Zoom-Grenze: Knopf aria-disabled, bleibt fokussierbar', async ({ page }) => {
-    const { canvas } = await openSheet(page);
-    const plus = page.getByRole('button', { name: /^\+ Vergrößern/ });
-    const minus = page.getByRole('button', { name: /^− Verkleinern/ });
+    const { canvas, texts } = await openSheet(page);
+    const plus = page.getByRole('button', { name: texts.graph.zoom_in.label, exact: true });
+    const minus = page.getByRole('button', { name: texts.graph.zoom_out.label, exact: true });
     await expect(plus).not.toHaveAttribute('aria-disabled', /./);
     for (let i = 0; i < 12 && !(await plus.getAttribute('aria-disabled')); i++) await plus.click();
     expect(await zoomOf(canvas)).toBeCloseTo(2.5, 3);

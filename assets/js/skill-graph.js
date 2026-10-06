@@ -13,7 +13,9 @@
  * (_data/skill_graph.yml, Schema v1). Knoten = Skills aus den DOM-Chips
  * (Reihenfolge = Gruppenreihenfolge), Kanten = gemeinsame Projekte. Die
  * Info-Leiste schreibt SkillGraphData.renderSelection — derselbe Renderer
- * wie die Konsole über den Chips (skill-chips.js).
+ * wie die Konsole über den Chips (skill-chips.js). Texte: Beschriftungen und
+ * Hinweis der Info-Leiste rendert Liquid aus texts in _data/skill_graph.yml,
+ * die Auswahl-Anzeige kommt aus texts.selection (ARCH-4).
  *
  * Ansicht: Bildschirm = Layout × scale + pan. Render, Hit-Test, Rand-Pfeile
  * und Knoten-Ziehen rechnen über dieselben Helfer (toScreen/toLayout). Zoom
@@ -211,6 +213,7 @@
       self.nodes.push({ id: id, label: btn.textContent.trim(), labelW: null });
     });
     this.foundations = new Set(Array.isArray(data.foundations) ? data.foundations : []);
+    this.selectionTexts = window.SkillGraphData.texts(data, 'skill-graph').selection;
 
     // Kanten: Skill-Paare mit gemeinsamen Projekten (Gewicht = Anzahl);
     // Skill→Projekte-Map über den gemeinsamen Helfer (warnt bei fehlenden
@@ -1028,7 +1031,7 @@
     }
     const projects = (this.skillProjects && this.skillProjects.get(skillId)) || [];
     const kind = this.foundations && this.foundations.has(skillId) ? 'foundation' : 'plain';
-    window.SkillGraphData.renderSelection(el, label, projects, kind);
+    window.SkillGraphData.renderSelection(el, label, projects, kind, this.selectionTexts);
     // Magenta-Hairline wie .has-selection an der Konsole: nur mit Projekten
     el.classList.toggle('is-active', projects.length > 0);
   };

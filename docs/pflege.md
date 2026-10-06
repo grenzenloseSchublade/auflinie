@@ -121,6 +121,15 @@ Fallen: Zeiträume mit Halbgeviertstrich und normalen Leerzeichen („2020 – 2
 
 Falle: Die Tests nutzen den Skill „Python“ als Beispiel. Wer ihn umbenennt oder entfernt, bekommt einen roten Testlauf, dann den Test mit anpassen lassen.
 
+### Texte rund um die Skills
+
+Der Hinweis über den Skills, die Zeile nach einem Klick, der Name der ergänzenden Kenntnisse je Gruppe für Screenreader und alle Beschriftungen im Skill-Graphen (Knöpfe, Hinweise) stehen in `_data/skill_graph.yml` ganz unten unter `texts`.
+
+1. Den Text zwischen den Anführungszeichen ändern.
+2. Prüfen und pushen.
+
+Fallen: `label` ist der Name für Screenreader und beginnt mit dem sichtbaren Text, bei den Zoom-Knöpfen mit dem Zeichen − bzw. +. Die Tests lesen die Texte aus dieser Datei, eine Textänderung braucht keinen angepassten Test.
+
 ## Startseite
 
 Texte in `_data/home.yml`:

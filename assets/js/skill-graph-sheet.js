@@ -20,16 +20,21 @@
  *
  * Fällt dieses Modul aus, bleibt der Graph über skill-graph.js voll funktionsfähig
  * (das Panel zeigt sich dann inline). Seiten-Modul, mountet einmal beim Laden.
+ *
+ * Texte (Name des Fensters, ✕-Knopf, Touch-Hinweis): texts.graph in
+ * _data/skill_graph.yml, gelesen aus dem JSON-Tag [data-skill-graph-data]
+ * über SkillGraphData (skill-graph-data.js, vorher geladen, ARCH-4).
  */
 (function () {
   'use strict';
 
-  // Touch-Hinweis (Owner: Kasten mittig über dem Graphen), eine Zeile je Geste
-  const TOUCH_HINT_LINES = [
-    '↔ Ziehen verschiebt die Ansicht',
-    '± Zwei Finger zoomen',
-    '● Knoten: ziehen ordnet um, tippen wählt aus'
-  ];
+  // Bedientexte aus texts.graph. Fehlen die Daten, bleibt der Text weg.
+  function graphTexts() {
+    const sgd = window.SkillGraphData;
+    const tag = document.querySelector('script[data-skill-graph-data]');
+    if (!sgd || !tag) { return {}; }
+    return sgd.texts(sgd.parse(tag, 'skill-graph-sheet'), 'skill-graph-sheet').graph || {};
+  }
 
   function GraphSheet(root) {
     this.root = root;
@@ -37,12 +42,13 @@
     this.panel = root.querySelector('[data-role="graph-panel"]');
     this.ok = !!(this.toggle && this.panel);
     if (!this.ok) { return; }
+    this.texts = graphTexts();
 
     // ✕ in die Kopfleiste (rechts außen, nur im offenen Sheet sichtbar, CSS)
     this.closeBtn = document.createElement('button');
     this.closeBtn.type = 'button';
     this.closeBtn.className = 'skill-graph__sheet-close';
-    this.closeBtn.setAttribute('aria-label', 'Graph schließen');
+    if (this.texts.close) { this.closeBtn.setAttribute('aria-label', this.texts.close); }
     const cross = document.createElement('span');
     cross.setAttribute('aria-hidden', 'true');
     cross.textContent = '✕';
@@ -53,12 +59,14 @@
     // Touch-Onboarding: beim ersten Öffnen auf Touch-Geräten kurz eingeblendet,
     // blendet nach ein paar Sekunden wieder aus (session-gated). Sitzt im
     // Canvas-Rahmen, damit er genau über dem Graphen zentriert ist. Auf
-    // Desktop signalisiert der grab-Cursor.
+    // Desktop signalisiert der grab-Cursor. Owner: Kasten mittig über dem
+    // Graphen, eine Zeile je Geste (texts.graph.touch_hint).
     this.touchHint = document.createElement('div');
     this.touchHint.className = 'skill-graph__touch-hint';
     this.touchHint.setAttribute('aria-hidden', 'true');
     const hint = this.touchHint;
-    TOUCH_HINT_LINES.forEach(function (line, i) {
+    const lines = Array.isArray(this.texts.touch_hint) ? this.texts.touch_hint : [];
+    lines.forEach(function (line, i) {
       if (i) { hint.appendChild(document.createElement('br')); }
       hint.appendChild(document.createTextNode(line));
     });
@@ -114,7 +122,7 @@
 
     this.panel.setAttribute('role', 'dialog');
     this.panel.setAttribute('aria-modal', 'true');
-    this.panel.setAttribute('aria-label', 'Skill-Graph');
+    if (this.texts.dialog) { this.panel.setAttribute('aria-label', this.texts.dialog); }
 
     // Gemeinsamer Helfer aus site-utils.js: Live-Regionen (Route-Ansage,
     // Offline-Hinweis, Update-Toast) bleiben wie bei Drawer und TOC aktiv

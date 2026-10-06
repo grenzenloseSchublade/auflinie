@@ -20,6 +20,8 @@
 #
 # Kanten Skill↔Skill entstehen im JS implizit über gemeinsame Projekte (Gewicht
 # = Anzahl) – hier bewusst KEINE redundanten Kantenlisten pflegen.
+#
+#   texts:       Bedientexte des Skill-Features (ganz unten, STYLEGUIDE ARCH-4)
 # =============================================================================
 version: 1
 
@@ -62,3 +64,56 @@ projects:
   - id: website
     label: "diese Website"
     skills: [javascript, scss, html5-css3, responsive-design]
+
+# =============================================================================
+# Texte des Skill-Features: Hinweiszeile über den Chips, Knopf und Fenster des
+# Skill-Graphen. Nur hier pflegen, Markup (_includes/cv/skills.html,
+# _includes/cv/skill-graph.html) und Skripte (assets/js/skill-*.js) lesen sie
+# von hier. Reiner Text, kein Markdown und kein HTML.
+# „label“ ist der Name für Screenreader und beginnt mit dem sichtbaren Text,
+# „title“ der Tooltip beim Überfahren mit der Maus.
+# Der ganze Block geht mit den Projekten als Datenblock an den Browser, auch
+# die Texte, die schon im Markup stehen (gut 1 KB, bewusst eine Quelle).
+# =============================================================================
+texts:
+  # Hinweis über den Chips und im Graph-Fenster, solange nichts gewählt ist
+  hint: "Ein Klick auf einen Skill zeigt verwandte Skills und gemeinsame Projekte."
+
+  # Name der Liste „Breite“ jeder Skill-Gruppe für Screenreader, dahinter
+  # folgt der Name der Gruppe
+  breadth: "Ergänzende Kenntnisse in"
+
+  # Nach einem Klick steht dort „Skill – Text“, bei Projekten darunter die Liste
+  selection:
+    with_projects: "gemeinsam im Einsatz bei"
+    foundation: "Basis-Werkzeug, quer durch fast alle Projekte im Einsatz."
+    no_projects: "Teil des Werkzeugkastens, ohne feste Projektzuordnung."
+
+  graph:
+    open: "Skill-Graph öffnen" # Knopf über den Skill-Gruppen
+    lead: "Welche Fähigkeiten in welchen Projekten zusammenkommen" # Zeile neben dem Knopf
+    dialog: "Skill-Graph" # Name des geöffneten Fensters für Screenreader
+    close: "Graph schließen" # Name des ✕-Knopfs für Screenreader
+    # Beschreibung der Grafik für Screenreader
+    canvas: "Netzdiagramm der Skills, verbunden über gemeinsame Projekte. Auswahl und gemeinsame Projekte stehen in der Leiste darüber, die vollständige Liste im Lebenslauf."
+    # Knöpfe oben im Fenster. Die Zoom-Knöpfe zeigen nur das Zeichen − bzw. +,
+    # ihr label beginnt deshalb damit.
+    zoom_out:
+      label: "− Verkleinern"
+      title: "Verkleinern"
+    zoom_in:
+      label: "+ Vergrößern"
+      title: "Vergrößern"
+    fit:
+      text: "Einpassen"
+      label: "Einpassen – ganzen Graphen zeigen"
+      title: "Einpassen"
+    reset:
+      text: "Reset"
+      label: "Reset – Ansicht zurücksetzen"
+      title: "Zurücksetzen"
+    # Kurzer Hinweis beim ersten Öffnen auf Touch-Geräten, eine Zeile je Geste
+    touch_hint:
+      - "↔ Ziehen verschiebt die Ansicht"
+      - "± Zwei Finger zoomen"
+      - "● Knoten: ziehen ordnet um, tippen wählt aus"

@@ -7,6 +7,8 @@
  *
  * Daten: _data/skill_graph.yml (Schema v1), als JSON-Tag
  * [data-skill-graph-data] im Markup (siehe _includes/cv/skills.html).
+ * Texte: die Hinweiszeile rendert Liquid aus texts.hint, die Auswahl-Anzeige
+ * kommt aus texts.selection (über SkillGraphData.renderSelection).
  * Kanten Skill↔Skill entstehen hier implizit über gemeinsame Projekte.
  *
  * Erweiterungspunkte:
@@ -53,6 +55,7 @@
       knownIds: domSkills
     }).map;
 
+    const selectionTexts = window.SkillGraphData.texts(data, 'skill-chips').selection;
     const defaultText = contextLine.textContent;
     let selected = null;
 
@@ -60,7 +63,7 @@
     // ·-Trennern) über den gemeinsamen Renderer — dieselbe Funktion schreibt
     // die Info-Leiste im Graph-Sheet (skill-graph.js).
     function renderContext(label, projects, kind) {
-      window.SkillGraphData.renderSelection(contextLine, label, projects, kind);
+      window.SkillGraphData.renderSelection(contextLine, label, projects, kind, selectionTexts);
     }
 
     function applySelection(skillId) {

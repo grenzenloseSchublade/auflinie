@@ -3,6 +3,7 @@
   Gated über page.skill_graph.graph (siehe cv/skills.html, dort oben im
   Abschnitt VOR den Skill-Gruppen eingebunden). Die Chip-Liste darunter
   bleibt immer die kanonische, vollständige Darstellung.
+  Texte: _data/skill_graph.yml → texts (ARCH-4), hier nur Markup.
   Logik: assets/js/skill-graph.js (+ DOM-freie Engine skill-graph-sim.js),
   Präsentation als modales Sheet: assets/js/skill-graph-sheet.js.
   Daten: dasselbe JSON-Tag [data-skill-graph-data] wie die Chip-Hervorhebung.
@@ -14,7 +15,10 @@
   STYLEGUIDE 7.7 „Reset“).
   Canvas tabindex="-1": nicht in der Tab-Reihenfolge, aber ein Klick hält den
   Fokus im Dialog (sonst fiele er auf <body>, Tasten +/−/0 wirkungslos).
+  Parameter: keine.
 {% endcomment %}
+{%- assign skill_texts = site.data.skill_graph.texts %}
+{%- assign graph_texts = skill_texts.graph %}
 <div class="skill-graph" data-skill-graph>
   <div class="skill-graph__entry">
     <button type="button" class="skill-graph__open" data-role="graph-toggle"
@@ -25,29 +29,29 @@
         <circle cx="5" cy="19" r="2.5"/>
         <circle cx="19" cy="19" r="2.5"/>
       </svg>
-      <span>Skill-Graph öffnen</span>
+      <span>{{ graph_texts.open | escape }}</span>
     </button>
-    <p class="skill-graph__lead" id="skill-graph-lead">Welche Fähigkeiten in welchen Projekten zusammenkommen</p>
+    <p class="skill-graph__lead" id="skill-graph-lead">{{ graph_texts.lead | escape }}</p>
   </div>
   <div class="skill-graph__panel" id="skill-graph-panel" data-role="graph-panel" hidden>
     <div class="skill-graph__head">
       <div class="skill-graph__tools">
         <button type="button" class="skill-graph__tool skill-graph__tool--icon" data-role="graph-zoom-out"
-                aria-label="− Verkleinern" title="Verkleinern"><span aria-hidden="true">−</span></button>
+                aria-label="{{ graph_texts.zoom_out.label | escape }}" title="{{ graph_texts.zoom_out.title | escape }}"><span aria-hidden="true">−</span></button>
         <button type="button" class="skill-graph__tool skill-graph__tool--icon" data-role="graph-zoom-in"
-                aria-label="+ Vergrößern" title="Vergrößern"><span aria-hidden="true">+</span></button>
+                aria-label="{{ graph_texts.zoom_in.label | escape }}" title="{{ graph_texts.zoom_in.title | escape }}"><span aria-hidden="true">+</span></button>
         <button type="button" class="skill-graph__tool" data-role="graph-fit"
-                aria-label="Einpassen – ganzen Graphen zeigen" title="Einpassen">Einpassen</button>
+                aria-label="{{ graph_texts.fit.label | escape }}" title="{{ graph_texts.fit.title | escape }}">{{ graph_texts.fit.text | escape }}</button>
         <button type="button" class="skill-graph__tool skill-graph__reset" data-role="graph-reset"
-                aria-label="Reset – Ansicht zurücksetzen" title="Zurücksetzen">
-          <i class="fas fa-undo" aria-hidden="true"></i> Reset
+                aria-label="{{ graph_texts.reset.label | escape }}" title="{{ graph_texts.reset.title | escape }}">
+          <i class="fas fa-undo" aria-hidden="true"></i> {{ graph_texts.reset.text | escape }}
         </button>
       </div>
     </div>
-    <p class="skill-graph__info" data-role="graph-context" aria-live="polite">Ein Klick auf einen Skill zeigt verwandte Skills und gemeinsame Projekte.</p>
+    <p class="skill-graph__info" data-role="graph-context" aria-live="polite">{{ skill_texts.hint | escape }}</p>
     <div class="skill-graph__canvas-wrap" data-role="canvas-wrap">
       <canvas data-role="canvas" role="img" tabindex="-1"
-              aria-label="Netzdiagramm der Skills, verbunden über gemeinsame Projekte. Auswahl und gemeinsame Projekte stehen in der Leiste darüber, die vollständige Liste im Lebenslauf."></canvas>
+              aria-label="{{ graph_texts.canvas | escape }}"></canvas>
     </div>
   </div>
 </div>

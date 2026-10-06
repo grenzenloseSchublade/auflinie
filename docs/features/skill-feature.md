@@ -43,7 +43,7 @@ skill_graph:
 
 | Datei | Rolle |
 |---|---|
-| `_data/skill_graph.yml` | **Datenquelle** (Schema v1): Projekte → Skills |
+| `_data/skill_graph.yml` | **Datenquelle** (Schema v1): Projekte → Skills, unter `texts` alle Bedientexte des Features |
 | `_includes/cv/skills.html` | Chips (+ Buttons, Kontextzeile, JSON-Tag, Graph-Include oben vor den Gruppen) |
 | `_includes/cv/skill-graph.html` | Graph-Markup (Öffner mit Netz-Symbol und Erklärzeile, Kopfleiste, Info-Leiste, Canvas) |
 | `assets/js/skill-graph-data.js` | Gemeinsame Helfer: Daten lesen, Skill→Projekte, `renderSelection` (Konsole und Info-Leiste) |
@@ -74,6 +74,15 @@ Skill-IDs).
 - **Konsistenz:** Das JS validiert beim Laden (Version, Pflichtfelder,
   Slug-Abgleich gegen die DOM-Chips) und schreibt `console.warn` bei
   Abweichungen — die Browser-Konsole auf /cv/ ist der schnellste Check.
+- **Texte** (`texts`, ARCH-4): Hinweiszeile über den Chips und in der
+  Info-Leiste (`hint`), die Rolle nach einem Klick (`selection`) und alles
+  im Graph-Fenster (`graph`: Öffner, Erklärzeile, Kopfleisten-Knöpfe mit
+  `text`, `label` für Screenreader und `title` als Tooltip, Canvas-
+  Beschreibung, Fenstername, ✕-Knopf, Touch-Hinweis). Liquid rendert sie in
+  `cv/skills.html` und `cv/skill-graph.html`, die Skripte lesen sie aus dem
+  JSON-Tag (`SkillGraphData.texts`). Im Skript stehen nur die Trennzeichen
+  „ – “ und „ · “ und die Symbole (−, +, ✕). Ein `label` beginnt mit dem
+  sichtbaren Text (WCAG 2.5.3).
 - Optionale Zukunftsfelder (`period`, `url`, `type`) sind vorgesehen;
   unbekannte Felder ignoriert das JS defensiv. Schema-Änderungen, die alte
   Leser brechen würden, erhöhen `version` (die Leser prüfen `version: 1`).
