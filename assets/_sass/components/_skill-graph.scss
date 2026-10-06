@@ -106,7 +106,7 @@ $graph-tool-size: 32px;
   gap: $space-2;
 }
 
-// Ansichts-Knöpfe (−, +, Einpassen, Reset): dezenter Mono-Button
+// Ansichts-Knöpfe (−, +, Übersicht, Reset): dezenter Mono-Button
 .skill-graph__tool {
   @include mono-label($fs-label, $tracking-label);
 
@@ -136,7 +136,8 @@ $graph-tool-size: 32px;
     @include focus-ring;
   }
 
-  // An der Zoom-Grenze und Reset ohne Änderung (skill-graph.js publishView):
+  // An der Zoom-Grenze, Übersicht in der Startansicht und Reset ohne
+  // Änderung (skill-graph.js publishView):
   // gedämpft, bleibt fokussierbar (aria-disabled statt disabled)
   &[aria-disabled="true"] {
     color: $white-a32;
@@ -174,12 +175,28 @@ $graph-tool-size: 32px;
   }
 }
 
-// Flache Fenster (Telefon quer): Info-Leiste auf zwei Zeilen
+// Ruhezustand: unter dem Hinweis ein Satz zu Punkten ohne Namen, eine Stufe
+// leiser. Nutzt den freien Platz der festen Höhe (Owner, 6. 10. 2026).
+// Etwas engerer Zeilenabstand: Am Handy brechen Hinweis und Satz auf je zwei
+// Zeilen um, mit 1.5em liefe die Leiste um rund 4 px über (die Höhe rechnet
+// 0.8rem Innenabstand, gepolstert ist sie mit 1rem).
+.skill-graph__info-note {
+  display: block;
+  color: $fg-subtle;
+  line-height: 1.3;
+}
+
+// Flache Fenster (Telefon quer): Info-Leiste auf zwei Zeilen, dort bleibt
+// es beim Hinweis
 @include down-height(short) {
   body.graph-open :is(.skill-graph, .skill-graph-layer) p.skill-graph__info {
     @include selection-console-lines(2);
 
     margin-bottom: $space-2;
+  }
+
+  body.graph-open .skill-graph__info-note {
+    display: none;
   }
 }
 

@@ -14,28 +14,43 @@
  * (Reihenfolge = Gruppenreihenfolge), Kanten = gemeinsame Projekte. Die
  * Info-Leiste schreibt SkillGraphData.renderSelection — derselbe Renderer
  * wie die Konsole über den Chips (skill-chips.js). Texte: Beschriftungen und
- * Hinweis der Info-Leiste rendert Liquid aus texts in _data/skill_graph.yml,
- * die Auswahl-Anzeige kommt aus texts.selection (ARCH-4).
+ * Ruhezustand der Info-Leiste (Hinweis, Satz zu Punkten ohne Namen) rendert
+ * Liquid aus texts in _data/skill_graph.yml, die Auswahl-Anzeige kommt aus
+ * texts.selection (ARCH-4).
  *
  * Ansicht: Bildschirm = Layout × scale + pan. Render, Hit-Test, Rand-Pfeile
  * und Knoten-Ziehen rechnen über dieselben Helfer (toScreen/toLayout). Zoom
- * skaliert die Abstände voll, Knoten und Schrift nur gedämpft (glyphScale):
- * so bleiben Labels beim Herauszoomen lesbar, beim Hineinzoomen entzerren
- * sich dichte Bereiche. Beim Öffnen (auch mit Auswahl) und bei Reset wird
- * das Layout synchron zu Ende gerechnet und dann EINMAL eingepasst: alle
- * Knoten samt Labels, nicht kleiner als FIT_MIN. Eine Auswahl wird nur
- * hervorgehoben, wo sie liegt — kein Zentrieren, keine Kamerafahrt, die
- * Kamera folgt dem Layout nie von selbst (Owner-Korrektur 2.10.2026: der
- * Graph soll sich nicht von selbst bewegen). Nur eine Größenänderung der
- * Fläche passt erneut ein, solange niemand Zoom oder Lage verändert hat.
+ * skaliert nur die Abstände, Knoten und Schrift bleiben gleich groß (GLYPH):
+ * Hineinzoomen schafft so echten Platz für Namen. Startansicht (homeView):
+ * alle Knoten samt Labels eingepasst, nicht kleiner als FIT_MIN. Sie steht
+ * beim Öffnen (auch mit Auswahl) und nach Reset, jeweils nachdem das Layout
+ * synchron zu Ende gerechnet ist, und der Knopf „Übersicht“ (Taste 0) führt
+ * genau dorthin zurück. Eine Auswahl wird nur hervorgehoben, wo sie liegt —
+ * kein Zentrieren, keine Kamerafahrt, die Kamera folgt dem Layout nie von
+ * selbst (Owner-Korrektur 2.10.2026: der Graph soll sich nicht von selbst
+ * bewegen). Eine Größenänderung der Fläche lässt die Knotenlagen
+ * unverändert und passt nur die Kamera neu ein, wenn die Ansicht gerade die
+ * Startansicht war (6. 10. 2026).
+ *
+ * Labels (6. 10. 2026, nach Been, Daiches und Yap 2006): Ob ein Name steht,
+ * hängt nur vom Maßstab ab. Nach jedem fertigen Layout bekommt jedes Label
+ * einen Mindestmaßstab (computeLabelScales, Vorrang Kern vor Breite, dann
+ * Zahl der Verbindungen), ab dem es frei steht. Verschieben ändert die
+ * Beschriftung nie, Hineinzoomen nimmt keinen Namen weg, Öffnen und
+ * „Übersicht“ zeigen dieselben Namen. Am Rand dürfen Labels angeschnitten
+ * sein. Neu sichtbare Labels blenden kurz ein. Punkte ohne Namen zeigen ihn
+ * bei Auswahl (Antippen), beim Hineinzoomen und mit Maus oder Stift als
+ * ruhige Vorschau beim Überfahren. Kern-Knoten sind etwas größer und heller
+ * als die Breite.
  *
  * Verhalten: Lazy-Init beim ersten Öffnen; die rAF-Loop läuft nur nach dem
- * Ziehen eines Knotens (Nachschwingen, < 5 s) und stoppt bei
- * visibilitychange/Zuklappen; prefers-reduced-motion setzt den gezogenen
- * Knoten direkt ohne Nachschwingen (Helfer aus site-utils.js). Auswahl läuft
+ * Ziehen eines Knotens (Nachschwingen, < 5 s) und für die Dauer einer
+ * Label-Blende (200 ms) und stoppt bei visibilitychange/Zuklappen;
+ * prefers-reduced-motion setzt den gezogenen Knoten direkt ohne Nachschwingen
+ * und zeigt Labels ohne Blende (Helfer aus site-utils.js). Auswahl läuft
  * über den Event-Vertrag `auflinie:skill-select` (source 'graph').
- * Farben: Cyan für Inhalt (Kanten, Verwandtschaft), Magenta nur für die
- * aktive Auswahl (Interaktionszustand, Design-Regel).
+ * Farben: Cyan für Inhalt (Kanten, Verwandtschaft, Vorschau), Magenta nur
+ * für die aktive Auswahl (Interaktionszustand, Design-Regel).
  */
 (function () {
   'use strict';
@@ -49,8 +64,12 @@
   const SOURCE = 'graph';
   const CYAN = '5, 217, 232';
   const MAGENTA = '255, 0, 255'; // nur für die aktive Auswahl (Interaktionszustand)
-  const NODE_RADIUS = 6;
-  const HIT_RADIUS = 16;           // Bildschirm-px, unabhängig vom Zoom (Touch-Ziel)
+  // Kern-Skills (core) etwas größer mit hellerer Kontur, die Breite (breadth)
+  // kleiner und gedämpfter (Owner, 6. 10. 2026): Der Vorrang der Beschriftung
+  // wird so sichtbar, ohne neue Farbe
+  const NODE_RADIUS_CORE = 7;
+  const NODE_RADIUS_BREADTH = 4.5;
+  const HIT_RADIUS = 16;           // Bildschirm-px, für alle Knoten gleich (Touch-Ziel)
   const LABEL_PX = 11;
   const LABEL_GAP = 5;             // Abstand Kreis → Label-Grundlinie
   // Luft zwischen zwei Labels (Bildschirm-px), nur für die Kollisionsprüfung:
@@ -75,11 +94,13 @@
   const FIT_MIN = 0.6;
   const FIT_MAX = 1;
   const FIT_PAD = 20;              // Rand in Bildschirm-px (Platz für die Rand-Pfeile)
-  // Knoten und Schrift folgen dem Zoom gedämpft: beim Herauszoomen bleibt
-  // die Schrift bei 0.92 × 11 px ≈ 10 px (Telefon lesbar, 0.85 ≈ 9,4 px war
-  // zu klein), bei 2.5 wächst sie auf 1.3 × 11 px ≈ 14 px.
-  const GLYPH_MIN = 0.92;
-  const GLYPH_MAX = 1.3;
+  // Knoten und Schrift haben bei jedem Zoom dieselbe Bildschirmgröße:
+  // 0.92 × 11 px ≈ 10 px (Telefon lesbar, 0.85 ≈ 9,4 px war zu klein). Bis
+  // 6. 10. 2026 wuchs beides oberhalb von 0.92 mit, dann schuf Hineinzoomen
+  // bis etwa 1.3 keinen neuen Platz für Labels.
+  const GLYPH = 0.92;
+  // Weiches Einblenden neu sichtbarer Labels (nur Deckkraft, ms)
+  const LABEL_FADE_MS = 200;
 
   function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
   // Format der Fläche für die Gravitation der Engine. Labels laufen
@@ -89,8 +110,28 @@
   // flache Flächen die Wolke nicht zu einer Linie quetschen.
   const LABEL_ALLOWANCE = 80;
   function layoutAspect(w, h) { return clamp(Math.max(w - LABEL_ALLOWANCE, w / 2) / h, 0.4, 2.5); }
-  function glyphScale(s) { return clamp(s, GLYPH_MIN, GLYPH_MAX); }
   function labelFont(g) { return (LABEL_PX * g).toFixed(2) + 'px ' + LABEL_FAMILY; }
+  // Bildschirm-Radius eines Knotens
+  function nodeRadius(node) { return (node.core ? NODE_RADIUS_CORE : NODE_RADIUS_BREADTH) * GLYPH; }
+
+  // Maßstäbe s, bei denen sich zwei Rechtecke (mit Luft) überlappen. Beide
+  // hängen an ihrem Knoten, der Abstand ihrer Mitten auf dem Bildschirm ist
+  // D · s + B (D Abstand der Knoten im Layout, B fester Versatz der Rechtecke
+  // in px), die halben Summen ihrer Maße samt Luft sind H. Je Achse ist das
+  // eine offene Spanne in s, die Überlappung ihre Schnittmenge.
+  // Rückgabe [lo, hi] oder null.
+  function overlapSpan(dx, bx, hx, dy, by, hy) {
+    function axis(d, b, h) {
+      if (Math.abs(d) < 1e-9) { return Math.abs(b) < h ? [-Infinity, Infinity] : null; }
+      const a = (-h - b) / d, c = (h - b) / d;
+      return a < c ? [a, c] : [c, a];
+    }
+    const x = axis(dx, bx, hx);
+    const y = x && axis(dy, by, hy);
+    if (!y) { return null; }
+    const lo = Math.max(x[0], y[0]), hi = Math.min(x[1], y[1]);
+    return lo < hi ? [lo, hi] : null;
+  }
 
   function SkillGraph(root) {
     this.root = root;
@@ -109,7 +150,10 @@
     this.rafId = null;
     this.selected = null;      // hervorgehobener Knoten (nur Skills mit Knoten)
     this.current = null;       // zuletzt gewählter Skill, auch ohne Knoten (Info-Leiste)
-    this.defaultInfo = this.contextLine ? this.contextLine.textContent : '';
+    // Ruhezustand der Info-Leiste (Hinweis und Satz zu Punkten ohne Namen,
+    // Markup aus Liquid), zum Zurückstellen nach einer Auswahl
+    this.defaultInfo = this.contextLine ? Array.prototype.map.call(this.contextLine.childNodes,
+      function (n) { return n.cloneNode(true); }) : [];
     this.dragId = null;
     this.dragMoved = false;
     this.pointerStart = null;
@@ -117,15 +161,23 @@
     this.scale = 1;
     this.panX = 0;
     this.panY = 0;
-    // true, solange die Ansicht eingepasst ist und niemand Zoom oder Lage
-    // geändert hat: nur dann passt eine Größenänderung der Fläche neu ein.
-    this.fitted = false;
     this.openRaf = null;
     this.pendingAspect = null;
+    this.pendingSize = null;
     this.panning = false;
     this.gesture = null;
     this.pointers = {};
     this.labelRects = [];
+    // Ab welchem Maßstab steht das Label eines Knotens (Index wie nodes)?
+    // Einmal je fertigem Layout berechnet (computeLabelScales).
+    this.labelMin = null;
+    this.labelShown = new Set();   // im letzten Bild beschriftet (Blende)
+    this.fadeStart = new Map();    // id → Startzeit der Einblendung
+    this.fadeRaf = null;
+    this.instantLabels = true;     // nächstes Bild ohne Blende (Öffnen, Reset)
+    this.hoverId = null;           // Vorschau beim Überfahren (Maus, Stift)
+    this.hoverRect = null;
+    this.canHover = !!(window.matchMedia && window.matchMedia('(hover: hover)').matches);
 
     this.toggle.addEventListener('click', this.onToggle.bind(this));
     document.addEventListener('auflinie:skill-select', this.onExternalSelect.bind(this));
@@ -154,34 +206,47 @@
         self.syncLayout();
         // Startansicht bei JEDEM Öffnen, mit und ohne Auswahl: Layout zu Ende
         // rechnen, einmal alles einpassen. Die Auswahl wird nur hervorgehoben.
+        // Das Startbild steht sofort komplett (keine Blende).
         self.settle();
+        self.instantLabels = true;
         self.fit();
       });
     } else {
       if (this.openRaf !== null) { cancelAnimationFrame(this.openRaf); this.openRaf = null; }
       this.stopLoop();
+      // Eine offene Vorschau endet mit dem Fenster (auch per Esc)
+      this.hoverId = null;
+      this.hoverRect = null;
+      if (this.initialized) { this.publishView(); }
     }
   };
 
-  // Canvas-Bitmap und virtuellen Layout-Raum IMMER an die aktuelle Wrap-Größe
-  // koppeln. Render und Hit-Test nutzen dieselben node.x/scale/pan -> bleiben
-  // deckungsgleich, egal ob Erst-Öffnen, Wieder-Öffnen oder Viewport-Änderung.
+  // Canvas-Bitmap IMMER an die aktuelle Wrap-Größe koppeln. Render und
+  // Hit-Test nutzen dieselben node.x/scale/pan -> bleiben deckungsgleich,
+  // egal ob Erst-Öffnen, Wieder-Öffnen oder Viewport-Änderung.
+  // Die Knotenlagen bleiben dabei unverändert (Owner, 6. 10. 2026): Bis dahin
+  // skalierte eine Größenänderung (z. B. die Adressleiste am Handy) sie
+  // getrennt in x und y, das Layout verzerrte sich und wanderte von selbst.
+  // Jetzt bewegt sich nur die Kamera, und nur, wenn die Ansicht gerade die
+  // Startansicht war: Sie wird für die neue Fläche neu eingepasst. Sonst
+  // bleibt die Kamera stehen.
   SkillGraph.prototype.syncLayout = function () {
     const cw = this.wrap.clientWidth, ch = this.wrap.clientHeight;
     if (!cw || !ch) { return; }
+    const wasHome = this.isHome();
     if (this.sim && (cw !== this.canvasW || ch !== this.canvasH)) {
-      this.sim.resize(cw * this.spread, ch * this.spread);   // Positionen proportional
-      // Neues Format erst beim nächsten Reset übernehmen: sonst zöge schon
-      // ein kleiner Knoten-Drag (Aufheizen) die ganze Wolke ins neue Format.
-      // Gleiches Format (nur gezoomt oder Leiste ein/aus): nichts vormerken,
-      // sonst stünde Reset ohne sichtbaren Grund wieder bereit.
+      // Fläche und Format des Layouts erst beim nächsten Reset übernehmen:
+      // sonst zöge schon ein kleiner Knoten-Drag (Aufheizen) die ganze Wolke
+      // ins neue Format. Gleiches Format (nur Leiste ein/aus): nichts
+      // vormerken, sonst stünde Reset ohne sichtbaren Grund wieder bereit.
+      this.pendingSize = { w: cw * this.spread, h: ch * this.spread };
       const aspect = layoutAspect(cw, ch);
       this.pendingAspect = Math.abs(aspect - this.sim.opts.aspect) > 1e-3 ? aspect : null;
     }
     this.canvasW = cw;
     this.canvasH = ch;
     this.sizeCanvas();
-    if (this.fitted) { this.applyFit(); } else { this.clampPan(); }
+    if (wasHome) { this.applyFit(); } else { this.clampPan(); }
   };
 
   SkillGraph.prototype.build = function () {
@@ -218,7 +283,7 @@
       if (!connected.has(id) || indexById.has(id)) { return; }
       indexById.set(id, self.nodes.length);
       // Kern-Skill (core) oder ergänzende Breite (breadth) aus cv_content.yml:
-      // Kern-Labels haben beim Platzmangel Vorrang (render)
+      // Kern-Labels haben beim Platzmangel Vorrang (computeLabelScales)
       self.nodes.push({ id: id, label: btn.textContent.trim(), labelW: null,
         core: !btn.closest('.cv-skill-chip--breadth'), degree: 0 });
     });
@@ -277,7 +342,7 @@
     // Einpassen bei lesbarem Maßstab möglichst alles zeigt.
     this.sim = new window.SkillGraphSim(this.nodes, this.edges, vw, vh, { aspect: layoutAspect(w, h) });
 
-    // Resize: Positionen proportional skalieren, kein Reheat
+    // Resize: Canvas und Kamera nachführen, Knotenlagen bleiben (syncLayout)
     this.resizeTimer = null;
     this.observer = new ResizeObserver(function () {
       clearTimeout(self.resizeTimer);
@@ -293,6 +358,7 @@
     this.canvas.addEventListener('pointermove', this.onPointerMove.bind(this));
     this.canvas.addEventListener('pointerup', this.onPointerUp.bind(this));
     this.canvas.addEventListener('pointercancel', this.onPointerUp.bind(this));
+    this.canvas.addEventListener('pointerleave', this.setHover.bind(this, null));
     // touch-action wird beim Touch-KONTAKT ausgewertet — die Style-Umschaltung
     // im pointerdown desselben Fingers (onPointerDown) greift erst für SPÄTERE
     // Finger. Nicht-passiver touchstart-Handler entzieht Zwei-Finger-Gesten und
@@ -339,7 +405,7 @@
     if (!this.sim || this.panel.hidden) { return; }
     this.stopLoop();
     if (reducedMotion()) {
-      this.sim.runToEnd();
+      this.settle();
       this.render();
     } else if (!this.sim.isSettled()) {
       this.loop();
@@ -350,10 +416,12 @@
 
   // Layout synchron zu Ende rechnen (36 Knoten: wenige ms). Vor dem
   // Einpassen beim Öffnen und bei Reset: Die Kamera wird dann einmal auf das
-  // Endlayout gesetzt und muss dem Auskühlen nicht folgen.
+  // Endlayout gesetzt und muss dem Auskühlen nicht folgen. Danach stehen die
+  // Mindestmaßstäbe der Labels für dieses Layout fest.
   SkillGraph.prototype.settle = function () {
     this.stopLoop();
     this.sim.runToEnd();
+    this.computeLabelScales();
   };
 
   // Deterministische Kreis-Startlage im virtuellen Layout-Raum (w×h).
@@ -376,7 +444,7 @@
 
   // Gibt es etwas zurückzusetzen? Ein gezogener (fixierter) Knoten, eine
   // Auswahl oder ein Flächenformat, das erst beim nächsten Reset greift.
-  // Sonst ergäbe Reset dasselbe Bild wie Einpassen (Startlage ist
+  // Sonst ergäbe Reset dasselbe Bild wie „Übersicht“ (Startlage ist
   // deterministisch), der Knopf steht dann ausgegraut (Owner, 6. 10. 2026).
   SkillGraph.prototype.canReset = function () {
     if (this.current !== null || this.pendingAspect !== null) { return true; }
@@ -384,33 +452,42 @@
   };
 
   // Reset: Fixierungen lösen, Knoten auf die deterministische Kreis-Startlage
-  // zurücksetzen, Sim neu aufheizen, Auswahl lösen, Ansicht einpassen.
+  // zurücksetzen (in der Fläche und im Format der aktuellen Größe), Sim neu
+  // aufheizen, Auswahl lösen, Ansicht einpassen.
   SkillGraph.prototype.reset = function () {
     if (!this.sim || !this.canReset()) { return; }
     if (this.pendingAspect !== null) {
       this.sim.opts.aspect = this.pendingAspect;
       this.pendingAspect = null;
     }
+    if (this.pendingSize) {
+      this.sim.resize(this.pendingSize.w, this.pendingSize.h);   // Lagen werden gleich neu gesetzt
+      this.pendingSize = null;
+    }
     this.seedLayout(this.sim.width, this.sim.height, true);
-    this.labelShown = new Set();   // neue Lage, neue Beschriftung
     this.sim.alpha = 1;
     if (this.selected !== null || this.current !== null) {
       this.setSelection(null);
       this.dispatch();
     }
     this.settle();
+    this.instantLabels = true;
     this.fit();
   };
 
+  // Nachschwingen nach einem Knoten-Drag. Die Labels behalten dabei ihre
+  // Mindestmaßstäbe (kein Flackern), erst das fertige Layout rechnet neu.
   SkillGraph.prototype.loop = function () {
     const self = this;
     this.rafId = requestAnimationFrame(function () {
       const moving = self.sim.tick();
-      self.render();   // Kamera bleibt stehen, nur die Knoten schwingen nach
       if (moving && !self.panel.hidden) {
+        self.render();   // Kamera bleibt stehen, nur die Knoten schwingen nach
         self.loop();
       } else {
         self.rafId = null;
+        if (!moving) { self.computeLabelScales(); }
+        self.render();
       }
     });
   };
@@ -420,6 +497,10 @@
       cancelAnimationFrame(this.rafId);
       this.rafId = null;
     }
+    if (this.fadeRaf !== null) {
+      cancelAnimationFrame(this.fadeRaf);
+      this.fadeRaf = null;
+    }
   };
 
   SkillGraph.prototype.onVisibility = function () {
@@ -427,19 +508,26 @@
       this.stopLoop();
     } else if (!this.panel.hidden && this.sim && !this.sim.isSettled()) {
       this.startOrStill();
+    } else if (!this.panel.hidden && this.fadeStart.size) {
+      // Eine beim Verbergen abgebrochene Blende zu Ende bringen, sonst
+      // blieben die Labels unsichtbar stehen
+      this.render();
     }
   };
 
   SkillGraph.prototype.onKeydown = function (event) {
     if (this.panel.hidden) { return; }
     if (event.key === 'Escape') {
+      // Eine Vorschau verschwindet mit, verbraucht das Esc aber nicht: Es
+      // löst weiter die Auswahl bzw. schließt das Sheet (skill-graph-sheet.js)
+      this.setHover(null);
       if (this.selected !== null) {
         this.setSelection(null);
         this.dispatch();
       }
       return;
     }
-    // Tastatur-Zoom bei Fokus im Panel: + / − / 0 (Einpassen). Im modalen
+    // Tastatur-Zoom bei Fokus im Panel: + / − / 0 (Übersicht). Im modalen
     // Sheet zählt auch ein Fokus auf <body> (z. B. nach einem Klick auf
     // eine nicht fokussierbare Stelle): außerhalb des Sheets ist alles inert.
     if (!this.sim || event.ctrlKey || event.metaKey || event.altKey) { return; }
@@ -483,25 +571,86 @@
 
   // Bildschirm-Rechteck eines Labels, immer über dem Knoten — EINE Quelle
   // für Zeichnen, Kollisionsprüfung, Hit-Test und Einpassen. tx = Mitte des
-  // Texts.
-  SkillGraph.prototype.labelRect = function (sx, sy, node, g) {
-    const w = this.labelWidth(node) * g;
-    const fontPx = LABEL_PX * g;
-    const base = sy - (NODE_RADIUS + LABEL_GAP) * g;
+  // Texts. Die Maße sind Bildschirm-px und bei jedem Zoom gleich (GLYPH).
+  SkillGraph.prototype.labelRect = function (sx, sy, node) {
+    const w = this.labelWidth(node) * GLYPH;
+    const fontPx = LABEL_PX * GLYPH;
+    const base = sy - nodeRadius(node) - LABEL_GAP * GLYPH;
     return { x: sx - w / 2 - 2, y: base - fontPx, w: w + 4, h: fontPx + 3, base: base, tx: sx };
   };
 
+  // Vorrang der Labels (Owner, 6. 10. 2026): Kern vor Breite, dann Zahl der
+  // Verbindungen, dann Reihenfolge der Chips
+  SkillGraph.prototype.labelOrder = function () {
+    const nodes = this.nodes;
+    return nodes.map(function (n, i) { return i; }).sort(function (a, b) {
+      return (nodes[b].core - nodes[a].core) || (nodes[b].degree - nodes[a].degree) || a - b;
+    });
+  };
+
+  // Ab welchem Maßstab steht das Label eines Knotens? Konsistente
+  // Beschriftung nach Been, Daiches und Yap (2006): Ob ein Label steht, hängt
+  // nur vom Maßstab ab, nicht vom Bildausschnitt und nicht vom Weg dorthin,
+  // und beim Hineinzoomen verschwindet keines. Öffnen und „Übersicht“ zeigen
+  // so immer dieselben Namen, Verschieben ändert nichts. Bis 6. 10. 2026
+  // hing die Beschriftung am vorigen Bild (Hysterese) und am Bildrand.
+  // Gerechnet einmal je fertigem Layout (settle beim Öffnen und bei Reset,
+  // Ende des Nachschwingens nach einem Knoten-Drag), in Vorrang-Reihenfolge:
+  // Ein Label steht ab seinem Mindestmaßstab bis ZOOM_MAX frei, mit
+  // LABEL_AIR Luft zu allen fremden Knoten und zu den Labels mit höherem
+  // Vorrang, die dort schon stehen. Statt eines Rasters von Maßstäben exakt:
+  // Zwei Rechtecke, die an ihren Knoten hängen, überlappen je Paar in genau
+  // einer Spanne von Maßstäben (overlapSpan). Der Mindestmaßstab ist das obere
+  // Ende der letzten Spanne, die in [ZOOM_MIN, ZOOM_MAX] blockiert. Reicht sie
+  // über ZOOM_MAX hinaus, bleibt der Knoten ein Punkt (Infinity) und zeigt
+  // seinen Namen nur bei Auswahl oder als Vorschau.
+  SkillGraph.prototype.computeLabelScales = function () {
+    const nodes = this.nodes;
+    if (!nodes || !nodes.length) { return; }
+    const self = this;
+    // Label-Rechteck je Knoten relativ zum Knotenpunkt: Mitte und halbe Maße
+    const box = nodes.map(function (n) {
+      const r = self.labelRect(0, 0, n);
+      return { ox: r.x + r.w / 2, oy: r.y + r.h / 2, hw: r.w / 2, hh: r.h / 2 };
+    });
+    const min = new Array(nodes.length).fill(Infinity);
+    const placed = [];
+    this.labelOrder().forEach(function (i) {
+      const a = box[i], ni = nodes[i];
+      let need = ZOOM_MIN;
+      // Spanne [lo, hi] blockiert ab from (das andere Label steht erst dort)
+      const block = function (span, from) {
+        if (!span) { return; }
+        const lo = Math.max(span[0], from), hi = span[1];
+        if (lo < hi && hi > ZOOM_MIN && lo < ZOOM_MAX) { need = Math.max(need, hi); }
+      };
+      nodes.forEach(function (nk, k) {
+        if (k === i) { return; }
+        const rad = nodeRadius(nk);
+        block(overlapSpan(nk.x - ni.x, -a.ox, a.hw + rad + LABEL_AIR_X,
+          nk.y - ni.y, -a.oy, a.hh + rad + LABEL_AIR_Y), -Infinity);
+      });
+      placed.forEach(function (j) {
+        const b = box[j], nj = nodes[j];
+        block(overlapSpan(nj.x - ni.x, b.ox - a.ox, a.hw + b.hw + LABEL_AIR_X,
+          nj.y - ni.y, b.oy - a.oy, a.hh + b.hh + LABEL_AIR_Y), min[j]);
+      });
+      if (need <= ZOOM_MAX) {
+        min[i] = need;
+        placed.push(i);
+      }
+    });
+    this.labelMin = min;
+  };
 
   // Ausdehnung aller Knoten samt Label (über dem Knoten) bei Maßstab s,
   // relativ zu pan = 0.
   SkillGraph.prototype.extents = function (s) {
-    const g = glyphScale(s);
-    const rad = NODE_RADIUS * g;
     const self = this;
     let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
     this.nodes.forEach(function (n) {
-      const sx = n.x * s, sy = n.y * s;
-      const up = self.labelRect(sx, sy, n, g);
+      const sx = n.x * s, sy = n.y * s, rad = nodeRadius(n);
+      const up = self.labelRect(sx, sy, n);
       minX = Math.min(minX, up.x, sx - rad);
       maxX = Math.max(maxX, up.x + up.w, sx + rad);
       minY = Math.min(minY, up.y);
@@ -535,21 +684,37 @@
     });
   };
 
-  // Alles einpassen (Maßstab nach fitScale, Ausdehnung mittig)
-  SkillGraph.prototype.applyFit = function () {
-    if (!this.nodes || !this.nodes.length || !this.canvasW) { return; }
-    this.scale = this.fitScale();
-    const e = this.extents(this.scale);
-    this.panX = this.canvasW / 2 - (e.minX + e.maxX) / 2;
-    this.panY = this.canvasH / 2 - (e.minY + e.maxY) / 2;
-    this.clampPan();
+  // Startansicht: alles eingepasst (Maßstab nach fitScale, Ausdehnung
+  // mittig). Dieselbe Rechnung beim Öffnen, bei Reset und für „Übersicht“
+  // (Muster „Home“ wie bei Kartenansichten), ändert nichts an der Ansicht.
+  SkillGraph.prototype.homeView = function () {
+    const s = this.fitScale();
+    const e = this.extents(s);
+    return this.clampedPan(s, this.canvasW / 2 - (e.minX + e.maxX) / 2,
+      this.canvasH / 2 - (e.minY + e.maxY) / 2);
   };
 
-  // Einpassen-Knopf / Taste 0
+  // Ist die Ansicht gerade die Startansicht? Dann steht „Übersicht“
+  // ausgegraut, und eine Größenänderung der Fläche passt neu ein.
+  SkillGraph.prototype.isHome = function () {
+    if (!this.sim || !this.nodes || !this.nodes.length || !this.canvasW) { return false; }
+    const h = this.homeView();
+    return Math.abs(h.scale - this.scale) < 1e-6 &&
+      Math.abs(h.x - this.panX) < 0.5 && Math.abs(h.y - this.panY) < 0.5;
+  };
+
+  SkillGraph.prototype.applyFit = function () {
+    if (!this.nodes || !this.nodes.length || !this.canvasW) { return; }
+    const h = this.homeView();
+    this.scale = h.scale;
+    this.panX = h.x;
+    this.panY = h.y;
+  };
+
+  // Knopf „Übersicht“ / Taste 0: zurück zur Startansicht, ohne Übergang
   SkillGraph.prototype.fit = function () {
     if (!this.sim) { return; }
     this.applyFit();
-    this.fitted = true;
     this.render();
   };
 
@@ -562,7 +727,6 @@
     this.scale = s;
     this.panX = cx - p.x * s;
     this.panY = cy - p.y * s;
-    this.fitted = false;
     this.clampPan();
     this.render();
   };
@@ -572,9 +736,9 @@
     this.zoomAt(factor, this.canvasW / 2, this.canvasH / 2);
   };
 
-  // Pan begrenzen: mindestens PAD px der Knoten-Wolke bleiben je Seite sichtbar.
-  SkillGraph.prototype.clampPan = function () {
-    if (!this.nodes || !this.nodes.length) { return; }
+  // Pan begrenzen: mindestens PAD px der Knoten-Wolke bleiben je Seite
+  // sichtbar. Rechnet nur, Rückgabe { scale, x, y }.
+  SkillGraph.prototype.clampedPan = function (s, panX, panY) {
     let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
     this.nodes.forEach(function (n) {
       if (n.x < minX) { minX = n.x; }
@@ -582,7 +746,6 @@
       if (n.y < minY) { minY = n.y; }
       if (n.y > maxY) { maxY = n.y; }
     });
-    const s = this.scale;
     const w = this.canvasW || this.wrap.clientWidth;
     const h = this.canvasH || this.wrap.clientHeight;
     const pad = 60;
@@ -590,20 +753,27 @@
     let minPanY = pad - maxY * s, maxPanY = (h - pad) - minY * s;
     if (minPanX > maxPanX) { minPanX = maxPanX = (minPanX + maxPanX) / 2; }
     if (minPanY > maxPanY) { minPanY = maxPanY = (minPanY + maxPanY) / 2; }
-    this.panX = clamp(this.panX, minPanX, maxPanX);
-    this.panY = clamp(this.panY, minPanY, maxPanY);
+    return { scale: s, x: clamp(panX, minPanX, maxPanX), y: clamp(panY, minPanY, maxPanY) };
+  };
+
+  SkillGraph.prototype.clampPan = function () {
+    if (!this.nodes || !this.nodes.length) { return; }
+    const p = this.clampedPan(this.scale, this.panX, this.panY);
+    this.panX = p.x;
+    this.panY = p.y;
   };
 
   // ── Zeichnen ────────────────────────────────────────────────────────────────
 
   SkillGraph.prototype.render = function () {
     if (!this.ctx || !this.sim) { return; }
+    if (!this.labelMin) { this.computeLabelScales(); }
     const ctx = this.ctx;
     const nodes = this.nodes;
     const selected = this.selected;
     const neighbors = selected !== null ? (this.neighbors.get(selected) || new Set()) : null;
-    const g = glyphScale(this.scale);
-    const radius = NODE_RADIUS * g;
+    const scale = this.scale;
+    const labelMin = this.labelMin;
     const self = this;
 
     // Vollflächig löschen unabhängig von der DPR-Rundung — sonst bleibt am
@@ -614,7 +784,7 @@
     ctx.restore();
 
     // Alles in Bildschirm-Koordinaten zeichnen (kein ctx.scale): Linien bleiben
-    // 1 px, Knoten und Schrift folgen dem Zoom gedämpft (glyphScale).
+    // 1 px, Knoten und Schrift haben bei jedem Zoom dieselbe Größe (GLYPH).
     const screen = nodes.map(function (n) { return self.toScreen(n); });
 
     // Kanten: Deckkraft nach Gewicht; bei Auswahl nur die Nachbarschaft betonen
@@ -636,90 +806,69 @@
     });
 
     // Zustand je Knoten und Beschriftung. Ein Label steht immer über dem
-    // Knoten, nur ganz in der Fläche und mit LABEL_AIR Luft zu den anderen.
-    // Reihenfolge und Vorrang (Owner, 6. 10. 2026): Ohne Auswahl zuerst die
-    // Kern-Skills, dann die Breite, je nach Zahl der Verbindungen. Jedes Label
-    // steht nur auf freiem Platz, sonst bleibt der Knoten ein Punkt und sein
-    // Label erscheint beim Hineinzoomen oder Antippen. Durch die Reihenfolge
-    // trifft das zuerst die Breite. Mit Auswahl
-    // zuerst der gewählte Skill und seine Nachbarn (immer beschriftet),
-    // danach die übrigen nur auf freiem Platz.
+    // Knoten (keine Ausweichlagen, sonst wechselte die Schrift beim Zoomen
+    // und Ziehen die Seite). Ohne Auswahl steht es genau dann, wenn der
+    // Maßstab seinen Mindestmaßstab erreicht (computeLabelScales), am Rand
+    // auch angeschnitten wie auf Karten: So ändert Verschieben die
+    // Beschriftung nie. Mit Auswahl stehen der gewählte Skill und seine
+    // Nachbarn immer, am Rand ins Bild geschoben. Die übrigen stehen nach
+    // Maßstab und nur, wenn sie diese Pflicht-Labels nicht berühren (die
+    // Auswahl ist ein fester Zustand, das wird je Bild geprüft).
     const states = nodes.map(function (node) {
       if (selected === null) { return 'base'; }
       if (node.id === selected) { return 'selected'; }
       return neighbors.has(node.id) ? 'related' : 'dimmed';
     });
-    const order = nodes.map(function (n, i) { return i; });
-    if (selected !== null) {
-      const rank = { selected: 0, related: 1, dimmed: 2 };
-      order.sort(function (a, b) { return rank[states[a]] - rank[states[b]] || a - b; });
-    } else {
-      order.sort(function (a, b) {
-        return (nodes[b].core - nodes[a].core) || (nodes[b].degree - nodes[a].degree) || a - b;
-      });
-    }
-    // Muss dieses Label stehen, auch ohne freien Platz?
     const forced = function (i) {
       return states[i] === 'selected' || states[i] === 'related';
     };
-    // Stabil (Owner, 6. 10. 2026): Ein schon sichtbares Label bleibt, solange
-    // es sich nicht wirklich mit einem anderen deckt. Ein ausgeblendetes
-    // erscheint erst mit voller Luft. Sichtbare kommen darum zuerst an die
-    // Reihe, dann die übrigen, beides in der Vorrang-Reihenfolge oben.
-    const before = this.labelShown || new Set();
-    const sticky = function (i) { return before.has(nodes[i].id); };
-    order.sort(function (a, b) {
-      return (forced(b) - forced(a)) || (sticky(b) - sticky(a));
-    });
+    const showLabel = new Array(nodes.length).fill(null);
     const placed = [];
-    // Fremde Knoten sind ebenfalls Hindernisse: ein Label soll keinen
-    // anderen Punkt verdecken
-    const dots = screen.map(function (p, k) {
-      return { x: p.x - radius, y: p.y - radius, w: 2 * radius, h: 2 * radius, k: k };
+    nodes.forEach(function (node, i) {
+      if (!forced(i)) { return; }
+      showLabel[i] = self.clampedLabelRect(screen[i], node);
+      placed.push(showLabel[i]);
     });
-    // Überdeckte Fläche mit gesetzten Labels und fremden Knoten (0 = frei).
-    // air: Anteil der Luft LABEL_AIR (1 = volle Luft für neue Labels, 0,5
-    // für schon sichtbare, damit sie bei kleinen Bewegungen nicht flackern)
-    const overlapArea = function (r, i, air) {
-      const ax = LABEL_AIR_X * air, ay = LABEL_AIR_Y * air;
-      let sum = 0;
-      const add = function (p) {
-        const ox = Math.min(r.x + r.w + ax, p.x + p.w) - Math.max(r.x - ax, p.x);
-        const oy = Math.min(r.y + r.h + ay, p.y + p.h) - Math.max(r.y - ay, p.y);
-        if (ox > 0 && oy > 0) { sum += ox * oy; }
-      };
-      placed.forEach(add);
-      dots.forEach(function (d) { if (d.k !== i) { add(d); } });
-      return sum;
+    const pinned = placed.slice();
+    const clearOfPinned = function (r) {
+      return pinned.every(function (p) {
+        return r.x + r.w + LABEL_AIR_X <= p.x || p.x + p.w <= r.x - LABEL_AIR_X ||
+          r.y + r.h + LABEL_AIR_Y <= p.y || p.y + p.h <= r.y - LABEL_AIR_Y;
+      });
     };
-    const cw = this.canvasW, ch = this.canvasH;
-    const inside = function (r) { return r.x >= 0 && r.x + r.w <= cw && r.y >= 0 && r.y + r.h <= ch; };
-    const showLabel = new Array(nodes.length);
-    const shown = new Set();
-    // Eine feste Lage: das Label steht immer über dem Knoten. Ohne Platz dort
-    // bleibt der Knoten ein Punkt (keine Ausweichlagen, sonst wechselt die
-    // Schrift beim Zoomen und Ziehen die Seite).
-    order.forEach(function (i) {
-      const cand = self.labelRect(screen[i].x, screen[i].y, nodes[i], g);
-      let r = null;
-      if (forced(i)) {
-        // Auswahl und Nachbarn immer beschriftet, am Rand ins Bild geschoben
-        // statt angeschnitten (bleibt über dem Knoten, nur seitlich versetzt)
-        // Rand wie bei den Weiter-Pfeilen (drawEdgeHints, 6 px)
-        const dx = clamp(cand.x, 6, Math.max(6, cw - 6 - cand.w)) - cand.x;
-        const dy = clamp(cand.y, 6, Math.max(6, ch - 6 - cand.h)) - cand.y;
-        r = cand;
-        r.x += dx; r.tx += dx; r.y += dy; r.base += dy;
-      } else if (inside(cand) && overlapArea(cand, i, sticky(i) ? 0.5 : 1) === 0) {
-        r = cand;
-      }
+    nodes.forEach(function (node, i) {
+      if (showLabel[i] || !(scale >= labelMin[i])) { return; }
+      const r = self.labelRect(screen[i].x, screen[i].y, node);
+      if (!clearOfPinned(r)) { return; }
+      r.id = node.id;
       showLabel[i] = r;
-      if (r) { r.id = nodes[i].id; placed.push(r); shown.add(nodes[i].id); }
+      placed.push(r);
     });
-    this.labelShown = shown;
     this.labelRects = placed;   // Hit-Test trifft nur sichtbare Labels
 
-    ctx.font = labelFont(g);
+    // Neu sichtbare Labels blenden kurz ein (nur Deckkraft, keine Bewegung),
+    // ausgeblendete verschwinden sofort. Ohne Blende: Pflicht-Labels der
+    // Auswahl, das Startbild nach Öffnen und Reset, reduzierte Bewegung.
+    const now = performance.now();
+    const fade = !this.instantLabels && !reducedMotion();
+    this.instantLabels = false;
+    const before = this.labelShown;
+    const shown = new Set();
+    const labelAlpha = new Array(nodes.length).fill(1);
+    nodes.forEach(function (node, i) {
+      const id = node.id;
+      if (!showLabel[i]) { self.fadeStart.delete(id); return; }
+      shown.add(id);
+      if (!fade || forced(i)) { self.fadeStart.delete(id); return; }
+      if (!before.has(id)) { self.fadeStart.set(id, now); }
+      const t0 = self.fadeStart.get(id);
+      if (t0 === undefined) { return; }
+      const a = (now - t0) / LABEL_FADE_MS;
+      if (a >= 1) { self.fadeStart.delete(id); } else { labelAlpha[i] = Math.max(0, a); }
+    });
+    this.labelShown = shown;
+
+    ctx.font = labelFont(GLYPH);
     ctx.textAlign = 'center';
     nodes.forEach(function (node, i) {
       const state = states[i];
@@ -732,19 +881,23 @@
         ctx.shadowBlur = 10;
       }
       ctx.beginPath();
-      ctx.arc(p.x, p.y, radius, 0, Math.PI * 2);
+      ctx.arc(p.x, p.y, nodeRadius(node), 0, Math.PI * 2);
       ctx.fillStyle = 'rgb(10 14 18)';
       ctx.fill();
       if (state === 'selected') {
         ctx.strokeStyle = 'rgba(' + MAGENTA + ', 0.85)';
+        ctx.lineWidth = 2;
       } else {
-        ctx.strokeStyle = 'rgba(' + CYAN + ', ' + (state === 'related' ? 0.6 : 0.3) + ')';
+        // Kern heller als die Breite, Nachbarn der Auswahl heller als der Rest
+        const contour = state === 'related' ? (node.core ? 0.8 : 0.6) : (node.core ? 0.55 : 0.25);
+        ctx.strokeStyle = 'rgba(' + CYAN + ', ' + contour + ')';
+        ctx.lineWidth = node.core ? 1.25 : 1;
       }
-      ctx.lineWidth = state === 'selected' ? 2 : 1.25;
       ctx.stroke();
       ctx.shadowBlur = 0;
       const label = showLabel[i];
       if (label) {
+        ctx.globalAlpha *= labelAlpha[i];
         if (state === 'selected') {
           // Dezenter Schimmer am Label des gewählten Knotens (Magenta = Auswahl)
           ctx.shadowColor = 'rgba(' + MAGENTA + ', 0.55)';
@@ -758,8 +911,58 @@
       ctx.restore();
     });
 
+    this.drawPreview(screen, showLabel);
     this.drawEdgeHints(screen, showLabel);   // Rand-Pfeile: „hier geht's weiter“
+    this.labelIds = Array.from(shown).sort().join(' ');
     this.publishView();
+
+    // Kurzer Nachlauf nur, solange eine Blende läuft, danach Ruhe
+    if (this.fadeStart.size && this.rafId === null && this.fadeRaf === null && !this.panel.hidden) {
+      this.fadeRaf = requestAnimationFrame(function () {
+        self.fadeRaf = null;
+        self.render();
+      });
+    }
+  };
+
+  // Label-Rechteck über dem Knoten, am Rand ins Bild geschoben statt
+  // angeschnitten (bleibt über dem Knoten, nur versetzt). Rand wie bei den
+  // Weiter-Pfeilen (drawEdgeHints, 6 px). Für Pflicht-Labels und Vorschau.
+  SkillGraph.prototype.clampedLabelRect = function (p, node) {
+    const cw = this.canvasW, ch = this.canvasH;
+    const r = this.labelRect(p.x, p.y, node);
+    const dx = clamp(r.x, 6, Math.max(6, cw - 6 - r.w)) - r.x;
+    const dy = clamp(r.y, 6, Math.max(6, ch - 6 - r.h)) - r.y;
+    r.x += dx; r.tx += dx; r.y += dy; r.base += dy;
+    r.id = node.id;
+    return r;
+  };
+
+  // Vorschau beim Überfahren (Maus, Stift): Name eines Knotens ohne Label,
+  // ruhig über dem Knoten (gedämpfte Schrift, dezenter Grund, kein Magenta,
+  // das bleibt der Auswahl). Ändert weder Auswahl noch Info-Leiste.
+  SkillGraph.prototype.drawPreview = function (screen, labels) {
+    this.hoverRect = null;
+    const i = this.hoverId === null ? -1 : this.nodeIndex(this.hoverId);
+    if (i < 0 || labels[i]) { return; }   // schon beschriftet: keine Vorschau nötig
+    const ctx = this.ctx;
+    const node = this.nodes[i];
+    const r = this.clampedLabelRect(screen[i], node);
+    const bg = { x: r.x - 3, y: r.y - 1, w: r.w + 6, h: r.h + 2, id: node.id };
+    ctx.save();
+    ctx.fillStyle = 'rgba(10, 14, 18, 0.88)';
+    ctx.strokeStyle = 'rgba(' + CYAN + ', 0.25)';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.rect(bg.x + 0.5, bg.y + 0.5, bg.w - 1, bg.h - 1);
+    ctx.fill();
+    ctx.stroke();
+    ctx.font = labelFont(GLYPH);
+    ctx.textAlign = 'center';
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.72)';
+    ctx.fillText(node.label, r.tx, r.base);
+    ctx.restore();
+    this.hoverRect = bg;
   };
 
   // Liegt ein Knoten oder sein sichtbares Label (ganz oder teilweise)
@@ -801,19 +1004,38 @@
       ctx.closePath();
       ctx.fill();
     }
-    if (left) { chevron(10, h / 2, -1, 0); }
-    if (right) { chevron(w - 10, h / 2, 1, 0); }
-    if (top) { chevron(w / 2, 10, 0, -1); }
-    if (bottom) { chevron(w / 2, h - 10, 0, 1); }
+    // Pfeil nicht über ein sichtbares Label legen: entlang der Kante zur
+    // nächsten freien Stelle rücken (mittig, wenn frei, sonst abwechselnd
+    // ober- und unterhalb bzw. links und rechts davon)
+    const rects = (labels || []).filter(Boolean);
+    function free(cx, cy) {
+      const pad = s + 3;
+      return !rects.some(function (r) {
+        return cx + pad > r.x && cx - pad < r.x + r.w && cy + pad > r.y && cy - pad < r.y + r.h;
+      });
+    }
+    function along(fixed, mid, len, vertical) {
+      for (let k = 0; k <= len / 2 - 16; k += 4) {
+        const a = mid - k, b = mid + k;
+        if (free(vertical ? fixed : a, vertical ? a : fixed)) { return a; }
+        if (free(vertical ? fixed : b, vertical ? b : fixed)) { return b; }
+      }
+      return mid;
+    }
+    if (left) { chevron(10, along(10, h / 2, h, true), -1, 0); }
+    if (right) { chevron(w - 10, along(w - 10, h / 2, h, true), 1, 0); }
+    if (top) { chevron(along(10, w / 2, w, false), 10, 0, -1); }
+    if (bottom) { chevron(along(h - 10, w / 2, w, false), h - 10, 0, 1); }
     ctx.restore();
   };
 
   // Ansichtszustand als Attribute am Canvas (Maßstab, Knoten außerhalb bzw.
-  // angeschnitten, Bildschirmlage des gewählten Knotens) — für Tests und
+  // angeschnitten, Bildschirmlage des gewählten Knotens, IDs der
+  // beschrifteten Knoten, Knoten mit Vorschau) — für Tests und
   // Entwickler-Werkzeuge, ändert nichts an der Darstellung. Dazu die
-  // Zoom-Knöpfe an den Grenzen und Reset ohne etwas zum Zurücksetzen als
-  // aria-disabled (Rückmeldung für Tastatur und Screenreader; nicht
-  // disabled, sonst ginge ihr Fokus verloren).
+  // Zoom-Knöpfe an den Grenzen, „Übersicht“ in der Startansicht und Reset
+  // ohne etwas zum Zurücksetzen als aria-disabled (Rückmeldung für Tastatur
+  // und Screenreader; nicht disabled, sonst ginge ihr Fokus verloren).
   // Nur bei Änderung schreiben (die Loop rendert pro Frame).
   SkillGraph.prototype.publishView = function () {
     const canvas = this.canvas;
@@ -831,8 +1053,11 @@
     const p = sel ? this.toScreen(sel) : null;
     put(canvas, 'data-sel-x', p ? p.x.toFixed(1) : null);
     put(canvas, 'data-sel-y', p ? p.y.toFixed(1) : null);
+    put(canvas, 'data-labels', this.labelIds || '');
+    put(canvas, 'data-preview', this.hoverRect ? this.hoverRect.id : null);
     put(this.zoomInBtn, 'aria-disabled', this.scale >= ZOOM_MAX - 1e-6 ? 'true' : null);
     put(this.zoomOutBtn, 'aria-disabled', this.scale <= ZOOM_MIN + 1e-6 ? 'true' : null);
+    put(this.fitBtn, 'aria-disabled', this.isHome() ? 'true' : null);
     put(this.resetBtn, 'aria-disabled', this.canReset() ? null : 'true');
   };
 
@@ -872,17 +1097,25 @@
     return { x: event.clientX - rect.left, y: event.clientY - rect.top };
   };
 
-  SkillGraph.prototype.nodeById = function (id) {
-    if (!this.nodes) { return null; }
+  SkillGraph.prototype.nodeIndex = function (id) {
+    if (!this.nodes) { return -1; }
     for (let i = 0; i < this.nodes.length; i++) {
-      if (this.nodes[i].id === id) { return this.nodes[i]; }
+      if (this.nodes[i].id === id) { return i; }
     }
-    return null;
+    return -1;
   };
 
-  // Treffer in Bildschirm-Koordinaten: nächster Knoten im HIT_RADIUS, sonst
-  // ein SICHTBARES Label (Rechtecke aus dem letzten render).
-  SkillGraph.prototype.hitTest = function (x, y) {
+  SkillGraph.prototype.nodeById = function (id) {
+    const i = this.nodeIndex(id);
+    return i < 0 ? null : this.nodes[i];
+  };
+
+  function inRect(r, x, y, m) {
+    return x >= r.x - m && x <= r.x + r.w + m && y >= r.y - m && y <= r.y + r.h + m;
+  }
+
+  // Nächster Knoten im HIT_RADIUS (Bildschirm-Koordinaten) oder null
+  SkillGraph.prototype.hitNode = function (x, y) {
     let hit = null;
     let best = HIT_RADIUS * HIT_RADIUS;
     const self = this;
@@ -893,12 +1126,35 @@
       const d = dx * dx + dy * dy;
       if (d <= best) { best = d; hit = node.id; }
     });
+    return hit;
+  };
+
+  // Treffer: nächster Knoten im HIT_RADIUS, sonst ein SICHTBARES Label
+  // (Rechtecke aus dem letzten render) oder die Vorschau.
+  SkillGraph.prototype.hitTest = function (x, y) {
+    const hit = this.hitNode(x, y);
     if (hit !== null) { return hit; }
     for (let i = this.labelRects.length - 1; i >= 0; i--) {
-      const r = this.labelRects[i];
-      if (x >= r.x - 2 && x <= r.x + r.w + 2 && y >= r.y - 2 && y <= r.y + r.h + 2) { return r.id; }
+      if (inRect(this.labelRects[i], x, y, 2)) { return this.labelRects[i].id; }
     }
-    return null;
+    return this.hoverRect && inRect(this.hoverRect, x, y, 2) ? this.hoverRect.id : null;
+  };
+
+  // Vorschau setzen oder entfernen (null), zeichnet nur bei Änderung neu
+  SkillGraph.prototype.setHover = function (id) {
+    if (this.hoverId === id) { return; }
+    this.hoverId = id;
+    if (this.initialized && !this.panel.hidden) { this.render(); }
+  };
+
+  // Vorschau nach Zeigerlage (nur Maus und Stift mit Hover): ein Knoten ohne
+  // Label im HIT_RADIUS. Solange der Zeiger auf der Vorschau selbst liegt,
+  // bleibt sie stehen (WCAG 1.4.13, überfahrbar).
+  SkillGraph.prototype.updateHover = function (event, pos) {
+    if (!this.canHover || event.pointerType === 'touch') { return; }
+    if (this.hoverRect && inRect(this.hoverRect, pos.x, pos.y, 2)) { return; }
+    const hit = this.hitNode(pos.x, pos.y);
+    this.setHover(hit !== null && !this.labelShown.has(hit) ? hit : null);
   };
 
   // Modal = Präsentations-Wrapper hat das Sheet geöffnet (skill-graph-sheet.js).
@@ -913,17 +1169,18 @@
     const unit = event.deltaMode === 1 ? 16 : (event.deltaMode === 2 ? this.canvasH || 400 : 1);
     let dx = event.deltaX * unit, dy = event.deltaY * unit;
     if (event.shiftKey && !dx) { dx = dy; dy = 0; }   // Shift+Rad = waagerecht verschieben
+    const pos = this.canvasPos(event);
     if (Math.abs(dx) > Math.abs(dy)) {
       // Waagerechtes Wischen (Trackpad) verschiebt
       this.panX -= dx;
-      this.fitted = false;
       this.clampPan();
       this.render();
-      return;
+    } else {
+      // Senkrechtes Rad zoomt um den Mauszeiger (wie im Fraktal-Panel, OVL-2)
+      this.zoomAt(Math.exp(-dy * WHEEL_ZOOM), pos.x, pos.y);
     }
-    // Senkrechtes Rad zoomt um den Mauszeiger (wie im Fraktal-Panel, OVL-2)
-    const pos = this.canvasPos(event);
-    this.zoomAt(Math.exp(-dy * WHEEL_ZOOM), pos.x, pos.y);
+    // Unter dem Zeiger liegt jetzt womöglich ein anderer Knoten
+    this.updateHover(event, pos);
   };
 
   SkillGraph.prototype.onTouchStart = function (event) {
@@ -942,6 +1199,12 @@
     if (count >= 2) {
       // Zwei Finger -> Pan + Pinch-Zoom (Karten-Muster). Laufenden Knoten-Drag
       // abbrechen und Touch dem Browser entziehen, solange die Geste läuft.
+      // Wurde der Knoten schon bewegt und schwingt nichts nach (reduzierte
+      // Bewegung), ist das Layout jetzt fertig: Labels neu rechnen, sonst
+      // überspränge onPointerUp das ohne dragId.
+      if (this.dragId !== null && this.dragMoved && this.rafId === null) {
+        this.computeLabelScales();
+      }
       this.dragId = null;
       this.startGesture();
       try { this.canvas.style.touchAction = 'none'; } catch (e) { /* noop */ }
@@ -949,7 +1212,8 @@
     }
 
     const pos = this.pointers[event.pointerId];
-    const hit = this.hitTest(pos.x, pos.y);
+    const hit = this.hitTest(pos.x, pos.y);   // trifft auch die Vorschau
+    this.setHover(null);   // Ziehen, Verschieben und Auswahl beenden die Vorschau
     if (hit !== null) {
       // Auf einem Knoten -> Knoten ziehen (Klick ohne Bewegung = Auswahl).
       this.dragId = hit;
@@ -972,9 +1236,11 @@
   SkillGraph.prototype.onPointerMove = function (event) {
     if (this.pointers[event.pointerId]) { this.pointers[event.pointerId] = this.canvasPos(event); }
 
-    // Hover-Cursor (Maus): über einem Knoten -> Klick-Finger, sonst Greif-Hand.
-    if (!this.panning && this.dragId === null && event.pointerType === 'mouse' && this.sim) {
+    // Hover (Maus, Stift): Vorschau für Knoten ohne Label, dazu der Cursor
+    // über einem Knoten als Klick-Finger, sonst Greif-Hand.
+    if (!this.panning && this.dragId === null && event.pointerType !== 'touch' && this.sim) {
       const hover = this.canvasPos(event);
+      this.updateHover(event, hover);
       this.canvas.style.cursor = this.hitTest(hover.x, hover.y) !== null ? 'pointer' : 'grab';
     }
 
@@ -992,7 +1258,6 @@
         this.panX = c.x - gs.anchor.x * this.scale;
         this.panY = c.y - gs.anchor.y * this.scale;
       }
-      this.fitted = false;
       this.clampPan();
       if (event.cancelable) { event.preventDefault(); }
       this.render();
@@ -1050,6 +1315,12 @@
       this.dispatch();
     }
     // War es ein Drag: fx/fy bleiben gesetzt → der Knoten bleibt liegen.
+    // Ohne Nachschwingen (reduzierte Bewegung) ist das Layout jetzt fertig,
+    // sonst rechnet das Ende der Loop die Labels neu.
+    if (this.dragId !== null && this.dragMoved && this.rafId === null) {
+      this.computeLabelScales();
+      this.render();
+    }
     try { this.canvas.releasePointerCapture(event.pointerId); } catch (e) { /* noop */ }
     try { this.canvas.style.cursor = 'grab'; } catch (e) { /* noop */ }
     this.dragId = null;
@@ -1078,7 +1349,7 @@
     if (!el) { return; }
     const label = skillId !== null && this.chipLabels ? this.chipLabels.get(skillId) : null;
     if (!label) {
-      el.textContent = this.defaultInfo;
+      el.replaceChildren.apply(el, this.defaultInfo.map(function (n) { return n.cloneNode(true); }));
       el.classList.remove('is-active');
       return;
     }

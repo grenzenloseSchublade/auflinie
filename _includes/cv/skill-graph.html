@@ -13,6 +13,9 @@
   Zeile daneben hängt als Beschreibung an (aria-describedby).
   Kopfleiste: zugängliche Namen beginnen mit dem sichtbaren Text (WCAG 2.5.3,
   STYLEGUIDE 7.7 „Reset“).
+  Info-Leiste: im Ruhezustand der Hinweis und darunter ein Satz zu Punkten
+  ohne Namen (nur hier, nicht in der Konsole über den Chips), skill-graph.js
+  stellt beides nach einer Auswahl wieder her.
   Canvas tabindex="-1": nicht in der Tab-Reihenfolge, aber ein Klick hält den
   Fokus im Dialog (sonst fiele er auf <body>, Tasten +/−/0 wirkungslos).
   Parameter: keine.
@@ -48,7 +51,8 @@
         </button>
       </div>
     </div>
-    <p class="skill-graph__info" data-role="graph-context" aria-live="polite">{{ skill_texts.hint | escape }}</p>
+    <p class="skill-graph__info" data-role="graph-context" aria-live="polite">{{ skill_texts.hint | escape }}
+      <span class="skill-graph__info-note">{{ graph_texts.unlabeled | escape }}</span></p>
     <div class="skill-graph__canvas-wrap" data-role="canvas-wrap">
       <canvas data-role="canvas" role="img" tabindex="-1"
               aria-label="{{ graph_texts.canvas | escape }}"></canvas>

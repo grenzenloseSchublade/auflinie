@@ -96,6 +96,8 @@ texts:
     lead: "Welche Fähigkeiten in welchen Projekten zusammenkommen" # Zeile neben dem Knopf
     dialog: "Skill-Graph" # Name des geöffneten Fensters für Screenreader
     close: "Graph schließen" # Name des ✕-Knopfs für Screenreader
+    # Zweite Zeile der Info-Leiste im Graph-Fenster, solange nichts gewählt ist
+    unlabeled: "Punkte ohne Namen zeigen ihn beim Antippen oder Hineinzoomen."
     # Beschreibung der Grafik für Screenreader
     canvas: "Netzdiagramm der Skills, verbunden über gemeinsame Projekte. Auswahl und gemeinsame Projekte stehen in der Leiste darüber, die vollständige Liste im Lebenslauf."
     # Knöpfe oben im Fenster. Die Zoom-Knöpfe zeigen nur das Zeichen − bzw. +,
@@ -106,10 +108,11 @@ texts:
     zoom_in:
       label: "+ Vergrößern"
       title: "Vergrößern"
+    # Führt zur Startansicht wie beim Öffnen, ausgegraut, solange sie steht
     fit:
-      text: "Einpassen"
-      label: "Einpassen – ganzen Graphen zeigen"
-      title: "Einpassen"
+      text: "Übersicht"
+      label: "Übersicht – zur Startansicht"
+      title: "Übersicht"
     reset:
       text: "Reset"
       label: "Reset – Ansicht zurücksetzen"

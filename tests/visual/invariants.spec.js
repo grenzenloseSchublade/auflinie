@@ -2,7 +2,7 @@
 // STYLEGUIDE.md 6.2 und 4.4 (A11Y-2, OVL-3, OVL-4, WCAG 2.4.3/2.4.7).
 // Prüft Verhalten, nicht Aussehen: Fokusführung, aria-expanded, inert,
 // Escape und Light Dismiss an Drawer und Skill-Graph-Sheet, Autor- und TOC-Dropdown, Info-Leiste,
-// Einpassen und Zoom im Skill-Graphen, dass kein
+// Übersicht, Zoom und Beschriftung im Skill-Graphen, dass kein
 // unsichtbares Element den Tastaturfokus bekommt, die Breakpoint-Grenzen
 // 767/768 und 1023/1024 (STYLEGUIDE 3.4), dass Touch nach dem Antippen
 // keinen Theme-Hover festhält (BP-3), dass Menü-Knopf und Buttons auf Touch
@@ -174,7 +174,9 @@ test.describe('Sticky-TOC-Dropdown (A11Y-2)', () => {
 // rechnet das Layout synchron vor, Ansicht und Knotenlage sind dann sofort
 // stabil. Der Maßstab steht als data-zoom am Canvas, die Zahl der Knoten
 // außerhalb bzw. angeschnitten als data-outside, die Bildschirmlage des
-// gewählten Knotens als data-sel-x/-y (skill-graph.js publishView).
+// gewählten Knotens als data-sel-x/-y, die IDs der beschrifteten Knoten als
+// data-labels und ein Knoten mit Vorschau als data-preview (skill-graph.js
+// publishView).
 // Die erwarteten Texte kommen aus dem Datenblock der Seite (texts in
 // _data/skill_graph.yml): Die Tests prüfen Verhalten, nicht den Wortlaut, eine
 // Textänderung dort braucht keinen angepassten Test.
@@ -200,6 +202,7 @@ async function openSheet(page, before) {
 }
 
 const zoomOf = async (canvas) => Number(await canvas.getAttribute('data-zoom'));
+const labelsOf = async (canvas) => (await canvas.getAttribute('data-labels')).split(' ').filter(Boolean);
 
 test.describe('Blog-Hinweis im Top Layer (Z-1, früher R-10)', () => {
   test.use({ viewport: MOBIL });
@@ -272,9 +275,12 @@ test.describe('Skill-Graph-Sheet (OVL-3, OVL-4)', () => {
     const x = Number(await canvas.getAttribute('data-sel-x'));
     const y = Number(await canvas.getAttribute('data-sel-y'));
 
-    // Erstes Esc löst nur die Auswahl, das Sheet bleibt offen
+    // Erstes Esc löst nur die Auswahl, das Sheet bleibt offen. Im Ruhezustand
+    // steht unter dem Hinweis der Satz zu Punkten ohne Namen, nur im Graphen
     await page.keyboard.press('Escape');
-    await expect(info).toHaveText(texts.hint);
+    await expect(info).toContainText(texts.hint);
+    await expect(info.locator('.skill-graph__info-note')).toHaveText(texts.graph.unlabeled);
+    await expect(page.locator('[data-role="skill-context"]')).not.toContainText(texts.graph.unlabeled);
     await expect(info).not.toHaveClass(/is-active/);
     await expect(panel).toHaveAttribute('role', 'dialog');
 
@@ -295,7 +301,7 @@ test.describe('Skill-Graph-Sheet (OVL-3, OVL-4)', () => {
     test.describe(vp.name, () => {
       test.use({ viewport: vp.size });
 
-      test('Einpassen: ohne Auswahl alle Knoten im Bild', async ({ page }) => {
+      test('Startansicht: ohne Auswahl alle Knoten im Bild', async ({ page }) => {
         const { canvas } = await openSheet(page);
         const zoom = await zoomOf(canvas);
         expect(zoom).toBeGreaterThanOrEqual(0.6);
@@ -314,14 +320,18 @@ test.describe('Skill-Graph-Sheet (OVL-3, OVL-4)', () => {
           page.locator('.cv-skill-chip__button[data-skill="python"]').click());
         await expect(mit.canvas).toHaveAttribute('data-sel-x', /\d/);
         expect(await zoomOf(mit.canvas)).toBeCloseTo(zoom, 3);
-        expect(await mit.canvas.getAttribute('data-outside')).toBe(outside);
+        // Dieselbe Startansicht (Übersicht ausgegraut). data-outside taugt
+        // dafür nicht mehr: Es zählt angeschnittene Labels mit, und die
+        // Beschriftung unterscheidet sich mit Auswahl (seit 6. 10. 2026 dürfen
+        // Labels am Rand angeschnitten sein, Pflicht-Labels rücken ins Bild).
+        await expect(page.locator('[data-role="graph-fit"]')).toHaveAttribute('aria-disabled', 'true');
         if (zoom > 0.601) expect(outside).toBe('0');
       });
     });
   }
 
   // Reset ist ausgegraut, solange es nichts zurückzusetzen gibt (keine Auswahl,
-  // kein gezogener Knoten), sonst gliche er Einpassen (Owner, 6. 10. 2026)
+  // kein gezogener Knoten), sonst gliche er „Übersicht“ (Owner, 6. 10. 2026)
   test('Reset nur bereit, wenn es etwas zurückzusetzen gibt', async ({ page }) => {
     await openSheet(page);
     const reset = page.locator('[data-role="graph-reset"]');
@@ -335,7 +345,7 @@ test.describe('Skill-Graph-Sheet (OVL-3, OVL-4)', () => {
     await expect(mit.canvas).not.toHaveAttribute('data-sel-x', /./);
   });
 
-  test('Zoom-Knöpfe ändern den Maßstab, Einpassen stellt ihn wieder her', async ({ page }) => {
+  test('Zoom-Knöpfe ändern den Maßstab, Übersicht stellt ihn wieder her', async ({ page }) => {
     const { canvas, texts } = await openSheet(page);
     // Label in Name (WCAG 2.5.3, STYLEGUIDE 7.7): Der Name jedes Knopfs beginnt
     // mit seinem sichtbaren Zeichen bzw. Text, gleich welcher Wortlaut in
@@ -355,11 +365,111 @@ test.describe('Skill-Graph-Sheet (OVL-3, OVL-4)', () => {
     expect(await zoomOf(canvas)).toBeLessThan(fit);
     await page.getByRole('button', { name: texts.graph.fit.label, exact: true }).click();
     expect(await zoomOf(canvas)).toBeCloseTo(fit, 3);
-    // Tastatur bei Fokus im Sheet: + vergrößert, 0 passt ein
+    // Tastatur bei Fokus im Sheet: + vergrößert, 0 führt zur Startansicht
     await page.keyboard.press('+');
     expect(await zoomOf(canvas)).toBeGreaterThan(fit);
     await page.keyboard.press('0');
     expect(await zoomOf(canvas)).toBeCloseTo(fit, 3);
+  });
+
+  // Übersicht führt zur Startansicht (dieselbe Rechnung wie beim Öffnen) und
+  // steht ausgegraut, solange sie schon steht (Owner, 6. 10. 2026)
+  test('Übersicht ausgegraut in der Startansicht, sonst bereit', async ({ page }) => {
+    const { canvas, texts } = await openSheet(page);
+    const fit = page.locator('[data-role="graph-fit"]');
+    await expect(fit).toHaveAttribute('aria-disabled', 'true');
+    await page.getByRole('button', { name: texts.graph.zoom_in.label, exact: true }).click();
+    await expect(fit).not.toHaveAttribute('aria-disabled', /./);
+    await fit.click();
+    await expect(fit).toHaveAttribute('aria-disabled', 'true');
+    // Verschieben verlässt die Startansicht ebenso
+    const box = await canvas.boundingBox();
+    await page.mouse.move(box.x + 3, box.y + 3);
+    await page.mouse.down();
+    await page.mouse.move(box.x + 33, box.y + 23, { steps: 3 });
+    await page.mouse.up();
+    await expect(fit).not.toHaveAttribute('aria-disabled', /./);
+  });
+
+  // Beschriftung nur nach Maßstab (Been, Daiches und Yap 2006, skill-graph.js
+  // computeLabelScales): gleiche Ansicht, gleiche Namen, egal was vorher war
+  test('Übersicht zeigt nach Zoomen dieselben Namen wie das Öffnen', async ({ page }) => {
+    const { canvas, texts } = await openSheet(page);
+    const zoom = await zoomOf(canvas);
+    const start = await labelsOf(canvas);
+    expect(start.length).toBeGreaterThan(0);
+    const plus = page.getByRole('button', { name: texts.graph.zoom_in.label, exact: true });
+    const minus = page.getByRole('button', { name: texts.graph.zoom_out.label, exact: true });
+    await plus.click();
+    await plus.click();
+    await minus.click();
+    await page.getByRole('button', { name: texts.graph.fit.label, exact: true }).click();
+    expect(await zoomOf(canvas)).toBeCloseTo(zoom, 3);
+    expect(await labelsOf(canvas)).toEqual(start);
+  });
+
+  test('Verschieben ändert die Beschriftung nicht', async ({ page }) => {
+    const { canvas } = await openSheet(page);
+    const zoom = await zoomOf(canvas);
+    const start = await labelsOf(canvas);
+    // Leere Ecke (wie im Tastatur-Test), Maus zieht die Ansicht
+    const box = await canvas.boundingBox();
+    await page.mouse.move(box.x + 3, box.y + 3);
+    await page.mouse.down();
+    await page.mouse.move(box.x + 63, box.y + 43, { steps: 4 });
+    await page.mouse.up();
+    await expect(page.locator('[data-role="graph-fit"]')).not.toHaveAttribute('aria-disabled', /./);
+    expect(await zoomOf(canvas)).toBeCloseTo(zoom, 3);
+    expect(await labelsOf(canvas)).toEqual(start);
+  });
+
+  test('Hineinzoomen nimmt keinen Namen weg', async ({ page }) => {
+    const { canvas, texts } = await openSheet(page);
+    const plus = page.getByRole('button', { name: texts.graph.zoom_in.label, exact: true });
+    let before = await labelsOf(canvas);
+    for (let i = 0; i < 12 && !(await plus.getAttribute('aria-disabled')); i++) {
+      await plus.click();
+      const now = await labelsOf(canvas);
+      expect(before.filter((id) => !now.includes(id)), `Zoom ${await zoomOf(canvas)}`).toEqual([]);
+      expect(now.length).toBeGreaterThanOrEqual(before.length);
+      before = now;
+    }
+  });
+
+  // Größenänderung (z. B. Adressleiste am Handy): Die Knotenlagen bleiben,
+  // eine eingepasste Ansicht passt sich neu ein, eine verschobene oder
+  // gezoomte bleibt stehen (Owner, 6. 10. 2026)
+  test('Größenänderung verzerrt das Layout nicht', async ({ page }) => {
+    await page.setViewportSize(MOBIL);
+    const { canvas, texts } = await openSheet(page, () =>
+      page.locator('.cv-skill-chip__button[data-skill="python"]').click());
+    const fit = page.locator('[data-role="graph-fit"]');
+    await expect(fit).toHaveAttribute('aria-disabled', 'true');
+    // Fenster nur verkleinern (nicht zurück: sonst fiele die Änderung in die
+    // Entprellung oder ein proportionales Skalieren höbe sich wieder auf) und
+    // abwarten, bis der entprellte ResizeObserver den Canvas neu bemessen hat
+    let height = MOBIL.height;
+    async function shrink() {
+      const before = await canvas.evaluate((el) => el.height);
+      height -= 60;
+      await page.setViewportSize({ width: MOBIL.width, height });
+      await page.waitForFunction((h) =>
+        document.querySelector('[data-role="canvas"]').height !== h, before);
+    }
+    // Eingepasst: passt neu ein, bleibt Startansicht
+    await shrink();
+    await expect(fit).toHaveAttribute('aria-disabled', 'true');
+    // Gezoomt (keine Startansicht): Kamera und Knoten bleiben, wo sie waren.
+    // Mit dem alten getrennten Skalieren in x und y wanderte sel-y mit.
+    await page.getByRole('button', { name: texts.graph.zoom_in.label, exact: true }).click();
+    await expect(fit).not.toHaveAttribute('aria-disabled', /./);
+    const x = await canvas.getAttribute('data-sel-x');
+    const y = await canvas.getAttribute('data-sel-y');
+    const labels = await labelsOf(canvas);
+    await shrink();
+    await expect(canvas).toHaveAttribute('data-sel-x', x);
+    await expect(canvas).toHaveAttribute('data-sel-y', y);
+    expect(await labelsOf(canvas)).toEqual(labels);
   });
 
   test('Zoom-Grenze: Knopf aria-disabled, bleibt fokussierbar', async ({ page }) => {
@@ -422,6 +532,65 @@ test.describe('Skill-Graph ohne Reduced Motion', () => {
       if (first > 0.601) expect(outside).toBe('0');
     });
   }
+});
+
+// Vorschau beim Überfahren (Maus): ein Knoten ohne Namen zeigt ihn ruhig an,
+// ohne Auswahl und ohne die Info-Leiste zu ändern. Verlassen nimmt sie weg,
+// Esc ebenso, schließt aber wie gewohnt das Sheet (stiehlt das Esc nicht).
+test.describe('Skill-Graph: Vorschau beim Überfahren', () => {
+  test.use({ viewport: { width: 1280, height: 900 }, contextOptions: { reducedMotion: 'reduce' } });
+
+  test('Name als Vorschau, Verlassen und Esc nehmen sie weg', async ({ page }) => {
+    const { canvas, panel, texts } = await openSheet(page);
+    // Kleinster Maßstab: dort fehlen die meisten Namen
+    const minus = page.getByRole('button', { name: texts.graph.zoom_out.label, exact: true });
+    for (let i = 0; i < 6 && !(await minus.getAttribute('aria-disabled')); i++) await minus.click();
+    // Einen Knoten ohne Namen suchen: Zeiger-Ereignisse über ein Raster,
+    // dann die Mitte seiner Trefferfläche (vor jedem Punkt die Vorschau per
+    // pointerleave lösen, sonst hielte sie sich über ihrem eigenen Feld)
+    const spot = await canvas.evaluate((el) => {
+      const r = el.getBoundingClientRect();
+      const at = (x, y) => {
+        el.dispatchEvent(new PointerEvent('pointerleave', { pointerType: 'mouse' }));
+        el.dispatchEvent(new PointerEvent('pointermove', { pointerType: 'mouse', clientX: r.left + x,
+          clientY: r.top + y, bubbles: true }));
+        return el.getAttribute('data-preview');
+      };
+      for (let y = 4; y < r.height; y += 6) {
+        for (let x = 4; x < r.width; x += 6) {
+          const id = at(x, y);
+          if (!id) continue;
+          let sx = 0, sy = 0, n = 0;
+          for (let v = y - 4; v < y + 36; v += 2) {
+            for (let u = x - 20; u < x + 20; u += 2) {
+              if (at(u, v) === id) { sx += u; sy += v; n++; }
+            }
+          }
+          at(-50, -50);
+          return { x: Math.round(sx / n), y: Math.round(sy / n), id };
+        }
+      }
+      return null;
+    });
+    expect(spot, 'kein Knoten ohne Namen gefunden').not.toBeNull();
+    expect(await labelsOf(canvas)).not.toContain(spot.id);
+    const info = page.locator('[data-role="graph-context"]');
+    const box = await canvas.boundingBox();
+    // Echte Maus: drauf zeigt die Vorschau, ohne Auswahl und Info-Leiste
+    await page.mouse.move(box.x + spot.x, box.y + spot.y);
+    await expect(canvas).toHaveAttribute('data-preview', spot.id);
+    await expect(canvas).not.toHaveAttribute('data-sel-x', /./);
+    await expect(info).toContainText(texts.hint);
+    await expect(info).not.toHaveClass(/is-active/);
+    // Verlassen nimmt sie weg
+    await page.mouse.move(box.x + box.width / 2, box.y - 30);
+    await expect(canvas).not.toHaveAttribute('data-preview', /./);
+    await page.mouse.move(box.x + spot.x, box.y + spot.y);
+    await expect(canvas).toHaveAttribute('data-preview', spot.id);
+    await page.keyboard.press('Escape');
+    await expect(panel).not.toHaveAttribute('role', 'dialog');
+    await expect(canvas).not.toHaveAttribute('data-preview', /./);
+  });
 });
 
 // Touch-Hinweis (Owner: Kasten mittig über dem Graphen) in voller Breite:

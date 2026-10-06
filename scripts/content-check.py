@@ -241,7 +241,7 @@ TEXT_KEYS = {
     "_data/skill_graph.yml": [
         "texts.{hint,breadth}",
         "texts.selection.{with_projects,foundation,no_projects}",
-        "texts.graph.{open,lead,dialog,close,canvas}",
+        "texts.graph.{open,lead,dialog,close,canvas,unlabeled}",
         "texts.graph.{zoom_out,zoom_in}.{label,title}",
         "texts.graph.{fit,reset}.{text,label,title}",
         "texts.graph.touch_hint[]",
