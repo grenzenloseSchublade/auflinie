@@ -22,7 +22,8 @@ Auf dieser Seite geht es aber vor allem um das, was daneben passiert: ums Drauß
 
 ## Achtsamkeit und Alltag
 
-{% include section-epigraph.html text="Man sollte alles so einfach wie möglich machen, aber nicht einfacher." author="Albert Einstein" %}
+{% comment %} Quelle: Einsteins Gedanke steht in der Herbert-Spencer-Vorlesung „On the Method of Theoretical Physics“, Oxford, 10. 6. 1933. Die kurze Fassung ist eine Paraphrase, zuerst bei Roger Sessions, New York Times, 8. 1. 1950 (Quote Investigator, „Everything Should Be Made as Simple as Possible, But Not Simpler“, 2011, https://quoteinvestigator.com/2011/05/13/einstein-simple/). Deshalb „sinngemäß“ (FACH-3). {% endcomment %}
+{% include section-epigraph.html text="Man sollte alles so einfach wie möglich machen, aber nicht einfacher." author="Albert Einstein (sinngemäß)" %}
 
 Gesundheit ist kein Projekt mit Endtermin, sondern eine tägliche Praxis aus vielen kleinen Entscheidungen: frisch kochen statt bestellen, bewusst atmen statt durchhetzen, ausreichend schlafen statt noch eine Stunde Bildschirm. Meditation und Atemtechniken helfen, den Kopf zu sortieren – nicht als Ritual um seiner selbst willen, sondern als trainierbare Fähigkeit, Aufmerksamkeit zu lenken.
 
@@ -36,7 +37,8 @@ Nebenbei entsteht dabei, was kein Training im Studio ersetzt: echte Erlebnisse �
 
 ## Yoga und Calisthenics
 
-{% include section-epigraph.html text="Wer glaubt etwas zu sein, hat aufgehört etwas zu werden." author="Sokrates" %}
+{% comment %} Quelle: keine. Sokrates hat nichts Schriftliches hinterlassen, bei Platon und Xenophon ist der Satz nicht belegt, im Netz wird er auch anderen zugeschrieben (etwa Philip Rosenthal). Inhaltlich am nächsten kommt Xenophon, Memorabilien 4,8,6, sinngemäß: Am besten leben die, die sich am meisten bemühen, möglichst gut zu werden. Deshalb „zugeschrieben“ (FACH-3). {% endcomment %}
+{% include section-epigraph.html text="Wer glaubt etwas zu sein, hat aufgehört etwas zu werden." author="Sokrates (zugeschrieben)" %}
 
 Yoga und Calisthenics sind die regelmäßige Basis – zwei Praxen, die sich ergänzen: Calisthenics baut Kraft mit dem eigenen Körpergewicht auf, sauber und ohne Gerätepark. Yoga bringt Beweglichkeit, Balance und die Ruhe, die harte Sätze allein nicht liefern.
 
