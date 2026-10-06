@@ -96,7 +96,7 @@ controls:
 # Texte in jeder Zeichenfläche
 canvas:
   # Für Screenreader nach dem Namen der Fläche, getrennt durch „ – “
-  keyboard_help: "interaktiv. Tastatur: Pfeiltasten verschieben, Plus/Minus zoomen, 0 setzt die Ansicht zurück."
+  keyboard_help: "interaktiv. Tastatur: Pfeiltasten verschieben, Plus / Minus zoomen, 0 setzt die Ansicht zurück."
   hud_c: "c:"
   hud_zoom: "Zoom:"
   loading: "Berechne…"
@@ -136,14 +136,14 @@ julia:
   hint:
     mouse:
       - "ziehen: zoom-rechteck"
-      - "rechtsklick/leertaste: verschieben"
+      - "rechtsklick / leertaste: verschieben"
       - "mausrad: zoom"
       - "doppelklick: heraus"
       - "tastatur: ←↑↓→ + − 0"
     touch:
       - "pinch: zoom"
       - "zwei finger: verschieben"
-      - "+/−: zoomstufe"
+      - "+ / −: zoomstufe"
 
 # Mandelbrot-Julia-Explorer: zwei Zeichenflächen nebeneinander
 explorer:
@@ -165,7 +165,7 @@ explorer:
     mouse:
       - "klick (mandelbrot): c wählen"
       - "ziehen: zoom-rechteck"
-      - "rechtsklick/leertaste: verschieben"
+      - "rechtsklick / leertaste: verschieben"
       - "mausrad: zoom"
       - "tastatur: ←↑↓→ + − 0"
     touch:

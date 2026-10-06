@@ -33,7 +33,7 @@ Verantwortlich für diese Website bin ich, {{ site.author.name }}. Erreichbar bi
 
 ## Hosting bei GitHub Pages
 
-Die Website liegt bei GitHub Pages, einem Dienst der GitHub, Inc. in den USA. Bei jedem Aufruf übermittelt der Browser technisch nötige Angaben an deren Server: die IP-Adresse, die aufgerufene Adresse, Datum und Uhrzeit sowie die Browserkennung. Das gilt für jede Datei, die der Browser lädt, auch für verlinkte Seiten, die er vorab holt, damit ein Seitenwechsel schneller geht.
+Die Website liegt bei GitHub Pages, einem Dienst der GitHub, Inc. in den USA. Bei jedem Aufruf erfassen deren Server technisch nötige Angaben: die IP-Adresse, die aufgerufene Adresse, Datum und Uhrzeit sowie die Browserkennung. Das gilt für jede Datei, die der Browser lädt, auch für verlinkte Seiten, die er vorab holt, damit ein Seitenwechsel schneller geht.
 
 GitHub protokolliert laut [eigener Dokumentation](https://docs.github.com/de/pages/getting-started-with-github-pages/about-github-pages#data-collection) die IP-Adresse jedes Besuchers zu Sicherheitszwecken und speichert sie. Wie lange, legt GitHub fest. Ich kann diese Protokolle weder einsehen noch abschalten.
 

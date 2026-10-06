@@ -20,7 +20,7 @@ de: &DEFAULT_DE
   breadcrumb_home_label      : "Start"
   breadcrumb_separator       : "/"
   menu_label                 : "Menü"
-  search_label               : "Suche ein-/ausblenden"
+  search_label               : "Suche ein- / ausblenden"
   toc_label                  : "Auf dieser Seite"
   ext_link_label             : "Direkter Link"
   less_than                  : "weniger als"
