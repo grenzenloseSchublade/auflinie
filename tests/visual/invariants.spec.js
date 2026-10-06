@@ -320,6 +320,21 @@ test.describe('Skill-Graph-Sheet (OVL-3, OVL-4)', () => {
     });
   }
 
+  // Reset ist ausgegraut, solange es nichts zurückzusetzen gibt (keine Auswahl,
+  // kein gezogener Knoten), sonst gliche er Einpassen (Owner, 6. 10. 2026)
+  test('Reset nur bereit, wenn es etwas zurückzusetzen gibt', async ({ page }) => {
+    await openSheet(page);
+    const reset = page.locator('[data-role="graph-reset"]');
+    await expect(reset).toHaveAttribute('aria-disabled', 'true');
+    await page.keyboard.press('Escape');
+    const mit = await openSheet(page, () =>
+      page.locator('.cv-skill-chip__button[data-skill="python"]').click());
+    await expect(reset).not.toHaveAttribute('aria-disabled', /./);
+    await reset.click();
+    await expect(reset).toHaveAttribute('aria-disabled', 'true');
+    await expect(mit.canvas).not.toHaveAttribute('data-sel-x', /./);
+  });
+
   test('Zoom-Knöpfe ändern den Maßstab, Einpassen stellt ihn wieder her', async ({ page }) => {
     const { canvas, texts } = await openSheet(page);
     // Label in Name (WCAG 2.5.3, STYLEGUIDE 7.7): Der Name jedes Knopfs beginnt

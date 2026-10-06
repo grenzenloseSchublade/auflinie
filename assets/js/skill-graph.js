@@ -169,7 +169,10 @@
       this.sim.resize(cw * this.spread, ch * this.spread);   // Positionen proportional
       // Neues Format erst beim nächsten Reset übernehmen: sonst zöge schon
       // ein kleiner Knoten-Drag (Aufheizen) die ganze Wolke ins neue Format.
-      this.pendingAspect = layoutAspect(cw, ch);
+      // Gleiches Format (nur gezoomt oder Leiste ein/aus): nichts vormerken,
+      // sonst stünde Reset ohne sichtbaren Grund wieder bereit.
+      const aspect = layoutAspect(cw, ch);
+      this.pendingAspect = Math.abs(aspect - this.sim.opts.aspect) > 1e-3 ? aspect : null;
     }
     this.canvasW = cw;
     this.canvasH = ch;
@@ -362,10 +365,19 @@
     });
   };
 
+  // Gibt es etwas zurückzusetzen? Ein gezogener (fixierter) Knoten, eine
+  // Auswahl oder ein Flächenformat, das erst beim nächsten Reset greift.
+  // Sonst ergäbe Reset dasselbe Bild wie Einpassen (Startlage ist
+  // deterministisch), der Knopf steht dann ausgegraut (Owner, 6. 10. 2026).
+  SkillGraph.prototype.canReset = function () {
+    if (this.current !== null || this.pendingAspect !== null) { return true; }
+    return this.nodes.some(function (n) { return n.fx !== null && n.fx !== undefined; });
+  };
+
   // Reset: Fixierungen lösen, Knoten auf die deterministische Kreis-Startlage
   // zurücksetzen, Sim neu aufheizen, Auswahl lösen, Ansicht einpassen.
   SkillGraph.prototype.reset = function () {
-    if (!this.sim) { return; }
+    if (!this.sim || !this.canReset()) { return; }
     if (this.pendingAspect !== null) {
       this.sim.opts.aspect = this.pendingAspect;
       this.pendingAspect = null;
@@ -760,8 +772,9 @@
   // Ansichtszustand als Attribute am Canvas (Maßstab, Knoten außerhalb bzw.
   // angeschnitten, Bildschirmlage des gewählten Knotens) — für Tests und
   // Entwickler-Werkzeuge, ändert nichts an der Darstellung. Dazu die
-  // Zoom-Knöpfe an den Grenzen als aria-disabled (Rückmeldung für Tastatur
-  // und Screenreader; nicht disabled, sonst ginge ihr Fokus verloren).
+  // Zoom-Knöpfe an den Grenzen und Reset ohne etwas zum Zurücksetzen als
+  // aria-disabled (Rückmeldung für Tastatur und Screenreader; nicht
+  // disabled, sonst ginge ihr Fokus verloren).
   // Nur bei Änderung schreiben (die Loop rendert pro Frame).
   SkillGraph.prototype.publishView = function () {
     const canvas = this.canvas;
@@ -781,6 +794,7 @@
     put(canvas, 'data-sel-y', p ? p.y.toFixed(1) : null);
     put(this.zoomInBtn, 'aria-disabled', this.scale >= ZOOM_MAX - 1e-6 ? 'true' : null);
     put(this.zoomOutBtn, 'aria-disabled', this.scale <= ZOOM_MIN + 1e-6 ? 'true' : null);
+    put(this.resetBtn, 'aria-disabled', this.canReset() ? null : 'true');
   };
 
   // ── Eingabe ─────────────────────────────────────────────────────────────────

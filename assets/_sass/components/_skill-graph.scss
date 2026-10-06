@@ -136,8 +136,8 @@ $graph-tool-size: 32px;
     @include focus-ring;
   }
 
-  // An der Zoom-Grenze (skill-graph.js publishView): gedämpft, bleibt
-  // fokussierbar (aria-disabled statt disabled)
+  // An der Zoom-Grenze und Reset ohne Änderung (skill-graph.js publishView):
+  // gedämpft, bleibt fokussierbar (aria-disabled statt disabled)
   &[aria-disabled="true"] {
     color: $white-a32;
     cursor: default;
