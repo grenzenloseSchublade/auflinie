@@ -109,7 +109,9 @@ noch Canvas — sie nimmt `{nodes, edges, width, height}` und bewegt Positionen
   unnötig — relevant erst mit Projekt-Knoten oder Dauersimulation.
 - **Neue Knotentypen** (z. B. Projekt-Knoten für einen bipartiten Graphen):
   Daten in `build()` erweitern und im Renderer eine zweite Knotenform
-  zeichnen — die Engine bleibt unverändert.
+  zeichnen. Die Engine kennt dafür nur zwei optionale, allgemeine Felder:
+  `node.charge` (Faktor der Abstoßung) und `edge.length` (Ruhelänge einer
+  einzelnen Feder).
 - **Tuning:** Alle Physik-Parameter liegen in `DEFAULTS` der Engine und sind
   per `options` überschreibbar (Repulsion, Federlänge/-konstante, Gravitation,
   velocityDecay, alphaDecay).
@@ -153,6 +155,30 @@ Hinweis `texts.graph.unlabeled`. `data-zoom`, `data-outside`,
 `data-sel-x`/`data-sel-y` (Lage des gewählten Knotens), `data-labels` (IDs
 der beschrifteten Knoten) und `data-preview` am Canvas machen die Ansicht
 für Tests lesbar.
+
+**Fassungen, Schalter `graph_mode` (Prototyp Stufe 2, 6. 10. 2026, Branch
+`prototyp/skill-graph-projekte`, nicht live):** `_data/skill_graph.yml`
+wählt mit `graph_mode: projekte | skills`, wie der Graph aus denselben
+Daten entsteht. `skills` ist Stufe 1 (Kanten Skill↔Skill über gemeinsame
+Projekte, 36 Knoten, 142 Kanten) und rendert pixelgleich wie `main`.
+`projekte` macht jedes Projekt zu einem eigenen Knoten (ID `projekt:<id>`,
+abgerundetes Quadrat in Beige `$console-heading`, Name in Beige, Vorrang vor
+allen Skill-Namen) mit Kanten Skill↔Projekt (45 Knoten, 56 Kanten). Ein
+optionales `short` je Projekt kürzt den Namen im Graphen, die Info-Leiste
+nennt `label`. Physik je Fassung in `SIM_OPTIONS` (skill-graph.js),
+Projekte stoßen sich mit `charge` 6 ab, die Startlage ordnet die Projekte
+nach gemeinsamen Skills auf einem Kreis (weniger Kreuzungen). Antippen
+eines Projekts hebt seine Skills hervor (Info-Leiste: Projekt, Rolle
+`texts.selection.project`, Skills), Antippen eines Skills seine Projekte
+und ruhig die Skills, die dort mit ihm zusammenkamen. Ein gewähltes Projekt
+geht als `{skill: null, project: <id>, source: 'graph'}` hinaus: Die
+Chip-Liste kennt keine Projekte und kehrt in den Ruhezustand zurück, das
+Sheet zählt `project` für die Esc-Staffelung mit. Hinweis und
+Canvas-Beschreibung der Fassung stehen unter `texts.graph.projekte`. Mit
+Projekt-Knoten weichen Pflicht-Labels einer Auswahl unter den Knoten aus,
+wenn sie sich oben berühren, und Projektnamen am Rand rücken ins Bild,
+wenn dort nichts liegt. `data-drawn` am Canvas zählt die gezeichneten
+Namen.
 
 **Bewusste Später-Liste** (Stand Juli 2026, Zoom + Pan + Drag erledigt):
 Projekt-Knoten und
