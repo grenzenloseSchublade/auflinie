@@ -172,12 +172,12 @@ sections:
 #   title     Abschnittsüberschrift
 #   text      Absätze und Listen (Markdown im |-Block, Absätze durch eine
 #             Leerzeile getrennt, Listenpunkte mit „- “)
-#   groups    eingerückte Unterpunkte mit title, text, tags (Schlagwort-Kacheln)
-#             und hint
+#   groups    eingerückte Unterpunkte mit title, text, hint und optional
+#             color_schemes: true (die Farbschemas des Auswahlfelds als
+#             Kacheln, Namen aus _data/fractal_panel.yml)
 #   columns   Bedienung nebeneinander (Desktop, Touch) mit title und text
 #   hint      kursiver Hinweis am Ende (Markdown, ein Absatz)
-# Überschriften (title) und Schlagwörter (tags) sind reiner Text, die übrigen
-# Felder Markdown. Im Markdown Apostrophe direkt als ’ tippen (STYLEGUIDE TYPO-3).
+# Überschriften (title) sind reiner Text, die übrigen Felder Markdown. Im Markdown Apostrophe direkt als ’ tippen (STYLEGUIDE TYPO-3).
 panel_explanations:
   julia:
     title: "Die Julia-Menge"
@@ -216,17 +216,9 @@ panel_explanations:
 
           - title: "Farbschema"
             text: "Visualisiert die Fluchtgeschwindigkeit – wie schnell Punkte entkommen:"
-            # Namen wie im Auswahlfeld „Farbschema“ (_includes/fractal/panel.html)
-            tags:
-              - "Blau-Rot"
-              - "Cyberpunk"
-              - "Retrowave"
-              - "Feuer"
-              - "Ozean"
-              - "Monochrom"
-              - "Regenbogen"
-              - "Ultraviolett"
-              - "Gold-Grün"
+            # Die Namen der Farbschemas stehen nur in _data/fractal_panel.yml
+            # (controls.color_schemes), hier erscheinen sie als Kacheln.
+            color_schemes: true
 
       - title: "Navigation"
         columns:

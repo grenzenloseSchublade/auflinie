@@ -2,8 +2,10 @@
 # Julia-Menge“ und „Mandelbrot-Julia-Explorer“ (STYLEGUIDE ARCH-4). Texte nur
 # hier pflegen. Das Markup steht in _includes/fractal/panel.html und
 # _includes/fractal/canvas.html, das Verhalten in assets/js/fractal-panel.js.
-# Die Erklärtexte unter den Panels und die Abschnitte drumherum stehen nicht
-# hier (Abschnitte: _data/mandelbrot.yml).
+# Die Erklärtexte hinter „Erklärung anzeigen“ und die Abschnitte drumherum
+# stehen in _data/mandelbrot.yml (panel_explanations und sections). Die
+# Überschrift über jedem Panel kommt aus _includes/julia-interactive.html bzw.
+# _includes/mandelbrot-julia-explorer.html.
 #
 # Felder eines Knopfs:
 #   label       sichtbarer Text
@@ -67,7 +69,8 @@ controls:
   imag: "c (Imag):"
   preset: "Preset:"
   # Farbschemas in der Reihenfolge der Auswahl. Nur label ändern: value ist
-  # der Name der Farbpalette in assets/js/fractal-renderer.js.
+  # der Name der Farbpalette in assets/js/fractal-renderer.js. Die Namen
+  # erscheinen auch als Kacheln in der Erklärung der Julia-Menge.
   color_schemes:
     - value: "blau-rot"
       label: "Blau-Rot"

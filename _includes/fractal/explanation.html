@@ -1,6 +1,9 @@
 {% comment %}
   Erklärbox eines Fraktal-Panels (Inhalt hinter „Erklärung anzeigen“).
   Texte aus _data/mandelbrot.yml (panel_explanations, ARCH-4), hier nur Markup.
+  Die Farbschema-Kacheln (color_schemes: true) lesen die Namen aus
+  _data/fractal_panel.yml (controls.color_schemes), eine Quelle mit dem
+  Auswahlfeld „Farben“.
   Eingebunden in _includes/fractal/panel.html.
   Parameter:
     variant – "julia" | "explorer" (Schlüssel unter panel_explanations), Pflicht
@@ -16,10 +19,10 @@
   <div class="param-group">
     <h6>{{ group.title | escape }}</h6>
     {% if group.text %}{{ group.text | markdownify }}{% endif %}
-    {% if group.tags %}
+    {% if group.color_schemes %}
     <div class="color-grid">
-      {% for tag in group.tags %}
-      <span class="color-tag">{{ tag | escape }}</span>
+      {% for scheme in site.data.fractal_panel.controls.color_schemes %}
+      <span class="color-tag">{{ scheme.label | escape }}</span>
       {% endfor %}
     </div>
     {% endif %}
