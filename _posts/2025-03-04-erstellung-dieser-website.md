@@ -133,8 +133,12 @@ Das Einrichten ist kurz: Repository klonen, ins Verzeichnis wechseln, `bundle in
   "image": "mcr.microsoft.com/devcontainers/python:3.11",
   "features": {
     "ghcr.io/devcontainers/features/ruby:1": { "version": "3.4.11" },
-    "ghcr.io/devcontainers/features/node:1": { "version": "lts" },
-    "ghcr.io/devcontainers/features/github-cli:1": {}
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "22",
+      "installYarnUsingApt": false
+    },
+    "ghcr.io/devcontainers/features/github-cli:1": {},
+    "ghcr.io/anthropics/devcontainer-features/claude-code:1": {}
   },
   "postCreateCommand": "bash -i .devcontainer/post-create.sh",
   "forwardPorts": [4000],
@@ -144,10 +148,14 @@ Das Einrichten ist kurz: Repository klonen, ins Verzeichnis wechseln, `bundle in
         "sissel.shopify-liquid",
         "davidanson.vscode-markdownlint",
         "yzhang.markdown-all-in-one",
-        "redhat.vscode-yaml"
+        "streetsidesoftware.code-spell-checker",
+        "streetsidesoftware.code-spell-checker-german",
+        "redhat.vscode-yaml",
+        "github.vscode-pull-request-github"
       ]
     }
-  }
+  },
+  "remoteUser": "vscode"
 }
 ```
 
