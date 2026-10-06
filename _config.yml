@@ -1,6 +1,9 @@
 title: Hans Müller # Kraftstoff
 name: Hans Müller
-description: Persönliche Website von Hans Müller – Ingenieur & Entwickler. Blog über Machine Learning, Fraktale, Programmierung und technische Projekte.
+# Feed-Untertitel (feed.xml) und Meta-Fallback für Seiten ohne excerpt (heute nur
+# offline.html). Die Startseite nutzt ihr eigenes excerpt, hier nichts davon doppeln.
+# Machine Learning und Fraktale getrennt nennen (STYLEGUIDE 7.3).
+description: Persönliche Website von Hans Müller, Ingenieur mit Schwerpunkt Machine Learning. Mit Blog, Lebenslauf und einem interaktiven Explorer für Fraktale.
 url: "https://grenzenloseSchublade.github.io"
 baseurl: "/auflinie"
 repository: "grenzenloseSchublade/auflinie"
