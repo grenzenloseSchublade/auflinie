@@ -169,7 +169,7 @@ Markdown ist eine schlanke Auszeichnungssprache. Die wichtigsten Elemente im Üb
 - Strukturierte Darstellung ohne Rangfolge
   - Hierarchische Unterebenen für Detaillierung
 
-1. Nummerierte Listen für sequentielle Prozesse
+1. Nummerierte Listen für sequenzielle Prozesse
 2. Priorisierte oder chronologische Abfolgen
    1. Verschachtelte Nummerierung für komplexe Strukturen
 ```
