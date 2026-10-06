@@ -14,7 +14,13 @@
 #     Text des Listenpunkts als aria-label (WCAG 4.1.2). kramdown setzt den
 #     Text neben das input, nicht in ein label. Ein <label> drumherum
 #     änderte die Optik (das Theme setzt label auf display: block).
-# Autoren schreiben Codeblöcke und Aufgabenlisten wie gewohnt in Markdown.
+#   - Fußnoten-Rücksprung (a.reversefootnote): Der Pfeil „↩“ bekommt den
+#     Namen „Zurück zum Text“ als aria-label (WCAG 2.4.4, Owner-Entscheidung
+#     6. 10. 2026, R-95). Ein Screenreader las sonst nur das Pfeilzeichen
+#     vor. Sichtbar bleibt alles gleich. kramdown kennt dafür keine Option,
+#     footnote_backlink setzt nur den sichtbaren Text.
+# Autoren schreiben Codeblöcke, Aufgabenlisten und Fußnoten wie gewohnt in
+# Markdown.
 #
 # Regex statt Nokogiri aus demselben Grund wie in external-links.rb: jedes
 # andere Byte der Seite bleibt gleich. Kommentare, <script>, <style>,
@@ -27,7 +33,9 @@ module Auflinie
     TABLE = /<table class="rouge-table">/.freeze
     PRE = %r{<pre( class="highlight")?><code>(?!<table class="rouge-table">)}.freeze
     TASK = %r{(<input type="checkbox" class="task-list-item-checkbox"[^>]*?)\s*/>(.*?)(?=</li|</p|<ul|<ol)}m.freeze
-    TOKEN = Regexp.union(SKIP, TABLE, PRE, TASK)
+    BACKLINK = /<a [^>]*class="reversefootnote"[^>]*>/.freeze
+    BACKLINK_LABEL = "Zurück zum Text"
+    TOKEN = Regexp.union(SKIP, TABLE, PRE, TASK, BACKLINK)
 
     module_function
 
@@ -37,7 +45,8 @@ module Auflinie
 
     def process(html)
       return html unless html.include?("<pre") ||
-                         html.include?("task-list-item-checkbox")
+                         html.include?("task-list-item-checkbox") ||
+                         html.include?("reversefootnote")
 
       html.gsub(TOKEN) do |match|
         # Gruppe 1 gehört zu SKIP, 2 zu PRE, 3 und 4 zu TASK
@@ -46,6 +55,10 @@ module Auflinie
           next match if m[3].include?("aria-label") || label(m[4]).empty?
 
           %(#{m[3]} aria-label="#{label(m[4])}" />#{m[4]})
+        elsif match.start_with?("<a ") # Fußnoten-Rücksprung
+          next match if match.include?("aria-label")
+
+          match.sub(/>\z/, %( aria-label="#{BACKLINK_LABEL}">))
         elsif match == '<table class="rouge-table">'
           '<table class="rouge-table" tabindex="0">'
         elsif match.start_with?("<pre")

@@ -23,10 +23,14 @@ const collected = {};
 // Bekannte Befunde, die an einem Inhaltsmuster hängen statt an einer Seite.
 // Ein neuer Beitrag mit diesem Muster machte die CI sonst rot, obwohl er nur
 // Inhalt ist (STYLEGUIDE ARCH-5). Ein Muster fällt weg, sobald der Befund
-// behoben ist.
+// behoben ist oder die Ausnahme endet.
 const KNOWN_PATTERNS = [
-  // R-95: Der Fußnoten-Rücksprung hebt sich nur über die Farbe ab (Owner)
-  /^link-in-text-block \| (\.reversefootnote|a\[href\$="#fnref:\d+"\])$/,
+  // Dokumentierte Ausnahme (STYLEGUIDE 6.5, Owner-Entscheidung 6. 10. 2026,
+  // R-95): Der Fußnoten-Rücksprung „↩“ hebt sich im Text nur über die Farbe
+  // ab und bleibt so. Er trägt den Namen „Zurück zum Text“
+  // (_plugins/inhalts-a11y.rb). Fußnoten-Namen sind Zahlen oder Wörter
+  // ([^1], [^quelle]), ein zweiter Verweis hängt :1 an.
+  /^link-in-text-block \| (\.reversefootnote|a\[href\$="#fnref:[^"]+"\])$/,
 ];
 
 // settle: feste Wartezeit für axe (Fraktal-Rendering, Einblendungen). Der

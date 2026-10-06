@@ -652,3 +652,20 @@ test.describe('Kachelbilder mit den Maßen ihrer Datei (IMG-3)', () => {
     });
   }
 });
+
+// Fußnoten-Rücksprung mit sprechendem Namen (6.5, R-95): _plugins/inhalts-a11y.rb
+// setzt beim Build aria-label „Zurück zum Text“ an jedes a.reversefootnote.
+// Beiträge ohne Fußnote bestehen ohne Prüfung, ein neuer mit Fußnote ist dabei.
+test.describe('Fußnoten-Rücksprung heißt „Zurück zum Text“ (6.5)', () => {
+  for (const path of POSTS) {
+    test(`/${path}`, async ({ page }) => {
+      await ohneBlogHinweis(page);
+      await page.goto(`/auflinie/${path}`, { waitUntil: 'load' });
+      const links = page.locator('a.reversefootnote');
+      const n = await links.count();
+      for (let i = 0; i < n; i++) {
+        await expect(links.nth(i)).toHaveAccessibleName('Zurück zum Text');
+      }
+    });
+  }
+});
