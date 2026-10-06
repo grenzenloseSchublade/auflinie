@@ -147,7 +147,7 @@ Fallen: Der Kontaktsatz und die Kontaktkarten am Ende kommen aus `author.links` 
 
 ## Mandelbrot-Texte
 
-1. `_data/mandelbrot.yml` öffnen. Jeder Abschnitt hat `section` (Überschrift), `content` (Text als `|-`-Block) und optional `subsections` mit `title` und `content`. Der erste Abschnitt mit `intro: true` ist die Einleitung ohne Überschrift.
+1. `_data/mandelbrot.yml` öffnen. Jeder Abschnitt hat `section` (Überschrift), `content` (Text als `|-`-Block) und optional `subsections` mit `title` und `content`. Der erste Abschnitt mit `intro: true` ist die Einleitung ohne Überschrift. Die Erklärungen hinter „Erklärung anzeigen“ in den beiden interaktiven Fraktalen stehen am Ende unter `panel_explanations`, die Felder erklärt der Kommentar darüber.
 2. Text ändern. Formeln haben hier eine eigene Schreibweise (STYLEGUIDE MD-3):
 
    ```yaml

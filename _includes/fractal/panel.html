@@ -162,11 +162,7 @@
       {{ button_text.explanation.label | escape }} <span class="toggle-icon" aria-hidden="true">▼</span>
     </button>
     <div class="fractal-panel__explanation-box" data-role="explanation-box">
-      {% if fractal_variant == "julia" %}
-        {% include fractal/explanation-julia.html %}
-      {% else %}
-        {% include fractal/explanation-explorer.html %}
-      {% endif %}
+      {% include fractal/explanation.html variant=fractal_variant %}
     </div>
   </div>
 </div>

@@ -1,0 +1,41 @@
+{% comment %}
+  Erklärbox eines Fraktal-Panels (Inhalt hinter „Erklärung anzeigen“).
+  Texte aus _data/mandelbrot.yml (panel_explanations, ARCH-4), hier nur Markup.
+  Eingebunden in _includes/fractal/panel.html.
+  Parameter:
+    variant – "julia" | "explorer" (Schlüssel unter panel_explanations), Pflicht
+{% endcomment %}
+{%- assign explanation = site.data.mandelbrot.panel_explanations[include.variant] %}
+<h4>{{ explanation.title | escape }}</h4>
+{% if explanation.intro %}{{ explanation.intro | markdownify }}{% endif %}
+{% for section in explanation.sections %}
+<section class="explanation-section">
+  <h5>{{ section.title | escape }}</h5>
+  {% if section.text %}{{ section.text | markdownify }}{% endif %}
+  {% for group in section.groups %}
+  <div class="param-group">
+    <h6>{{ group.title | escape }}</h6>
+    {% if group.text %}{{ group.text | markdownify }}{% endif %}
+    {% if group.tags %}
+    <div class="color-grid">
+      {% for tag in group.tags %}
+      <span class="color-tag">{{ tag | escape }}</span>
+      {% endfor %}
+    </div>
+    {% endif %}
+    {% if group.hint %}{{ group.hint | markdownify | replace_first: '<p>', '<p class="hint">' }}{% endif %}
+  </div>
+  {% endfor %}
+  {% if section.columns %}
+  <div class="nav-columns">
+    {% for column in section.columns %}
+    <div class="nav-column">
+      <h6>{{ column.title | escape }}</h6>
+      {{ column.text | markdownify }}
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+  {% if section.hint %}{{ section.hint | markdownify | replace_first: '<p>', '<p class="hint">' }}{% endif %}
+</section>
+{% endfor %}

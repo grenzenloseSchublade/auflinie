@@ -161,3 +161,119 @@ sections:
       Experimentelle und interaktive Ansätze erlauben es, immer tiefere Details und neue Strukturen zu entdecken.
       Die Mandelbrot-Menge bleibt somit ein zentrales Objekt der modernen Mathematik und bietet Anknüpfungspunkte für vielfältige Forschungsfragen.
 
+
+# Erklärbox der beiden interaktiven Panels (Knopf „Erklärung anzeigen“),
+# julia: Interaktive Julia-Menge, explorer: Mandelbrot-Julia-Explorer.
+# Markup: _includes/fractal/explanation.html. Felder je Erklärung:
+#   title     Überschrift der Box
+#   intro     optional, Absatz unter der Überschrift (Markdown)
+#   sections  Abschnitte, die Reihenfolge hier ist die Reihenfolge in der Box
+# Felder je Abschnitt (alle außer title optional), angezeigt in dieser Folge:
+#   title     Abschnittsüberschrift
+#   text      Absätze und Listen (Markdown im |-Block, Absätze durch eine
+#             Leerzeile getrennt, Listenpunkte mit „- “)
+#   groups    eingerückte Unterpunkte mit title, text, tags (Schlagwort-Kacheln)
+#             und hint
+#   columns   Bedienung nebeneinander (Desktop, Touch) mit title und text
+#   hint      kursiver Hinweis am Ende (Markdown, ein Absatz)
+# Überschriften (title) und Schlagwörter (tags) sind reiner Text, die übrigen
+# Felder Markdown. Im Markdown Apostrophe direkt als ’ tippen (STYLEGUIDE TYPO-3).
+panel_explanations:
+  julia:
+    title: "Die Julia-Menge"
+    sections:
+      - title: "Was ist die Julia-Menge?"
+        text: |-
+          Die Julia-Menge ist ein **Fraktal** – ein Muster, das sich bei jeder Vergrößerung wiederholt, ähnlich wie Schneeflocken oder Küstenlinien in der Natur. Das Besondere: Egal wie tief der Zoom geht, es tauchen immer wieder ähnliche Strukturen auf – das nennt man *Selbstähnlichkeit*.
+
+      - title: "So funktioniert's"
+        text: |-
+          Die Idee: Jeder Punkt auf dem Bildschirm durchläuft immer wieder dieselbe Rechenregel: `zₙ₊₁ = zₙ² + c`. Manche Punkte bleiben dabei „gefangen“ (ihr Betrag wächst nie über 2) – sie bilden die *gefüllte* Julia-Menge und werden schwarz dargestellt. Die Julia-Menge selbst ist deren Rand, also die Grenzlinie zwischen Schwarz und Farbe.
+
+          Alle anderen Punkte „entkommen“ irgendwann ins Unendliche. Die **Farbe** zeigt, wie schnell ein Punkt entkommt – das ist die sogenannte *Fluchtgeschwindigkeit*.
+        hint: "Der Parameter `c` ist eine Konstante aus zwei Zahlen (Real- und Imaginärteil). Jeder Wert von `c` erzeugt eine völlig andere Julia-Menge."
+
+      - title: "Parameter"
+        groups:
+          - title: "Komplexe Konstante c"
+            text: |-
+              Real- und Imaginärteil definieren gemeinsam `c = Re + Im·i`. Verschiedene Werte lohnen das Ausprobieren:
+
+              - **Re ∈ [−2, 0.25], Im ≈ 0** – Zusammenhängende Strukturen
+              - **Re ≈ 0, Im ≈ 0** – Nahezu kreisförmig (bei c = 0 exakt der Einheitskreis)
+              - **Re = 0, Im = 1** – „Dendrit“: baumartig verzweigt, ganz ohne Innenfläche
+              - **c außerhalb der Mandelbrot-Menge** – Fragmentierte „Staub“-Strukturen
+            hint: "Kleine Änderungen an `c` verändern das Bild vollständig."
+
+          - title: "Maximale Iterationen"
+            text: |-
+              Bestimmt, wie oft die Rechenregel angewendet wird, bevor ein Punkt als „gefangen“ gilt:
+
+              - **10–50** – Schnell, weniger Details
+              - **100–200** – Ausgewogen (empfohlen)
+              - **300+** – Maximale Details, langsamer
+            hint: "Tiefer Zoom braucht mehr Iterationen für scharfe Grenzen."
+
+          - title: "Farbschema"
+            text: "Visualisiert die Fluchtgeschwindigkeit – wie schnell Punkte entkommen:"
+            # Namen wie im Auswahlfeld „Farbschema“ (_includes/fractal/panel.html)
+            tags:
+              - "Blau-Rot"
+              - "Cyberpunk"
+              - "Retrowave"
+              - "Feuer"
+              - "Ozean"
+              - "Monochrom"
+              - "Regenbogen"
+              - "Ultraviolett"
+              - "Gold-Grün"
+
+      - title: "Navigation"
+        columns:
+          - title: "Desktop"
+            text: |-
+              - **Mausrad** – Zoom an Position
+              - **Linksklick + Ziehen** – Rechteck-Zoom
+              - **Rechtsklick + Ziehen** – Verschieben
+              - **Leertaste + Ziehen** – Verschieben
+              - **Doppelklick** – Herauszoomen
+              - **Pfeiltasten / + / − / 0** – Tastatursteuerung
+          - title: "Touch"
+            text: |-
+              - **Pinch** – Zoom hinein/heraus
+              - **Zwei-Finger-Ziehen** – Verschieben
+              - **+/−-Buttons** – Zoom-Steuerung
+        hint: "Beim Hineinzoomen zeigt sich die Selbstähnlichkeit: Strukturen wiederholen sich in immer kleineren Maßstäben."
+
+      - title: "Mandelbrot-Verwandtschaft"
+        text: |-
+          Julia- und Mandelbrot-Menge sind eng verwandt: Punkte *innerhalb* der Mandelbrot-Menge erzeugen zusammenhängende Julia-Mengen, Punkte *außerhalb* erzeugen fragmentierten „Staub“.
+
+  explorer:
+    title: "Mandelbrot-Julia-Explorer"
+    intro: |-
+      Dieser Explorer zeigt die faszinierende Verbindung zwischen der Mandelbrot-Menge und den Julia-Mengen. Jeder Punkt `c` in der Mandelbrot-Menge erzeugt eine einzigartige Julia-Menge.
+    sections:
+      - title: "Die Verbindung"
+        text: |-
+          - **Innerhalb der Mandelbrot-Menge** – Zusammenhängende Julia-Mengen mit komplexen Strukturen
+          - **Am Rand** – Die interessantesten, oft fraktalen Julia-Mengen
+          - **Außerhalb** – Fragmentierte „Staub“-Strukturen
+        hint: "Besonders vielgestaltig sind die „Antennen“ und „Knospen“ am Rand."
+
+      - title: "Navigation"
+        columns:
+          - title: "Desktop"
+            text: |-
+              - **Linksklick (Mandelbrot)** – Wählt c-Parameter
+              - **Mausrad** – Zoom an Position
+              - **Linksklick + Ziehen** – Rechteck-Zoom
+              - **Rechtsklick/Leertaste + Ziehen** – Verschieben
+              - **Doppelklick** – Herauszoomen
+              - **Pfeiltasten / + / − / 0 / Enter** – Tastatursteuerung
+          - title: "Touch"
+            text: |-
+              - **Tippen (Mandelbrot)** – Wählt c-Parameter
+              - **Pinch** – Zoom hinein/heraus
+              - **Zwei-Finger-Ziehen** – Verschieben
+              - **+/−-Buttons** – Zoom-Steuerung
