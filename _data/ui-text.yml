@@ -7,7 +7,8 @@
 # Grundlage ist der komplette de-Block des Themes. Geändert nur, was gegen
 # STYLEGUIDE 7 (anredefrei, nie „Sie“) oder 8 (Typografie) verstieß oder leer
 # war und deshalb auf den englischen Fallback der Templates fiel (Skip-Links).
-# Keys bleiben in Theme-Schreibweise (YAML-1).
+# Keys bleiben in Theme-Schreibweise (YAML-1). Eigener Zusatz-Key:
+# minute_read_one (Singular „1 Minute zum Lesen“, das Theme kennt keinen).
 de: &DEFAULT_DE
   skip_links                 : "Sprunglinks"
   skip_primary_nav           : "Zur Hauptnavigation springen"
@@ -24,6 +25,7 @@ de: &DEFAULT_DE
   ext_link_label             : "Direkter Link"
   less_than                  : "weniger als"
   minute_read                : "Minuten zum Lesen"
+  minute_read_one            : "Minute zum Lesen"
   share_on_label             : "Teilen auf"
   meta_label                 :
   tags_label                 : "Tags:"
