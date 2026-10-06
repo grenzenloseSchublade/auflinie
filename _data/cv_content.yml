@@ -131,7 +131,7 @@
         - text: "Etablierung moderner Entwicklungspraktiken und Automatisierungen"
           subitems:
             - "Erstellung und Verteilung von Entwicklungsumgebungen mittels DevContainer und GitHub Codespaces"
-            - "Umsetzung von Test-Driven Development und Erstellung von CI/CD-Pipelines"
+            - "Umsetzung von Test-Driven Development und Erstellung von Pipelines für CI / CD"
             - "Implementierung von Buildpipelines mit GitHub Actions für die automatische Bereitstellung von Docker-Images"
             - "Einführung von **DVC** für die übergreifende Versionierung und Verwaltung von Daten und das Tracking von Experimenten"
 
@@ -261,7 +261,7 @@
         - "Dagster"
       breadth:
         - "Docker-Compose"
-        - "GitLab CI/CD"
+        - "GitLab CI / CD"
         - "Shell-Scripts"
         - "TDD"
         - "Scrum / Kanban"
