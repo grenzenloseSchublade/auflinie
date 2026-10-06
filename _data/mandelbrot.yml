@@ -178,6 +178,8 @@ sections:
 #   columns   Bedienung nebeneinander (Desktop, Touch) mit title und text
 #   hint      kursiver Hinweis am Ende (Markdown, ein Absatz)
 # Überschriften (title) sind reiner Text, die übrigen Felder Markdown. Im Markdown Apostrophe direkt als ’ tippen (STYLEGUIDE TYPO-3).
+# Ein vertipptes Feld, ein leeres Feld oder ein Abschnitt ohne Inhalt meldet
+# der Inhalts-Check (scripts/content-check.py) mit Zeile.
 panel_explanations:
   julia:
     title: "Die Julia-Menge"

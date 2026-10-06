@@ -6,6 +6,8 @@
 # stehen in _data/mandelbrot.yml (panel_explanations und sections). Die
 # Überschrift über jedem Panel kommt aus _includes/julia-interactive.html bzw.
 # _includes/mandelbrot-julia-explorer.html.
+# Fehlt ein Schlüssel oder ist er leer, meldet das der Inhalts-Check
+# (scripts/content-check.py).
 #
 # Felder eines Knopfs:
 #   label       sichtbarer Text

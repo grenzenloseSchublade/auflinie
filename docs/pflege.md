@@ -126,7 +126,7 @@ Falle: Die Tests nutzen den Skill „Python“ als Beispiel. Wer ihn umbenennt o
 Der Hinweis über den Skills, die Zeile nach einem Klick, der Name der ergänzenden Kenntnisse je Gruppe für Screenreader und alle Beschriftungen im Skill-Graphen (Knöpfe, Hinweise) stehen in `_data/skill_graph.yml` ganz unten unter `texts`.
 
 1. Den Text zwischen den Anführungszeichen ändern.
-2. Prüfen und pushen.
+2. Prüfen und pushen. Einen vertippten oder leeren Schlüssel meldet der Inhalts-Check mit Zeile.
 
 Fallen: `label` ist der Name für Screenreader und beginnt mit dem sichtbaren Text, bei den Zoom-Knöpfen mit dem Zeichen − bzw. +. Die Tests lesen die Texte aus dieser Datei, eine Textänderung braucht keinen angepassten Test.
 
@@ -156,7 +156,7 @@ Fallen: Der Kontaktsatz und die Kontaktkarten am Ende kommen aus `author.links` 
 
 ## Mandelbrot-Texte
 
-1. `_data/mandelbrot.yml` öffnen. Jeder Abschnitt hat `section` (Überschrift), `content` (Text als `|-`-Block) und optional `subsections` mit `title` und `content`. Der erste Abschnitt mit `intro: true` ist die Einleitung ohne Überschrift. Die Erklärungen hinter „Erklärung anzeigen“ in den beiden interaktiven Fraktalen stehen am Ende unter `panel_explanations`, die Felder erklärt der Kommentar darüber.
+1. `_data/mandelbrot.yml` öffnen. Jeder Abschnitt hat `section` (Überschrift), `content` (Text als `|-`-Block) und optional `subsections` mit `title` und `content`. Der erste Abschnitt mit `intro: true` ist die Einleitung ohne Überschrift. Die Erklärungen hinter „Erklärung anzeigen“ in den beiden interaktiven Fraktalen stehen am Ende unter `panel_explanations`, die Felder erklärt der Kommentar darüber. Ein vertipptes oder leeres Feld meldet der Inhalts-Check mit Zeile.
 2. Text ändern. Formeln haben hier eine eigene Schreibweise (STYLEGUIDE MD-3):
 
    ```yaml
@@ -176,7 +176,7 @@ Fallen: `anchor`, `include` und `icon` nicht ändern, daran hängen Sprunglinks,
 Knöpfe, Beschriftungen, Statusmeldungen („Berechne…“) und Gesten-Hinweise der beiden interaktiven Fraktale stehen in `_data/fractal_panel.yml`.
 
 1. Den Text suchen und ändern. `buttons` sind die Knöpfe, `controls` Regler und Auswahlfelder, `canvas` die Texte in der Zeichenfläche, `julia` und `explorer` das, was nur eines der beiden Fraktale hat.
-2. Prüfen und pushen.
+2. Prüfen und pushen. Einen vertippten oder leeren Schlüssel meldet der Inhalts-Check mit Zeile.
 
 Fallen: Bei einem Knopf beginnt `aria_label` (Name für Screenreader) mit dem sichtbaren `label`, also „Reset – Ansicht zurücksetzen“ zu „Reset“. Wer `label` ändert, ändert `aria_label` mit. Felder mit `_active` sind der Text im eingeschalteten Zustand. `value` bei Farbschemas und Presets nicht ändern, daran hängen Farbpalette und Startwert.
 

@@ -1,0 +1,9 @@
+# Leerer Text-Schlüssel im Skill-Graphen (Name des ✕-Knopfs für Screenreader)
+guardrail: content
+expect: 1
+grep: „texts\.graph\.close“ ist leer
+file: _data/skill_graph.yml
+mode: replace
+old: close: "Graph schließen"
+---
+close: ""

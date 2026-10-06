@@ -74,6 +74,8 @@ projects:
 # „title“ der Tooltip beim Überfahren mit der Maus.
 # Der ganze Block geht mit den Projekten als Datenblock an den Browser, auch
 # die Texte, die schon im Markup stehen (gut 1 KB, bewusst eine Quelle).
+# Fehlt ein Schlüssel oder ist er leer, meldet das der Inhalts-Check
+# (scripts/content-check.py).
 # =============================================================================
 texts:
   # Hinweis über den Chips und im Graph-Fenster, solange nichts gewählt ist

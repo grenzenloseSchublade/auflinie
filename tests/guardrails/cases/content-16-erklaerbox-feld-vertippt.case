@@ -1,0 +1,9 @@
+# Vertipptes Feld in einer Erklärbox der Fraktal-Panels, der Hinweis fehlte sonst still
+guardrail: content
+expect: 1
+grep: Unbekanntes Feld „hnt“ in „panel_explanations\.julia\.sections\[4\]“.*\n.*zurück auf „hint“
+file: _data/mandelbrot.yml
+mode: replace
+old: hint: "Beim Hineinzoomen zeigt sich
+---
+hnt: "Beim Hineinzoomen zeigt sich

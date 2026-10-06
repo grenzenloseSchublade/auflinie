@@ -1,0 +1,9 @@
+# Vertippter Text-Schlüssel der Fraktal-Bedienung, die Meldung nennt den vorhandenen Namen
+guardrail: content
+expect: 1
+grep: „canvas\.keyboard_help“ fehlt.*\n.*Dort steht „keyboard_hilfe“
+file: _data/fractal_panel.yml
+mode: replace
+old: keyboard_help: "interaktiv.
+---
+keyboard_hilfe: "interaktiv.
