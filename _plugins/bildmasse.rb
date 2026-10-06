@@ -9,7 +9,7 @@
 # Include lässt die Attribute dann weg, der Build läuft weiter, und
 # scripts/content-check.py --site warnt. Nutzer: archive-single.html
 # (Kachelbilder auf der Startseite und unter „Das könnte auch
-# interessieren“).
+# interessieren“) und seo.html (og:image:width und og:image:height).
 #
 # Warum ein Plugin: Wer bloggt, trägt nur den Pfad zum Bild ein
 # (Leitlinie 1.8, docs/pflege.md). Maße im Front Matter oder in _data

@@ -255,7 +255,8 @@ Copyright-Zeile: Das Jahr setzt der Build selbst, der Name kommt aus `name` in `
 2. Ablegen. Bilder eines Beitrags nach `assets/images/posts/`, alles andere nach `assets/images/`.
 3. Verweis ändern:
    - Titelbild einer Seite oder eines Beitrags: `header.overlay_image` (und `header.teaser` für die Kachel, deren Maße der Build selbst aus der Datei liest) im Kopf der Datei,
-   - Titelbild als Standard und Vorschau für Link-Teilen: `background_image` und `og_image` in `_config.yml`,
+   - Titelbild als Standard: `background_image` in `_config.yml`,
+   - Vorschaubild beim Teilen (1200 × 630 px): `og_image` und `og_image_alt` in `_config.yml`, für eine einzelne Seite `header.og_image` und `header.og_image_alt` im Kopf der Datei (wie auf `/mandelbrot/`). Das Standardbild mit Namen und Adresse erzeugt `scripts/og-image.js` (Aufruf im Kopf des Skripts). Es braucht keinen Eintrag in `CACHE_URLS`, keine Seite lädt es,
    - Fraktal-Kachel der Startseite: `fractal_showcase.image` in `_data/home.yml`, jede Breite unter `srcset` mit ihrer `width`, dazu `alt`, `width` und `height` der Hauptdatei.
 4. Nur für Bilder außerhalb von `assets/images/posts/`: den neuen Namen in `CACHE_URLS` in `service-worker.js` eintragen (bei der Kachel jede Breite) und den alten entfernen. Sonst meldet der Test `precache.spec.js` die fehlende Datei.
 5. Alte Datei löschen, wenn sie nirgends mehr gebraucht wird, prüfen und pushen.

@@ -18,6 +18,9 @@ header:
   overlay_image: /assets/images/background.jpg
   overlay_filter: 0.5
   caption: "In Echtzeit gerechnet"
+  # Eigenes Vorschaubild beim Teilen statt des Site-Bilds (_config.yml og_image)
+  og_image: /assets/images/mandelbrot-preview.jpg
+  og_image_alt: "Ausschnitt der Mandelbrot-Menge mit spiralförmigen Ausläufern"
   actions:
     - label: "Interaktive Julia-Menge"
       url: "/mandelbrot/#julia-container"

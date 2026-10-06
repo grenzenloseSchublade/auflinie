@@ -8,7 +8,8 @@ logo: "/assets/images/Logo.svg"  # SVG für perfekte Transparenz (Alternative: L
 
 # Bild- und Performance-Einstellungen
 background_image: "/assets/images/background.jpg"
-# Alt-Text, wenn der Hero-Hintergrund als Vorschaubild (og:image) dient (_includes/seo.html)
+# Alt-Text, wenn der Hero-Hintergrund als Vorschaubild (og:image) dient. Seit
+# og_image (unten) ein eigenes Bild ist, nur noch Rückfall (_includes/seo.html)
 background_image_alt: "Retro-Grafik: gestreifte Sonne in Magenta und Cyan über einem leuchtenden Gitterboden"
 # Hero CRT-Overlay bei Hintergrundbild: "dezent" | "stark" (pro Seite: header.crt_intensity im Frontmatter; Standard: stark)
 hero_crt_intensity: "stark"
@@ -87,10 +88,13 @@ include:
 twitter:
   card: "summary_large_image"
   # username: (bei Bedarf ausfüllen)
-# Site-Vorschaubild (Open Graph/Twitter) für Seiten ohne Hero, z. B. 404 und
-# Offline. Derselbe Hero-Hintergrund wie auf allen anderen Seiten, Alt-Text aus
-# background_image_alt. Ein eigenes Bild bekäme og_image_alt (_includes/seo.html)
-og_image: "/assets/images/background.jpg"
+# Vorschaubild beim Teilen (Open Graph/Twitter, 1200 × 630) für alle Seiten,
+# auch die mit Hero. Eine Seite mit eigenem Bild setzt header.og_image und
+# header.og_image_alt im Front Matter (heute /mandelbrot/). Reihenfolge in
+# _includes/seo.html. Erzeugt mit scripts/og-image.js (Hero-Motiv mit Namen
+# und Adresse, Owner-Entscheidung R-67 vom 6. 10. 2026).
+og_image: "/assets/images/og-vorschaubild.jpg"
+og_image_alt: "Schriftzug Hans Müller mit der Adresse grenzenloseschublade.github.io/auflinie vor einer gestreiften Retro-Sonne über einem leuchtenden Gitterboden"
 # Theme-Schema der Site (JSON-LD auf der Startseite). social.links (sameAs)
 # füllt _plugins/social-links.rb aus author.links unten, hier nicht pflegen
 # (STYLEGUIDE ARCH-4).

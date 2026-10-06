@@ -25,7 +25,7 @@ Diese Website kombiniert Jekyll mit dem Minimal Mistakes Theme, um eine ansprech
 
 - [x] Bilder und Grafiken optimieren (ungenutzte Assets entfernt — ~450 KB; Font-Awesome-Subset statt Komplett-CSS)
 - [ ] Weitere Blog Einträge hinzufügen
-- [ ] og:image: eigenes 1200 × 630-Bild statt des Hero-Hintergrunds mit 675 × 360 px (bessere Link-Vorschauen, STYLEGUIDE Register R-67)
+- [x] og:image: eigenes 1200 × 630-Bild statt des Hero-Hintergrunds mit 675 × 360 px (`og-vorschaubild.jpg`, erzeugt mit `scripts/og-image.js`)
 
 ## Installation und Einrichtung
 
@@ -424,7 +424,7 @@ Leitgedanke: Wissen soll weitergegeben und weiterverwendet werden. Deshalb ist d
 | **Wissens-Texte**: Blogbeiträge (`_posts/`), Fraktal-Erklärungen (`_data/mandelbrot.yml`, `_pages/mandelbrot.md`), `assets/downloads/` | [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/deed.de) – Weiterverwendung erlaubt, mit Nennung „Hans Müller, auflinie“ und Link |
 | **Persönliches**: Lebenslauf und Profil (`_pages/cv.md`, `_pages/about.md`, `_data/cv_content.yml`, `_data/skill_graph.yml`), Startseiten-Texte (`_data/home.yml`) | Alle Rechte vorbehalten |
 | **Bilder und Marke**: Logo und Favicons (`assets/images/Logo.svg`, `favicon*`, `apple-touch-icon.png`), `mandelbrot-preview*.jpg` | Alle Rechte vorbehalten |
-| **`assets/images/background.jpg`** | Adobe-Stock-Lizenz, darf nicht weitergegeben oder weiterverwendet werden |
+| **`assets/images/background.jpg`** und das daraus abgeleitete Vorschaubild **`assets/images/og-vorschaubild.jpg`** | Adobe-Stock-Lizenz, darf nicht weitergegeben oder weiterverwendet werden |
 
 ### Komponenten Dritter
 

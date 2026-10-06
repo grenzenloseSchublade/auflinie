@@ -1,4 +1,21 @@
-{% comment %} begin _includes/seo.html {% endcomment %}
+{% comment %}
+  Lokales Override des Theme-Includes (Minimal Mistakes 4.28.1). Eingebunden
+  in _includes/head.html, ohne Parameter. Abweichungen, sonst Theme-Fassung,
+  bei Theme-Updates gegenlesen:
+  1. Vorschaubild (og:image, twitter:image): Das Site-Bild site.og_image hat
+     Vorrang vor dem Hero der Seite (Owner-Entscheidung R-67 vom
+     6. 10. 2026: überall Name und Adresse im Bild). Ein eigenes Bild setzt
+     eine Seite mit header.og_image (heute /mandelbrot/). Erst ohne
+     site.og_image greift wie im Theme der Hero (overlay_image, image).
+     Dazu og:image:width und og:image:height aus der Datei (Filter
+     bildmasse, _plugins/bildmasse.rb), damit Messenger die große Karte
+     schon beim ersten Teilen zeigen.
+  2. Alt-Text des Vorschaubilds (og:image:alt, twitter:image:alt), an das
+     tatsächlich gezeigte Bild gebunden (SEO-3).
+  3. seo_title aus dem Front Matter für <title> und og:title.
+  4. Theme-Schema nur auf Seiten mit dem Flag site_schema (LIQ-4).
+  5. Liquid- statt HTML-Kommentare (nichts davon im ausgelieferten HTML).
+{% endcomment %}
 {%- assign title_separator = site.title_separator | default: '-' -%}
 
 {%- assign page_title = page.title | default: site.title | replace: '|', '&#124;' -%}
@@ -35,26 +52,30 @@
   {%- assign author_twitter = author.twitter | replace: "@", "" -%}
 {%- endif -%}
 
-{%- assign page_large_image = page.header.og_image | default: page.header.overlay_image | default: page.header.image | absolute_url | escape -%}
+{%- comment -%} Abweichung 1: site.og_image vor dem Hero (Theme: Hero vor
+  site.og_image). Der Pfad bleibt für die Maße erhalten. {%- endcomment -%}
+{%- assign page_large_image_path = page.header.og_image | default: site.og_image | default: page.header.overlay_image | default: page.header.image -%}
+{%- assign page_large_image = page_large_image_path | absolute_url | escape -%}
 {%- assign page_teaser_image = page.header.teaser | default: site.og_image | absolute_url | escape -%}
 {%- assign site_og_image = site.og_image | absolute_url | escape -%}
+{%- if page_large_image_path -%}
+  {%- assign og_image_masse = page_large_image_path | bildmasse -%}
+{%- endif -%}
 
-{%- comment -%} Alt-Text des Vorschaubilds (og:image:alt, twitter:image:alt), aus
-  Minimal Mistakes 4.28.1 übernommen und an das tatsächlich gezeigte Bild
-  gebunden. Das Theme nimmt site.og_image_alt auch dann, wenn das Bild der
-  Hero-Hintergrund der Seite ist, und beschriebe dann das falsche Bild.
-  Reihenfolge: header.og_image_alt der Seite, sonst der passende Site-Text zum
-  gemeinsamen Hero-Hintergrund (background_image_alt, auch wenn er zugleich
-  Site-Vorschaubild ist) oder zum eigenen Site-Vorschaubild (og_image_alt).
-  Passt keiner, bleibt das Bild ohne Alt-Text. {%- endcomment -%}
+{%- comment -%} Abweichung 2: Das Theme nimmt site.og_image_alt für jedes
+  Bild, auch für einen Hero, und beschriebe dann das falsche Bild.
+  Reihenfolge: header.og_image_alt der Seite, sonst der Site-Text zum
+  gezeigten Bild: og_image_alt zum Site-Vorschaubild, background_image_alt
+  zum gemeinsamen Hero-Hintergrund (nur ohne site.og_image). Passt keiner,
+  bleibt das Bild ohne Alt-Text. {%- endcomment -%}
 {%- assign og_image_shown = page_large_image | default: page_teaser_image -%}
 {%- assign og_image_alt = page.header.og_image_alt -%}
 {%- unless og_image_alt -%}
   {%- assign site_background_image = site.background_image | absolute_url | escape -%}
-  {%- if og_image_shown == site_background_image -%}
-    {%- assign og_image_alt = site.background_image_alt -%}
-  {%- elsif og_image_shown == site_og_image -%}
+  {%- if og_image_shown == site_og_image -%}
     {%- assign og_image_alt = site.og_image_alt -%}
+  {%- elsif og_image_shown == site_background_image -%}
+    {%- assign og_image_alt = site.background_image_alt -%}
   {%- endif -%}
 {%- endunless -%}
 {%- assign og_image_alt = og_image_alt | strip | escape -%}
@@ -87,6 +108,10 @@
 
 {% if og_image_shown %}
   <meta property="og:image" content="{{ og_image_shown }}">
+  {% if og_image_masse %}
+    <meta property="og:image:width" content="{{ og_image_masse.width }}">
+    <meta property="og:image:height" content="{{ og_image_masse.height }}">
+  {% endif %}
   {% if og_image_alt != "" %}
     <meta property="og:image:alt" content="{{ og_image_alt }}">
   {% endif %}
