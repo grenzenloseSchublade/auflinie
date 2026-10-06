@@ -506,7 +506,7 @@ Wo der Build Zeit verliert, zeigt `jekyll build --profile`: Es listet die Render
 
 **Asset-Handling und Optimierung:**
 
-Statt einer generischen Bildoptimierungs-Pipeline setzt die Website auf wenige, gezielt optimierte Bilder: Das Hero-Hintergrundbild und das Mandelbrot-Vorschaubild der Startseite sind handkomprimierte JPEGs (Ziel: unter 250 KB), Logo und Favicons liegen als SVG bzw. PNG vor. Bei einer Handvoll Bilder schlägt Kuratieren jede Automatisierung – die Pipeline-Komplexität (WebP-Varianten, responsive Größen, srcset) stünde in keinem Verhältnis zum Nutzen.
+Statt einer generischen Bildoptimierungs-Pipeline setzt die Website auf wenige, gezielt optimierte Bilder: Das Hero-Hintergrundbild und das Mandelbrot-Vorschaubild der Startseite sind handkomprimierte JPEGs (Ziel: unter 250 KB), Logo und Favicons liegen als SVG bzw. PNG vor. Das Vorschaubild der Startseite gibt es in zwei Breiten, der Browser wählt die passende. Bei einer Handvoll Bilder schlägt Kuratieren jede Automatisierung – eine Pipeline, die WebP-Varianten und Größen für jedes Bild erzeugt, stünde in keinem Verhältnis zum Nutzen.
 
 **JavaScript-Performance-Optimierung:**
 
