@@ -124,7 +124,7 @@ Falle: Die Tests nutzen den Skill „Python“ als Beispiel. Wer ihn umbenennt o
 
 ### Texte rund um die Skills
 
-Der Hinweis über den Skills, die Zeile nach einem Klick, der Name der ergänzenden Kenntnisse je Gruppe für Screenreader und alle Beschriftungen im Skill-Graphen (Knöpfe, Hinweise) stehen in `_data/skill_graph.yml` ganz unten unter `texts`.
+Der Hinweis über den Skills, die Zeile nach einem Klick, der Name der ergänzenden Kenntnisse je Gruppe für Screenreader und alle Beschriftungen im Skill-Graphen (Knöpfe, Hinweise) stehen in `_data/skill_graph.yml` ganz unten unter `texts`. Der Satz zu Punkten ohne Namen, der im Skill-Graphen unter dem Hinweis steht, heißt dort `unlabeled` (unter `graph`).
 
 1. Den Text zwischen den Anführungszeichen ändern.
 2. Prüfen und pushen. Einen vertippten oder leeren Schlüssel meldet der Inhalts-Check mit Zeile.

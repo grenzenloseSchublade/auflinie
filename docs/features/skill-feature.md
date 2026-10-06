@@ -17,9 +17,12 @@ Die Skill-Chips auf `/cv/` sind erkundbar:
   gemeinsame Projekte (Kantendeckkraft = Gewicht). Klick auf Knoten wählt
   aus; die Auswahl ist mit der Chip-Liste synchronisiert, die Info-Leiste
   oben im Sheet zeigt sie im Format der Konsole (Skill, Rolle, Projekte).
-  Ansicht: Einpassen beim Öffnen (auch mit Auswahl, kein Zentrieren), Zoom
-  per Pinch, Mausrad, Knöpfe („−“, „+“, „Einpassen“) und Tasten
-  `+`/`−`/`0`, Pan per Ziehen. Der Graph bewegt sich nie von selbst.
+  Ansicht: Startansicht beim Öffnen (alles eingepasst, auch mit Auswahl,
+  kein Zentrieren), Zoom per Pinch, Mausrad, Knöpfe („−“, „+“,
+  „Übersicht“ zurück zur Startansicht) und Tasten `+`/`−`/`0`, Pan per
+  Ziehen. Der Graph bewegt sich nie von selbst. Namen stehen je nach
+  Maßstab, Punkte ohne Namen zeigen ihn beim Antippen, beim Hineinzoomen
+  und mit der Maus als Vorschau beim Überfahren.
 
 Die statische Chip-Liste bleibt immer die kanonische, vollständige
 Darstellung (auch für Screenreader und Druck); alles Interaktive ist
@@ -49,7 +52,7 @@ skill_graph:
 | `assets/js/skill-graph-data.js` | Gemeinsame Helfer: Daten lesen, Skill→Projekte, `renderSelection` (Konsole und Info-Leiste) |
 | `assets/js/skill-chips.js` | Klick-Hervorhebung der Chips |
 | `assets/js/skill-graph-sim.js` | **DOM-freie** Force-Layout-Engine (reine Physik) |
-| `assets/js/skill-graph.js` | Graph: Panel/Canvas/Interaktion, Ansicht (Pan + Zoom, Einpassen), Info-Leiste (nur UI) |
+| `assets/js/skill-graph.js` | Graph: Panel/Canvas/Interaktion, Ansicht (Pan + Zoom, Startansicht), Beschriftung nach Maßstab, Info-Leiste (nur UI) |
 | `assets/js/skill-graph-sheet.js` | Präsentation als modales Sheet (Scrim, Scroll-Sperre, inert, Fokus, Touch-Hinweis) |
 | `assets/_sass/components/_cv.scss` | Chip-Zustände (`has-selection`, `is-selected`, `is-related`) |
 | `assets/_sass/components/_skill-graph.scss` | Panel- und Sheet-Styles |
@@ -78,7 +81,8 @@ Skill-IDs).
   Info-Leiste (`hint`), die Rolle nach einem Klick (`selection`) und alles
   im Graph-Fenster (`graph`: Öffner, Erklärzeile, Kopfleisten-Knöpfe mit
   `text`, `label` für Screenreader und `title` als Tooltip, Canvas-
-  Beschreibung, Fenstername, ✕-Knopf, Touch-Hinweis). Liquid rendert sie in
+  Beschreibung, Fenstername, ✕-Knopf, Touch-Hinweis, `unlabeled` als Satz
+  zu Punkten ohne Namen in der Info-Leiste). Liquid rendert sie in
   `cv/skills.html` und `cv/skill-graph.html`, die Skripte lesen sie aus dem
   JSON-Tag (`SkillGraphData.texts`). Im Skript stehen nur die Trennzeichen
   „ – “ und „ · “ und die Symbole (−, +, ✕). Ein `label` beginnt mit dem
@@ -112,25 +116,47 @@ noch Canvas — sie nimmt `{nodes, edges, width, height}` und bewegt Positionen
 
 **Ansicht (seit Oktober 2026):** Bildschirm = Layout × `scale` + `pan`. Render,
 Hit-Test, Rand-Pfeile und Knoten-Ziehen rechnen über dieselben Helfer
-(`toScreen`/`toLayout`). Zoom skaliert Abstände voll, Knoten und Schrift
-gedämpft (`glyphScale`, 0.92 bis 1.3, Schrift also mindestens ≈ 10 px).
-Einpassen nie unter 0.6 (darunter überlappen Labels systematisch), nie über
-1.0. Beim Öffnen und bei Reset rechnet `settle()` das Layout synchron zu
-Ende (`runToEnd`), danach wird EINMAL eingepasst. Die Kamera folgt dem
-Layout nie, eine Auswahl wird nur hervorgehoben, wo sie liegt
-(Owner-Korrektur 2. 10. 2026). Nur eine Größenänderung der Fläche passt neu
-ein, solange niemand Zoom oder Lage verändert hat. Die Engine-Option
+(`toScreen`/`toLayout`). Zoom skaliert nur die Abstände, Knoten und Schrift
+bleiben gleich groß (`GLYPH` 0.92, Schrift ≈ 10 px), damit Hineinzoomen
+Platz für Namen schafft. Kern-Knoten (Radius 7, hellere Kontur) heben sich
+von der Breite (4,5, gedämpft) ab, die Trefferfläche ist für alle gleich.
+Startansicht (`homeView`): alles eingepasst, nie unter 0.6 (darunter
+überlappen Labels systematisch), nie über 1.0. Beim Öffnen und bei Reset
+rechnet `settle()` das Layout synchron zu Ende (`runToEnd`), danach steht
+die Startansicht. „Übersicht“ (Taste `0`) führt genau dorthin und ist dort
+`aria-disabled`. Die Kamera folgt dem Layout nie, eine Auswahl wird nur
+hervorgehoben, wo sie liegt (Owner-Korrektur 2. 10. 2026). Eine
+Größenänderung der Fläche lässt die Knotenlagen unverändert (bis
+6. 10. 2026 wurden sie in x und y getrennt skaliert), nur eine Ansicht, die
+gerade die Startansicht war, passt sich neu ein. Die Engine-Option
 `aspect` lässt die Wolke das Format der Fläche annehmen (breit am Desktop,
 hoch am Telefon). Ein neues Format nach Drehen oder Fenster-Änderung gilt
 erst ab dem nächsten Reset, damit ein kleiner Knoten-Drag nicht die ganze
-Wolke umordnet. Labels stehen über dem Knoten, sonst darunter, sonst
-seitlich (nur, wenn sie dort ganz in die Fläche passen). `data-zoom`,
-`data-outside` und `data-sel-x`/`data-sel-y` (Lage des gewählten Knotens)
-am Canvas machen die Ansicht für Tests lesbar.
+Wolke umordnet.
+
+**Beschriftung (seit 6. 10. 2026):** Labels stehen immer über dem Knoten.
+Ob eines steht, hängt nur vom Maßstab ab (konsistente Beschriftung nach
+Been, Daiches und Yap 2006): `computeLabelScales` gibt nach jedem fertigen
+Layout jedem Label einen Mindestmaßstab, ab dem es bis zum größten Zoom frei
+steht, mit Luft zu fremden Knoten und zu Labels mit höherem Vorrang (Kern vor
+Breite, dann Zahl der Verbindungen). Je Paar überlappen zwei Rechtecke in
+genau einer Spanne von Maßstäben, darum wird exakt gerechnet statt über ein
+Raster. Folgen: Verschieben ändert die Beschriftung nie (am Rand sind Labels
+angeschnitten), Hineinzoomen nimmt keinen Namen weg, Öffnen und „Übersicht“
+zeigen dieselben Namen. Mit Auswahl stehen Skill und Nachbarn immer (am
+Rand ins Bild geschoben), die übrigen nur ohne Berührung mit diesen. Neu
+sichtbare Labels blenden in 200 ms ein (nicht beim Öffnen, nicht bei
+Reduced Motion). Maus und Stift zeigen beim Überfahren eines Punkts ohne
+Namen eine ruhige Vorschau (kein Magenta, ändert keine Auswahl, Esc und
+Verlassen nehmen sie weg). Die Info-Leiste nennt im Ruhezustand unter dem
+Hinweis `texts.graph.unlabeled`. `data-zoom`, `data-outside`,
+`data-sel-x`/`data-sel-y` (Lage des gewählten Knotens), `data-labels` (IDs
+der beschrifteten Knoten) und `data-preview` am Canvas machen die Ansicht
+für Tests lesbar.
 
 **Bewusste Später-Liste** (Stand Juli 2026, Zoom + Pan + Drag erledigt):
 Projekt-Knoten und
-Detailpanel, Canvas-Tooltips, Deep-Links (`#skill=python`), Persistenz des
+Detailpanel, Deep-Links (`#skill=python`), Persistenz des
 Toggles, Kantengewichts-Legende, Anker-Links in die Berufserfahrung.
 
 ## Verhaltens-Garantien (bei Änderungen erhalten!)
@@ -140,11 +166,13 @@ Toggles, Kantengewichts-Legende, Anker-Links in die Berufserfahrung.
   `tabindex="-1"` — nicht in der Tab-Reihenfolge, aber ein Klick hält den
   Fokus im Dialog (Tasten `+`/`−`/`0` wirken weiter). Tastatur läuft über
   die Chip-Liste und die beschrifteten Kopfleisten-Knöpfe, die an den
-  Zoom-Grenzen `aria-disabled` tragen. Keine Information nur per Hover.
+  Zoom-Grenzen (und „Übersicht“ in der Startansicht) `aria-disabled`
+  tragen. Keine Information nur per Hover: Die Vorschau beim Überfahren
+  ergänzt Antippen, Zoom und Chip-Liste.
 - **`prefers-reduced-motion`:** Beim Öffnen und bei Reset wird das Layout
   ohnehin synchron vorgerechnet. Unter Reduced Motion setzt zusätzlich das
-  Knoten-Ziehen den Knoten direkt, ohne Nachschwingen; ein `change`-Listener
-  schaltet live um.
+  Knoten-Ziehen den Knoten direkt, ohne Nachschwingen, und neue Labels
+  erscheinen ohne Blende; ein `change`-Listener schaltet live um.
 - **Animation endet von selbst** (< 5 s Auskühlung, WCAG 2.2.2) und stoppt
   bei `visibilitychange` und beim Zuklappen des Panels.
 - **Farbdisziplin:** Magenta (`$hover-color`) markiert ausschließlich
