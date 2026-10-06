@@ -16,12 +16,22 @@
   Info-Leiste: im Ruhezustand der Hinweis und darunter ein Satz zu Punkten
   ohne Namen (nur hier, nicht in der Konsole über den Chips), skill-graph.js
   stellt beides nach einer Auswahl wieder her.
+  Fassung (graph_mode in _data/skill_graph.yml): Mit Projekt-Knoten
+  („projekte“) stehen Hinweis und Beschreibung der Grafik unter
+  texts.graph.projekte, sonst gelten hint und texts.graph.canvas.
   Canvas tabindex="-1": nicht in der Tab-Reihenfolge, aber ein Klick hält den
   Fokus im Dialog (sonst fiele er auf <body>, Tasten +/−/0 wirkungslos).
   Parameter: keine.
 {% endcomment %}
 {%- assign skill_texts = site.data.skill_graph.texts %}
 {%- assign graph_texts = skill_texts.graph %}
+{%- if site.data.skill_graph.graph_mode == 'projekte' %}
+  {%- assign graph_hint = graph_texts.projekte.hint %}
+  {%- assign graph_canvas = graph_texts.projekte.canvas %}
+{%- else %}
+  {%- assign graph_hint = skill_texts.hint %}
+  {%- assign graph_canvas = graph_texts.canvas %}
+{%- endif %}
 <div class="skill-graph" data-skill-graph>
   <div class="skill-graph__entry">
     <button type="button" class="skill-graph__open" data-role="graph-toggle"
@@ -51,11 +61,11 @@
         </button>
       </div>
     </div>
-    <p class="skill-graph__info" data-role="graph-context" aria-live="polite">{{ skill_texts.hint | escape }}
+    <p class="skill-graph__info" data-role="graph-context" aria-live="polite">{{ graph_hint | escape }}
       <span class="skill-graph__info-note" aria-hidden="true">{{ graph_texts.unlabeled | escape }}</span></p>
     <div class="skill-graph__canvas-wrap" data-role="canvas-wrap">
       <canvas data-role="canvas" role="img" tabindex="-1"
-              aria-label="{{ graph_texts.canvas | escape }}"></canvas>
+              aria-label="{{ graph_canvas | escape }}"></canvas>
     </div>
   </div>
 </div>

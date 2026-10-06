@@ -8,8 +8,12 @@
  *
  * API:
  *   new SkillGraphSim(nodes, edges, width, height, options?)
- *     nodes: [{id, x, y}]           (x/y = Startposition, wird mutiert)
- *     edges: [{source, target, weight}]  (Indizes in nodes)
+ *     nodes: [{id, x, y, charge?}]  (x/y = Startposition, wird mutiert;
+ *                                    charge = optionaler Faktor der
+ *                                    Abstoßung, Standard 1)
+ *     edges: [{source, target, weight, length?}]  (Indizes in nodes;
+ *                                    length = optionale Ruhelänge dieser
+ *                                    Feder, Standard springLength)
  *   sim.tick()      → true solange sich noch etwas bewegt
  *   sim.isSettled() → Abkühlung erreicht
  *   sim.runToEnd()  → synchron zu Ende rechnen (reduced-motion-Standbild)
@@ -20,8 +24,10 @@
  *   Laufzeit über sim.opts (z. B. aspect nach einem Resize).
  * - Export über self/window: die Datei ist ohne Änderung per importScripts
  *   in einen Web Worker verschiebbar (kein DOM-Zugriff).
- * - Neue Knotentypen (z. B. Projekt-Knoten) brauchen hier nichts — nur
- *   Daten und Renderer ändern sich.
+ * - Neue Knotentypen (z. B. Projekt-Knoten) brauchen hier nichts außer
+ *   optional charge — Daten und Renderer ändern sich (Stufe 2: Projekte
+ *   stoßen sich mit charge > 1 stärker ab und liegen so als Anker
+ *   auseinander).
  */
 (function (global) {
   'use strict';
@@ -80,7 +86,8 @@
         const dy = b.y - a.y;
         const distSq = dx * dx + dy * dy;
         const dist = Math.sqrt(distSq) || 1;
-        const force = (opts.repulsion / Math.max(distSq, 100)) * this.alpha;
+        const charge = (a.charge || 1) * (b.charge || 1);
+        const force = (opts.repulsion * charge / Math.max(distSq, 100)) * this.alpha;
         const fx = (dx / dist) * force;
         const fy = (dy / dist) * force;
         a.vx -= fx; a.vy -= fy;
@@ -97,7 +104,8 @@
       const ey = target.y - source.y;
       const elen = Math.sqrt(ex * ex + ey * ey) || 1;
       const k = opts.springK * (1 + 0.15 * Math.min(edge.weight - 1, 3));
-      const stretch = (elen - opts.springLength) * k * this.alpha;
+      const rest = edge.length || opts.springLength;
+      const stretch = (elen - rest) * k * this.alpha;
       const sx = (ex / elen) * stretch;
       const sy = (ey / elen) * stretch;
       source.vx += sx; source.vy += sy;

@@ -10,6 +10,8 @@
 #   projects:    Liste der Projekte, die (Signature-)Skills verbinden
 #     id:        stabiler kebab-case-Schlüssel (Pflicht, nie umbenennen)
 #     label:     Anzeigename für die Kontextzeile (Pflicht)
+#     short:     Kurzname im Graphen mit Projekt-Knoten (optional, nur wenn
+#                label dort zu lang ist; die Info-Leiste nennt label)
 #     skills:    Liste von Skill-IDs – nur die PROJEKT-DEFINIERENDEN Skills
 #                (Signature), nicht jede Nutzung; Basis-Skills gehören hier NICHT rein.
 #
@@ -18,12 +20,20 @@
 #   "HTML5 / CSS3" → html5-css3, "C#" → c, ".NET" → net.
 # Das JS warnt in der Konsole, wenn eine ID keinen Chip im DOM trifft.
 #
-# Kanten Skill↔Skill entstehen im JS implizit über gemeinsame Projekte (Gewicht
-# = Anzahl) – hier bewusst KEINE redundanten Kantenlisten pflegen.
+# Kanten entstehen im JS implizit aus projects – hier bewusst KEINE
+# redundanten Kantenlisten pflegen. Wie, entscheidet graph_mode:
+#   graph_mode:  projekte  Projekte sind eigene Knoten, Kanten Skill↔Projekt
+#                          (Stufe 2, Prototyp)
+#                skills    nur Skill-Knoten, Kanten Skill↔Skill über
+#                          gemeinsame Projekte (Gewicht = Anzahl, Stufe 1)
+#                Die Chip-Liste ist in beiden Fassungen gleich.
 #
 #   texts:       Bedientexte des Skill-Features (ganz unten, STYLEGUIDE ARCH-4)
 # =============================================================================
 version: 1
+
+# Fassung des Skill-Graphen (siehe oben): projekte | skills
+graph_mode: projekte
 
 # Generische Dev-Infra: als Chips sichtbar, im Graphen kantenlos.
 foundations: [git, docker, bash-linux, ci-cd, devcontainer, vs-code, pip]
@@ -31,6 +41,7 @@ foundations: [git, docker, bash-linux, ci-cd, devcontainer, vs-code, pip]
 projects:
   - id: doku-system
     label: "Doku-System (Spracherkennung)"
+    short: "Doku-System"
     skills: [python, tensorflow, neural-networks, llms, nlp, fastapi, sql, rest]
 
   - id: belegerkennung
@@ -90,6 +101,8 @@ texts:
     with_projects: "gemeinsam im Einsatz bei"
     foundation: "Basis-Werkzeug, quer durch fast alle Projekte im Einsatz."
     no_projects: "Teil des Werkzeugkastens, ohne feste Projektzuordnung."
+    # Nur im Graphen mit Projekt-Knoten: „Projekt – Text“, darunter die Skills
+    project: "hier kamen zusammen"
 
   graph:
     open: "Skill-Graph öffnen" # Knopf über den Skill-Gruppen
@@ -100,6 +113,12 @@ texts:
     unlabeled: "Punkte ohne Namen zeigen ihn bei Auswahl oder beim Hineinzoomen."
     # Beschreibung der Grafik für Screenreader
     canvas: "Netzdiagramm der Skills, verbunden über gemeinsame Projekte. Auswahl und gemeinsame Projekte stehen in der Leiste darüber, die vollständige Liste im Lebenslauf."
+    # Fassung mit Projekt-Knoten (graph_mode: projekte): Hinweis in der
+    # Info-Leiste, solange nichts gewählt ist, und Beschreibung der Grafik.
+    # Der Hinweis über den Chips bleibt hint (oben).
+    projekte:
+      hint: "Ein Klick auf ein Projekt zeigt seine Skills, auf einen Skill seine Projekte."
+      canvas: "Netzdiagramm der Projekte und Skills. Jedes Projekt ist mit den Skills verbunden, die darin zusammenkamen. Auswahl und Verbindungen stehen in der Leiste darüber, die vollständige Liste im Lebenslauf."
     # Knöpfe oben im Fenster. Die Zoom-Knöpfe zeigen nur das Zeichen − bzw. +,
     # ihr label beginnt deshalb damit.
     zoom_out:

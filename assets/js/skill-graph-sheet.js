@@ -79,10 +79,13 @@
     document.addEventListener('keydown', this.onKeydown.bind(this), { capture: true });
     // Aktive Skill-Auswahl mitverfolgen (Event-Vertrag mit skill-graph/skill-chips):
     // Esc-Staffelung — erstes Esc löst nur die Auswahl, zweites schließt das Sheet.
+    // Ein gewähltes Projekt (Graph mit Projekt-Knoten, detail.project) zählt
+    // wie ein gewählter Skill.
     this.selectedSkill = null;
     const self = this;
     document.addEventListener('auflinie:skill-select', function (event) {
-      self.selectedSkill = (event.detail && event.detail.skill) || null;
+      const d = event.detail || {};
+      self.selectedSkill = d.skill || d.project || null;
     });
 
     // Panel öffnet/schließt über [hidden] (skill-graph.js) — hier nur reagieren.

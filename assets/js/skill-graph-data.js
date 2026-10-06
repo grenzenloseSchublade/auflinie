@@ -98,11 +98,15 @@
      * Sheet (skill-graph.js), damit beide exakt gleich aussehen und lesen.
      * Aufbau per DOM-Knoten (kein innerHTML mit Datenwerten, SEC-1); aria-live
      * am Ziel liest die Region als einen zusammenhängenden Satz vor.
+     * Im Graphen mit Projekt-Knoten (graph_mode: projekte) schreibt derselbe
+     * Renderer auch die Auswahl eines Projekts: kind 'project', label ist
+     * dann der Projektname und projects die Liste seiner Skills.
      * @param {Element} el        Ziel (Inhalt wird ersetzt)
-     * @param {string}  label     Anzeigename des Skills
-     * @param {Array<{label: string}>} projects  Projekte des Skills
-     * @param {string}  kind      'foundation' (Basis-Werkzeug) oder 'plain'
-     * @param {{with_projects?: string, foundation?: string, no_projects?: string}} [texts]
+     * @param {string}  label     Anzeigename des Skills (bzw. Projekts)
+     * @param {Array<{label: string}>} projects  Projekte des Skills (bzw.
+     *                            Skills des Projekts)
+     * @param {string}  kind      'foundation' (Basis-Werkzeug), 'project' oder 'plain'
+     * @param {{with_projects?: string, foundation?: string, no_projects?: string, project?: string}} [texts]
      *                            texts.selection aus den Daten
      */
     renderSelection: function (el, label, projects, kind, texts) {
@@ -117,7 +121,9 @@
       const roleEl = document.createElement('span');
       roleEl.className = 'cv-skills__selection-rolle';
       let role;
-      if (projects.length) {
+      if (kind === 'project') {
+        role = t.project;
+      } else if (projects.length) {
         role = t.with_projects;
       } else if (kind === 'foundation') {
         role = t.foundation;

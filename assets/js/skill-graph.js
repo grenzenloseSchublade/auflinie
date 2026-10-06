@@ -11,8 +11,16 @@
  *
  * Daten: dasselbe JSON-Tag [data-skill-graph-data] wie die Chip-Hervorhebung
  * (_data/skill_graph.yml, Schema v1). Knoten = Skills aus den DOM-Chips
- * (Reihenfolge = Gruppenreihenfolge), Kanten = gemeinsame Projekte. Die
- * Info-Leiste schreibt SkillGraphData.renderSelection — derselbe Renderer
+ * (Reihenfolge = Gruppenreihenfolge). Zwei Fassungen, Schalter graph_mode in
+ * den Daten (Stufe 2, Prototyp 6. 10. 2026):
+ * - „skills“ (Stufe 1): Kanten Skill↔Skill über gemeinsame Projekte.
+ * - „projekte“: Projekte sind eigene Knoten (ID mit Präfix „projekt:“,
+ *   ruhiges abgerundetes Quadrat in Beige, Namen mit Vorrang), Kanten
+ *   Skill↔Projekt. Der Graph zeigt so ohne Antippen, welche Fähigkeiten in
+ *   welchen Projekten zusammenkommen, und braucht viel weniger Kanten.
+ *   Antippen eines Projekts hebt seine Skills hervor, Antippen eines Skills
+ *   seine Projekte (dazu ruhiger die Skills, die dort mit ihm zusammenkamen).
+ * Die Info-Leiste schreibt SkillGraphData.renderSelection — derselbe Renderer
  * wie die Konsole über den Chips (skill-chips.js). Texte: Beschriftungen und
  * Ruhezustand der Info-Leiste (Hinweis, Satz zu Punkten ohne Namen) rendert
  * Liquid aus texts in _data/skill_graph.yml, die Auswahl-Anzeige kommt aus
@@ -48,9 +56,14 @@
  * Label-Blende (200 ms) und stoppt bei visibilitychange/Zuklappen;
  * prefers-reduced-motion setzt den gezogenen Knoten direkt ohne Nachschwingen
  * und zeigt Labels ohne Blende (Helfer aus site-utils.js). Auswahl läuft
- * über den Event-Vertrag `auflinie:skill-select` (source 'graph').
- * Farben: Cyan für Inhalt (Kanten, Verwandtschaft, Vorschau), Magenta nur
- * für die aktive Auswahl (Interaktionszustand, Design-Regel).
+ * über den Event-Vertrag `auflinie:skill-select` (source 'graph'). Ein
+ * gewähltes Projekt geht als { skill: null, project: <id> } hinaus: Die
+ * Chip-Liste kennt keine Projekte und kehrt in den Ruhezustand zurück (kein
+ * Chip ist „der gewählte“, ein halbes Hervorheben ohne Magenta-Anker läse
+ * sich wie ein Fehler), das Sheet hält damit die Esc-Staffelung.
+ * Farben: Cyan für Inhalt (Kanten, Verwandtschaft, Vorschau), Beige der
+ * Konsolen-Titel ($console-heading) für Projekte, Magenta nur für die aktive
+ * Auswahl (Interaktionszustand, Design-Regel).
  */
 (function () {
   'use strict';
@@ -64,6 +77,15 @@
   const SOURCE = 'graph';
   const CYAN = '5, 217, 232';
   const MAGENTA = '255, 0, 255'; // nur für die aktive Auswahl (Interaktionszustand)
+  // Projekt-Knoten (graph_mode: projekte): warmes Beige der Konsolen-Titel
+  // ($console-heading in _colors.scss), keine neue Farbe
+  const BEIGE = '234, 207, 180';
+  const PROJECT_PREFIX = 'projekt:';
+  // Halbe Kantenlänge des Projekt-Quadrats (Bildschirm-px vor GLYPH), Ecken
+  // abgerundet: klar andere Form als die Kreise der Skills, ähnlich groß
+  // wie ein Kern-Knoten
+  const PROJECT_HALF = 6.5;
+  const PROJECT_CORNER = 2.5;
   // Kern-Skills (core) etwas größer mit hellerer Kontur, die Breite (breadth)
   // kleiner und gedämpfter (Owner, 6. 10. 2026): Der Vorrang der Beschriftung
   // wird so sichtbar, ohne neue Farbe
@@ -111,8 +133,27 @@
   const LABEL_ALLOWANCE = 80;
   function layoutAspect(w, h) { return clamp(Math.max(w - LABEL_ALLOWANCE, w / 2) / h, 0.4, 2.5); }
   function labelFont(g) { return (LABEL_PX * g).toFixed(2) + 'px ' + LABEL_FAMILY; }
-  // Bildschirm-Radius eines Knotens
-  function nodeRadius(node) { return (node.core ? NODE_RADIUS_CORE : NODE_RADIUS_BREADTH) * GLYPH; }
+  // Bildschirm-Radius eines Knotens (Projekt: halbe Kante des Quadrats)
+  function nodeRadius(node) {
+    if (node.project) { return PROJECT_HALF * GLYPH; }
+    return (node.core ? NODE_RADIUS_CORE : NODE_RADIUS_BREADTH) * GLYPH;
+  }
+
+  // Physik je Fassung (skill-graph-sim.js, DEFAULTS gelten für „skills“).
+  // Mit Projekt-Knoten hängt jeder Skill nur an seinen Projekten: kürzere,
+  // straffere Federn halten die Skills um ihr Projekt, schwächere Abstoßung
+  // und Gravitation halten die Wolke am Handy kompakt. Projekte stoßen sich
+  // sechsfach ab (charge), so liegen sie als Anker auseinander und ihre
+  // Namen haben Platz. Abgestimmt am 6. 10. 2026 mit einem Raster über
+  // Federlänge, Abstoßung, Federkonstante, charge und Gravitation, bewertet
+  // nach beschrifteten Projekten und Skills beim Öffnen, Kantenkreuzungen
+  // und Überstand bei 390 × 844, 360 × 780 und 1280 × 900 (Ergebnis:
+  // 8 bis 9 Projektnamen, rund 10 statt rund 50 Kreuzungen).
+  const SIM_OPTIONS = {
+    skills: {},
+    projekte: { springLength: 90, repulsion: 10000, springK: 0.2, gravity: 0.03 }
+  };
+  const PROJECT_CHARGE = 6;
 
   // Maßstäbe s, bei denen sich zwei Rechtecke (mit Luft) überlappen. Beide
   // hängen an ihrem Knoten, der Abstand ihrer Mitten auf dem Bildschirm ist
@@ -255,6 +296,8 @@
     if (!data) { return; }
 
     const self = this;
+    // Fassung: Projekt-Knoten (projekte) oder nur Skills (skills, Standard)
+    this.mode = data.graph_mode === 'projekte' ? 'projekte' : 'skills';
 
     // Nur verbundene Skills werden Knoten: erst die IDs sammeln, die in
     // mindestens einem Projekt vorkommen. Basis-Skills (foundations) und
@@ -290,7 +333,6 @@
     this.foundations = new Set(Array.isArray(data.foundations) ? data.foundations : []);
     this.selectionTexts = window.SkillGraphData.texts(data, 'skill-graph').selection;
 
-    // Kanten: Skill-Paare mit gemeinsamen Projekten (Gewicht = Anzahl);
     // Skill→Projekte-Map über den gemeinsamen Helfer (warnt bei fehlenden
     // Pflichtfeldern und unbekannten Skill-IDs)
     const built = window.SkillGraphData.buildSkillProjects(data.projects, {
@@ -298,22 +340,8 @@
       knownIds: new Set(indexById.keys())
     });
     this.skillProjects = built.map;
-    const edgeMap = new Map();
-    built.projects.forEach(function (entry) {
-      const ids = entry.ids;
-      for (let i = 0; i < ids.length; i++) {
-        for (let j = i + 1; j < ids.length; j++) {
-          const a = indexById.get(ids[i]);
-          const b = indexById.get(ids[j]);
-          const key = Math.min(a, b) + ':' + Math.max(a, b);
-          edgeMap.set(key, (edgeMap.get(key) || 0) + 1);
-        }
-      }
-    });
-    this.edges = Array.from(edgeMap, function (entry) {
-      const parts = entry[0].split(':');
-      return { source: +parts[0], target: +parts[1], weight: entry[1] };
-    });
+    this.edges = this.mode === 'projekte' ?
+      this.projectEdges(built.projects, indexById) : skillEdges(built.projects, indexById);
 
     this.neighbors = new Map();
     this.edges.forEach(function (edge) {
@@ -340,7 +368,8 @@
     this.seedLayout(vw, vh, false);
     // Wolke im Format der Fläche (breit am Desktop, hoch am Telefon), damit
     // Einpassen bei lesbarem Maßstab möglichst alles zeigt.
-    this.sim = new window.SkillGraphSim(this.nodes, this.edges, vw, vh, { aspect: layoutAspect(w, h) });
+    this.sim = new window.SkillGraphSim(this.nodes, this.edges, vw, vh,
+      Object.assign({ aspect: layoutAspect(w, h) }, SIM_OPTIONS[this.mode]));
 
     // Resize: Canvas und Kamera nachführen, Knotenlagen bleiben (syncLayout)
     this.resizeTimer = null;
@@ -390,6 +419,55 @@
     if (this.pendingExternal != null) { this.setSelection(this.pendingExternal); }
   };
 
+  // Fassung „skills“ (Stufe 1): Skill-Paare mit gemeinsamen Projekten,
+  // Gewicht = Zahl der gemeinsamen Projekte
+  function skillEdges(projects, indexById) {
+    const edgeMap = new Map();
+    projects.forEach(function (entry) {
+      const ids = entry.ids;
+      for (let i = 0; i < ids.length; i++) {
+        for (let j = i + 1; j < ids.length; j++) {
+          const a = indexById.get(ids[i]);
+          const b = indexById.get(ids[j]);
+          const key = Math.min(a, b) + ':' + Math.max(a, b);
+          edgeMap.set(key, (edgeMap.get(key) || 0) + 1);
+        }
+      }
+    });
+    return Array.from(edgeMap, function (entry) {
+      const parts = entry[0].split(':');
+      return { source: +parts[0], target: +parts[1], weight: entry[1] };
+    });
+  }
+
+  // Fassung „projekte“: je Projekt ein Knoten hinter den Skills, eine Kante
+  // zu jedem seiner Skills (Gewicht 1). Ein Projekt ohne bekannten Skill
+  // bleibt draußen, sonst schwebte es kantenlos herum.
+  SkillGraph.prototype.projectEdges = function (projects, indexById) {
+    const self = this;
+    const edges = [];
+    this.projectSkills = new Map();   // Projekt-Knoten-ID → [Skill-Labels]
+    projects.forEach(function (entry) {
+      if (!entry.ids.length) { return; }
+      const id = PROJECT_PREFIX + entry.project.id;
+      if (indexById.has(id)) { return; }   // doppelte Projekt-ID: erste gilt
+      const index = self.nodes.length;
+      indexById.set(id, index);
+      // Im Graphen steht der optionale Kurzname (short), die Info-Leiste
+      // nennt den vollen Namen
+      self.nodes.push({ id: id, label: entry.project.short || entry.project.label,
+        fullLabel: entry.project.label, labelW: null, project: true,
+        projectId: entry.project.id, core: true, degree: 0, charge: PROJECT_CHARGE });
+      self.projectSkills.set(id, entry.ids.map(function (skillId) {
+        return { label: self.chipLabels.get(skillId) || skillId };
+      }));
+      entry.ids.forEach(function (skillId) {
+        edges.push({ source: indexById.get(skillId), target: index, weight: 1 });
+      });
+    });
+    return edges;
+  };
+
   SkillGraph.prototype.sizeCanvas = function () {
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
     const w = this.wrap.clientWidth;
@@ -426,10 +504,16 @@
 
   // Deterministische Kreis-Startlage im virtuellen Layout-Raum (w×h).
   // clearPins löst zusätzlich Drag-Fixierungen und nullt Geschwindigkeiten.
+  // Mit Projekt-Knoten: Projekte auf einem Kreis, jeder Skill in der Mitte
+  // seiner Projekte, leicht versetzt. So beginnt das Layout schon entwirrt
+  // und kühlt nicht in einem verdrehten Zustand aus.
   SkillGraph.prototype.seedLayout = function (w, h, clearPins) {
-    const count = this.nodes.length || 1;
+    const nodes = this.nodes;
+    const count = nodes.length || 1;
     const radius = Math.min(w, h) * 0.36;
-    this.nodes.forEach(function (node, i) {
+    const projects = nodes.filter(function (n) { return n.project; });
+    const neighbors = this.neighbors;
+    nodes.forEach(function (node, i) {
       if (clearPins) {
         node.fx = null;
         node.fy = null;
@@ -440,7 +524,55 @@
       node.x = w / 2 + Math.cos(angle) * radius;
       node.y = h / 2 + Math.sin(angle) * radius;
     });
+    if (!projects.length) { return; }
+    // Projekte gleichmäßig auf dem Kreis, ähnliche nebeneinander (Kette nach
+    // gemeinsamen Skills, viel weniger Kreuzungen als die Reihenfolge der
+    // Daten), Skills danach (brauchen deren Lage)
+    chainBySharedSkills(projects, neighbors).forEach(function (node, k) {
+      const angle = (k / projects.length) * Math.PI * 2 - Math.PI / 2;
+      node.x = w / 2 + Math.cos(angle) * radius;
+      node.y = h / 2 + Math.sin(angle) * radius;
+    });
+    nodes.forEach(function (node, i) {
+      if (node.project) { return; }
+      const mine = projects.filter(function (p) {
+        return neighbors.has(p.id) && neighbors.get(p.id).has(node.id);
+      });
+      if (!mine.length) { return; }
+      let x = 0, y = 0;
+      mine.forEach(function (p) { x += p.x; y += p.y; });
+      const angle = (i / count) * Math.PI * 2;
+      node.x = x / mine.length + Math.cos(angle) * radius * 0.25;
+      node.y = y / mine.length + Math.sin(angle) * radius * 0.25;
+    });
   };
+
+  // Projekte als Kette ordnen: Start beim Projekt mit den wenigsten
+  // gemeinsamen Skills, dann jeweils das ähnlichste noch freie (Zahl
+  // gemeinsamer Skills, bei Gleichstand die Reihenfolge der Daten).
+  // Deterministisch, so steht nach Reset dasselbe Bild.
+  function chainBySharedSkills(projects, neighbors) {
+    function shared(a, b) {
+      let count = 0;
+      neighbors.get(a.id).forEach(function (id) { if (neighbors.get(b.id).has(id)) { count++; } });
+      return count;
+    }
+    const totals = projects.map(function (p) {
+      return projects.reduce(function (t, q) { return t + (q === p ? 0 : shared(p, q)); }, 0);
+    });
+    let current = projects[totals.indexOf(Math.min.apply(null, totals))];
+    const order = [current];
+    const left = projects.filter(function (p) { return p !== current; });
+    while (left.length) {
+      let best = 0;
+      for (let k = 1; k < left.length; k++) {
+        if (shared(current, left[k]) > shared(current, left[best])) { best = k; }
+      }
+      current = left.splice(best, 1)[0];
+      order.push(current);
+    }
+    return order;
+  }
 
   // Gibt es etwas zurückzusetzen? Ein gezogener (fixierter) Knoten, eine
   // Auswahl oder ein Flächenformat, das erst beim nächsten Reset greift.
@@ -584,12 +716,14 @@
     return { x: sx - w / 2 - 2, y: base - fontPx, w: w + 4, h: fontPx + 3, base: base, tx: sx };
   };
 
-  // Vorrang der Labels (Owner, 6. 10. 2026): Kern vor Breite, dann Zahl der
+  // Vorrang der Labels (Owner, 6. 10. 2026): Projekte vor allen Skills (sie
+  // tragen die Aussage, Stufe 2), Kern vor Breite, dann Zahl der
   // Verbindungen, dann Reihenfolge der Chips
   SkillGraph.prototype.labelOrder = function () {
     const nodes = this.nodes;
     return nodes.map(function (n, i) { return i; }).sort(function (a, b) {
-      return (nodes[b].core - nodes[a].core) || (nodes[b].degree - nodes[a].degree) || a - b;
+      return (!!nodes[b].project - !!nodes[a].project) || (nodes[b].core - nodes[a].core) ||
+        (nodes[b].degree - nodes[a].degree) || a - b;
     });
   };
 
@@ -777,6 +911,8 @@
     const nodes = this.nodes;
     const selected = this.selected;
     const neighbors = selected !== null ? (this.neighbors.get(selected) || new Set()) : null;
+    const near = this.nearOf(selected);
+    const projectMode = this.mode === 'projekte';
     const scale = this.scale;
     const labelMin = this.labelMin;
     const self = this;
@@ -792,14 +928,18 @@
     // 1 px, Knoten und Schrift haben bei jedem Zoom dieselbe Größe (GLYPH).
     const screen = nodes.map(function (n) { return self.toScreen(n); });
 
-    // Kanten: Deckkraft nach Gewicht; bei Auswahl nur die Nachbarschaft betonen
+    // Kanten: Deckkraft nach Gewicht; bei Auswahl nur die Nachbarschaft betonen.
+    // Mit Projekt-Knoten: Kanten zu den Skills, die mit dem gewählten Skill
+    // in seinen Projekten zusammenkamen, bleiben in Grundstärke stehen.
     this.edges.forEach(function (edge) {
       const a = nodes[edge.source];
       const b = nodes[edge.target];
       let alpha = 0.12 + Math.min(edge.weight - 1, 3) * 0.06;
       if (selected !== null) {
         const touches = a.id === selected || b.id === selected;
-        alpha = touches ? 0.4 : alpha * 0.25;
+        const viaNear = near && ((near.has(a.id) && neighbors.has(b.id)) ||
+          (near.has(b.id) && neighbors.has(a.id)));
+        alpha = touches ? 0.45 : (viaNear ? alpha : alpha * 0.25);
       }
       const pa = screen[edge.source], pb = screen[edge.target];
       ctx.strokeStyle = 'rgba(' + CYAN + ', ' + alpha + ')';
@@ -822,24 +962,43 @@
     const states = nodes.map(function (node) {
       if (selected === null) { return 'base'; }
       if (node.id === selected) { return 'selected'; }
-      return neighbors.has(node.id) ? 'related' : 'dimmed';
+      if (neighbors.has(node.id)) { return 'related'; }
+      return near && near.has(node.id) ? 'base' : 'dimmed';
     });
     const forced = function (i) {
       return states[i] === 'selected' || states[i] === 'related';
     };
     const showLabel = new Array(nodes.length).fill(null);
     const placed = [];
+    const apart = function (r, p) {
+      return r.x + r.w + LABEL_AIR_X <= p.x || p.x + p.w <= r.x - LABEL_AIR_X ||
+        r.y + r.h + LABEL_AIR_Y <= p.y || p.y + p.h <= r.y - LABEL_AIR_Y;
+    };
+    // Frei von den Rechtecken in rects (mit Luft) und von Knoten (außer dem
+    // eigenen, ohne Luft)
+    const clearOf = function (r, i, rects) {
+      return rects.every(function (p) { return apart(r, p); }) && screen.every(function (q, k) {
+        const rad = nodeRadius(nodes[k]);
+        return k === i || r.x + r.w <= q.x - rad || q.x + rad <= r.x ||
+          r.y + r.h <= q.y - rad || q.y + rad <= r.y;
+      });
+    };
     nodes.forEach(function (node, i) {
       if (!forced(i)) { return; }
-      showLabel[i] = self.clampedLabelRect(screen[i], node);
-      placed.push(showLabel[i]);
+      let r = self.clampedLabelRect(screen[i], node);
+      // Mit Projekt-Knoten (Prototyp Stufe 2): Stößt ein Pflicht-Label an ein
+      // schon gesetztes, weicht es unter den Knoten aus, wenn dort Platz ist
+      // (bei einem Projekt stehen bis zu neun Skill-Namen zugleich)
+      if (projectMode && !placed.every(function (p) { return apart(r, p); })) {
+        const below = self.clampedLabelRect(screen[i], node, true);
+        if (clearOf(below, i, placed)) { r = below; }
+      }
+      showLabel[i] = r;
+      placed.push(r);
     });
     const pinned = placed.slice();
     const clearOfPinned = function (r) {
-      return pinned.every(function (p) {
-        return r.x + r.w + LABEL_AIR_X <= p.x || p.x + p.w <= r.x - LABEL_AIR_X ||
-          r.y + r.h + LABEL_AIR_Y <= p.y || p.y + p.h <= r.y - LABEL_AIR_Y;
-      });
+      return pinned.every(function (p) { return apart(r, p); });
     };
     nodes.forEach(function (node, i) {
       if (showLabel[i] || !(scale >= labelMin[i])) { return; }
@@ -875,17 +1034,35 @@
     // angeschnitten). Die Beschriftung selbst hängt weiter nur am Maßstab
     // (data-labels, Blende): Beim Verschieben erscheint es, sobald es ganz
     // im Bild liegt, wie ein Ortsname am Kartenrand. Pflicht-Labels der
-    // Auswahl sind ohnehin ins Bild geschoben.
+    // Auswahl sind ohnehin ins Bild geschoben. Projektnamen (Vorrang, sie
+    // tragen die Aussage) rücken ebenso ins Bild, solange ihr Knoten darin
+    // liegt.
     const cw = this.canvasW, ch = this.canvasH;
     const drawn = showLabel.map(function (r, i) {
       if (!r || forced(i)) { return r; }
-      return r.x >= 0 && r.x + r.w <= cw && r.y >= 0 && r.y + r.h <= ch ? r : null;
+      if (r.x >= 0 && r.x + r.w <= cw && r.y >= 0 && r.y + r.h <= ch) { return r; }
+      const p = screen[i];
+      if (nodes[i].project && p.x >= 0 && p.x <= cw && p.y >= 0 && p.y <= ch) {
+        // Ins Bild gerückt nur, wenn es dort keinen Knoten und kein anderes
+        // Label berührt
+        const moved = self.clampedLabelRect(p, nodes[i]);
+        const others = showLabel.filter(function (o, k) { return o && k !== i; });
+        return clearOf(moved, i, others) ? moved : null;
+      }
+      return null;
     });
     this.labelRects = drawn.filter(Boolean);   // Hit-Test trifft nur gezeichnete Labels
 
     ctx.font = labelFont(GLYPH);
     ctx.textAlign = 'center';
-    nodes.forEach(function (node, i) {
+    // Auswahl und ihre Nachbarn zuletzt zeichnen: Ihre Namen liegen sonst
+    // unter später gezeichneten Knoten
+    const rank = { dimmed: 0, base: 1, related: 2, selected: 3 };
+    const drawOrder = nodes.map(function (n, i) { return i; }).sort(function (a, b) {
+      return rank[states[a]] - rank[states[b]] || a - b;
+    });
+    drawOrder.forEach(function (i) {
+      const node = nodes[i];
       const state = states[i];
       const p = screen[i];
       ctx.save();
@@ -896,12 +1073,24 @@
         ctx.shadowBlur = 10;
       }
       ctx.beginPath();
-      ctx.arc(p.x, p.y, nodeRadius(node), 0, Math.PI * 2);
+      if (node.project) {
+        const half = nodeRadius(node);
+        roundedSquare(ctx, p.x, p.y, half, PROJECT_CORNER * GLYPH);
+      } else {
+        ctx.arc(p.x, p.y, nodeRadius(node), 0, Math.PI * 2);
+      }
       ctx.fillStyle = 'rgb(10 14 18)';
       ctx.fill();
       if (state === 'selected') {
         ctx.strokeStyle = 'rgba(' + MAGENTA + ', 0.85)';
         ctx.lineWidth = 2;
+      } else if (node.project) {
+        // Projekt: Beige-Kontur mit zartem Beige-Grund, ruhig und klar
+        // unterscheidbar von den Cyan-Kreisen der Skills
+        ctx.fillStyle = 'rgba(' + BEIGE + ', ' + (state === 'related' ? 0.32 : 0.18) + ')';
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(' + BEIGE + ', ' + (state === 'related' ? 0.95 : 0.75) + ')';
+        ctx.lineWidth = 1.25;
       } else {
         // Kern heller als die Breite, Nachbarn der Auswahl heller als der Rest.
         // Auch die Breite hält 3:1 gegen den Grund (WCAG 1.4.11, Cyan 0,5 ≈
@@ -920,6 +1109,8 @@
           ctx.shadowColor = 'rgba(' + MAGENTA + ', 0.55)';
           ctx.shadowBlur = 6;
           ctx.fillStyle = 'rgba(255, 255, 255, 0.98)';
+        } else if (node.project) {
+          ctx.fillStyle = 'rgba(' + BEIGE + ', 0.95)';   // Projektname in Beige
         } else {
           ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
         }
@@ -931,6 +1122,7 @@
     this.drawPreview(screen, drawn);
     this.drawEdgeHints(screen, drawn);   // Rand-Pfeile: „hier geht's weiter“
     this.labelIds = Array.from(shown).sort().join(' ');
+    this.drawnCount = this.labelRects.length;
     this.publishView();
 
     // Kurzer Nachlauf nur, solange eine Blende läuft, danach Ruhe
@@ -945,9 +1137,15 @@
   // Label-Rechteck über dem Knoten, am Rand ins Bild geschoben statt
   // angeschnitten (bleibt über dem Knoten, nur versetzt). Rand wie bei den
   // Weiter-Pfeilen (drawEdgeHints, 6 px). Für Pflicht-Labels und Vorschau.
-  SkillGraph.prototype.clampedLabelRect = function (p, node) {
+  // below: unter den Knoten statt darüber (Ausweichlage für Pflicht-Labels
+  // mit Projekt-Knoten, siehe render)
+  SkillGraph.prototype.clampedLabelRect = function (p, node, below) {
     const cw = this.canvasW, ch = this.canvasH;
     const r = this.labelRect(p.x, p.y, node);
+    if (below) {
+      const shift = 2 * (p.y - r.base) + LABEL_PX * GLYPH - 2;
+      r.y += shift; r.base += shift;
+    }
     const dx = clamp(r.x, 6, Math.max(6, cw - 6 - r.w)) - r.x;
     const dy = clamp(r.y, 6, Math.max(6, ch - 6 - r.h)) - r.y;
     r.x += dx; r.tx += dx; r.y += dy; r.base += dy;
@@ -1048,9 +1246,9 @@
 
   // Ansichtszustand als Attribute am Canvas (Maßstab, Knoten außerhalb bzw.
   // angeschnitten, Bildschirmlage des gewählten Knotens, IDs der
-  // beschrifteten Knoten, Knoten mit Vorschau) — für Tests und
-  // Entwickler-Werkzeuge, ändert nichts an der Darstellung. Dazu die
-  // Zoom-Knöpfe an den Grenzen, „Übersicht“ in der Startansicht und Reset
+  // beschrifteten Knoten, Zahl der gezeichneten Namen, Knoten mit
+  // Vorschau) — für Tests und Entwickler-Werkzeuge, ändert nichts an der
+  // Darstellung. Dazu die Zoom-Knöpfe an den Grenzen, „Übersicht“ in der Startansicht und Reset
   // ohne etwas zum Zurücksetzen als aria-disabled (Rückmeldung für Tastatur
   // und Screenreader; nicht disabled, sonst ginge ihr Fokus verloren).
   // Nur bei Änderung schreiben (die Loop rendert pro Frame).
@@ -1071,6 +1269,8 @@
     put(canvas, 'data-sel-x', p ? p.x.toFixed(1) : null);
     put(canvas, 'data-sel-y', p ? p.y.toFixed(1) : null);
     put(canvas, 'data-labels', this.labelIds || '');
+    // Zahl der tatsächlich gezeichneten Namen (ohne die am Rand weggelassenen)
+    put(canvas, 'data-drawn', String(this.drawnCount || 0));
     put(canvas, 'data-preview', this.hoverRect ? this.hoverRect.id : null);
     put(this.zoomInBtn, 'aria-disabled', this.scale >= ZOOM_MAX - 1e-6 ? 'true' : null);
     put(this.zoomOutBtn, 'aria-disabled', this.scale <= ZOOM_MIN + 1e-6 ? 'true' : null);
@@ -1126,6 +1326,17 @@
     const i = this.nodeIndex(id);
     return i < 0 ? null : this.nodes[i];
   };
+
+  // Pfad eines Quadrats mit abgerundeten Ecken um (cx, cy), halbe Kante half
+  function roundedSquare(ctx, cx, cy, half, r) {
+    const x0 = cx - half, y0 = cy - half, x1 = cx + half, y1 = cy + half;
+    ctx.moveTo(x0 + r, y0);
+    ctx.arcTo(x1, y0, x1, y1, r);
+    ctx.arcTo(x1, y1, x0, y1, r);
+    ctx.arcTo(x0, y1, x0, y0, r);
+    ctx.arcTo(x0, y0, x1, y0, r);
+    ctx.closePath();
+  }
 
   function inRect(r, x, y, m) {
     return x >= r.x - m && x <= r.x + r.w + m && y >= r.y - m && y <= r.y + r.h + m;
@@ -1347,6 +1558,24 @@
 
   // ── Auswahl ─────────────────────────────────────────────────────────────────
 
+  // Mit Projekt-Knoten und gewähltem Skill: die Skills, die in seinen
+  // Projekten mit ihm zusammenkamen (zweite Stufe, ruhig in Grundstärke).
+  // Sonst null.
+  SkillGraph.prototype.nearOf = function (id) {
+    if (this.mode !== 'projekte' || id === null) { return null; }
+    const node = this.nodeById(id);
+    if (!node || node.project) { return null; }
+    const neighbors = this.neighbors;
+    const near = new Set();
+    (neighbors.get(id) || new Set()).forEach(function (projectId) {
+      (neighbors.get(projectId) || new Set()).forEach(function (other) {
+        if (other !== id) { near.add(other); }
+      });
+    });
+    return near;
+  };
+
+  // skillId: ID eines Skills oder (mit Projekt-Knoten) eines Projekt-Knotens
   SkillGraph.prototype.setSelection = function (skillId) {
     // Skills, die KEIN Knoten sind (Basis-Skills ohne Projektkanten), kann der
     // Graph nicht hervorheben — dort bleiben alle Knoten unmarkiert. Die
@@ -1364,6 +1593,14 @@
   SkillGraph.prototype.renderInfo = function (skillId) {
     const el = this.contextLine;
     if (!el) { return; }
+    const project = skillId !== null && this.projectSkills ? this.projectSkills.get(skillId) : null;
+    if (project) {
+      // Projekt: Name, „hier kamen zusammen“, darunter seine Skills
+      window.SkillGraphData.renderSelection(el, this.nodeById(skillId).fullLabel, project,
+        'project', this.selectionTexts);
+      el.classList.add('is-active');
+      return;
+    }
     const label = skillId !== null && this.chipLabels ? this.chipLabels.get(skillId) : null;
     if (!label) {
       el.replaceChildren.apply(el, this.defaultInfo.map(function (n) { return n.cloneNode(true); }));
@@ -1377,10 +1614,14 @@
     el.classList.toggle('is-active', projects.length > 0);
   };
 
+  // Ein gewähltes Projekt geht als skill: null hinaus (die Chip-Liste kehrt
+  // in den Ruhezustand zurück, siehe Dateikopf), seine ID steht in project
   SkillGraph.prototype.dispatch = function () {
-    document.dispatchEvent(new CustomEvent('auflinie:skill-select', {
-      detail: { skill: this.current, source: SOURCE }
-    }));
+    const node = this.current !== null ? this.nodeById(this.current) : null;
+    const detail = node && node.project ?
+      { skill: null, project: node.projectId, source: SOURCE } :
+      { skill: this.current, source: SOURCE };
+    document.dispatchEvent(new CustomEvent('auflinie:skill-select', { detail: detail }));
   };
 
   SkillGraph.prototype.onExternalSelect = function (event) {
