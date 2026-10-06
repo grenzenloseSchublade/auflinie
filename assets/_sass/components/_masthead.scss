@@ -576,7 +576,6 @@ body .greedy-nav__toggle {
 
   // skala-Ausnahme: Masthead-em-System (SP-2), wächst mit der Nav-Schrift
   padding: 0.4em;
-  transition: opacity $duration-base ease;
   position: relative;
   z-index: $z-drawer-toggle; // über der Drawer-Liste, X-Button immer klickbar
   border-radius: 0;
@@ -596,17 +595,15 @@ body .greedy-nav__toggle {
   }
 }
 
-@include can-hover {
-  body .greedy-nav__toggle:hover {
-    opacity: 0.8;
-  }
-}
-
 // Hover der Hamburger-Balken: Das Theme färbt sie mit
 // mix(#000, $primary-color, 25 %) und gewinnt per Spezifität gegen die
-// Ruhe-Regel unten. Nav-Hover ist Magenta (Owner, KOMP-3): derselbe Ton wie
-// die Nav-Links im Hover. Nicht im .close-Zustand: dort ist der mittlere
-// Balken transparent und das X bleibt dezent.
+// Ruhe-Regel unten. Im Hover hellen die Balken von Cyan 55 % auf volles
+// Cyan auf (Owner, 6. 10. 2026, R-78: Magenta wirkte auf drei Balken zu
+// grell und bleibt den Textlinks, KOMP-3), 8,29:1 auf dem Masthead.
+// Der Knopf dimmt dabei nicht mehr (früher opacity 0,8 im Hover): Damit
+// läge volles Cyan nur bei 5,83:1 und das X im Hover bei 2,74:1 (unter 3:1).
+// Nicht im .close-Zustand: dort ist der mittlere Balken transparent und das
+// X bleibt dezent.
 // Die Theme-Regel steht nicht hinter (hover: hover). Touch-Browser halten
 // :hover nach dem Antippen fest, ohne Gegenregel blieben die Balken dann
 // Theme-Cyan. Auf Touch gilt darum unter :hover die Ruhefarbe (R-55).
@@ -623,7 +620,7 @@ body .greedy-nav__toggle {
 
 @include can-hover {
   body .greedy-nav__toggle:not(.close):hover .navicon {
-    color: $hover-color-text;
+    color: $link-color;
   }
 
   body .greedy-nav__toggle:not(.close):hover .navicon,
