@@ -684,7 +684,7 @@ Theme-Updates bleiben heikel: Neue Versionen können Inkompatibilitäten mitbrin
 - **Bis zu 1000 Seiten**: Gute Performance in diesem Bereich
 - **Statische Inhalte**: Keine dynamischen, datenbankbasierten Features
 - **Regelmäßige Updates**: Häufige Content-Änderungen und -Erweiterungen
-- **Team-Kollaboration**: Mehrere Schreibende mit Git-Workflow
+- **Team-Kollaboration**: Mehrere Autoren mit Git-Workflow
 
 **Technische Blogs und Dokumentation:**
 - **Code-Beispiele**: Syntax-Highlighting und Code-Blöcke
@@ -817,7 +817,7 @@ Die Browser bringen neue APIs, bessere Werkzeuge zum Messen der Performance, str
 
 Für die eigene Weiterentwicklung gibt es einen groben Fahrplan. Kurzfristig (0–12 Monate) geht es um weitere Performance-Arbeit an Build und Auslieferung, mehr Inhalte und interaktive Elemente, bessere Sichtbarkeit in Suchmaschinen und eine noch angenehmere Bedienung.
 
-Mittelfristig (1–3 Jahre) kommen neue interaktive Elemente und Funktionen dazu, ein Blick auf die Performance im laufenden Betrieb, neue Inhaltsformate, mehr Austausch mit Lesenden samt ihren Rückmeldungen und die Anbindung externer Dienste und Datenquellen.
+Mittelfristig (1–3 Jahre) kommen neue interaktive Elemente und Funktionen dazu, ein Blick auf die Performance im laufenden Betrieb, neue Inhaltsformate, mehr Austausch mit Lesern samt ihren Rückmeldungen und die Anbindung externer Dienste und Datenquellen.
 
 Langfristig (ab drei Jahren) geht es darum, neue Static Site Generators zu bewerten, einen möglichen Wechsel vorzubereiten, mit wachsenden Inhalten umzugehen, neue Webtechniken aufzunehmen und die Seite an veränderte Anforderungen anzupassen.
 

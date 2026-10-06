@@ -144,7 +144,7 @@ Für fachliche Beiträge empfehlen sich wissenschaftliche Standards:
 
 ## Fazit
 
-Mit Jekyll entstehen Blogbeiträge schnell, sicher und gut wartbar. Gliederung, Metadaten und Redaktion folgen klaren Regeln, die Technik dahinter bleibt flexibel. Weil Inhalt, Metadaten und Darstellung getrennt sind, bleiben Beiträge einheitlich und wiederverwendbar – und das System passt trotzdem für ganz verschiedene Texte, vom technischen Tutorial bis zur wissenschaftlichen Analyse. Davon haben Schreibende und Lesende gleichermaßen etwas.
+Mit Jekyll entstehen Blogbeiträge schnell, sicher und gut wartbar. Gliederung, Metadaten und Redaktion folgen klaren Regeln, die Technik dahinter bleibt flexibel. Weil Inhalt, Metadaten und Darstellung getrennt sind, bleiben Beiträge einheitlich und wiederverwendbar – und das System passt trotzdem für ganz verschiedene Texte, vom technischen Tutorial bis zur wissenschaftlichen Analyse. Davon haben Autoren und Leser gleichermaßen etwas.
 
 ---
 
