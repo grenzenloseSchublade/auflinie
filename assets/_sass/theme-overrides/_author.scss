@@ -60,6 +60,14 @@
     &::after {
       border-color: $console-panel-bg transparent;
     }
+
+    // Im Dropdown stehen die Links ohne Abstand übereinander (Theme: 2 px
+    // Polster, 22 px hoch). Sichtbar höher auf über 24 px (WCAG 2.5.8,
+    // Owner-Empfehlung 6. 10. 2026), ein unsichtbares Polster würde hier
+    // überlappen.
+    a {
+      padding-block: $space-2;
+    }
   }
 }
 
