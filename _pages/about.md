@@ -30,7 +30,7 @@ Gesundheit ist kein Projekt mit Endtermin, sondern eine tägliche Praxis aus vie
 
 {% include section-epigraph.html text="Überzeugen durch Leistung." author="Unbekannt" %}
 
-Am liebsten draußen: mit dem Rad unterwegs – im Alltag wie auf Reisen –, wandernd in der Natur oder auf dem Wasser beim Stand-Up-Paddling, Schwimmen und Surfen. Bewegung im Freien ist die verlässlichste Art, den Kopf freizubekommen: Der Rhythmus aus Strecke, Wetter und Anstrengung holt die Aufmerksamkeit aus dem Grübeln zurück ins Hier.
+Am liebsten draußen: mit dem Rad unterwegs – im Alltag wie auf Reisen –, wandernd in der Natur oder auf dem Wasser beim Stand-up-Paddling, Schwimmen und Surfen. Bewegung im Freien ist die verlässlichste Art, den Kopf freizubekommen: Der Rhythmus aus Strecke, Wetter und Anstrengung holt die Aufmerksamkeit aus dem Grübeln zurück ins Hier.
 
 Nebenbei entsteht dabei, was kein Training im Studio ersetzt: echte Erlebnisse – von der Passhöhe bis zur richtigen Welle.
 
