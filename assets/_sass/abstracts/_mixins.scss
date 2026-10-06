@@ -127,6 +127,27 @@
   outline-offset: $offset;
 }
 
+// Unsichtbares Trefferpolster für Touch (STYLEGUIDE 6.1, WCAG 2.5.8): Unter
+// (pointer: coarse) wächst die Trefferfläche auf mindestens
+// $touch-target-min in Breite und Höhe. Ein leeres ::after ragt mit
+// negativem inset nur so weit über das Element hinaus, wie ihm zur
+// Mindestgröße fehlt (die Prozente beziehen sich oben und unten auf die
+// Höhe, links und rechts auf die Breite). Optik, Maße und Abstände bleiben
+// gleich, nur Treffer neben dem Element landen auf ihm. Das Element wird
+// Bezugsrahmen (position: relative), darf also selbst nicht absolut
+// positioniert sein, und sein ::after muss frei sein.
+@mixin touch-target-pad {
+  @include coarse-pointer {
+    position: relative;
+
+    &::after {
+      content: "";
+      position: absolute;
+      inset: min(0px, calc((100% - #{$touch-target-min}) / 2));
+    }
+  }
+}
+
 // Hintergrund-Blur inkl. -webkit-Prefix (Safari < 18 braucht ihn noch) —
 // eine Stelle statt handgepflegter Prefix-Paare pro Komponente.
 @mixin backdrop-blur($px) {

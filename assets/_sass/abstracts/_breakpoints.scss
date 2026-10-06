@@ -81,3 +81,11 @@ $-gap: 0.02px;
     @content;
   }
 }
+
+// Grober Hauptzeiger (Finger). Für Zielgrößen, nicht für Hover (BP-3):
+//   @include coarse-pointer { … } → @media (pointer: coarse) { … }
+@mixin coarse-pointer {
+  @media (pointer: coarse) {
+    @content;
+  }
+}

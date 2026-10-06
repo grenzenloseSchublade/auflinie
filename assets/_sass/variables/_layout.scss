@@ -25,6 +25,11 @@ $graph-sheet-width: 1100px;
 // body::before-Overlays — beide müssen synchron bleiben (_masthead.scss).
 $drawer-width: 180px;
 
+// Mindest-Trefferfläche auf Touch-Geräten (STYLEGUIDE 6.1, Owner 6. 10. 2026):
+// Menü-Knopf und Buttons bekommen per Mixin touch-target-pad ein unsichtbares
+// Polster bis zu dieser Größe, Optik und Abstände bleiben gleich.
+$touch-target-min: 44px;
+
 // Effekte
 $hover-transform: translateY(-5px); // Transformation beim Hover
 $standard-transition: $duration-moderate ease; // Standard-Übergangseffekt

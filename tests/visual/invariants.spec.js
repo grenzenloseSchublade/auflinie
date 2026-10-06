@@ -5,8 +5,8 @@
 // Einpassen und Zoom im Skill-Graphen, dass kein
 // unsichtbares Element den Tastaturfokus bekommt, die Breakpoint-Grenzen
 // 767/768 und 1023/1024 (STYLEGUIDE 3.4), dass Touch nach dem Antippen
-// keinen Theme-Hover festhält (BP-3) und dass Kachelbilder die Maße ihrer
-// Datei tragen (IMG-3).
+// keinen Theme-Hover festhält (BP-3), dass Menü-Knopf und Buttons auf Touch
+// 44 px treffen (6.1) und dass Kachelbilder die Maße ihrer Datei tragen (IMG-3).
 const { test, expect } = require('@playwright/test');
 const { PAGES, POSTS } = require('./pages');
 const { ohneBlogHinweis } = require('../blog-hinweis');
@@ -574,6 +574,54 @@ test.describe('Touch hält keinen Theme-Hover (BP-3)', () => {
         expect(geprueft, 'keine sichtbaren Ziele, Test greift nicht').toBeGreaterThan(1);
         expect(haengt, haengt.join('\n')).toEqual([]);
       });
+    });
+  }
+});
+
+// Touch-Ziele (STYLEGUIDE 6.1, Owner 6. 10. 2026): Menü-Knopf und Buttons
+// (auch „Folgen“) treffen unter (pointer: coarse) auf 44 × 44 px, obwohl sie
+// kleiner aussehen (unsichtbares Polster, Mixin touch-target-pad). Geprüft
+// per elementFromPoint an den Rändern der 44-px-Zone um die Mitte: Jeder
+// Punkt muss das Ziel selbst treffen. Liegt dort ein Nachbar oder etwas
+// anderes darüber, schlägt der Test fehl. WebKit im Container trifft das
+// Polster des Menü-Knopfs erst, nachdem es neu gemalt hat (es malt dort
+// teils unter einem Bild pro Sekunde, R-87), daher pollt der Test.
+test.describe('Touch-Ziele 44 px (6.1)', () => {
+  test.use({ viewport: MOBIL, hasTouch: true, isMobile: true, contextOptions: { reducedMotion: 'reduce' } });
+  const SEL = '.greedy-nav__toggle, .btn';
+  // Leer, wenn alle vier Randpunkte das Ziel treffen, sonst Befund als Text
+  const randpunkte = (el) => el.evaluate((e) => {
+    // Der Menü-Knopf steht im festen Masthead, alles andere zur Mitte
+    if (!e.closest('.masthead')) e.scrollIntoView({ block: 'center', behavior: 'instant' });
+    const r = e.getBoundingClientRect();
+    const cx = r.left + r.width / 2;
+    const cy = r.top + r.height / 2;
+    const dx = Math.max(r.width, 44) / 2 - 0.5;
+    const dy = Math.max(r.height, 44) / 2 - 0.5;
+    const fremd = [[cx, cy - dy], [cx, cy + dy], [cx - dx, cy], [cx + dx, cy]].map(([x, y]) => {
+      const hit = document.elementFromPoint(x, y);
+      if (hit && (hit === e || e.contains(hit))) return null;
+      return hit ? `${hit.tagName.toLowerCase()}.${String(hit.className).split(' ')[0]}` : 'nichts';
+    }).filter(Boolean);
+    if (!fremd.length) return '';
+    return `${e.outerHTML.slice(0, 80)} (${r.width.toFixed(1)} × ${r.height.toFixed(1)} px), Randpunkte treffen ${fremd.join(', ')}`;
+  });
+
+  for (const path of ['', 'posts/', 'archiv/', 'posts/blogbeitrag-erstellen/']) {
+    test(`/${path}`, async ({ page }) => {
+      await ohneBlogHinweis(page);
+      await page.goto(`/auflinie/${path}`, { waitUntil: 'load' });
+      test.skip(!(await page.evaluate(() => matchMedia('(pointer: coarse)').matches)), 'Engine meldet keinen groben Zeiger');
+      const ziele = page.locator(SEL);
+      const n = await ziele.count();
+      let geprueft = 0;
+      for (let i = 0; i < n; i++) {
+        const el = ziele.nth(i);
+        if (!(await el.isVisible())) continue;
+        geprueft += 1;
+        await expect.poll(() => randpunkte(el), { timeout: 15_000 }).toBe('');
+      }
+      expect(geprueft, 'keine sichtbaren Ziele, Test greift nicht').toBeGreaterThan(0);
     });
   }
 });

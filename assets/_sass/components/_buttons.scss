@@ -31,6 +31,13 @@
   &:active {
     transform: translateY(1px);
   }
+
+  // Touch: Trefferfläche unsichtbar auf 44 px (Owner, 6. 10. 2026). Gilt
+  // für alle Theme-Buttons, auch „Folgen“ im Autorenprofil (dessen ::before
+  // ist der Theme-Klickfänger, das Polster nutzt ::after). Achtung: Das
+  // Theme-Muster .feature__item a.btn::before (ganze Kachel klickbar)
+  // bräuchte einen statischen Button, es ist heute nicht im Einsatz.
+  @include touch-target-pad;
 }
 
 // =============================================================================

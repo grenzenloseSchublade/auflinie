@@ -34,7 +34,8 @@ Drei Gruppen, alle mit Playwright:
     Blog-Hinweis im Top Layer, kein unsichtbares Element mit Tastaturfokus (Tab-Runde auf
     allen Seiten aus `visual/pages.js`), die
     Breakpoint-Grenzen 767/768 und 1023/1024, dass Touch nach dem Antippen keinen
-    Theme-Hover festhält (BP-3) und dass Kachelbilder die Maße ihrer Datei tragen
+    Theme-Hover festhält (BP-3), dass Menü-Knopf und Buttons auf Touch 44 px
+    treffen (6.1, Polster per `touch-target-pad`) und dass Kachelbilder die Maße ihrer Datei tragen
     (`_plugins/bildmasse.rb`, IMG-3).
   - `links.spec.js`: externe Links mit `target="_blank"`, `rel="noopener noreferrer"`,
     verstecktem Hinweis „öffnet in neuem Tab“ und Symbol ohne Umbruch davor, interne

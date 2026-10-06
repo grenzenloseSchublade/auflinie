@@ -595,6 +595,10 @@ body .greedy-nav__toggle {
     display: none;
     visibility: hidden;
   }
+
+  // Touch: Trefferfläche unsichtbar auf 44 px (Owner, 6. 10. 2026),
+  // sichtbar bleibt der Knopf bei 37 × 32 px
+  @include touch-target-pad;
 }
 
 // Hover der Hamburger-Balken: Das Theme färbt sie mit
