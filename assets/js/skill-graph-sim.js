@@ -27,8 +27,10 @@
   'use strict';
 
   const DEFAULTS = {
-    repulsion: 20000,    // Coulomb-Konstante C (F = C / d²)
-    springLength: 100,   // Feder-Ruhelänge in px
+    // Abstand der Knoten: 150 / 40000 statt 100 / 20000 (Owner, 6. 10. 2026),
+    // damit die Labels am Handy beim Einpassen Luft haben
+    repulsion: 40000,    // Coulomb-Konstante C (F = C / d²)
+    springLength: 150,   // Feder-Ruhelänge in px
     springK: 0.03,       // Federkonstante (Kantengewicht skaliert leicht)
     gravity: 0.02,       // Zug zur Canvas-Mitte
     velocityDecay: 0.6,  // Faktor pro Tick (entspricht d3 velocityDecay 0.4)

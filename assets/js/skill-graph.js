@@ -53,6 +53,10 @@
   const HIT_RADIUS = 16;           // Bildschirm-px, unabhängig vom Zoom (Touch-Ziel)
   const LABEL_PX = 11;
   const LABEL_GAP = 5;             // Abstand Kreis → Label-Grundlinie
+  // Luft zwischen zwei Labels (Bildschirm-px), nur für die Kollisionsprüfung:
+  // Labels gelten schon als belegt, wenn sie sich bis auf diesen Abstand nähern
+  const LABEL_AIR_X = 8;
+  const LABEL_AIR_Y = 4;
   const LABEL_FAMILY = '"SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace';
 
   // Zoom-Grenzen der Ansicht. 0.4 zeigt auch einen gewachsenen Graphen als
@@ -63,7 +67,7 @@
   const ZOOM_STEP = 1.25;          // Knöpfe und Tastatur (+/−)
   const WHEEL_ZOOM = 0.0016;       // wie das Fraktal-Panel (exp(−deltaY · k))
   // Einpassen: nie kleiner als 0.6. Darunter wird die Feder-Ruhelänge
-  // (100 Layout-px, skill-graph-sim.js) kürzer als 60 px, also kürzer als
+  // (150 Layout-px, skill-graph-sim.js) kürzer als 90 px, also kaum länger als
   // ein typisches Label (6 bis 10 Zeichen ≈ 55 bis 90 px bei gedämpfter
   // Schrift) — benachbarte Labels überlappen dann systematisch, das Bild
   // wird zum Knäuel. Lieber zentriert mit Rand-Pfeilen als unlesbar.
@@ -213,7 +217,10 @@
       if (!self.chipLabels.has(id)) { self.chipLabels.set(id, btn.textContent.trim()); }
       if (!connected.has(id) || indexById.has(id)) { return; }
       indexById.set(id, self.nodes.length);
-      self.nodes.push({ id: id, label: btn.textContent.trim(), labelW: null });
+      // Kern-Skill (core) oder ergänzende Breite (breadth) aus cv_content.yml:
+      // Kern-Labels haben beim Platzmangel Vorrang (render)
+      self.nodes.push({ id: id, label: btn.textContent.trim(), labelW: null,
+        core: !btn.closest('.cv-skill-chip--breadth'), degree: 0 });
     });
     this.foundations = new Set(Array.isArray(data.foundations) ? data.foundations : []);
     this.selectionTexts = window.SkillGraphData.texts(data, 'skill-graph').selection;
@@ -245,6 +252,8 @@
 
     this.neighbors = new Map();
     this.edges.forEach(function (edge) {
+      self.nodes[edge.source].degree++;
+      self.nodes[edge.target].degree++;
       const s = self.nodes[edge.source].id;
       const t = self.nodes[edge.target].id;
       if (!self.neighbors.has(s)) { self.neighbors.set(s, new Set()); }
@@ -635,12 +644,15 @@
     });
 
     // Zustand je Knoten und Beschriftung. Ein Label steht über dem Knoten,
-    // überlappt es dort ein schon gesetztes, darunter, sonst rechts oder
-    // links daneben (seitlich nur, wenn es ganz in die Fläche passt). Ohne
-    // Auswahl bekommt jeder Knoten sein Label (sind alle Lagen belegt, die
-    // mit der kleinsten Überdeckung). Mit Auswahl zuerst der gewählte Skill
-    // und seine Nachbarn (immer beschriftet), danach die übrigen nur, wenn
-    // eine Lage frei ist — sonst bleiben sie Punkte.
+    // überlappt es dort ein schon gesetztes (mit LABEL_AIR Luft), darunter,
+    // sonst rechts oder links daneben, jeweils nur ganz in der Fläche.
+    // Reihenfolge und Vorrang (Owner, 6. 10. 2026): Ohne Auswahl zuerst die
+    // Kern-Skills, dann die Breite, je nach Zahl der Verbindungen. Jedes Label
+    // steht nur auf freiem Platz, sonst bleibt der Knoten ein Punkt und sein
+    // Label erscheint beim Hineinzoomen oder Antippen. Durch die Reihenfolge
+    // trifft das zuerst die Breite. Mit Auswahl
+    // zuerst der gewählte Skill und seine Nachbarn (immer beschriftet),
+    // danach die übrigen nur auf freiem Platz.
     const states = nodes.map(function (node) {
       if (selected === null) { return 'base'; }
       if (node.id === selected) { return 'selected'; }
@@ -650,14 +662,22 @@
     if (selected !== null) {
       const rank = { selected: 0, related: 1, dimmed: 2 };
       order.sort(function (a, b) { return rank[states[a]] - rank[states[b]] || a - b; });
+    } else {
+      order.sort(function (a, b) {
+        return (nodes[b].core - nodes[a].core) || (nodes[b].degree - nodes[a].degree) || a - b;
+      });
     }
+    // Muss dieses Label stehen, auch ohne freien Platz?
+    const forced = function (i) {
+      return states[i] === 'selected' || states[i] === 'related';
+    };
     const placed = [];
     // Überdeckte Fläche mit allen schon gesetzten Labels (0 = frei)
     const overlapArea = function (r) {
       let sum = 0;
       placed.forEach(function (p) {
-        const ox = Math.min(r.x + r.w, p.x + p.w) - Math.max(r.x, p.x);
-        const oy = Math.min(r.y + r.h, p.y + p.h) - Math.max(r.y, p.y);
+        const ox = Math.min(r.x + r.w + LABEL_AIR_X, p.x + p.w) - Math.max(r.x - LABEL_AIR_X, p.x);
+        const oy = Math.min(r.y + r.h + LABEL_AIR_Y, p.y + p.h) - Math.max(r.y - LABEL_AIR_Y, p.y);
         if (ox > 0 && oy > 0) { sum += ox * oy; }
       });
       return sum;
@@ -670,11 +690,14 @@
       let r = null, best = null, bestArea = Infinity;
       for (let k = 0; k < LAGEN.length && !r; k++) {
         const cand = self.labelRect(screen[i].x, screen[i].y, nodes[i], g, LAGEN[k]);
-        if (k >= 2 && !inside(cand)) { continue; }   // seitlich nur ganz im Bild
+        if (!inside(cand)) { continue; }   // nur ganz im Bild, nie angeschnitten
         const area = overlapArea(cand);
         if (area === 0) { r = cand; } else if (area < bestArea) { best = cand; bestArea = area; }
       }
-      if (!r && states[i] !== 'dimmed') { r = best; }
+      if (!r && forced(i)) {
+        // Auswahl und Nachbarn auch am Rand beschriften (dann notfalls oben)
+        r = best || (states[i] !== 'base' ? self.labelRect(screen[i].x, screen[i].y, nodes[i], g, 'up') : null);
+      }
       showLabel[i] = r;
       if (r) { r.id = nodes[i].id; placed.push(r); }
     });
