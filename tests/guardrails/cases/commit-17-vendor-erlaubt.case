@@ -1,0 +1,7 @@
+# vendor ist seit 6. 10. 2026 ein erlaubter Bereich (GIT-8, Owner)
+guardrail: commit-msg
+expect: 0
+file: tests/guardrails/commit-msg.txt
+mode: create
+---
+build(vendor): MathJax 4.1.3 mit neuen Prüfsummen

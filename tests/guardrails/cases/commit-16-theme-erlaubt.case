@@ -1,0 +1,7 @@
+# theme ist seit 6. 10. 2026 ein erlaubter Bereich (GIT-8, Owner)
+guardrail: commit-msg
+expect: 0
+file: tests/guardrails/commit-msg.txt
+mode: create
+---
+fix(theme): Abstände ersten Kindes wie vor 4.28.1
