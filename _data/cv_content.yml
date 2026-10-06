@@ -157,7 +157,7 @@
             - "Implementierung der Algorithmen in C / C++ mit OpenCV"
             - "Entwicklung einer intuitiven Benutzeroberfläche für die Dokumentenverarbeitung"
             - "Entwicklung von Computer-Vision-Algorithmen zur robusten Erkennung von Dokumenten vor verrauschten und kontrastarmen Hintergründen"
-            - "Automatische Erkennung und Extraktion der Region of Interest (ROI) und zusätzlich optionaler manueller Korrekturfunktion"
+            - "Automatische Erkennung und Extraktion der Region of Interest (ROI), optional mit manueller Korrektur"
             - "Automatischer Ausgleich von perspektivischen Verzerrungen mittels Homographie"
             - "Optimierung des Kontrastes und der Bildqualität mittels Edge Detection"
         # [FORSCHUNG]
@@ -177,9 +177,9 @@
       period: "2015 – 2018"
       description: |-
         Schwerpunkt: Eingebettete Systeme\\
-        Abschlussnote: **Sehr Gut**
+        Abschlussnote: **sehr gut**
       achievements:
-        - 'Masterarbeit: „Erkennung handgeschriebener Worte mittels CNN / BiRNN für eingebettete Systeme“ – Note: **Ausgezeichnet**'
+        - 'Masterarbeit: „Erkennung handgeschriebener Worte mittels CNN / BiRNN für eingebettete Systeme“ – Note: **ausgezeichnet**'
         - "Vertiefung an der Schnittstelle von Machine Learning und eingebetteten Systemen"
 
     - degree: "B. Sc. Elektro- und Informationstechnik"
@@ -188,7 +188,7 @@
       period: "2012 – 2015"
       description: "Grundlagenstudium"
       achievements:
-        - 'Bachelorarbeit: „Elektrische Charakterisierung einer Halbleiter-Nanostruktur“ – Note: **Sehr Gut**'
+        - 'Bachelorarbeit: „Elektrische Charakterisierung einer Halbleiter-Nanostruktur“ – Note: **sehr gut**'
 
 - section: "Technische Fähigkeiten"
   icon: "laptop-code"
