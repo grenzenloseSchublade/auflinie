@@ -1,8 +1,9 @@
 /**
  * neon-orbit-toggle.js — Neon-Schriftzug im Startseiten-Hero: Klicks oder
  * Enter/Leertaste auf .neon-orbit-trigger steuern die Umlaut-Punkte
- * (Orbit, Farbwechsel, Scatter, Zustand je .neon-name). Pausiert die
- * Dauer-Animationen außerhalb des Viewports (Klasse neon-paused).
+ * (Orbit, Farbwechsel, Scatter, Zustand je .neon-name). Baut einmal die
+ * Glow-Ebene (.neon-glow--layer) und pausiert die Dauer-Animationen außerhalb
+ * des Viewports und bei verborgenem Tab (Klasse neon-paused).
  * Seiten-Modul, mountet einmal beim Laden. Nur auf der Startseite geladen (_includes/scripts.html), Keyframes in
  * components/_neon-base.scss und components/_neon-orbit.scss.
  */
@@ -346,10 +347,40 @@
     state.clickTimer = null;
   };
 
+  // Glow-Ebene: Der Leuchtschein wird einmal gemalt, danach atmet nur die
+  // Deckkraft der Ebene (CSS-Animation auf dem Compositor, _neon-base.scss).
+  // Die Kopie behält die Elementstruktur des Schriftzugs, damit die Glyphen
+  // genau auf dem Text liegen. Ihre Textknoten werden zu generiertem Inhalt
+  // (data-neon-text): Die H1 bekommt keinen doppelten Text, und die Kopie
+  // trägt weder Rolle noch Tab-Stopp oder Beschriftung.
+  const buildGlowLayer = (glow) => {
+    if (glow.querySelector('.neon-glow--layer')) return;
+    const layer = glow.cloneNode(true);
+    layer.classList.add('neon-glow--layer');
+    layer.setAttribute('aria-hidden', 'true');
+    layer.querySelectorAll('[role], [tabindex], [aria-label]').forEach((el) => {
+      el.removeAttribute('role');
+      el.removeAttribute('tabindex');
+      el.removeAttribute('aria-label');
+    });
+    const walker = document.createTreeWalker(layer, NodeFilter.SHOW_TEXT);
+    const texts = [];
+    while (walker.nextNode()) texts.push(walker.currentNode);
+    texts.forEach((node) => {
+      const span = document.createElement('span');
+      span.dataset.neonText = node.data;
+      node.replaceWith(span);
+    });
+    glow.append(layer);
+    glow.closest('.neon-name')?.classList.add('neon-layered');
+  };
+
   // ── Seiten-Modul (STYLEGUIDE 10.2): mountet einmal beim Laden ──────────────
   function mountNeon() {
+    // Auslöser vor dem Bau der Glow-Ebene suchen: Deren Kopien bleiben ohne Listener
     const triggers = document.querySelectorAll('.neon-orbit-trigger');
     if (!triggers.length) return;
+    document.querySelectorAll('.neon-name > .neon-glow').forEach(buildGlowLayer);
 
     const onActivate = (event) => {
       event.preventDefault();
@@ -370,18 +401,25 @@
       });
     });
 
-    // Dauer-Animationen (box-/text-shadow = Paint-teuer) pausieren, sobald der
-    // Schriftzug aus dem Viewport gescrollt ist — die Klasse wirkt per CSS nur,
+    // Dauer-Animationen pausieren, sobald der Schriftzug aus dem Viewport
+    // gescrollt ist oder der Tab verborgen ist — die Klasse wirkt per CSS nur,
     // wenn keine Choreografie läuft (siehe _neon-base.scss), damit deren
     // Timer-Zustandsmaschine nicht aus dem Tritt gerät
+    const names = document.querySelectorAll('.neon-name');
+    const inView = new Map();
+    const syncPaused = (el) => {
+      el.classList.toggle('neon-paused', inView.get(el) === false || document.hidden);
+    };
     if ('IntersectionObserver' in window) {
       const paintObserver = new IntersectionObserver((entries) => {
         entries.forEach((entry) => {
-          entry.target.classList.toggle('neon-paused', !entry.isIntersecting);
+          inView.set(entry.target, entry.isIntersecting);
+          syncPaused(entry.target);
         });
       });
-      document.querySelectorAll('.neon-name').forEach((el) => paintObserver.observe(el));
+      names.forEach((el) => paintObserver.observe(el));
     }
+    document.addEventListener('visibilitychange', () => names.forEach(syncPaused));
   }
 
   mountNeon();

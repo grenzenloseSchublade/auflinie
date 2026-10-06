@@ -8,6 +8,11 @@
 // 1. Keyframes für Flicker-Effekte
 // 2. Keyframes für Text-Effekte
 // 3. Basis-Styles für .neon-umlaut und .neon-glow
+// Perf (PERF-7): Die Dauer-Animationen ändern nur opacity und scale, die der
+// Compositor ohne Neumalen abspielt. Der Leuchtschein (text-shadow,
+// box-shadow) steht fest und wird einmal gemalt. Den Text-Schein trägt eine
+// Kopie des Schriftzugs (.neon-glow--layer, gebaut von
+// assets/js/neon-orbit-toggle.js), deren Deckkraft atmet.
 // Abhängigkeiten:
 // - variables/_css-properties.scss (CSS Custom Properties)
 // - variables/_colors.scss (Farbvariablen)
@@ -28,44 +33,30 @@
 // Takte und Glow-Leitern sind Effektdaten, keine UI-Skala.
 
 /// Flicker-Animation A für den ersten Umlaut-Punkt (::before)
-/// Erzeugt unregelmäßiges Flackern mit Glow-Effekt
+/// Erzeugt unregelmäßiges Flackern (nur Deckkraft, der Schein geht mit)
 @keyframes neon-umlaut-flicker-a {
   0%, 2.5%, 5%, 7.5%, 10% {
     opacity: 1;
-    box-shadow: 0 0 6px var(--neon-umlaut-dot-glow-strong-current, rgb(255 0 204 / 100%)),
-      0 0 16px var(--neon-umlaut-dot-glow-mid-current, rgb(255 0 204 / 90%)),
-      0 0 30px var(--neon-umlaut-dot-glow-soft-current, rgb(255 0 204 / 65%));
   }
 
   1.25%, 3.75%, 6.25%, 8.75% {
     opacity: 0.02;
-    box-shadow: none;
   }
 
   10%, 26.7% {
     opacity: 1;
-    box-shadow: 0 0 6px var(--neon-umlaut-dot-glow-strong-current, rgb(255 0 204 / 100%)),
-      0 0 16px var(--neon-umlaut-dot-glow-mid-current, rgb(255 0 204 / 90%)),
-      0 0 30px var(--neon-umlaut-dot-glow-soft-current, rgb(255 0 204 / 65%));
   }
 
   26.7%, 28.8%, 31% {
     opacity: 1;
-    box-shadow: 0 0 6px var(--neon-umlaut-dot-glow-strong-current, rgb(255 0 204 / 100%)),
-      0 0 16px var(--neon-umlaut-dot-glow-mid-current, rgb(255 0 204 / 90%)),
-      0 0 30px var(--neon-umlaut-dot-glow-soft-current, rgb(255 0 204 / 65%));
   }
 
   27.8%, 30% {
     opacity: 0.02;
-    box-shadow: none;
   }
 
   31%, 100% {
     opacity: 1;
-    box-shadow: 0 0 6px var(--neon-umlaut-dot-glow-strong-current, rgb(255 0 204 / 100%)),
-      0 0 16px var(--neon-umlaut-dot-glow-mid-current, rgb(255 0 204 / 90%)),
-      0 0 30px var(--neon-umlaut-dot-glow-soft-current, rgb(255 0 204 / 65%));
   }
 }
 
@@ -74,40 +65,26 @@
 @keyframes neon-umlaut-flicker-b {
   0%, 5% {
     opacity: 1;
-    box-shadow: 0 0 6px var(--neon-umlaut-dot-glow-strong-current, rgb(255 0 204 / 100%)),
-      0 0 16px var(--neon-umlaut-dot-glow-mid-current, rgb(255 0 204 / 90%)),
-      0 0 30px var(--neon-umlaut-dot-glow-soft-current, rgb(255 0 204 / 65%));
   }
 
   2.5% {
     opacity: 0.02;
-    box-shadow: none;
   }
 
   5%, 21.7% {
     opacity: 1;
-    box-shadow: 0 0 6px var(--neon-umlaut-dot-glow-strong-current, rgb(255 0 204 / 100%)),
-      0 0 16px var(--neon-umlaut-dot-glow-mid-current, rgb(255 0 204 / 90%)),
-      0 0 30px var(--neon-umlaut-dot-glow-soft-current, rgb(255 0 204 / 65%));
   }
 
   21.7%, 24.2%, 26.7%, 28% {
     opacity: 1;
-    box-shadow: 0 0 6px var(--neon-umlaut-dot-glow-strong-current, rgb(255 0 204 / 100%)),
-      0 0 16px var(--neon-umlaut-dot-glow-mid-current, rgb(255 0 204 / 90%)),
-      0 0 30px var(--neon-umlaut-dot-glow-soft-current, rgb(255 0 204 / 65%));
   }
 
   22.9%, 25.4%, 27.2% {
     opacity: 0.02;
-    box-shadow: none;
   }
 
   28%, 100% {
     opacity: 1;
-    box-shadow: 0 0 6px var(--neon-umlaut-dot-glow-strong-current, rgb(255 0 204 / 100%)),
-      0 0 16px var(--neon-umlaut-dot-glow-mid-current, rgb(255 0 204 / 90%)),
-      0 0 30px var(--neon-umlaut-dot-glow-soft-current, rgb(255 0 204 / 65%));
   }
 }
 
@@ -115,14 +92,10 @@
 @keyframes neon-flicker-irregular {
   0%, 18%, 22%, 25%, 53%, 57%, 100% {
     opacity: 1;
-    box-shadow: 0 0 6px var(--neon-umlaut-dot-glow-strong-current, rgb(255 0 204 / 100%)),
-      0 0 14px var(--neon-umlaut-dot-glow-mid-current, rgb(255 0 204 / 85%)),
-      0 0 26px var(--neon-umlaut-dot-glow-soft-current, rgb(255 0 204 / 60%));
   }
 
   20%, 24%, 55% {
     opacity: 0.15;
-    box-shadow: 0 0 2px var(--neon-umlaut-dot-glow-soft-current, rgb(255 0 204 / 60%));
   }
 }
 
@@ -154,20 +127,16 @@
   }
 }
 
-/// Mehrschichtiger Glow-Puls für die Punkte
+/// Glow-Puls für die Punkte: Der Schein steht als box-shadow fest (Mittelwert
+/// der früheren Leiter 14/26/36 px bis 16/30/44 px), der Punkt atmet per
+/// scale um ±5 %. Gleicher Takt (2,8 s), kein Neumalen
 @keyframes neon-layered-glow {
   0%, 100% {
-    box-shadow: 0 0 6px var(--neon-umlaut-dot-glow-strong-current, rgb(255 0 204 / 100%)),
-      0 0 14px var(--neon-umlaut-dot-glow-mid-current, rgb(255 0 204 / 85%)),
-      0 0 26px var(--neon-umlaut-dot-glow-soft-current, rgb(255 0 204 / 60%)),
-      0 0 36px rgb(255 0 255 / 35%);
+    scale: 0.95;
   }
 
   50% {
-    box-shadow: 0 0 6px var(--neon-umlaut-dot-glow-strong-current, rgb(255 0 204 / 100%)),
-      0 0 16px var(--neon-umlaut-dot-glow-mid-current, rgb(255 0 204 / 95%)),
-      0 0 30px var(--neon-umlaut-dot-glow-soft-current, rgb(255 0 204 / 75%)),
-      0 0 44px rgb(255 0 255 / 45%);
+    scale: 1.05;
   }
 }
 
@@ -175,29 +144,29 @@
 // KEYFRAMES: Text Neon-Effekte
 // =============================================================================
 
-/// Mehrschichtiger Text-Glow (für .neon-glow Klasse)
+// Beide Text-Animationen laufen auf der Glow-Ebene (.neon-glow--layer). Ihr
+// text-shadow ist der hellste Stand des früheren Pulses (5 px 55 %, 12 px
+// 32 %), die Deckkraft bildet die alten Stufen nach (0.76 ≈ 42 % zu 55 %).
+
+/// Mehrschichtiger Text-Glow (früher 40/22 % bis 52/30 %)
 @keyframes neon-text-layered-glow {
   0%, 100% {
-    text-shadow: 0 0 4px rgb(255 0 255 / 40%),
-      0 0 10px rgb(255 0 255 / 22%);
+    opacity: 0.73;
   }
 
   50% {
-    text-shadow: 0 0 4px rgb(255 0 255 / 52%),
-      0 0 12px rgb(255 0 255 / 30%);
+    opacity: 0.95;
   }
 }
 
-/// Text-Puls Animation
+/// Text-Puls (früher 42/24 % bis 55/32 %)
 @keyframes neon-text-pulse {
   0%, 100% {
-    text-shadow: 0 0 4px rgb(255 0 255 / 42%),
-      0 0 10px rgb(255 0 255 / 24%);
+    opacity: 0.76;
   }
 
   50% {
-    text-shadow: 0 0 5px rgb(255 0 255 / 55%),
-      0 0 12px rgb(255 0 255 / 32%);
+    opacity: 1;
   }
 }
 
@@ -251,14 +220,23 @@
 
   // Geteilte Glow-Definition über die -current-Indirektion: ::before/::after
   // setzen nur noch ihre -current-Variablen (statt je einen eigenen,
-  // strukturgleichen box-shadow-Block zu wiederholen)
+  // strukturgleichen box-shadow-Block zu wiederholen). Steht fest und wird
+  // einmal gemalt: Puls und Flackern ändern nur scale und opacity
   box-shadow: 0 0 6px var(--neon-umlaut-dot-glow-strong-current, var(--neon-umlaut-dot-glow-strong, rgb(255 0 204 / 100%))),
-    0 0 14px var(--neon-umlaut-dot-glow-mid-current, var(--neon-umlaut-dot-glow-mid, rgb(255 0 204 / 85%))),
-    0 0 26px var(--neon-umlaut-dot-glow-soft-current, var(--neon-umlaut-dot-glow-soft, rgb(255 0 204 / 60%)));
+    0 0 15px var(--neon-umlaut-dot-glow-mid-current, var(--neon-umlaut-dot-glow-mid, rgb(255 0 204 / 85%))),
+    0 0 28px var(--neon-umlaut-dot-glow-soft-current, var(--neon-umlaut-dot-glow-soft, rgb(255 0 204 / 60%))),
+    0 0 40px rgb(255 0 255 / 40%);
 
   // Orbit-Mittelpunkt: X = horizontale Mitte, Y = dynamisch
   transform-origin: var(--neon-orbit-center-x, 0.18em) var(--neon-orbit-origin-y, 0.45em);
-  animation-name: neon-umlaut-flicker-a, neon-flicker-irregular, neon-jitter, neon-layered-glow;
+
+  // Grund-Flackern (Platz 1) und Zittern (Platz 3) sind aus und stehen als
+  // none in der Liste, nicht mit Dauer 0: Ein Eintrag mit Dauer 0 oder mit
+  // filter hält in Chromium auch die übrigen Punkt-Animationen vom Compositor
+  // fern (PERF-7). Die Schalter --neon-base-flicker-on und --neon-jitter-on
+  // wirken nur noch im Orbit. Einschalten heißt hier: Namen eintragen
+  // (neon-umlaut-flicker-a/-b, neon-jitter, das Zittern malt bei jedem Bild)
+  animation-name: none, neon-flicker-irregular, none, neon-layered-glow;
   animation-duration: calc(var(--neon-base-flicker-on, 1) * 12s),
     calc(var(--neon-flicker-on, 0) * 3.4s),
     calc(var(--neon-jitter-on, 0) * 1.6s),
@@ -297,14 +275,23 @@
 
   animation-delay: 0.95s, 0s, 0s, 0s;
 
-  // Zweite Sequenz für zufälligeren Effekt
-  animation-name: neon-umlaut-flicker-b, neon-flicker-irregular, neon-jitter, neon-layered-glow;
 }
 
-/// Perf: außerhalb des Viewports pausieren die Dauer-Animationen (Klasse
-/// setzt assets/js/neon-orbit-toggle.js per IntersectionObserver); laufende
-/// Choreografien sind ausgenommen — deren JS-Timer liefen sonst weiter,
-/// während die CSS-Animation steht
+/// Ruhezustand: Der Punkt atmet um seine eigene Mitte. Im Orbit gilt wieder
+/// der Bahnmittelpunkt aus der Grundregel, dort ruht der Puls (none in den
+/// Listen von _neon-orbit.scss)
+.neon-name:not(.orbit-running, .orbit-finish, .orbit-popin, .orbit-scatter) {
+  .neon-umlaut::before,
+  .neon-umlaut::after {
+    transform-origin: center;
+  }
+}
+
+/// Perf: außerhalb des Viewports und bei verborgenem Tab pausieren die
+/// Dauer-Animationen (Klasse setzt assets/js/neon-orbit-toggle.js per
+/// IntersectionObserver und visibilitychange); laufende Choreografien sind
+/// ausgenommen — deren JS-Timer liefen sonst weiter, während die
+/// CSS-Animation steht. .neon-glow trifft auch die Glow-Ebene
 .neon-name.neon-paused:not(.orbit-running, .orbit-finish, .orbit-popin, .orbit-scatter) {
   .neon-umlaut::before,
   .neon-umlaut::after,
@@ -316,12 +303,35 @@
 /// Text mit Neon-Glow-Effekt
 /// @example
 ///   <span class="neon-glow">Kraftstoff</span>
+/// inline-block: Die Glow-Ebene liegt mit inset: 0 genau auf derselben
+/// Zeilenbox, ihre Glyphen decken sich mit dem Text
 .neon-glow {
+  position: relative;
+  display: inline-block;
+  isolation: isolate;
   color: inherit;
 
-  // Kalibrierter Dauerglow: sanfter schmaler Schein statt Strahlen
+  // Kalibrierter Dauerglow: sanfter schmaler Schein statt Strahlen. Ohne JS
+  // bleibt er stehen, mit JS trägt ihn die Glow-Ebene
   text-shadow: 0 0 4px rgb(255 0 255 / 45%),
     0 0 10px rgb(255 0 255 / 25%);
+}
+
+.neon-name.neon-layered .neon-glow:not(.neon-glow--layer) {
+  text-shadow: none;
+}
+
+/// Glow-Ebene: Kopie des Schriftzugs hinter dem Text, Glyphen als generierter
+/// Inhalt (data-neon-text, keine doppelten Textknoten in der H1). Der Schein
+/// wird einmal gemalt, nur die Deckkraft atmet
+.neon-glow--layer {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  color: transparent;
+  pointer-events: none;
+  text-shadow: 0 0 5px rgb(255 0 255 / 55%),
+    0 0 12px rgb(255 0 255 / 32%);
   animation-name: neon-text-layered-glow, neon-text-pulse;
 
   // Langsames „Röhren-Atmen" statt doppeltem Puls
@@ -329,6 +339,23 @@
     calc(var(--neon-text-pulse-on, 0) * 9s);
   animation-timing-function: ease-in-out, ease-in-out;
   animation-iteration-count: infinite, infinite;
+
+  [data-neon-text]::before {
+    content: attr(data-neon-text);
+  }
+
+  // Die Punkte zeichnet nur das Original
+  .neon-umlaut::before,
+  .neon-umlaut::after {
+    content: none;
+  }
+}
+
+// Kontrastmodus: Schatten entfallen, die Ebene trüge nur doppelten Text
+@media (forced-colors: active) {
+  .neon-glow--layer {
+    display: none;
+  }
 }
 
 // farb-Ausnahme-Ende

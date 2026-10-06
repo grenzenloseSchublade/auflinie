@@ -1,5 +1,8 @@
 // Orbit-Animationen für die Neon-Umlaut-Punkte (ausgelagert)
 // CSS Custom Properties sind zentral in _variables/_css-properties.scss definiert
+// Die vierte Stelle der Animationslisten ist im Orbit none: Der Punkt-Puls
+// (neon-layered-glow, scale) würde um den Bahnmittelpunkt skalieren und den
+// Bahnradius mitatmen lassen. Index und Dauerlisten bleiben gleich lang.
 
 @use "abstracts/tokens" as *;
 
@@ -360,7 +363,7 @@
 }
 
 .neon-name.orbit-running .neon-umlaut::before {
-  animation-name: neon-umlaut-flicker-a, neon-flicker-irregular, neon-jitter, neon-layered-glow,
+  animation-name: neon-umlaut-flicker-a, neon-flicker-irregular, neon-jitter, none,
     neon-orbit-ramp-before, neon-orbit-spin-before;
   animation-duration: calc(var(--neon-base-flicker-on, 1) * 3.1s),
     calc(var(--neon-flicker-on, 0) * 3.4s),
@@ -382,7 +385,7 @@
 }
 
 .neon-name.orbit-running .neon-umlaut::after {
-  animation-name: neon-umlaut-flicker-b, neon-flicker-irregular, neon-jitter, neon-layered-glow,
+  animation-name: neon-umlaut-flicker-b, neon-flicker-irregular, neon-jitter, none,
     neon-orbit-ramp-after, neon-orbit-spin-after;
   animation-duration: calc(var(--neon-base-flicker-on, 1) * 3.1s),
     calc(var(--neon-flicker-on, 0) * 3.4s),
@@ -411,7 +414,7 @@
 }
 
 .neon-name.orbit-finish .neon-umlaut::before {
-  animation-name: neon-umlaut-flicker-a, neon-flicker-irregular, neon-jitter, neon-layered-glow,
+  animation-name: neon-umlaut-flicker-a, neon-flicker-irregular, neon-jitter, none,
     neon-orbit-finish-before, neon-orbit-pop-out-before;
   animation-duration: calc(var(--neon-base-flicker-on, 1) * 3.1s),
     calc(var(--neon-flicker-on, 0) * 3.4s),
@@ -432,7 +435,7 @@
 }
 
 .neon-name.orbit-finish .neon-umlaut::after {
-  animation-name: neon-umlaut-flicker-b, neon-flicker-irregular, neon-jitter, neon-layered-glow,
+  animation-name: neon-umlaut-flicker-b, neon-flicker-irregular, neon-jitter, none,
     neon-orbit-finish-after, neon-orbit-pop-out-after;
   animation-duration: calc(var(--neon-base-flicker-on, 1) * 3.1s),
     calc(var(--neon-flicker-on, 0) * 3.4s),
@@ -453,7 +456,7 @@
 }
 
 .neon-name.orbit-popin .neon-umlaut::before {
-  animation-name: neon-umlaut-flicker-a, neon-flicker-irregular, neon-jitter, neon-layered-glow,
+  animation-name: neon-umlaut-flicker-a, neon-flicker-irregular, neon-jitter, none,
     neon-orbit-pop-in-before;
   animation-duration: calc(var(--neon-base-flicker-on, 1) * 3.1s),
     calc(var(--neon-flicker-on, 0) * 3.4s),
@@ -471,7 +474,7 @@
 }
 
 .neon-name.orbit-popin .neon-umlaut::after {
-  animation-name: neon-umlaut-flicker-b, neon-flicker-irregular, neon-jitter, neon-layered-glow,
+  animation-name: neon-umlaut-flicker-b, neon-flicker-irregular, neon-jitter, none,
     neon-orbit-pop-in-after;
   animation-duration: calc(var(--neon-base-flicker-on, 1) * 3.1s),
     calc(var(--neon-flicker-on, 0) * 3.4s),
@@ -498,7 +501,7 @@
 // ============================================
 
 .neon-name.orbit-scatter .neon-umlaut::before {
-  animation-name: neon-umlaut-flicker-a, neon-flicker-irregular, neon-jitter, neon-layered-glow,
+  animation-name: neon-umlaut-flicker-a, neon-flicker-irregular, neon-jitter, none,
     neon-orbit-scatter-before;
   animation-duration: calc(var(--neon-base-flicker-on, 1) * 3.1s),
     calc(var(--neon-flicker-on, 0) * 3.4s),
@@ -516,7 +519,7 @@
 }
 
 .neon-name.orbit-scatter .neon-umlaut::after {
-  animation-name: neon-umlaut-flicker-b, neon-flicker-irregular, neon-jitter, neon-layered-glow,
+  animation-name: neon-umlaut-flicker-b, neon-flicker-irregular, neon-jitter, none,
     neon-orbit-scatter-after;
   animation-duration: calc(var(--neon-base-flicker-on, 1) * 3.1s),
     calc(var(--neon-flicker-on, 0) * 3.4s),

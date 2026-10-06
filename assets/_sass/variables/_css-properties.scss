@@ -24,6 +24,8 @@
   // ============================================
   // Neon Umlaut Grundeffekte
   // ============================================
+  // base-flicker und jitter schalten nur im Orbit, im Ruhezustand stehen
+  // beide fest auf none (_neon-base.scss, PERF-7)
   --neon-base-flicker-on: 0;
   --neon-flicker-on: 1;
   --neon-jitter-on: 0;

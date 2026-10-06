@@ -85,6 +85,36 @@ test.describe('Seiten-Module beim vollen Laden', () => {
     await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
     await expect(neon).toHaveClass(/neon-paused/);
   });
+
+  test('Startseite: Neon-Dauer-Animationen nur auf dem Compositor, Glow-Ebene ohne Text', async ({ page }) => {
+    await page.goto(`${BASE}/`);
+    const layer = page.locator('.neon-name .neon-glow--layer');
+    await expect(layer).toHaveCount(1);
+    await expect(layer).toHaveAttribute('aria-hidden', 'true');
+    // Die Kopie trägt weder Rolle noch Tab-Stopp, die H1 keinen doppelten Text
+    await expect(layer.locator('[role], [tabindex], [aria-label]')).toHaveCount(0);
+    expect((await page.locator('#page-title').textContent()).trim()).toBe('Hans Muller');
+    // PERF-7: Dauer-Animationen im Schriftzug ändern nur opacity und scale.
+    // Abgeschaltete Einträge stehen als none in der Liste: Ein Eintrag mit
+    // Dauer 0 hält in Chromium die übrigen Animationen desselben Elements
+    // vom Compositor fern, deshalb darf es keinen geben
+    const { props, ruhend } = await page.evaluate(() => {
+      const name = document.querySelector('.neon-name');
+      const seen = new Set();
+      const endlos = name.getAnimations({ subtree: true })
+        .filter((a) => a.effect.getTiming().iterations === Infinity);
+      endlos.forEach((a) => a.effect.getKeyframes().forEach((k) => Object.keys(k)
+        .filter((p) => !['offset', 'computedOffset', 'easing', 'composite'].includes(p))
+        .forEach((p) => seen.add(p))));
+      return {
+        props: [...seen].sort(),
+        ruhend: endlos.filter((a) => a.effect.getComputedTiming().activeDuration === 0).map((a) => a.animationName),
+      };
+    });
+    expect(ruhend).toEqual([]);
+    expect(props.length).toBeGreaterThan(0);
+    expect(props.every((p) => ['opacity', 'scale', 'transform'].includes(p))).toBe(true);
+  });
 });
 
 test.describe('Navigation', () => {
