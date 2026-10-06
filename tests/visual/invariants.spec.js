@@ -179,9 +179,18 @@ test.describe('Sticky-TOC-Dropdown (A11Y-2)', () => {
 // publishView).
 // Die erwarteten Texte kommen aus dem Datenblock der Seite (texts in
 // _data/skill_graph.yml): Die Tests prüfen Verhalten, nicht den Wortlaut, eine
-// Textänderung dort braucht keinen angepassten Test.
+// Textänderung dort braucht keinen angepassten Test. graphHint ist der
+// Hinweis der Info-Leiste im Ruhezustand: Mit Projekt-Knoten (graph_mode:
+// projekte, Prototyp Stufe 2) steht er unter texts.graph.projekte, sonst
+// gilt derselbe Hinweis wie über den Chips (texts.hint).
 async function skillTexts(page) {
-  return page.evaluate(() => JSON.parse(document.querySelector('script[data-skill-graph-data]').textContent).texts);
+  return page.evaluate(() => {
+    const data = JSON.parse(document.querySelector('script[data-skill-graph-data]').textContent);
+    const texts = data.texts;
+    texts.graphMode = data.graph_mode || 'skills';
+    texts.graphHint = texts.graphMode === 'projekte' ? texts.graph.projekte.hint : texts.hint;
+    return texts;
+  });
 }
 
 async function openSheet(page, before) {
@@ -278,7 +287,7 @@ test.describe('Skill-Graph-Sheet (OVL-3, OVL-4)', () => {
     // Erstes Esc löst nur die Auswahl, das Sheet bleibt offen. Im Ruhezustand
     // steht unter dem Hinweis der Satz zu Punkten ohne Namen, nur im Graphen
     await page.keyboard.press('Escape');
-    await expect(info).toContainText(texts.hint);
+    await expect(info).toContainText(texts.graphHint);
     await expect(info.locator('.skill-graph__info-note')).toHaveText(texts.graph.unlabeled);
     await expect(page.locator('[data-role="skill-context"]')).not.toContainText(texts.graph.unlabeled);
     await expect(info).not.toHaveClass(/is-active/);
@@ -581,7 +590,7 @@ test.describe('Skill-Graph: Vorschau beim Überfahren', () => {
     await page.mouse.move(box.x + spot.x, box.y + spot.y);
     await expect(canvas).toHaveAttribute('data-preview', spot.id);
     await expect(canvas).not.toHaveAttribute('data-sel-x', /./);
-    await expect(info).toContainText(texts.hint);
+    await expect(info).toContainText(texts.graphHint);
     await expect(info).not.toHaveClass(/is-active/);
     // Verlassen nimmt sie weg
     await page.mouse.move(box.x + box.width / 2, box.y - 30);
@@ -593,6 +602,86 @@ test.describe('Skill-Graph: Vorschau beim Überfahren', () => {
     await expect(panel).toHaveAttribute('role', 'dialog');
     await page.keyboard.press('Escape');
     await expect(panel).not.toHaveAttribute('role', 'dialog');
+  });
+});
+
+// Projekt-Knoten (graph_mode: projekte, Prototyp Stufe 2): Ein Projekt wird
+// gewählt wie ein Skill, die Info-Leiste nennt es und seine Skills. Die
+// Chip-Liste kennt keine Projekte und kehrt in den Ruhezustand zurück
+// (skill-graph.js dispatch), Esc löst erst die Auswahl, dann das Sheet.
+// Den Knoten findet ein Raster aus synthetischen Klicks (Projekte haben
+// keinen Chip, über den sich ihre Lage lesen ließe).
+async function findProjectNode(canvas) {
+  return canvas.evaluate((el) => {
+    const info = document.querySelector('[data-role="graph-context"]');
+    const r = el.getBoundingClientRect();
+    const fire = (type, x, y) => el.dispatchEvent(new PointerEvent(type, { pointerType: 'mouse', pointerId: 7,
+      clientX: r.left + x, clientY: r.top + y, bubbles: true, isPrimary: true }));
+    const data = JSON.parse(document.querySelector('script[data-skill-graph-data]').textContent);
+    const names = new Set(data.projects.map((p) => p.label));
+    for (let y = 4; y < r.height; y += 5) {
+      for (let x = 4; x < r.width; x += 5) {
+        fire('pointerdown', x, y);
+        fire('pointerup', x, y);
+        const name = info.querySelector('.cv-skills__selection-skill');
+        if (name && names.has(name.textContent)) {
+          const pos = { x: Number(el.getAttribute('data-sel-x')), y: Number(el.getAttribute('data-sel-y')),
+            name: name.textContent };
+          fire('pointerdown', x, y);   // wieder lösen
+          fire('pointerup', x, y);
+          return pos;
+        }
+      }
+    }
+    return null;
+  });
+}
+
+test.describe('Skill-Graph mit Projekt-Knoten', () => {
+  test.use({ viewport: { width: 1280, height: 900 }, contextOptions: { reducedMotion: 'reduce' } });
+
+  test('Projekt antippen: Info-Leiste mit Skills, Chips neutral, Esc gestaffelt', async ({ page }) => {
+    // Lage des Python-Knotens über den Chip lesen, dann lösen
+    const { canvas, panel, texts } = await openSheet(page, () =>
+      page.locator('.cv-skill-chip__button[data-skill="python"]').click());
+    test.skip(texts.graphMode !== 'projekte', 'Fassung ohne Projekt-Knoten');
+    const python = { x: Number(await canvas.getAttribute('data-sel-x')),
+      y: Number(await canvas.getAttribute('data-sel-y')) };
+    await page.keyboard.press('Escape');
+    const spot = await findProjectNode(canvas);
+    expect(spot, 'kein Projekt-Knoten gefunden').not.toBeNull();
+    // Python im Graphen wählen: Der Chip zieht mit (Event-Vertrag) ...
+    await canvas.click({ position: python });
+    await expect(page.locator('.cv-skill-chip__button[data-skill="python"]')).toHaveAttribute('aria-pressed', 'true');
+    // ... dann das Projekt
+    await canvas.click({ position: { x: spot.x, y: spot.y } });
+    const info = page.locator('[data-role="graph-context"]');
+    await expect(info.locator('.cv-skills__selection-skill')).toHaveText(spot.name);
+    await expect(info.locator('.cv-skills__selection-rolle')).toHaveText(' – ' + texts.selection.project);
+    await expect(info.locator('.cv-skills__selection-projekte')).toContainText(' · ');
+    await expect(info).toHaveClass(/is-active/);
+    await expect(canvas).toHaveAttribute('data-sel-x', /\d/);
+    // Chip-Liste im Ruhezustand: kein Chip gedrückt, nichts gedimmt
+    await expect(page.locator('.cv-skills.has-selection')).toHaveCount(0);
+    await expect(page.locator('.cv-skill-chip__button[aria-pressed="true"]')).toHaveCount(0);
+    await expect(page.locator('[data-role="skill-context"]')).toHaveText(texts.hint);
+    // Erstes Esc löst nur die Auswahl, das zweite schließt das Sheet
+    await page.keyboard.press('Escape');
+    await expect(canvas).not.toHaveAttribute('data-sel-x', /./);
+    await expect(info).toContainText(texts.graphHint);
+    await expect(panel).toHaveAttribute('role', 'dialog');
+    await page.keyboard.press('Escape');
+    await expect(panel).not.toHaveAttribute('role', 'dialog');
+  });
+
+  // Projektnamen haben Vorrang vor Skill-Namen (labelOrder): In der breiten
+  // Startansicht steht jeder
+  test('Desktop: alle Projektnamen in der Startansicht', async ({ page }) => {
+    const { canvas, texts } = await openSheet(page);
+    test.skip(texts.graphMode !== 'projekte', 'Fassung ohne Projekt-Knoten');
+    const projects = await page.evaluate(() => JSON.parse(document.querySelector('script[data-skill-graph-data]')
+      .textContent).projects.map((p) => 'projekt:' + p.id));
+    expect((await labelsOf(canvas)).filter((id) => id.startsWith('projekt:')).sort()).toEqual(projects.sort());
   });
 });
 
