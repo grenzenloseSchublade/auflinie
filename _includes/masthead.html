@@ -6,8 +6,18 @@
             <nav id="site-nav" class="greedy-nav" aria-label="Hauptnavigation">
                 {% unless logo_path == empty %}
                 <a class="site-logo" href="{{ '/' | relative_url }}" aria-label="Startseite – {{ site.masthead_title | default: site.title }}">
-                    {%- comment -%} Inline statt <img>, damit die Magenta-Pfade das Röhren-Flackern bekommen {%- endcomment -%}
-                    {% include logo.svg %}
+                    {%- comment -%}
+                        Inline statt <img>. Zwei übereinanderliegende SVGs mit
+                        derselben viewBox: logo.svg trägt das Logo ohne die
+                        Magenta-Konturen, logo-roehren.svg nur diese Konturen.
+                        So flackert die Deckkraft eines ganzen Elements, das
+                        der Compositor ohne Main Thread abspielt (R-93). Wer
+                        das Logo tauscht, teilt es wieder so auf.
+                    {%- endcomment -%}
+                    <span class="site-logo__mark">
+                        {%- include logo.svg -%}
+                        {%- include logo-roehren.svg -%}
+                    </span>
                 </a>
                 {% endunless %}
                 {%- comment -%}
