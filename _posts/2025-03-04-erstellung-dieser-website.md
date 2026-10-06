@@ -490,7 +490,7 @@ Für die Qualitätssicherung sorgen vor allem die Prüfungen im Workflow. Das St
 
 Beim Hosting fiel die Wahl auf GitHub Pages. Es ist kostenlos, passt nahtlos zum Git-Workflow und bringt SSL-Zertifikate automatisch mit. Ausgeliefert wird über ein CDN, eine eigene Domain lässt sich einbinden. Dem stehen Grenzen gegenüber: keine serverseitige Verarbeitung, ein weiches Limit für den Datenverkehr und eine Zeitgrenze für Deployments. Die Plugin-Beschränkung des eingebauten Builders umgeht der eigene Build in GitHub Actions. Für statische Inhalte ohne laufende Kosten ist GitHub Pages die beste Wahl.
 
-Netlify als erste Alternative bietet mehr CI/CD-Funktionen, Serverless Functions, A/B-Tests, Formularverarbeitung und Vorschauen pro Branch. Erweiterte Funktionen kosten aber Geld, und die Konfiguration ist aufwendiger. Die Performance ist sehr gut, das Mehr an Funktionen braucht eine statische Seite wie diese aber nicht.
+Netlify als erste Alternative bietet mehr Funktionen für CI / CD, Serverless Functions, A/B-Tests, Formularverarbeitung und Vorschauen pro Branch. Erweiterte Funktionen kosten aber Geld, und die Konfiguration ist aufwendiger. Die Performance ist sehr gut, das Mehr an Funktionen braucht eine statische Seite wie diese aber nicht.
 
 Vercel als zweite Alternative ist auf React und Next.js zugeschnitten, mit Edge Functions, globalem CDN und automatischen Optimierungen. Für Jekyll passt es weniger gut und verlangt eine aufwendigere Build-Pipeline. Die Pro-Stufe kostet monatlich, die Performance ist hervorragend – für eine statische Seite ist das mehr als nötig.
 
@@ -644,7 +644,7 @@ assets/
 
 **Asset-Versionierung und Caching:**
 
-Cache-Busting läuft nicht über Query-Parameter oder Config-Felder, sondern über den Service Worker: Der Cache-Name enthält einen Build-Zeitstempel (per Liquid aus `site.time`), sodass jeder Deploy einen frischen Cache erzeugt und alte Caches beim Aktivieren aufgeräumt werden. Die Sass-Kompilierung mit `style: compressed` übernimmt Jekyll selbst – eine separate Minifizierungs-Pipeline für CSS/JS existiert bewusst nicht.
+Cache-Busting läuft nicht über Query-Parameter oder Config-Felder, sondern über den Service Worker: Der Cache-Name enthält einen Build-Zeitstempel (per Liquid aus `site.time`), sodass jeder Deploy einen frischen Cache erzeugt und alte Caches beim Aktivieren aufgeräumt werden. Die Sass-Kompilierung mit `style: compressed` übernimmt Jekyll selbst – eine separate Minifizierungs-Pipeline für CSS / JS existiert bewusst nicht.
 
 ### 4.3 Kritische Reflexion und Empfehlungen
 
@@ -669,7 +669,7 @@ Theme-Updates bleiben heikel: Neue Versionen können Inkompatibilitäten mitbrin
 **Ideal geeignet für:**
 
 **Entwickler mit Grundkenntnissen:**
-- **Ruby/HTML/CSS-Kenntnisse**: Basiswissen für Customization erforderlich
+- **Ruby / HTML / CSS**: Basiswissen für Customization erforderlich
 - **Git-Erfahrung**: Für effektive Versionskontrolle und Deployment
 - **Markdown-Kenntnisse**: Für Content-Erstellung und -Wartung
 - **Terminal-Komfort**: Für lokale Entwicklung und Build-Prozesse
@@ -702,7 +702,7 @@ Theme-Updates bleiben heikel: Neue Versionen können Inkompatibilitäten mitbrin
 
 **Für React-Entwickler:**
 - **Gatsby**: Optimiert für React-Entwicklung mit GraphQL
-- **Next.js**: Full-Stack React-Framework mit SSG/SSR
+- **Next.js**: Full-Stack React-Framework mit SSG / SSR
 - **Nuxt.js**: Vue.js-basierte Alternative
 - **Empfehlung**: Gatsby für statische Sites, Next.js für dynamische Features
 
