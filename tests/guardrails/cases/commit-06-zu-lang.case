@@ -1,0 +1,8 @@
+# Betreff über der harten Grenze von 100 Zeichen (GIT-1)
+guardrail: commit-msg
+expect: 1
+grep: GIT-1: Betreff hat 1\d\d Zeichen, höchstens 100
+file: tests/guardrails/commit-msg.txt
+mode: create
+---
+fix(cv): Zeiträume, Skill-Chips, Sprachen und Unterpunkte im Lebenslauf haben wieder ihre Abstände aus dem Theme

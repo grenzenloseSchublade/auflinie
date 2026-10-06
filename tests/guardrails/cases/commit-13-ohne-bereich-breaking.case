@@ -1,0 +1,7 @@
+# Gültig: ohne Bereich und mit Ausrufezeichen für eine brechende Änderung
+guardrail: commit-msg
+expect: 0
+file: tests/guardrails/commit-msg.txt
+mode: create
+---
+refactor!: Seiten-Module mounten einmal beim Laden

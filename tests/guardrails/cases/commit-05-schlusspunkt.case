@@ -1,0 +1,8 @@
+# Betreff mit Schlusspunkt (GIT-1)
+guardrail: commit-msg
+expect: 1
+grep: GIT-1: Betreff ohne Schlusspunkt
+file: tests/guardrails/commit-msg.txt
+mode: create
+---
+docs: Pflege-Anleitung um Bilder ergänzt.

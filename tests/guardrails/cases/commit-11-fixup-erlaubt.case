@@ -1,0 +1,7 @@
+# fixup!-Commit für ein späteres Rebase geht ohne Prüfung durch
+guardrail: commit-msg
+expect: 0
+file: tests/guardrails/commit-msg.txt
+mode: create
+---
+fixup! fix(toc/cv): Anker springen unter die Kopfzeile

@@ -1,0 +1,12 @@
+# Gültig: Kommentarzeilen und alles unter der Schere zählen nicht (git commit -v)
+guardrail: commit-msg
+expect: 0
+file: tests/guardrails/commit-msg.txt
+mode: create
+---
+perf(sw): Precache ohne Doppel-Download
+
+Body mit Begründung.
+# Please enter the commit message for your changes.
+# ------------------------ >8 ------------------------
+Update README.md.

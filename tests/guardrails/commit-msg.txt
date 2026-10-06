@@ -1,0 +1,5 @@
+fix(nav): Drawer schließt nach dem Seitenwechsel
+
+Gültige Nachricht als Ausgangslage der commit-msg-Fälle in cases/.
+
+Co-Authored-By: Beispiel <beispiel@example.org>

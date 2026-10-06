@@ -1,0 +1,9 @@
+# Ausnahme-Zeile im Body nach GOV-4 schaltet GIT-8 ab
+guardrail: commit-msg
+expect: 0
+file: tests/guardrails/commit-msg.txt
+mode: create
+---
+chore(probe): einmaliger Bereich für einen Messlauf
+
+Ausnahme: GIT-8, Messlauf ohne passenden Bereich

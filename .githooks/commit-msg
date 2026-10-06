@@ -1,0 +1,5 @@
+#!/bin/sh
+# Prüft die Commit-Nachricht gegen GIT-1, GIT-7 und GIT-8 (STYLEGUIDE.md 14.1).
+# Einrichten einmal je Klon: git config core.hooksPath .githooks
+# Im Notfall überspringen: git commit --no-verify
+exec python3 "$(git rev-parse --show-toplevel)/scripts/commit-msg-check.py" "$1"

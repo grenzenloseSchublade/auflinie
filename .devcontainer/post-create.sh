@@ -29,6 +29,9 @@ bundle install
 echo "Installing lint and test tooling (npm ci)..."
 npm ci
 
+# Commit-Hook gegen STYLEGUIDE GIT-1, GIT-7 und GIT-8 (README_DEV.md)
+git config core.hooksPath .githooks
+
 echo ""
 echo "Optional: Browser für die Playwright-Tests einrichten mit:  bash .devcontainer/setup-e2e.sh"
 echo ""

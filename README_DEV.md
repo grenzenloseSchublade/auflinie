@@ -11,6 +11,14 @@ Die Entwicklungsumgebung ist mit Visual Studio Code und Dev Containers konfiguri
 3. [Docker Desktop](https://www.docker.com/products/docker-desktop) installieren
 4. Das Projekt in VS Code öffnen und bei der Nachfrage „Reopen in Container“ wählen
 
+Commit-Hook: `.githooks/commit-msg` prüft jede Commit-Nachricht gegen GIT-1, GIT-7 und GIT-8 (Typ, Bereich, Betreff, STYLEGUIDE.md 14.1). Der Dev Container schaltet ihn beim Anlegen ein, ohne Dev Container einmal je Klon:
+
+```bash
+git config core.hooksPath .githooks
+```
+
+Typen und Bereiche liest `scripts/commit-msg-check.py` aus den Tabellen unter GIT-7 und GIT-8, ein neuer Bereich kommt also nur dort hinzu. Merge-, Revert- und `fixup!`-Commits gehen ohne Prüfung durch, eine Zeile `Ausnahme: GIT-8, Grund` im Body schaltet eine Regel ab (GOV-4). Alte Bereiche und ihre Zuordnung: [`docs/commit-bereiche.md`](docs/commit-bereiche.md). Die letzten Commits nachprüfen: `python3 scripts/commit-msg-check.py --log 50`. Der Hook läuft nur lokal, die CI prüft Commit-Nachrichten nicht.
+
 ## Enthaltene Komponenten
 
 - Ruby in der Version aus `.ruby-version` + Bundler (Jekyll, Remote-Theme Minimal Mistakes)
@@ -18,7 +26,7 @@ Die Entwicklungsumgebung ist mit Visual Studio Code und Dev Containers konfiguri
 - ESLint via `npm run lint:js` prüft `assets/js/`, `service-worker.js` (Liquid wird vorher ersetzt), `scripts/` und `tests/` auf undefinierte Namen, toten Code und `innerHTML` mit Daten (Regeln und Ausnahmen in `eslint.config.mjs`, läuft auch im CI-Lint-Job).
 - Hilfsskripte in `scripts/` (Kurzbeschreibung jeweils im Dateikopf):
   - Guardrails, alle im CI-Lint-Job: `fs-guardrail.sh` (Schriftgrößen-Tokens), `color-guardrail.sh` (Farb-Tokens, Ausnahmen per `// farb-Ausnahme:`), `scale-guardrail.sh` (Ratchet für Abstände, Radien, Schatten, z-index, Motion und Laufweiten, Grenzwerte in `scale-baseline.txt`, nach einer Migration mit `--update` senken, Inventar per `python3 scripts/scale-literals.py --report`, Ausnahmen per `// skala-Ausnahme:`), `bp-guardrail.sh` (Breakpoints nur über `up()`/`down()`, Hover hinter `can-hover`, JS-Spiegel in `site-utils.js` und Critical-CSS), `security-guardrail.sh` (gepinnte Actions und Theme, Service-Worker-Caches, keine Inline-Skripte). Ihre Negativtests stehen in `tests/guardrails/`.
-  - Weitere Checks: `scss-format.py` (Einrückung und Endleerzeichen in `assets/_sass`, mit `--fix` korrigieren), `version-sync-check.sh` (Ruby- und Node-Version im Dev Container gleich `.ruby-version` und `.nvmrc`), `sass-deprecation-check.sh` (eigene Sass-Deprecations, braucht Jekyll, also im Ruby-Container), `csp-check.py _site` (CSP und `http://`-URLs in den gebauten Seiten), `content-check.py` (Inhaltsfehler in Beiträgen, Seiten und `_data`: HTML-Kommentare, Skill-IDs, Mathe-Backslashes, Pfade ohne `relative_url`, fehlende oder leere Text-Schlüssel der Bedienung, mit `--site _site` Beitrags- und Kachelbilder ohne Maße, Meldungen mit Datei, Zeile und Lösung).
+  - Weitere Checks: `scss-format.py` (Einrückung und Endleerzeichen in `assets/_sass`, mit `--fix` korrigieren), `version-sync-check.sh` (Ruby- und Node-Version im Dev Container gleich `.ruby-version` und `.nvmrc`), `sass-deprecation-check.sh` (eigene Sass-Deprecations, braucht Jekyll, also im Ruby-Container), `csp-check.py _site` (CSP und `http://`-URLs in den gebauten Seiten), `content-check.py` (Inhaltsfehler in Beiträgen, Seiten und `_data`: HTML-Kommentare, Skill-IDs, Mathe-Backslashes, Pfade ohne `relative_url`, fehlende oder leere Text-Schlüssel der Bedienung, mit `--site _site` Beitrags- und Kachelbilder ohne Maße, Meldungen mit Datei, Zeile und Lösung), `commit-msg-check.py` (Commit-Nachrichten, läuft als Hook, siehe [Einrichtung](#einrichtung)).
   - Werkzeuge für Nachweise: `cascade-check.py` (welche Regel im gebauten CSS für einen Selektor gewinnt), `style-snapshot.js` (berechnete Styles zweier Stände vergleichen, im Playwright-Container), `ubuntu-font-subset.py` (erzeugt die Textschrift `assets/webfonts/ubuntu-latin-*.woff2` aus dem Canonical-Paket, braucht `fonttools` und `brotli`, nur bei einem neuen Subset nötig).
 
 ## Jekyll / Hero

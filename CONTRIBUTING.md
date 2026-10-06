@@ -30,7 +30,7 @@ Gastbeiträge kommen als Markdown-Datei nach der Vorlage `assets/downloads/post-
 
 1. Repository forken
 2. Branch nach STYLEGUIDE.md anlegen (`git checkout -b feat/neues-thema`)
-3. Änderungen committen (`git commit -m 'feat: neues Thema'`)
+3. Änderungen committen (`git commit -m 'feat: neues Thema'`), Format, Typen und Bereiche nach STYLEGUIDE.md 14.1. Den Commit-Hook vorher einmal einschalten: `git config core.hooksPath .githooks` (README_DEV.md)
 4. Branch pushen (`git push origin feat/neues-thema`)
 5. Pull Request öffnen
 

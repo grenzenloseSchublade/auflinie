@@ -1,0 +1,8 @@
+# Pseudo-Bereich polish (GIT-8)
+guardrail: commit-msg
+expect: 1
+grep: GIT-8: Bereich `polish`
+file: tests/guardrails/commit-msg.txt
+mode: create
+---
+style(polish): Feinschliff nach dem Review

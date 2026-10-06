@@ -1,0 +1,8 @@
+# Mehrere Bereiche in einem Commit (GIT-8)
+guardrail: commit-msg
+expect: 1
+grep: höchstens ein Bereich, nicht `toc/cv`
+file: tests/guardrails/commit-msg.txt
+mode: create
+---
+fix(toc/cv): Anker springen unter die Kopfzeile

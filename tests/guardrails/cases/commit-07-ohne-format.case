@@ -1,0 +1,8 @@
+# Nachricht ohne typ(bereich): (GIT-7)
+guardrail: commit-msg
+expect: 1
+grep: Format: `typ\(bereich\): Betreff`
+file: tests/guardrails/commit-msg.txt
+mode: create
+---
+Update README.md

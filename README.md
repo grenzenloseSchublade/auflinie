@@ -19,6 +19,7 @@ Diese Website kombiniert Jekyll mit dem Minimal Mistakes Theme, um eine ansprech
 | [`docs/features/seitenwechsel.md`](docs/features/seitenwechsel.md) | Seitenwechsel per Cross-Document View Transition |
 | [`docs/features/tv-umschalt.md`](docs/features/tv-umschalt.md) | TV-Umschalt-Effekt: Varianten, Dosierung, Technik |
 | [`docs/features/skill-feature.md`](docs/features/skill-feature.md) | Skill-Chips und Skill-Graph im Lebenslauf |
+| [`docs/commit-bereiche.md`](docs/commit-bereiche.md) | Commit-Bereiche der Historie und ihre Zuordnung zur Liste in GIT-8 |
 | [`docs/audits/`](docs/audits/) | Audit- und Sicherheitsbericht vom 1. 10. 2026 (Momentaufnahmen, nicht normativ) |
 
 ## TODO

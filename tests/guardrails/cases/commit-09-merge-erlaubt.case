@@ -1,0 +1,7 @@
+# Merge-Commit nach GIT-5 geht ohne Prüfung durch
+guardrail: commit-msg
+expect: 0
+file: tests/guardrails/commit-msg.txt
+mode: create
+---
+Merge feat/pflege-check: Inhalts-Check mit Zeilennummern

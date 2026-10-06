@@ -1,0 +1,9 @@
+# Ohne Tabelle unter GIT-8 im Guide bricht der Check laut ab, statt alles abzulehnen
+guardrail: commit-msg
+expect: 2
+grep: Bereichstabelle unter GIT-7 / GIT-8 in STYLEGUIDE\.md nicht gefunden
+file: STYLEGUIDE.md
+mode: replace
+old: - **GIT-8** [
+---
+- **GIT-8 alt** [

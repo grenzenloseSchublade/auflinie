@@ -1,0 +1,8 @@
+# Alter Bereich css statt scss, die Meldung nennt die Zuordnung (GIT-8)
+guardrail: commit-msg
+expect: 1
+grep: Bereich `css` steht nicht in der Liste\. Zuordnung: `scss`
+file: tests/guardrails/commit-msg.txt
+mode: create
+---
+fix(css): Abstand unter dem Hero als Token

@@ -1,0 +1,8 @@
+# Typ tune gibt es nicht mehr (GIT-7)
+guardrail: commit-msg
+expect: 1
+grep: GIT-7: Typ `tune` gibt es nicht\. Zuordnung: `style`, `perf` oder `fix`
+file: tests/guardrails/commit-msg.txt
+mode: create
+---
+tune(nav): Kanalwechsel-Cooldown 8 s → 6 s

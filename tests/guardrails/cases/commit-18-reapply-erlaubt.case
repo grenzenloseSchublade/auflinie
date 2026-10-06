@@ -1,0 +1,9 @@
+# Reapply-Commit (Revert eines Reverts, Git ab 2.43) geht ohne Prüfung durch
+guardrail: commit-msg
+expect: 0
+file: tests/guardrails/commit-msg.txt
+mode: create
+---
+Reapply "fix(css): Abstand unter dem Hero als Token"
+
+This reverts commit 0123456789abcdef0123456789abcdef01234567.

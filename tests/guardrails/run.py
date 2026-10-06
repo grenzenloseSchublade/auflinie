@@ -14,7 +14,10 @@ Aufbau einer .case-Datei (Kopfzeilen, dann `---`, dann der Inhalt):
                                  content = scripts/content-check.py auf den Quellen,
                                  content-site = derselbe Check mit --site auf der
                                  Mini-Site tests/guardrails/content-site,
-                                 version-sync = scripts/version-sync-check.sh)
+                                 version-sync = scripts/version-sync-check.sh,
+                                 commit-msg = scripts/commit-msg-check.py auf
+                                 tests/guardrails/commit-msg.txt, Listen aus
+                                 STYLEGUIDE.md)
     expect: 1                   (erwarteter Exit-Code)
     grep: VERSTOSS spacing      (optional, Regex, muss in der Ausgabe stehen)
     file: assets/_sass/components/_footer.scss
@@ -42,7 +45,8 @@ COPY = ["scripts", "assets/_sass", "assets/css", "assets/js", "_layouts", "_incl
         ".github", "_config.yml", "service-worker.js", "tests/guardrails/csp-site",
         "_posts", "_drafts", "_pages", "_data", "tests/guardrails/content-site",
         "package.json", "package-lock.json", ".devcontainer", ".ruby-version", ".nvmrc",
-        "playwright.config.js", "tests/README.md", "README.md", "README_DEV.md"]
+        "playwright.config.js", "tests/README.md", "README.md", "README_DEV.md",
+        "STYLEGUIDE.md", "docs", "tests/guardrails/commit-msg.txt"]
 
 
 def parse(path):
@@ -78,6 +82,9 @@ def run(copy, guardrail):
                str(copy / "tests/guardrails/content-site")]
     elif guardrail == "version-sync":
         cmd = ["bash", str(copy / "scripts/version-sync-check.sh")]
+    elif guardrail == "commit-msg":
+        cmd = ["python3", str(copy / "scripts/commit-msg-check.py"),
+               str(copy / "tests/guardrails/commit-msg.txt")]
     else:
         cmd = ["bash", str(copy / "scripts" / f"{guardrail}-guardrail.sh")]
     p = subprocess.run(cmd, capture_output=True, text=True, check=False)
