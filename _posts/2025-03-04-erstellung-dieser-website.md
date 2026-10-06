@@ -712,19 +712,19 @@ Theme-Updates bleiben heikel: Neue Versionen können Inkompatibilitäten mitbrin
 
 **Langfristige Strategien und Migrationspfade:**
 
-**Kurzfristige Optimierungen (0–6 Monate):**
+**Kurzfristige Optimierungen (0–12 Monate):**
 - **Performance-Tuning**: Build-Zeit-Optimierung und Asset-Minimierung
 - **Content-Expansion**: Erweiterung der Inhalte und Features
 - **SEO-Optimierung**: Verbesserung der Suchmaschinen-Rankings
 - **User Experience**: Optimierung der Benutzerfreundlichkeit
 
-**Mittelfristige Entwicklungen (6–18 Monate):**
+**Mittelfristige Entwicklungen (1–3 Jahre):**
 - **Feature-Erweiterungen**: Neue interaktive Elemente und Funktionen
 - **Performance-Monitoring**: Ladezeiten und Build-Dauer regelmäßig messen
 - **Content-Strategie**: Erweiterte Content-Typen und -Formate
 - **Community-Building**: Interaktion mit Lesern und Feedback-Integration
 
-**Langfristige Perspektiven (18+ Monate):**
+**Langfristige Perspektiven (ab drei Jahren):**
 - **Technologie-Evaluation**: Bewertung neuer Static Site Generators
 - **Migrationsplanung**: Vorbereitung auf mögliche Technologie-Wechsel
 - **Skalierungsstrategien**: Planung für wachsende Content-Mengen
