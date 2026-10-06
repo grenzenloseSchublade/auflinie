@@ -99,8 +99,11 @@ Critical-CSS (_layouts/default.html). Wer den Token ändert, zieht beide nach. {
   Neon-Spans) – strip_html, sonst landet HTML-Müll in der headline {% endcomment %}
   "headline": {{ page.seo_title | default: page.title | default: site.title | markdownify | strip_html | strip_newlines | jsonify | replace: '</', '<\/' }},
   "description": {{ page.excerpt | default: site.description | strip_html | strip_newlines | truncate: 160 | jsonify | replace: '</', '<\/' }},
-  {% if page.header.overlay_image or site.og_image %}
-  "image": {{ page.header.overlay_image | default: site.og_image | absolute_url | jsonify | replace: '</', '<\/' }},
+  {% comment %} Gleiche Reihenfolge wie og:image in seo.html: eigenes Seitenbild,
+  dann das Site-Vorschaubild, dann der Hero (Owner, 6. 10. 2026) {% endcomment %}
+  {% assign ld_image = page.header.og_image | default: site.og_image | default: page.header.overlay_image %}
+  {% if ld_image %}
+  "image": {{ ld_image | absolute_url | jsonify | replace: '</', '<\/' }},
   {% endif %}
   {% if page.date %}
   "datePublished": {{ page.date | date_to_xmlschema | jsonify | replace: '</', '<\/' }},
