@@ -61,7 +61,7 @@
   border: none;
   cursor: pointer;
   font-family: mm.$sans-serif-narrow;
-  color: mm.$text-color;
+  color: $body-text-color;
   text-align: left;
 
   // Kein Akzent-Balken mehr — schlichtes Mono-Label (Rail-Design)
@@ -251,7 +251,7 @@
 // Hover magenta (Interaktion), keine Trenner, kein Bold.
 .toc {
   font-family: mm.$sans-serif-narrow;
-  color: mm.$text-color;
+  color: $body-text-color;
 
   // Theme-Basisregel (Panel mit Rahmen/Schatten) explizit zurücksetzen —
   // Weglassen reicht nicht, die Theme-Deklarationen scheinen sonst durch

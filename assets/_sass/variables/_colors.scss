@@ -212,8 +212,8 @@ $primary-color: $link-color;
 
 // Theme-Grund (FARB-10): wertgleich mit dem Dark-Skin, jetzt aus dem eigenen
 // Token. Davon leitet das Theme Rahmen, Code-, Formular- und Footer-Flächen
-// per mix() ab. $text-color bleibt beim Skin (#eaeaea), siehe
-// $body-text-color unten.
+// per mix() ab. Die Theme-Textfarbe $text-color steht unten bei
+// $body-text-color.
 $background-color: $page-bg;
 
 // Überschriften
@@ -248,11 +248,17 @@ $base0d: $link-color; // Funktionen = Cyan
 $base0e: #ff79c6; // Keywords = aufgehelltes Magenta (6:1 auf Panel-Ton)
 $base0f: #d4a37f; // Sonstiges
 
-// Fließtext auf dem Seitengrund, 11,55:1 auf #252a34. Bewusst ein eigenes
-// Token statt Theme-$text-color (#eaeaea): aus dem leitet das Theme weitere
-// Töne ab (Masthead-Links, Notices), die unverändert bleiben sollen.
-// Alias auf $base05 (gleicher Wert, FARB-9).
+// Fließtext auf dem Seitengrund, 11,55:1 auf #252a34. Alias auf $base05
+// (gleicher Wert, FARB-9).
 $body-text-color: $base05;
+
+// Theme-Textfarbe (FARB-10, Owner-Entscheidung 6. 10. 2026, R-72): ein
+// Fast-Weiß für Theme und eigene Stellen, der Dark-Skin brachte #eaeaea
+// mit. Abnehmer im Theme: body, Formulare, Notices, Masthead-Links,
+// Social-Icons, dazu die per mix() abgeleiteten Töne $muted-text-color
+// (Footer, Seiten-Meta, Navigation) und $masthead-link-color-hover. Eigene
+// Partials lesen $body-text-color, nicht diese Theme-Variable.
+$text-color: $body-text-color;
 
 // Abgeleitete Flächen-/Rahmen-Tokens (Konsolidierung wiederholter Literale)
 $border-accent: $cyan-a55; // Karten-Akzentrand links
