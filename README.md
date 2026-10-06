@@ -222,6 +222,7 @@ Wenn mathematische Formeln nicht korrekt angezeigt werden:
 | Über mich, neue Seite | `_pages/*.md` |
 | Fraktal-Texte | `_data/mandelbrot.yml`, Knöpfe und Hinweise der Panels `_data/fractal_panel.yml` |
 | Menü und Footer | `_data/navigation.yml` |
+| Datenschutzerklärung | `_pages/datenschutz.md` |
 | Kontakt, Social-Links | `_config.yml` → `author.links` |
 | Hinweis über dem Blog | `_pages/posts.md` → `blog_notice` |
 

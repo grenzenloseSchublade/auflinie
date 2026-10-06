@@ -16,6 +16,7 @@ Ein Fehler kann nichts kaputt machen, was schon online ist: Die Website wird nac
 | Menü, neue Seite | `_data/navigation.yml`, `_pages/` | [Navigation](#navigation) |
 | Kontakt, Social-Links | `_config.yml` → `author.links` | [Kontakt und Social-Links](#kontakt-und-social-links) |
 | Footer | `_data/navigation.yml` → `footer`, Copyright-Zeile `_data/ui-text.yml` → `powered_by` | [Footer](#footer) |
+| Datenschutzerklärung | `_pages/datenschutz.md` | [Datenschutz](#datenschutz) |
 | Bild tauschen | `assets/images/` | [Bild tauschen](#bild-tauschen) |
 | Seitentitel, Kurzbeschreibung | Kopf der jeweiligen Datei | [Seitentitel und Excerpt](#seitentitel-und-excerpt) |
 | Hinweis über dem Blog | `_pages/posts.md` → `blog_notice` | [Blog-Hinweis](#blog-hinweis) |
@@ -244,6 +245,17 @@ Fallen: Der erste Eintrag mit `contact: true` steht im Kontaktsatz („am einfac
 3. Prüfen und pushen.
 
 Copyright-Zeile: Das Jahr setzt der Build selbst, der Name kommt aus `name` in `_config.yml`, „Möglich durch“ aus `powered_by` in `_data/ui-text.yml`.
+
+## Datenschutz
+
+Die Datenschutzerklärung steht in `_pages/datenschutz.md`, verlinkt im Footer. Name und Kontakt liest sie selbst aus `_config.yml` (`author.name`, `author.links` mit `contact: true`). Anpassen ist nötig, sobald die Website etwas Neues mit Daten tut: ein neuer Wert im Browser-Speicher, ein fremder Dienst (Schriften, Videos, Statistik, Kommentare), ein Kontaktformular oder ein anderer Hosting-Ort (STYLEGUIDE SEC-6, SEC-10a).
+
+1. `_pages/datenschutz.md` öffnen. Der Kommentar am Anfang listet, welche Datei was speichert.
+2. Den passenden Abschnitt ergänzen, in derselben Art: was gespeichert wird, wozu, wie lange.
+3. Die Zeile „Stand:“ am Ende auf das heutige Datum setzen.
+4. Prüfen und pushen, im selben Commit wie die Änderung, die den neuen Datenfluss bringt.
+
+Falle: Ein neuer fremder Dienst braucht außerdem eine Änderung der Sicherheitsregeln (CSP in `_includes/head.html`) und ist ein Technik-Schritt (STYLEGUIDE SEC-9).
 
 ## Bild tauschen
 

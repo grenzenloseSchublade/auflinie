@@ -20,3 +20,6 @@ footer:
   - url: "/posts/"
   - title: "Archiv"
     url: "/archiv/"
+  # Datenschutzerklärung von jeder Seite aus erreichbar (STYLEGUIDE SEC-10a)
+  - title: "Datenschutz"
+    url: "/datenschutz/"

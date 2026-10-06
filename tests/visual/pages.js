@@ -6,7 +6,7 @@ const fs = require('fs');
 const path = require('path');
 
 const SITE_DIR = path.resolve(__dirname, '..', '..', process.env.SITE_DIR || '_site_review');
-const STATIC = ['', 'about/', 'cv/', 'posts/', 'archiv/', 'mandelbrot/', 'styleguide/', '404.html', 'offline.html'];
+const STATIC = ['', 'about/', 'cv/', 'posts/', 'archiv/', 'mandelbrot/', 'datenschutz/', 'styleguide/', '404.html', 'offline.html'];
 
 function postPages() {
   const dir = path.join(SITE_DIR, 'posts');
