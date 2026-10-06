@@ -1,7 +1,7 @@
 ---
 title: "Erstellung dieser Website: Von der Konzeption zur Implementierung"
 date: 2025-03-04
-last_modified_at: 2026-10-01
+last_modified_at: 2026-10-06
 author_profile: true
 categories:
   - Webentwicklung
@@ -246,7 +246,7 @@ auflinie/
 │   │                              #   sw-register, blog-search u. a.
 │   ├── vendor/                    # Selbst gehostete Bibliotheken (MathJax,
 │   │                              #   tom-select, nouislider, gumshoe) – vormals CDN
-│   ├── webfonts/                  # Font-Awesome-Subset (pyftsubset, woff2)
+│   ├── webfonts/                  # Ubuntu und Font-Awesome-Subset (pyftsubset, woff2)
 │   ├── images/                    # background.jpg, mandelbrot-preview.jpg, Logo.svg
 │   └── downloads/post-template.md # Blog-Template zum Download
 ├── .devcontainer/                 # Dev-Container (python:3.11 + Ruby 3.4.11 Feature)
@@ -362,7 +362,7 @@ exclude:
 
 Angepasst wurde die Website optisch und funktional. Inhalte entstehen weiterhin als einfache Dateien im Repository, ein CMS gibt es nicht.
 
-Die eigenen Styles liegen in `assets/_sass/`, alle Werte zentral in `assets/_sass/variables/`. Die Farben bauen auf der Skin „dark“ auf: Cyan (`#05d9e8`) für Links, Magenta (`#ff00ff`) für Hover und Auswahl, dazu ein dunkler Seitengrund (`#252a34`). Als Schrift dient die Systemschrift des Betriebssystems, ein Webfont wird nicht geladen. Die Grundgröße folgt der Einstellung im Browser, alle Schriftgrößen kommen aus einer festen Token-Skala.
+Die eigenen Styles liegen in `assets/_sass/`, alle Werte zentral in `assets/_sass/variables/`. Die Farben bauen auf der Skin „dark“ auf: Cyan (`#05d9e8`) für Links, Magenta (`#ff00ff`) für Hover und Auswahl, dazu ein dunkler Seitengrund (`#252a34`). Als Textschrift dient Ubuntu, selbst gehostet und auf die genutzten Zeichen reduziert, Code steht in einer Monospace-Schrift. Die Grundgröße folgt der Einstellung im Browser, alle Schriftgrößen kommen aus einer festen Token-Skala.
 
 Die Textspalte ist höchstens `46rem` breit, damit die Zeilen gut lesbar bleiben. Die Breakpoints übernimmt die Website vom Theme: Small (`600px`), Medium (`768px`), Large (`1024px`) und X-Large (`1280px`).
 
@@ -629,7 +629,7 @@ assets/
 │   │                       #   julia-worker, mandelbrot-worker,
 │   │                       #   hero-crt, tv-switch, sw-register, …
 ├── vendor/                 # Selbst gehostete Bibliotheken inkl. MathJax (vormals CDN)
-├── webfonts/               # Font-Awesome-Subset (woff2)
+├── webfonts/               # Ubuntu und Font-Awesome-Subset (woff2)
 ├── images/                 # Wenige, handoptimierte Bilder
 └── downloads/              # Downloadbare Dateien (Post-Template)
 ```
