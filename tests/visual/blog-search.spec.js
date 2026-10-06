@@ -1,6 +1,6 @@
 // Verhaltenstest der Blog-Suche auf /posts/ (assets/js/blog-search.js):
 // Filtern nach Titel, Excerpt und Gastname (INH-5), ohne Groß- und
-// Kleinschreibung, Leerzustand mit Hinweis, „Zurücksetzen“ zeigt wieder alles
+// Kleinschreibung, Leerzustand mit Hinweis, „Suche leeren“ zeigt wieder alles
 // und gibt den Fokus ins Suchfeld. Die Suchbegriffe kommen aus den Einträgen
 // selbst, ein neuer Beitrag ändert den Test nicht.
 const { test, expect } = require('@playwright/test');
@@ -45,13 +45,14 @@ test.describe('Blog-Suche (/posts/)', () => {
     await expect(page.locator('#blog-entries .post-item:visible .page__meta-author').first()).toContainText(name);
   });
 
-  test('Leerzustand und Zurücksetzen', async ({ page }) => {
+  test('Leerzustand und „Suche leeren“', async ({ page }) => {
     const total = await page.locator('#blog-entries .post-item').count();
     const input = page.locator('#blog-search-input');
     await input.fill('zzqxwv');
     await expect(page.locator('#blog-entries .post-item:visible')).toHaveCount(0);
     await expect(page.locator('#blog-empty-message')).toBeVisible();
 
+    await expect(page.locator('#blog-search-clear')).toHaveText('Suche leeren');
     await page.locator('#blog-search-clear').click();
     await expect(input).toHaveValue('');
     await expect(input).toBeFocused();

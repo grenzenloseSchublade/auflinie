@@ -41,7 +41,7 @@ Drei Gruppen, alle mit Playwright:
     verstecktem Hinweis „öffnet in neuem Tab“ und Symbol ohne Umbruch davor, interne
     Links unverändert (LINK-3).
   - `blog-search.spec.js`: Blog-Suche auf `/posts/` filtert nach Titel und Gastname ohne
-    Groß- und Kleinschreibung, zeigt den Leerzustand, „Zurücksetzen“ zeigt wieder alles
+    Groß- und Kleinschreibung, zeigt den Leerzustand, „Suche leeren“ zeigt wieder alles
     und gibt den Fokus ins Suchfeld.
   - `gast-autor.spec.js`: Gastbeitrag (Fixture mit `published: false`, nur im Review-Build)
     mit „von <Name>“, ohne Sidebar-Profil, Gast als Autor in den Metadaten (INH-5).

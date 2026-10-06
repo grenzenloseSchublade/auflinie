@@ -14,7 +14,7 @@ show_date: false
 read_time: false
 ---
 
-Das Archiv sammelt alle Beiträge nach Jahren gruppiert. Die neuesten Beiträge mit Pagination stehen in der Blog‑Übersicht.
+Das Archiv sammelt alle Beiträge nach Jahren gruppiert. Die neuesten Beiträge stehen seitenweise in der Blog‑Übersicht.
 
 <div class="category-filter-container">
   <span class="filter-label">Jahresübersicht:</span>

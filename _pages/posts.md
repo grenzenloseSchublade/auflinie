@@ -38,7 +38,7 @@ read_time: false
 <div class="category-filter-container">
   <div class="blog-filter-row">
     <input id="blog-search-input" class="blog-search-input" type="search" placeholder="Beiträge auf dieser Seite durchsuchen …" aria-label="Blogsuche">
-    <button id="blog-search-clear" class="btn btn--outline" type="button">Zurücksetzen</button>
+    <button id="blog-search-clear" class="btn btn--outline" type="button">Suche leeren</button>
     <a href="{{ '/archiv/' | relative_url }}" class="btn btn--outline">Archiv</a>
   </div>
 </div>
