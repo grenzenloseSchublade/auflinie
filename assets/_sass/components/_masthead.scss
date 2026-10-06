@@ -608,8 +608,9 @@ body .greedy-nav__toggle {
 // grell und bleibt den Textlinks, KOMP-3), 8,29:1 auf dem Masthead.
 // Der Knopf dimmt dabei nicht mehr (früher opacity 0,8 im Hover): Damit
 // läge volles Cyan nur bei 5,83:1 und das X im Hover bei 2,74:1 (unter 3:1).
-// Nicht im .close-Zustand: dort ist der mittlere Balken transparent und das
-// X bleibt dezent.
+// Im .close-Zustand hellt das X ebenso auf (Owner, 6. 10. 2026), nur über
+// color: Der mittlere Balken bleibt dort transparent, die Striche erben
+// currentcolor aus der .close-Regel unten.
 // Die Theme-Regel steht nicht hinter (hover: hover). Touch-Browser halten
 // :hover nach dem Antippen fest, ohne Gegenregel blieben die Balken dann
 // Theme-Cyan. Auf Touch gilt darum unter :hover die Ruhefarbe (R-55).
@@ -625,7 +626,7 @@ body .greedy-nav__toggle {
 }
 
 @include can-hover {
-  body .greedy-nav__toggle:not(.close):hover .navicon {
+  body .greedy-nav__toggle:hover .navicon {
     color: $link-color;
   }
 
