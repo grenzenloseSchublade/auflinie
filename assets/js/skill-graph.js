@@ -392,6 +392,7 @@
       this.pendingAspect = null;
     }
     this.seedLayout(this.sim.width, this.sim.height, true);
+    this.labelShown = new Set();   // neue Lage, neue Beschriftung
     this.sim.alpha = 1;
     if (this.selected !== null || this.current !== null) {
       this.setSelection(null);
@@ -480,27 +481,19 @@
     return node.labelW || node.label.length * LABEL_PX * 0.6;
   };
 
-  // Bildschirm-Rechteck eines Labels in einer von vier Lagen: 'up' (über
-  // dem Knoten, Regel), 'down' (darunter), 'right' und 'left' (seitlich,
-  // nur wenn oben und unten belegt sind) — EINE Quelle für Zeichnen,
-  // Kollisionsprüfung, Hit-Test und Einpassen. tx = Mitte des Texts.
-  SkillGraph.prototype.labelRect = function (sx, sy, node, g, pos) {
+  // Bildschirm-Rechteck eines Labels, immer über dem Knoten — EINE Quelle
+  // für Zeichnen, Kollisionsprüfung, Hit-Test und Einpassen. tx = Mitte des
+  // Texts.
+  SkillGraph.prototype.labelRect = function (sx, sy, node, g) {
     const w = this.labelWidth(node) * g;
     const fontPx = LABEL_PX * g;
-    const off = (NODE_RADIUS + LABEL_GAP) * g;
-    let base = sy - off, tx = sx;
-    if (pos === 'down') {
-      base = sy + off + fontPx * 0.8;
-    } else if (pos === 'right' || pos === 'left') {
-      base = sy + fontPx * 0.35;
-      tx = pos === 'right' ? sx + off + w / 2 : sx - off - w / 2;
-    }
-    return { x: tx - w / 2 - 2, y: base - fontPx, w: w + 4, h: fontPx + 3, base: base, tx: tx };
+    const base = sy - (NODE_RADIUS + LABEL_GAP) * g;
+    return { x: sx - w / 2 - 2, y: base - fontPx, w: w + 4, h: fontPx + 3, base: base, tx: sx };
   };
 
-  // Ausdehnung aller Knoten samt Label (Lagen oben und unten) bei Maßstab s,
-  // relativ zu pan = 0. Seitliche Lagen zählen nicht: sie werden nur gesetzt,
-  // wenn sie ganz in die Fläche passen (render).
+
+  // Ausdehnung aller Knoten samt Label (über dem Knoten) bei Maßstab s,
+  // relativ zu pan = 0.
   SkillGraph.prototype.extents = function (s) {
     const g = glyphScale(s);
     const rad = NODE_RADIUS * g;
@@ -508,12 +501,11 @@
     let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
     this.nodes.forEach(function (n) {
       const sx = n.x * s, sy = n.y * s;
-      const up = self.labelRect(sx, sy, n, g, 'up');
-      const down = self.labelRect(sx, sy, n, g, 'down');
+      const up = self.labelRect(sx, sy, n, g);
       minX = Math.min(minX, up.x, sx - rad);
       maxX = Math.max(maxX, up.x + up.w, sx + rad);
       minY = Math.min(minY, up.y);
-      maxY = Math.max(maxY, down.y + down.h);
+      maxY = Math.max(maxY, sy + rad);
     });
     return { minX: minX, minY: minY, maxX: maxX, maxY: maxY };
   };
@@ -643,9 +635,8 @@
       ctx.stroke();
     });
 
-    // Zustand je Knoten und Beschriftung. Ein Label steht über dem Knoten,
-    // überlappt es dort ein schon gesetztes (mit LABEL_AIR Luft), darunter,
-    // sonst rechts oder links daneben, jeweils nur ganz in der Fläche.
+    // Zustand je Knoten und Beschriftung. Ein Label steht immer über dem
+    // Knoten, nur ganz in der Fläche und mit LABEL_AIR Luft zu den anderen.
     // Reihenfolge und Vorrang (Owner, 6. 10. 2026): Ohne Auswahl zuerst die
     // Kern-Skills, dann die Breite, je nach Zahl der Verbindungen. Jedes Label
     // steht nur auf freiem Platz, sonst bleibt der Knoten ein Punkt und sein
@@ -671,36 +662,61 @@
     const forced = function (i) {
       return states[i] === 'selected' || states[i] === 'related';
     };
+    // Stabil (Owner, 6. 10. 2026): Ein schon sichtbares Label bleibt, solange
+    // es sich nicht wirklich mit einem anderen deckt. Ein ausgeblendetes
+    // erscheint erst mit voller Luft. Sichtbare kommen darum zuerst an die
+    // Reihe, dann die übrigen, beides in der Vorrang-Reihenfolge oben.
+    const before = this.labelShown || new Set();
+    const sticky = function (i) { return before.has(nodes[i].id); };
+    order.sort(function (a, b) {
+      return (forced(b) - forced(a)) || (sticky(b) - sticky(a));
+    });
     const placed = [];
-    // Überdeckte Fläche mit allen schon gesetzten Labels (0 = frei)
-    const overlapArea = function (r) {
+    // Fremde Knoten sind ebenfalls Hindernisse: ein Label soll keinen
+    // anderen Punkt verdecken
+    const dots = screen.map(function (p, k) {
+      return { x: p.x - radius, y: p.y - radius, w: 2 * radius, h: 2 * radius, k: k };
+    });
+    // Überdeckte Fläche mit gesetzten Labels und fremden Knoten (0 = frei).
+    // air: Anteil der Luft LABEL_AIR (1 = volle Luft für neue Labels, 0,5
+    // für schon sichtbare, damit sie bei kleinen Bewegungen nicht flackern)
+    const overlapArea = function (r, i, air) {
+      const ax = LABEL_AIR_X * air, ay = LABEL_AIR_Y * air;
       let sum = 0;
-      placed.forEach(function (p) {
-        const ox = Math.min(r.x + r.w + LABEL_AIR_X, p.x + p.w) - Math.max(r.x - LABEL_AIR_X, p.x);
-        const oy = Math.min(r.y + r.h + LABEL_AIR_Y, p.y + p.h) - Math.max(r.y - LABEL_AIR_Y, p.y);
+      const add = function (p) {
+        const ox = Math.min(r.x + r.w + ax, p.x + p.w) - Math.max(r.x - ax, p.x);
+        const oy = Math.min(r.y + r.h + ay, p.y + p.h) - Math.max(r.y - ay, p.y);
         if (ox > 0 && oy > 0) { sum += ox * oy; }
-      });
+      };
+      placed.forEach(add);
+      dots.forEach(function (d) { if (d.k !== i) { add(d); } });
       return sum;
     };
     const cw = this.canvasW, ch = this.canvasH;
     const inside = function (r) { return r.x >= 0 && r.x + r.w <= cw && r.y >= 0 && r.y + r.h <= ch; };
     const showLabel = new Array(nodes.length);
-    const LAGEN = ['up', 'down', 'right', 'left'];
+    const shown = new Set();
+    // Eine feste Lage: das Label steht immer über dem Knoten. Ohne Platz dort
+    // bleibt der Knoten ein Punkt (keine Ausweichlagen, sonst wechselt die
+    // Schrift beim Zoomen und Ziehen die Seite).
     order.forEach(function (i) {
-      let r = null, best = null, bestArea = Infinity;
-      for (let k = 0; k < LAGEN.length && !r; k++) {
-        const cand = self.labelRect(screen[i].x, screen[i].y, nodes[i], g, LAGEN[k]);
-        if (!inside(cand)) { continue; }   // nur ganz im Bild, nie angeschnitten
-        const area = overlapArea(cand);
-        if (area === 0) { r = cand; } else if (area < bestArea) { best = cand; bestArea = area; }
-      }
-      if (!r && forced(i)) {
-        // Auswahl und Nachbarn auch am Rand beschriften (dann notfalls oben)
-        r = best || (states[i] !== 'base' ? self.labelRect(screen[i].x, screen[i].y, nodes[i], g, 'up') : null);
+      const cand = self.labelRect(screen[i].x, screen[i].y, nodes[i], g);
+      let r = null;
+      if (forced(i)) {
+        // Auswahl und Nachbarn immer beschriftet, am Rand ins Bild geschoben
+        // statt angeschnitten (bleibt über dem Knoten, nur seitlich versetzt)
+        // Rand wie bei den Weiter-Pfeilen (drawEdgeHints, 6 px)
+        const dx = clamp(cand.x, 6, Math.max(6, cw - 6 - cand.w)) - cand.x;
+        const dy = clamp(cand.y, 6, Math.max(6, ch - 6 - cand.h)) - cand.y;
+        r = cand;
+        r.x += dx; r.tx += dx; r.y += dy; r.base += dy;
+      } else if (inside(cand) && overlapArea(cand, i, sticky(i) ? 0.5 : 1) === 0) {
+        r = cand;
       }
       showLabel[i] = r;
-      if (r) { r.id = nodes[i].id; placed.push(r); }
+      if (r) { r.id = nodes[i].id; placed.push(r); shown.add(nodes[i].id); }
     });
+    this.labelShown = shown;
     this.labelRects = placed;   // Hit-Test trifft nur sichtbare Labels
 
     ctx.font = labelFont(g);
