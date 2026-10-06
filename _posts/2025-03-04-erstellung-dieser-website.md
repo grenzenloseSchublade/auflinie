@@ -203,7 +203,7 @@ bundle exec jekyll build --verbose
 
 Für den Arbeitsablauf gibt es ein paar feste Regeln. Neue Funktionen entstehen auf eigenen Branches, Commit-Nachrichten folgen dem Format Conventional Commits mit deutschem Betreff. Die Qualitätsprüfungen laufen nicht als Pre-commit-Hook, sondern vor jedem Push von Hand und danach automatisch in der CI.
 
-Linting hält den Code wartbar. Stylelint prüft die SCSS-Dateien, ESLint das JavaScript. Zwei kleine Skripte wachen zusätzlich darüber, dass Schriftgrößen nur aus der zentralen Token-Skala kommen und behobene Sicherheitsprobleme nicht zurückkehren. Markdown prüft im Editor die Erweiterung markdownlint. Die Regeln für Gestaltung, Code und Sprache stehen gesammelt im Style Guide (`STYLEGUIDE.md`).
+Linting hält den Code wartbar. Stylelint prüft die SCSS-Dateien, ESLint das JavaScript. Kleine Prüfskripte wachen zusätzlich darüber, dass Schriftgrößen, Farben, Abstände und Breakpoints aus den Tokens kommen und behobene Sicherheitsprobleme nicht zurückkehren. Markdown prüft im Editor die Erweiterung markdownlint. Die Regeln für Gestaltung, Code und Sprache stehen gesammelt im Style Guide (`STYLEGUIDE.md`).
 
 Die Performance lässt sich mit einfachen Mitteln im Blick behalten. `time` misst die Build-Zeit, `du` zeigt, wie groß CSS, JavaScript und Bilder sind. Das reicht, um Ausreißer früh zu bemerken.
 
@@ -472,7 +472,7 @@ Deployment und laufende Pflege brachten eigene Herausforderungen mit sich. Die m
 
 Gehostet wird auf GitHub Pages, aus technischen wie wirtschaftlichen Gründen. In der `_config.yml` stehen Repository, URL und die `baseurl` für das Hosting im Unterverzeichnis `/auflinie`. Weil die Seite in GitHub Actions gebaut wird, ist sie nicht auf die Plugins und die Jekyll-Version von GitHub Pages beschränkt.
 
-Gebaut und veröffentlicht wird über einen GitHub-Actions-Workflow. Er startet bei jedem Push auf den Hauptzweig und lässt sich von Hand auslösen, Pull Requests lösen ihn nicht aus. Zwei Jobs laufen parallel. Der Lint-Job prüft mit Stylelint und ESLint und führt die beiden Guardrail-Skripte aus. Der Build-Job richtet Ruby ein (Version aus der `.ruby-version`, mit Bundler-Cache), baut die Seite mit `--strict_front_matter` und prüft, dass die interne Style-Guide-Ansicht nicht im Deploy landet. Danach folgen ein zweiter Build mit dieser Ansicht, das automatische Style-Guide-Review mit Playwright, die CSP-Prüfung und htmlproofer für die internen Links. Veröffentlicht wird nur, wenn beide Jobs grün sind.
+Gebaut und veröffentlicht wird über einen GitHub-Actions-Workflow. Er startet bei jedem Push auf den Hauptzweig und lässt sich von Hand auslösen, Pull Requests lösen ihn nicht aus. Zwei Jobs laufen parallel. Der Lint-Job prüft mit Stylelint und ESLint und führt die Prüfskripte für Tokens und Sicherheit aus. Der Build-Job richtet Ruby ein (Version aus der `.ruby-version`, mit Bundler-Cache), baut die Seite mit `--strict_front_matter` und prüft, dass die interne Style-Guide-Ansicht nicht im Deploy landet. Danach folgen ein zweiter Build mit dieser Ansicht, das automatische Style-Guide-Review mit Playwright, die CSP-Prüfung und htmlproofer für die internen Links. Veröffentlicht wird nur, wenn beide Jobs grün sind.
 
 Der Jekyll-Build selbst ist schnell: Bei dieser Größe ist er lokal in rund einer Sekunde fertig. Den größten Teil eines CI-Laufs brauchen Einrichtung und Prüfungen, vor allem das Review im Playwright-Container. Der Bundler-Cache spart dabei das erneute Installieren der Gems.
 
