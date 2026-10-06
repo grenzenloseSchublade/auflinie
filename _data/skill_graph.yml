@@ -97,7 +97,7 @@ texts:
     dialog: "Skill-Graph" # Name des geöffneten Fensters für Screenreader
     close: "Graph schließen" # Name des ✕-Knopfs für Screenreader
     # Zweite Zeile der Info-Leiste im Graph-Fenster, solange nichts gewählt ist
-    unlabeled: "Punkte ohne Namen zeigen ihn beim Antippen oder Hineinzoomen."
+    unlabeled: "Punkte ohne Namen zeigen ihn bei Auswahl oder beim Hineinzoomen."
     # Beschreibung der Grafik für Screenreader
     canvas: "Netzdiagramm der Skills, verbunden über gemeinsame Projekte. Auswahl und gemeinsame Projekte stehen in der Leiste darüber, die vollständige Liste im Lebenslauf."
     # Knöpfe oben im Fenster. Die Zoom-Knöpfe zeigen nur das Zeichen − bzw. +,

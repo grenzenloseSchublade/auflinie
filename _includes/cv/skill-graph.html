@@ -52,7 +52,7 @@
       </div>
     </div>
     <p class="skill-graph__info" data-role="graph-context" aria-live="polite">{{ skill_texts.hint | escape }}
-      <span class="skill-graph__info-note">{{ graph_texts.unlabeled | escape }}</span></p>
+      <span class="skill-graph__info-note" aria-hidden="true">{{ graph_texts.unlabeled | escape }}</span></p>
     <div class="skill-graph__canvas-wrap" data-role="canvas-wrap">
       <canvas data-role="canvas" role="img" tabindex="-1"
               aria-label="{{ graph_texts.canvas | escape }}"></canvas>

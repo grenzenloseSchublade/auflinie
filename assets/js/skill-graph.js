@@ -518,9 +518,14 @@
   SkillGraph.prototype.onKeydown = function (event) {
     if (this.panel.hidden) { return; }
     if (event.key === 'Escape') {
-      // Eine Vorschau verschwindet mit, verbraucht das Esc aber nicht: Es
-      // löst weiter die Auswahl bzw. schließt das Sheet (skill-graph-sheet.js)
-      this.setHover(null);
+      // Eine offene Vorschau nimmt das erste Esc allein weg (WCAG 1.4.13:
+      // ohne Zeigerbewegung wegschließbar), das Sheet bleibt dann offen
+      // (skill-graph-sheet.js prüft data-preview). Sonst löst Esc die
+      // Auswahl bzw. schließt das Sheet.
+      if (this.hoverRect) {
+        this.setHover(null);
+        return;
+      }
       if (this.selected !== null) {
         this.setSelection(null);
         this.dispatch();
@@ -844,7 +849,6 @@
       showLabel[i] = r;
       placed.push(r);
     });
-    this.labelRects = placed;   // Hit-Test trifft nur sichtbare Labels
 
     // Neu sichtbare Labels blenden kurz ein (nur Deckkraft, keine Bewegung),
     // ausgeblendete verschwinden sofort. Ohne Blende: Pflicht-Labels der
@@ -867,6 +871,17 @@
       if (a >= 1) { self.fadeStart.delete(id); } else { labelAlpha[i] = Math.max(0, a); }
     });
     this.labelShown = shown;
+    // Ein Label, das über den Rand ragen würde, wird nicht gezeichnet (statt
+    // angeschnitten). Die Beschriftung selbst hängt weiter nur am Maßstab
+    // (data-labels, Blende): Beim Verschieben erscheint es, sobald es ganz
+    // im Bild liegt, wie ein Ortsname am Kartenrand. Pflicht-Labels der
+    // Auswahl sind ohnehin ins Bild geschoben.
+    const cw = this.canvasW, ch = this.canvasH;
+    const drawn = showLabel.map(function (r, i) {
+      if (!r || forced(i)) { return r; }
+      return r.x >= 0 && r.x + r.w <= cw && r.y >= 0 && r.y + r.h <= ch ? r : null;
+    });
+    this.labelRects = drawn.filter(Boolean);   // Hit-Test trifft nur gezeichnete Labels
 
     ctx.font = labelFont(GLYPH);
     ctx.textAlign = 'center';
@@ -888,14 +903,16 @@
         ctx.strokeStyle = 'rgba(' + MAGENTA + ', 0.85)';
         ctx.lineWidth = 2;
       } else {
-        // Kern heller als die Breite, Nachbarn der Auswahl heller als der Rest
-        const contour = state === 'related' ? (node.core ? 0.8 : 0.6) : (node.core ? 0.55 : 0.25);
+        // Kern heller als die Breite, Nachbarn der Auswahl heller als der Rest.
+        // Auch die Breite hält 3:1 gegen den Grund (WCAG 1.4.11, Cyan 0,5 ≈
+        // 3,4:1), sie ist ein antippbares Ziel.
+        const contour = state === 'related' ? (node.core ? 0.95 : 0.75) : (node.core ? 0.8 : 0.5);
         ctx.strokeStyle = 'rgba(' + CYAN + ', ' + contour + ')';
         ctx.lineWidth = node.core ? 1.25 : 1;
       }
       ctx.stroke();
       ctx.shadowBlur = 0;
-      const label = showLabel[i];
+      const label = drawn[i];
       if (label) {
         ctx.globalAlpha *= labelAlpha[i];
         if (state === 'selected') {
@@ -911,8 +928,8 @@
       ctx.restore();
     });
 
-    this.drawPreview(screen, showLabel);
-    this.drawEdgeHints(screen, showLabel);   // Rand-Pfeile: „hier geht's weiter“
+    this.drawPreview(screen, drawn);
+    this.drawEdgeHints(screen, drawn);   // Rand-Pfeile: „hier geht's weiter“
     this.labelIds = Array.from(shown).sort().join(' ');
     this.publishView();
 
@@ -1154,7 +1171,7 @@
     if (!this.canHover || event.pointerType === 'touch') { return; }
     if (this.hoverRect && inRect(this.hoverRect, pos.x, pos.y, 2)) { return; }
     const hit = this.hitNode(pos.x, pos.y);
-    this.setHover(hit !== null && !this.labelShown.has(hit) ? hit : null);
+    this.setHover(hit !== null && !this.labelRects.some(function (r) { return r.id === hit; }) ? hit : null);
   };
 
   // Modal = Präsentations-Wrapper hat das Sheet geöffnet (skill-graph-sheet.js).

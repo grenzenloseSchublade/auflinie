@@ -536,7 +536,8 @@ test.describe('Skill-Graph ohne Reduced Motion', () => {
 
 // Vorschau beim Überfahren (Maus): ein Knoten ohne Namen zeigt ihn ruhig an,
 // ohne Auswahl und ohne die Info-Leiste zu ändern. Verlassen nimmt sie weg,
-// Esc ebenso, schließt aber wie gewohnt das Sheet (stiehlt das Esc nicht).
+// Esc nimmt sie allein weg (WCAG 1.4.13), erst das nächste Esc schließt das
+// Sheet.
 test.describe('Skill-Graph: Vorschau beim Überfahren', () => {
   test.use({ viewport: { width: 1280, height: 900 }, contextOptions: { reducedMotion: 'reduce' } });
 
@@ -588,8 +589,10 @@ test.describe('Skill-Graph: Vorschau beim Überfahren', () => {
     await page.mouse.move(box.x + spot.x, box.y + spot.y);
     await expect(canvas).toHaveAttribute('data-preview', spot.id);
     await page.keyboard.press('Escape');
-    await expect(panel).not.toHaveAttribute('role', 'dialog');
     await expect(canvas).not.toHaveAttribute('data-preview', /./);
+    await expect(panel).toHaveAttribute('role', 'dialog');
+    await page.keyboard.press('Escape');
+    await expect(panel).not.toHaveAttribute('role', 'dialog');
   });
 });
 

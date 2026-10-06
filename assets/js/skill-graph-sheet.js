@@ -171,6 +171,9 @@
     // Bei aktiver Auswahl übernehmen skill-graph/skill-chips dieses Esc und
     // lösen nur die Auswahl — das Sheet schließt erst beim nächsten Esc.
     if (this.selectedSkill != null) { return; }
+    // Offene Vorschau beim Überfahren (data-preview am Canvas): Esc nimmt
+    // erst nur sie weg (WCAG 1.4.13), skill-graph.js übernimmt das
+    if (this.panel.querySelector('[data-role="canvas"][data-preview]')) { return; }
     this.close();
   };
 
