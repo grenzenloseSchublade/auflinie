@@ -610,30 +610,48 @@ body .greedy-nav__toggle {
 // Die Theme-Regel steht nicht hinter (hover: hover). Touch-Browser halten
 // :hover nach dem Antippen fest, ohne Gegenregel blieben die Balken dann
 // Theme-Cyan. Auf Touch gilt darum unter :hover die Ruhefarbe (R-55).
+// Die Balken malen in currentColor, die Farbe steht als color an .navicon
+// (die Striche erben sie). So läuft der Farbwechsel im Hover unabhängig vom
+// verzögerten Aus- und Einblenden des mittleren Balkens (Wechsel zum X unten).
 @include no-hover {
   body .greedy-nav__toggle:not(.close):hover .navicon,
   body .greedy-nav__toggle:not(.close):hover .navicon::before,
   body .greedy-nav__toggle:not(.close):hover .navicon::after {
-    background: $control-icon-color;
+    background: currentcolor;
   }
 }
 
 @include can-hover {
+  body .greedy-nav__toggle:not(.close):hover .navicon {
+    color: $hover-color-text;
+  }
+
   body .greedy-nav__toggle:not(.close):hover .navicon,
   body .greedy-nav__toggle:not(.close):hover .navicon::before,
   body .greedy-nav__toggle:not(.close):hover .navicon::after {
-    background: $hover-color-text;
+    background: currentcolor;
   }
 }
+
+// Wechsel zum X (Owner, 6. 10. 2026, R-78 Variante B): Die äußeren Balken
+// gleiten erst zur Mitte, danach drehen sie sich zum X, je die halbe
+// Gesamtdauer nacheinander. Beim Schließen umgekehrt: erst zurückdrehen,
+// dann auseinander. Der mittlere Balken verschwindet und erscheint genau in
+// der Mitte des Ablaufs, wenn beide Striche auf ihm liegen. Es gilt jeweils
+// die Transition des Zielzustands: die Basisregel beim Schließen, die
+// .close-Regel beim Öffnen. Reduced Motion: transition none in
+// base/_accessibility.scss, der Wechsel ist dann sofort.
+$navicon-step: $duration-moderate * 0.5;
 
 body .navicon {
   position: relative;
   display: block;
   width: 1.5em;
   height: 0.2em;
-  background: $control-icon-color;
+  color: $control-icon-color;
+  background: currentcolor;
   box-shadow: none;
-  transition: background-color $duration-moderate, transform $duration-moderate, top $duration-moderate, bottom $duration-moderate, width $duration-moderate;
+  transition: color $duration-moderate, background-color 0s $navicon-step;
 }
 
 body .navicon::before,
@@ -643,9 +661,9 @@ body .navicon::after {
   left: 0;
   width: 100%;
   height: 100%;
-  background: $control-icon-color;
+  background: currentcolor;
   box-shadow: none;
-  transition: background-color $duration-moderate, transform $duration-moderate, top $duration-moderate, bottom $duration-moderate, width $duration-moderate;
+  transition: transform $navicon-step, top $navicon-step $navicon-step, bottom $navicon-step $navicon-step;
 }
 
 body .navicon::before {
@@ -661,18 +679,21 @@ body .greedy-nav__toggle.close .navicon {
   box-shadow: none;
 }
 
+body .greedy-nav__toggle.close .navicon::before,
+body .greedy-nav__toggle.close .navicon::after {
+  background: currentcolor;
+  box-shadow: none;
+  transition: top $navicon-step, bottom $navicon-step, transform $navicon-step $navicon-step;
+}
+
 body .greedy-nav__toggle.close .navicon::before {
   transform: rotate(45deg);
   top: 0;
-  background: $control-icon-color;
-  box-shadow: none;
 }
 
 body .greedy-nav__toggle.close .navicon::after {
   transform: rotate(-45deg);
   bottom: 0;
-  background: $control-icon-color;
-  box-shadow: none;
 }
 
 // Body-Padding für festen Header
