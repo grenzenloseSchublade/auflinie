@@ -150,10 +150,10 @@
     </div>
   </div>
   {% endif %}
-  {% comment %} Gesten-Hinweis: Leerzeichen im Eintrag werden geschützt, Einträge durch „·“ getrennt {% endcomment %}
+  {% comment %} Gesten-Hinweis: Leerzeichen im Eintrag werden geschützt, Einträge durch „·“ getrennt. Ausnahme „ / “: geschützt davor, umbrechbar danach, sonst wird „rechtsklick / leertaste: verschieben“ bei 320 px zu breit (1.4.10) {% endcomment %}
   <div class="fractal-panel__hint" aria-hidden="true">
-    <span class="fractal-panel__hint-mouse">{% for gesture in variant_text.hint.mouse %}{{ gesture | escape | replace: ' ', '&nbsp;' }}{% unless forloop.last %}&nbsp;· {% endunless %}{% endfor %}</span>
-    <span class="fractal-panel__hint-touch">{% for gesture in variant_text.hint.touch %}{{ gesture | escape | replace: ' ', '&nbsp;' }}{% unless forloop.last %}&nbsp;· {% endunless %}{% endfor %}</span>
+    <span class="fractal-panel__hint-mouse">{% for gesture in variant_text.hint.mouse %}{{ gesture | escape | replace: ' / ', '%%SL%%' | replace: ' ', '&nbsp;' | replace: '%%SL%%', '&nbsp;/ ' }}{% unless forloop.last %}&nbsp;· {% endunless %}{% endfor %}</span>
+    <span class="fractal-panel__hint-touch">{% for gesture in variant_text.hint.touch %}{{ gesture | escape | replace: ' / ', '%%SL%%' | replace: ' ', '&nbsp;' | replace: '%%SL%%', '&nbsp;/ ' }}{% unless forloop.last %}&nbsp;· {% endunless %}{% endfor %}</span>
   </div>
 
   <div class="fractal-panel__explanation">
