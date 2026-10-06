@@ -1,0 +1,12 @@
+# Token außerhalb der Laufweiten-Skala als Argument von mono-label(), über eine lokale Variable (TYP-7, R-21)
+guardrail: scale
+expect: 1
+grep: VERSTOSS tracking
+file: assets/_sass/components/_footer.scss
+mode: append
+---
+$footer-fixture-laufweite: $fs-icon-external;
+
+.footer-fixture {
+  @include mono-label($fs-label, $footer-fixture-laufweite);
+}

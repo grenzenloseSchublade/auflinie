@@ -15,8 +15,10 @@ Kategorien (je Kategorie eine Zahl im Ratchet):
   shadow         box-shadow-Deklarationen mit Zahlenwerten (je Deklaration,
                  none und reine Token zählen nicht)
   z-index        Zahlen in z-index (je Deklaration)
-  tracking       Zahlen in letter-spacing, dazu das Laufweiten-Argument von
-                 mono-label() (Laufweiten nur über $tracking-*, TYP-7)
+  tracking       Zahlen in letter-spacing und im Laufweiten-Argument von
+                 mono-label() (auch als Default), dazu dort jede Variable
+                 außer $tracking-meta, $tracking-label, $tracking-label-wide
+                 (nur die Skala, TYP-7, je Literal oder Variable)
   duration       Zeitliterale ungleich 0 in transition* und animation* (je Literal)
   easing         cubic-bezier() und steps() in transition* und animation*
   transition-all transition mit all oder ohne Eigenschaft (MO-1, je Deklaration)
@@ -69,6 +71,11 @@ MIXIN_ARGS = {
     "card-panel": ("radius", 1, "$radius"),
     "mono-label": ("tracking", 1, "$tracking"),
 }
+# Laufweiten-Skala (TYP-7, variables/_typography.scss). Für tracking zählt
+# nicht nur ein Literal, sondern jede Variable, die keins dieser Tokens ist
+# und auch keine lokale Variable (die wird aufgelöst und ihr Wert geprüft).
+# So fällt auch ein neues Token außerhalb der Skala auf.
+TRACKING_TOKENS = {"tracking-meta", "tracking-label", "tracking-label-wide"}
 
 
 def mixin_arg(args, pos, name):
@@ -287,21 +294,57 @@ def nonzero(num):
     return float(num) != 0.0
 
 
+def mixin_scopes(code):
+    """Parameter von MIXIN_ARGS-Mixins im eigenen Rumpf: [(erste Zeile, letzte Zeile, Name)].
+
+    Im Rumpf von mono-label() liest `letter-spacing: $tracking` den
+    Parameter. Der ist an jeder Aufrufstelle geprüft und zählt dort nicht
+    als Variable außerhalb der Skala. Parameter anderer Mixins zählen, denn
+    deren Aufrufe prüft niemand.
+    """
+    out = []
+    for m in re.finditer(r"@mixin\s+([a-z][a-z0-9-]*)\s*(?:\([^{]*\))?\s*\{", code):
+        if m.group(1) not in MIXIN_ARGS:
+            continue
+        depth, j = 0, m.end() - 1
+        while j < len(code):
+            if code[j] == "{":
+                depth += 1
+            elif code[j] == "}":
+                depth -= 1
+                if depth == 0:
+                    break
+            j += 1
+        out.append((code.count("\n", 0, m.start()) + 1, code.count("\n", 0, j) + 1,
+                    MIXIN_ARGS[m.group(1)][2][1:]))
+    return out
+
+
+def off_scale_refs(value, exempt=()):
+    """Variablen in einem Laufweiten-Wert, die weder Skalen-Token noch lokal sind."""
+    local = local_vars()
+    return sorted(ref for ref in set(VAR_REF.findall(value))
+                  if ref not in TRACKING_TOKENS and ref not in local and ref not in exempt)
+
+
 def scan_file(path):
     raw = path.read_text(encoding="utf-8")
     raw_lines = raw.split("\n")
     marked = marked_lines(raw_lines)
     rel = str(path.relative_to(ROOT))
-    for line, text, end in statements(strip(raw)):
-        if end == "{":
-            continue  # Selektor oder At-Rule-Kopf
-        # Skalen-Argumente von Mixins (MIXIN_ARGS), im Aufruf und als Default
+    code = strip(raw)
+    scopes = mixin_scopes(code)
+    for line, text, end in statements(code):
+        # Skalen-Argumente von Mixins (MIXIN_ARGS), im Aufruf und als Default.
+        # Vor dem Überspringen der Köpfe: Eine Mixin-Definition (und ein
+        # Aufruf mit Inhaltsblock) endet auf {.
         m = re.match(r"@(?:include|mixin)\s+([a-z][a-z0-9-]*)\s*\((.*)\)\s*$", text, re.S)
         if m and m.group(1) in MIXIN_ARGS:
             cat, pos, name = MIXIN_ARGS[m.group(1)]
             val = mixin_arg(m.group(2), pos, name)
             if val is not None:
                 mk = line in marked
+                hit = dict(cat=cat, file=rel, line=line, prop=f"{m.group(1)}({name})", decl=text)
                 for ref in sorted(set(VAR_REF.findall(val))):
                     r = resolve(ref, rel, line)
                     if r:
@@ -309,9 +352,13 @@ def scan_file(path):
                         mk = mk or r[2]
                 for nm in NUM.finditer(val):
                     if nonzero(nm.group(1)):
-                        yield dict(cat=cat, file=rel, line=line, prop=f"{m.group(1)}({name})",
-                                   value=nm.group(0), decl=text, marked=mk)
+                        yield dict(hit, value=nm.group(0), marked=mk)
+                if cat == "tracking":
+                    for ref in off_scale_refs(val):
+                        yield dict(hit, value=f"${ref}", marked=mk)
             continue
+        if end == "{":
+            continue  # Selektor oder At-Rule-Kopf
         m = re.match(r"^([a-z][a-z-]*)\s*:\s*(.*)$", text, re.S)
         if not m:
             continue
@@ -326,11 +373,15 @@ def scan_file(path):
                 if r:
                     yield from scan_value(dict(base, marked=mk or r[2], decl=f"${ref} = {r[0]} ({r[1]})"),
                                           prop, r[0], via=f"${ref}")
-        yield from scan_value(base, prop, value)
+        exempt = {p for first, last, p in scopes if first <= line <= last}
+        yield from scan_value(base, prop, value, exempt=exempt)
 
 
-def scan_value(base, prop, value, via=None):
-    """Treffer in einem Deklarationswert. `via`: Wert stammt aus einer lokalen Variablen."""
+def scan_value(base, prop, value, via=None, exempt=()):
+    """Treffer in einem Deklarationswert. `via`: Wert stammt aus einer lokalen Variablen.
+
+    `exempt`: Mixin-Parameter, die an den Aufrufstellen geprüft sind (mixin_scopes).
+    """
     def tag(v):
         return f"{via} = {v}" if via else v
 
@@ -351,10 +402,12 @@ def scan_value(base, prop, value, via=None):
         if NUM.search(value):
             yield dict(base, cat="z-index", value=tag(value))
     elif prop == "letter-spacing":
-        # Laufweiten nur über $tracking-* (TYP-7)
+        # Laufweiten nur aus der Skala TRACKING_TOKENS (TYP-7)
         for nm in NUM.finditer(value):
             if nonzero(nm.group(1)):
                 yield dict(base, cat="tracking", value=tag(nm.group(0)))
+        for ref in off_scale_refs(value, exempt):
+            yield dict(base, cat="tracking", value=tag(f"${ref}"))
     elif MOTION_PROP.match(prop):
         for tm in TIME.finditer(value):
             if nonzero(tm.group(1)):
@@ -477,7 +530,7 @@ def main(argv):
                 fail = True
             elif nums[k] > limit:
                 fail = True
-                print(f"VERSTOSS {k}: {nums[k]} Literale, erlaubt {limit}. Die neue Stelle ist eine von diesen:")
+                print(f"VERSTOSS {k}: {nums[k]} Fundstellen, erlaubt {limit}. Die neue Stelle ist eine von diesen:")
                 for h in hits:
                     if h["cat"] == k and not h["marked"]:
                         print(f"  {h['file']}:{h['line']}: {h['prop']}: {h['decl'] if k == 'shadow' else h['value']}")
@@ -486,8 +539,9 @@ def main(argv):
         if fail:
             print()
             print("Fix: Token aus assets/_sass/variables/_scales.scss verwenden ($space-*, $fp-space-*,")
-            print("$radius-*, $shadow-*, $z-*, $duration-*, $ease-*), für Laufweiten $tracking-* aus")
-            print("assets/_sass/variables/_typography.scss, oder (begründet) eine Zeile")
+            print("$radius-*, $shadow-*, $z-*, $duration-*, $ease-*), für Laufweiten nur $tracking-meta,")
+            print("$tracking-label oder $tracking-label-wide aus assets/_sass/variables/_typography.scss")
+            print("(Fließtext ohne letter-spacing), oder (begründet) eine Zeile")
             print("'// skala-Ausnahme: <Grund>' direkt darüber. transition immer mit konkreten")
             print("Eigenschaften (MO-1). Inventar: python3 scripts/scale-literals.py --report")
             return 1

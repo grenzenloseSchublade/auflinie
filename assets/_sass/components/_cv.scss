@@ -351,7 +351,7 @@ $cv-z-selection-info: 6;
 // (Theme ".page__content p{font-size:1em}" gewann) — der Titel wurde immer
 // mit 1em gerendert und ist so abgenommen. Nicht "zurückverkleinern"!
 .cv-skills p.cv-skill-group__title {
-  @include mono-label($cv-group-title-font-size, $tracking-legacy-cv-group-title);
+  @include mono-label($cv-group-title-font-size, $tracking-label);
 
   color: $fg-subtle;
   margin: 0;
@@ -494,7 +494,7 @@ li.cv-skill-chip--breadth {
 // in der Mono-Formensprache der Gruppen-Titel, aber heller (er ist der
 // Fokus der Anzeige); Projektliste eine Stufe heller als der muted-Grundton
 .cv-skills__selection-skill {
-  @include mono-label($cv-group-title-font-size, $tracking-legacy-cv-group-title);
+  @include mono-label($cv-group-title-font-size, $tracking-label);
 
   color: $white-a85;
 }
@@ -511,7 +511,7 @@ li.cv-skill-chip--breadth {
 .cv-language__level {
   font-family: $mono-font-stack;
   font-size: $fs-label-lg; // 0.68→0.78 (K7/K8, A11y: informationstragend)
-  letter-spacing: $tracking-legacy-cv-level;
+  letter-spacing: $tracking-meta;
   color: $fg-subtle; // FARB-3 (vorher 45 %, 4,44:1)
   border-left: 1px solid $white-a15;
   padding-left: $space-2;

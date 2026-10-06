@@ -50,7 +50,7 @@
     .btn-text {
       display: block;
       font-size: $fs-label-xs; // 0.6→0.68 (K5, A11y: Button-Beschriftung)
-      letter-spacing: $tracking-legacy-fp-button;
+      letter-spacing: $tracking-meta;
     }
   }
 }

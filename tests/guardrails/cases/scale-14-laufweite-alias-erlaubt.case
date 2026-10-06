@@ -1,0 +1,17 @@
+# Lokaler Alias auf ein Skalen-Token und letter-spacing: normal sind erlaubt (kein Fehlalarm)
+guardrail: scale
+expect: 0
+file: assets/_sass/components/_footer.scss
+mode: append
+---
+$footer-fixture-laufweite: $tracking-label;
+
+.footer-fixture {
+  letter-spacing: $footer-fixture-laufweite;
+}
+
+.footer-fixture-zwei {
+  @include mono-label($tracking: $footer-fixture-laufweite);
+
+  letter-spacing: normal;
+}

@@ -96,25 +96,13 @@ $fs-icon-external: 0.75em;
 // =============================================================================
 // Laufweiten (letter-spacing, STYLEGUIDE TYP-7)
 // =============================================================================
-// In em, damit die Laufweite mit der Schrift skaliert. Die Skala:
-$tracking-meta: 0.03em; // Meta-Zeilen in Listen (Datum, Lesezeit)
+// In em, damit die Laufweite mit der Schrift skaliert, auch im Fraktal-Panel
+// mit seinen px-Größen. Nur diese drei Stufen, Fließtext hat keine
+// Laufweite (scale-guardrail.sh, Kategorie tracking, R-21 erledigt am
+// 6. 10. 2026). Die Skala:
+$tracking-meta: 0.03em; // Meta-Zeilen (Datum, Lesezeit, Sprachniveau), kleine Hinweise
 $tracking-label: 0.06em; // Chrome-Labels in Versalien
 $tracking-label-wide: 0.08em; // betonte Labels (TOC-Kopf, Archiv-Jahre, Hinweis-Titel)
-
-// Altbestand außerhalb der Skala (Register R-21), wertgleich festgehalten:
-// jede Stelle nutzt ein Token, die Liste steht an einem Ort. Die Angleichung
-// an die Skala ändert die Laufweite sichtbar und braucht eine Owner-Freigabe
-// mit Vergleichsbild (TYP-5). Ziel laut Register, wo eins feststeht.
-$tracking-legacy-quote: 0.02em; // About-Leitspruch (kursiver Fließtext)
-$tracking-legacy-page-meta: 0.04em; // .page__meta auf Seiten, Ziel $tracking-meta
-$tracking-legacy-footer-nav: 0.05em; // Footer-Navigation
-$tracking-legacy-cv-group-title: 0.07em; // CV-Gruppentitel und Auswahl-Skill (mono-label), Ziel $tracking-label
-$tracking-legacy-fp-button: 0.04em; // Fraktal-Toolbar, Button-Text mobil
-$tracking-legacy-cv-level: 0.04em; // CV-Sprachniveau (Mono-Label), Ziel $tracking-meta
-$tracking-legacy-graph-hint: 0.02em; // Skill-Graph-Touch-Hinweis (Mono)
-// Fraktal-Panel in px wie $fp-fs-* (bei 12px entspricht das 0.025em bzw. 0.042em)
-$fp-tracking-legacy-hint: 0.3px; // Gesten-Hinweis unter dem Canvas
-$fp-tracking-legacy-label: 0.5px; // Regler-Beschriftungen
 
 // TOC-Label-Größen (zentral — Referenzgröße von der Mandelbrot-Seite)
 $toc-title-font-size: $fs-base; // „Inhalt" im Seitenleisten-TOC

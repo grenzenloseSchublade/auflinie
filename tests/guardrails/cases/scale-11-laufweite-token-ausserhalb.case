@@ -1,0 +1,10 @@
+# Laufweite über ein Token außerhalb der Skala (TYP-7, R-21): nur $tracking-meta, -label, -label-wide
+guardrail: scale
+expect: 1
+grep: VERSTOSS tracking
+file: assets/_sass/components/_footer.scss
+mode: append
+---
+.footer-fixture {
+  letter-spacing: $fs-icon-external;
+}

@@ -1,0 +1,14 @@
+# Eigenes Mixin reicht einen Parameter an letter-spacing durch: Aufrufe prüft niemand, zählt (TYP-7)
+guardrail: scale
+expect: 1
+grep: VERSTOSS tracking
+file: assets/_sass/components/_footer.scss
+mode: append
+---
+@mixin footer-fixture-label($laufweite) {
+  letter-spacing: $laufweite;
+}
+
+.footer-fixture {
+  @include footer-fixture-label(0.05em);
+}

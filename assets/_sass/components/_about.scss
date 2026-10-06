@@ -132,7 +132,8 @@
 // Der warme Einzelakzent der Seite. Größe und Abstand (1em, margin 0 0
 // 1.3em) setzt die Theme-Regel .page__content p (0,1,1). Eine Klassenregel
 // hier käme nicht durch (Kaskaden-Falle, TYP-4). Der Leitspruch in
-// Fließtextgröße ist der abgenommene Stand.
+// Fließtextgröße ist der abgenommene Stand. Als Fließtext ohne Laufweite
+// (TYP-7, Owner-Entscheidung 6. 10. 2026, R-21).
 .about-motto {
   display: flex;
   align-items: center;
@@ -140,7 +141,6 @@
   font-style: italic;
   line-height: 1.4;
   color: $console-heading;
-  letter-spacing: $tracking-legacy-quote;
   background: none;
   border: none;
   padding: 0;

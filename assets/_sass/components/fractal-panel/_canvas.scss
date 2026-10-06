@@ -254,7 +254,7 @@
   color: $fg-subtle; // FARB-3 (vorher 45 %, 4,44:1)
   font-family: $fp-mono;
   font-size: $fp-fs-sm; // 11→12px (K9, A11y: instruktiver Hinweis)
-  letter-spacing: $fp-tracking-legacy-hint;
+  letter-spacing: $tracking-meta;
   text-align: center;
 }
 
