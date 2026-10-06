@@ -14,7 +14,7 @@ person_schema: true # JSON-LD Person (head/custom.html)
 
 Beruflich dreht sich bei mir vieles um Technik – am liebsten dort, wo aus einer Idee etwas Greifbares wird, wie bei den [interaktiven Fraktalen]({{ '/mandelbrot/' | relative_url }}) oder im [Blog]({{ '/posts/' | relative_url }}). In neue Themen tauche ich gern tief ein – und verliere mich auch mal darin.
 
-Auf dieser Seite geht es aber vor allem um das, was daneben passiert: ums Draußensein und in Bewegung bleiben, um Ernährung, Schlaf und Ruhe. Dinge, die ich einfach gerne tue.
+Auf dieser Seite geht es aber vor allem um das, was daneben passiert: ums Draußensein und darum, in Bewegung zu bleiben, um Ernährung, Schlaf und Ruhe. Dinge, die ich einfach gerne tue.
 
 <div class="about-motto-wrap">
   <p class="about-motto">anima sana in corpore sano</p>

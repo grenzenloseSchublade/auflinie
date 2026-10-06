@@ -38,7 +38,7 @@
             - "Als eigenständiges Vorhaben angelegt, weil die Strukturerkennung in mehreren Projekten dasselbe Kernproblem ist"
         - text: "Eigenständiges Projekt für eine **öffentliche Behörde** – Backend zur automatisierten Verarbeitung juristischer Inhalte im Formularwesen"
           subitems:
-            - "Python-Pipeline, die Gesetzesdokumente strukturiert und semantisch im Wissensgraph verknüpft"
+            - "Python-Pipeline, die Gesetzesdokumente strukturiert und semantisch im Wissensgraphen verknüpft"
             - "Orchestrierung der Verarbeitungsschritte mit **Dagster**"
             - "Reproduzierbare Entwicklungsumgebung mit DevContainer"
         - text: "Daneben weitere Aufgaben als Softwareingenieur im Projekt"
