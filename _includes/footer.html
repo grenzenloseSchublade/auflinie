@@ -3,6 +3,9 @@
   der Menütitel aus main), danach die Kanäle aus author.links in _config.yml
   mit footer: true (STYLEGUIDE ARCH-4).
   Die Trennpunkte sind Schmuck und für Screenreader ausgeblendet.
+  Copyright-Zeile wie im Theme: Jahr aus dem Build, Name aus name in
+  _config.yml, „Möglich durch“ aus powered_by in _data/ui-text.yml.
+  Jekyll und Minimal Mistakes sind Eigennamen mit Link und bleiben hier.
 {% endcomment %}
 {%- assign footer_channels = site.author.links | where: "footer", true -%}
 <div class="page__footer-follow site-footer">
@@ -18,4 +21,4 @@
     {%- endfor %}
   </nav>
 </div>
-<div class="page__footer-copyright">&copy; {{ site.time | date: '%Y' }} {{ site.name | default: site.title }}. M&ouml;glich durch <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/jekyll-themes/minimal-mistakes/" rel="nofollow">Minimal Mistakes</a>.</div>
+<div class="page__footer-copyright">&copy; {{ site.time | date: '%Y' }} {{ site.name | default: site.title }}. {{ site.data.ui-text[site.locale].powered_by | escape }} <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/jekyll-themes/minimal-mistakes/" rel="nofollow">Minimal Mistakes</a>.</div>
