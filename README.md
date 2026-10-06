@@ -220,7 +220,7 @@ Wenn mathematische Formeln nicht korrekt angezeigt werden:
 | Lebenslauf, Skills | `_data/cv_content.yml`, Skill-Graph `_data/skill_graph.yml` |
 | Startseite | `_data/home.yml` |
 | Über mich, neue Seite | `_pages/*.md` |
-| Fraktal-Texte | `_data/mandelbrot.yml` |
+| Fraktal-Texte | `_data/mandelbrot.yml`, Knöpfe und Hinweise der Panels `_data/fractal_panel.yml` |
 | Menü und Footer | `_data/navigation.yml` |
 | Kontakt, Social-Links | `_config.yml` → `author.links` |
 | Hinweis über dem Blog | `_pages/posts.md` → `blog_notice` |

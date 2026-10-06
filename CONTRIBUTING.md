@@ -41,6 +41,8 @@ Gastbeiträge kommen als Markdown-Datei nach der Vorlage `assets/downloads/post-
 - `_includes/fractal/`: Gemeinsame Komponente der interaktiven Fraktal-Panels
   - `panel.html`: parametrisiertes Markup (Variante `julia` | `explorer`)
   - `julia-interactive.html` / `mandelbrot-julia-explorer.html` sind nur noch dünne Wrapper
+  - `explanation.html`: Markup der Erklärbox, Texte in `_data/mandelbrot.yml` → `panel_explanations`
+  - Bedientexte (Knöpfe, Beschriftungen, Hinweise) in `_data/fractal_panel.yml`, Markup und JS enthalten keinen eigenen Text (STYLEGUIDE ARCH-4)
 - `assets/js/fractal-panel.js`: Panel-Verhalten (Varianten-Konfiguration, Gesten, Tastatur)
 - `assets/js/fractal-renderer.js` + `*-worker.js`: Rendering in Web Workern
 - `assets/_sass/components/_fractal-panel.scss` + `_crt-overlay.scss`: Panel-Optik und Retro-Screen

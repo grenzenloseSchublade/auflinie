@@ -11,11 +11,11 @@ Ein Fehler kann nichts kaputt machen, was schon online ist: Die Website wird nac
 | Lebenslauf, Skills | `_data/cv_content.yml`, `_data/skill_graph.yml` | [Lebenslauf](#lebenslauf) |
 | Startseite | `_data/home.yml` | [Startseite](#startseite) |
 | Über mich | `_pages/about.md` | [Über mich](#über-mich) |
-| Fraktal-Texte | `_data/mandelbrot.yml` | [Mandelbrot-Texte](#mandelbrot-texte) |
+| Fraktal-Texte, Erklärungen in den Panels | `_data/mandelbrot.yml` | [Mandelbrot-Texte](#mandelbrot-texte) |
 | Knöpfe und Hinweise der Fraktal-Panels | `_data/fractal_panel.yml` | [Fraktal-Bedienung](#fraktal-bedienung) |
 | Menü, neue Seite | `_data/navigation.yml`, `_pages/` | [Navigation](#navigation) |
 | Kontakt, Social-Links | `_config.yml` → `author.links` | [Kontakt und Social-Links](#kontakt-und-social-links) |
-| Footer | `_data/navigation.yml` → `footer` | [Footer](#footer) |
+| Footer | `_data/navigation.yml` → `footer`, Copyright-Zeile `_data/ui-text.yml` → `powered_by` | [Footer](#footer) |
 | Bild tauschen | `assets/images/` | [Bild tauschen](#bild-tauschen) |
 | Seitentitel, Kurzbeschreibung | Kopf der jeweiligen Datei | [Seitentitel und Excerpt](#seitentitel-und-excerpt) |
 | Hinweis über dem Blog | `_pages/posts.md` → `blog_notice` | [Blog-Hinweis](#blog-hinweis) |
@@ -178,7 +178,7 @@ Knöpfe, Beschriftungen, Statusmeldungen („Berechne…“) und Gesten-Hinweise
 1. Den Text suchen und ändern. `buttons` sind die Knöpfe, `controls` Regler und Auswahlfelder, `canvas` die Texte in der Zeichenfläche, `julia` und `explorer` das, was nur eines der beiden Fraktale hat.
 2. Prüfen und pushen. Einen vertippten oder leeren Schlüssel meldet der Inhalts-Check mit Zeile.
 
-Fallen: Bei einem Knopf beginnt `aria_label` (Name für Screenreader) mit dem sichtbaren `label`, also „Reset – Ansicht zurücksetzen“ zu „Reset“. Wer `label` ändert, ändert `aria_label` mit. Felder mit `_active` sind der Text im eingeschalteten Zustand. `value` bei Farbschemas und Presets nicht ändern, daran hängen Farbpalette und Startwert.
+Fallen: Bei einem Knopf beginnt `aria_label` (Name für Screenreader) mit dem sichtbaren `label`, also „Reset – Ansicht zurücksetzen“ zu „Reset“. Wer `label` ändert, ändert `aria_label` mit. Felder mit `_active` sind der Text im eingeschalteten Zustand. `value` bei Farbschemas und Presets nicht ändern, daran hängen Farbpalette und Startwert. Die Namen der Farbschemas erscheinen auch als Kacheln in der Erklärung der Julia-Menge, eine Änderung wirkt an beiden Stellen. Die Überschrift über jedem Panel steht noch als `title="…"` in `_includes/julia-interactive.html` und `_includes/mandelbrot-julia-explorer.html` (STYLEGUIDE Register R-88).
 
 ## Navigation
 
