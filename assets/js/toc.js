@@ -372,7 +372,7 @@
       const prefersReducedMotion = utils().prefersReducedMotion();
 
       // Aufgeklappt steht max-height auf none: Die Liste darf wachsen, wenn
-      // Lesende Textabstände vergrößern (WCAG 1.4.12), ein fester Pixelwert
+      // Leser Textabstände vergrößern (WCAG 1.4.12), ein fester Pixelwert
       // schnitte sie ab. Für die Animation wird die Höhe nur kurz gemessen:
       // beim Aufklappen bis transitionend, beim Zuklappen als Startwert.
       // instant: ohne Übergang (Startzustand, Reduced Motion).
