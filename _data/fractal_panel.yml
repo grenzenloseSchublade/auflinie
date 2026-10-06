@@ -1,0 +1,169 @@
+# Bedientexte der interaktiven Fraktal-Panels auf /mandelbrot/: „Interaktive
+# Julia-Menge“ und „Mandelbrot-Julia-Explorer“ (STYLEGUIDE ARCH-4). Texte nur
+# hier pflegen. Das Markup steht in _includes/fractal/panel.html und
+# _includes/fractal/canvas.html, das Verhalten in assets/js/fractal-panel.js.
+# Die Erklärtexte unter den Panels und die Abschnitte drumherum stehen nicht
+# hier (Abschnitte: _data/mandelbrot.yml).
+#
+# Felder eines Knopfs:
+#   label       sichtbarer Text
+#   title       Tooltip beim Zeigen mit der Maus
+#   aria_label  Name für Screenreader. Beginnt mit dem sichtbaren Wort
+#               (WCAG 2.5.3 Label in Name, STYLEGUIDE 7.7), etwa „Reset – …“.
+#   …_active    Text im eingeschalteten Zustand, das Skript tauscht beim Klick
+
+buttons:
+  focus:
+    label: "Fokus"
+    title: "Fokusmodus: Bedienelemente ausblenden"
+    aria_label: "Fokus – Bedienelemente ausblenden"
+  reset:
+    label: "Reset"
+    julia: # setzt nur den Zoom zurück
+      title: "Zoom zurücksetzen"
+      aria_label: "Reset – Zoom zurücksetzen"
+    explorer: # setzt beide Ansichten und c zurück
+      title: "Zurücksetzen"
+      aria_label: "Reset – Ansicht zurücksetzen"
+  recalc: # nur bei der Julia-Menge
+    label: "Neu"
+    title: "Neu berechnen"
+    aria_label: "Neu berechnen"
+  crt:
+    label: "CRT"
+    title: "Retro-Bildschirm-Effekt umschalten"
+    aria_label: "CRT – Retro-Bildschirm-Effekt"
+  fullscreen:
+    label: "Vollbild"
+    label_active: "Vollbild aus"
+    title: "Vollbild"
+  intensity:
+    label: "Subtil"
+    label_active: "Intensiv"
+    title: "Farbintensität umschalten"
+    aria_label: "Subtil – Farbintensität"
+    aria_label_active: "Intensiv – Farbintensität"
+  advanced:
+    label: "Erweiterte Optionen"
+    label_active: "Optionen ausblenden"
+    title: "Erweiterte Optionen anzeigen"
+    title_active: "Erweiterte Optionen ausblenden"
+  extreme_zoom:
+    label: "Extremzoom: Aus"
+    label_active: "Extremzoom: An"
+    title: "Extremzoom erlauben"
+  download: # Knopf ohne sichtbaren Text, nur Symbol
+    title: "Bild speichern"
+    aria_label: "Bild speichern"
+  explanation:
+    label: "Erklärung anzeigen"
+    label_active: "Erklärung ausblenden"
+
+# Beschriftungen der Regler und Auswahlfelder
+controls:
+  iterations: "Iterationen:"
+  colors: "Farben:"
+  real: "c (Real):"
+  imag: "c (Imag):"
+  preset: "Preset:"
+  # Farbschemas in der Reihenfolge der Auswahl. Nur label ändern: value ist
+  # der Name der Farbpalette in assets/js/fractal-renderer.js.
+  color_schemes:
+    - value: "blau-rot"
+      label: "Blau-Rot"
+    - value: "cyberpunk"
+      label: "Cyberpunk"
+    - value: "retrowave"
+      label: "Retrowave"
+    - value: "feuer"
+      label: "Feuer"
+    - value: "ozean"
+      label: "Ozean"
+    - value: "monochrom"
+      label: "Monochrom"
+    - value: "regenbogen"
+      label: "Regenbogen"
+    - value: "ultraviolett"
+      label: "Ultraviolett"
+    - value: "goldgrün"
+      label: "Gold-Grün"
+
+# Texte in jeder Zeichenfläche
+canvas:
+  # Für Screenreader nach dem Namen der Fläche, getrennt durch „ – “
+  keyboard_help: "interaktiv. Tastatur: Pfeiltasten verschieben, Plus/Minus zoomen, 0 setzt die Ansicht zurück."
+  hud_c: "c:"
+  hud_zoom: "Zoom:"
+  loading: "Berechne…"
+  unsupported: "Die Darstellung ist in diesem Browser nicht möglich."
+  zoom_warning: "Extremzoom aktiv – Details können instabil sein."
+  gesture_hint: "Zum Verschieben zwei Finger benutzen"
+
+# Interaktive Julia-Menge
+julia:
+  canvas:
+    label: "Julia-Menge"
+    zoom_in: "Julia vergrößern"
+    zoom_out: "Julia verkleinern"
+  # Voreinstellungen für c. Die Werte real und imag mit Punkt, label zeigt
+  # sie gerundet mit echtem Minus (−). Neue Werte vorher im Explorer prüfen
+  # (STYLEGUIDE FACH-2). value nicht ändern, „standard“ ist der Startwert.
+  presets:
+    - value: "standard"
+      label: "Standard (−0.70, 0.27)"
+      real: "-0.70"
+      imag: "0.27"
+    - value: "seepferdchen"
+      label: "Seepferdchen (−0.78, −0.11)"
+      real: "-0.78"
+      imag: "-0.11"
+    - value: "blitz"
+      label: "Blitz (−0.84, −0.23)"
+      real: "-0.835"
+      imag: "-0.2321"
+    - value: "dendrit"
+      label: "Dendrit (0, 1)"
+      real: "0"
+      imag: "1"
+  # Bedienhinweis unter der Zeichenfläche: Jeder Eintrag ist eine Geste und
+  # bricht nicht um, zwischen den Einträgen steht „·“. mouse gilt für Maus
+  # und Tastatur, touch für Touchscreens.
+  hint:
+    mouse:
+      - "ziehen: zoom-rechteck"
+      - "rechtsklick/leertaste: verschieben"
+      - "mausrad: zoom"
+      - "doppelklick: heraus"
+      - "tastatur: ←↑↓→ + − 0"
+    touch:
+      - "pinch: zoom"
+      - "zwei finger: verschieben"
+      - "+/−: zoomstufe"
+
+# Mandelbrot-Julia-Explorer: zwei Zeichenflächen nebeneinander
+explorer:
+  mandelbrot:
+    title: "Mandelbrot-Menge"
+    info: "Ein Klick auf einen Punkt zeigt die entsprechende Julia-Menge."
+    canvas:
+      label: "Mandelbrot-Menge"
+      zoom_in: "Mandelbrot vergrößern"
+      zoom_out: "Mandelbrot verkleinern"
+  julia:
+    title: "Julia-Menge für c =" # dahinter folgt der aktuelle Wert von c
+    info: "Die Julia-Menge für den gewählten Parameter c."
+    canvas:
+      label: "Julia-Menge zum gewählten Parameter c"
+      zoom_in: "Julia vergrößern"
+      zoom_out: "Julia verkleinern"
+  hint: # wie bei der Julia-Menge
+    mouse:
+      - "klick (mandelbrot): c wählen"
+      - "ziehen: zoom-rechteck"
+      - "rechtsklick/leertaste: verschieben"
+      - "mausrad: zoom"
+      - "tastatur: ←↑↓→ + − 0"
+    touch:
+      - "tippen (mandelbrot): c wählen"
+      - "pinch: zoom"
+      - "zwei finger: verschieben"

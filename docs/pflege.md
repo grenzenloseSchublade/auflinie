@@ -12,6 +12,7 @@ Ein Fehler kann nichts kaputt machen, was schon online ist: Die Website wird nac
 | Startseite | `_data/home.yml` | [Startseite](#startseite) |
 | Über mich | `_pages/about.md` | [Über mich](#über-mich) |
 | Fraktal-Texte | `_data/mandelbrot.yml` | [Mandelbrot-Texte](#mandelbrot-texte) |
+| Knöpfe und Hinweise der Fraktal-Panels | `_data/fractal_panel.yml` | [Fraktal-Bedienung](#fraktal-bedienung) |
 | Menü, neue Seite | `_data/navigation.yml`, `_pages/` | [Navigation](#navigation) |
 | Kontakt, Social-Links | `_config.yml` → `author.links` | [Kontakt und Social-Links](#kontakt-und-social-links) |
 | Footer | `_data/navigation.yml` → `footer` | [Footer](#footer) |
@@ -160,6 +161,15 @@ Fallen: Der Kontaktsatz und die Kontaktkarten am Ende kommen aus `author.links` 
 3. Prüfen und pushen. Eine falsche Schreibweise meldet der Inhalts-Check mit Zeile.
 
 Fallen: `anchor`, `include` und `icon` nicht ändern, daran hängen Sprunglinks, die interaktiven Fraktale und die Symbole. Fachliche Aussagen bekommen eine Quelle als YAML-Kommentar (`# Quelle: Autor, Titel, Jahr, URL`).
+
+## Fraktal-Bedienung
+
+Knöpfe, Beschriftungen, Statusmeldungen („Berechne…“) und Gesten-Hinweise der beiden interaktiven Fraktale stehen in `_data/fractal_panel.yml`.
+
+1. Den Text suchen und ändern. `buttons` sind die Knöpfe, `controls` Regler und Auswahlfelder, `canvas` die Texte in der Zeichenfläche, `julia` und `explorer` das, was nur eines der beiden Fraktale hat.
+2. Prüfen und pushen.
+
+Fallen: Bei einem Knopf beginnt `aria_label` (Name für Screenreader) mit dem sichtbaren `label`, also „Reset – Ansicht zurücksetzen“ zu „Reset“. Wer `label` ändert, ändert `aria_label` mit. Felder mit `_active` sind der Text im eingeschalteten Zustand. `value` bei Farbschemas und Presets nicht ändern, daran hängen Farbpalette und Startwert.
 
 ## Navigation
 

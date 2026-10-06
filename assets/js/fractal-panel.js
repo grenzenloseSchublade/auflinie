@@ -11,6 +11,12 @@
  * gefunden (keine globalen IDs → mehrere Panels pro Seite kollisionsfrei).
  * Alle Event-Listener laufen über einen AbortController pro Panel.
  *
+ * Texte (ARCH-4): Das Skript erzeugt keine eigenen. Umschalt-Knöpfe tragen
+ * die Texte beider Zustände als data-Attribute (data-label, data-title,
+ * data-aria-label und je …-active), den Text bei fehlender Darstellung
+ * trägt die Ladeanzeige (data-unsupported-text). Quelle ist
+ * _data/fractal_panel.yml über fractal/panel.html und canvas.html.
+ *
  * Benötigt: fractal-renderer.js (FractalRenderer, FractalPalettes,
  * FractalUtils), noUiSlider, TomSelect — defer-geladen via fractal/deps.html.
  */
@@ -72,8 +78,21 @@
     return cx.toFixed(3).replace('-', '−') + ' ' + sign + ' ' + Math.abs(cy).toFixed(3) + 'i';
   }
 
+  // Text eines Umschalt-Knopfs für einen Zustand: name ist der dataset-Schlüssel
+  // ('label', 'title', 'ariaLabel'), eingeschaltet gilt name + 'Active'.
+  // Fehlt das Attribut (altes HTML aus dem Cache), ist das Ergebnis undefined
+  // und der bisherige Text bleibt stehen.
+  function toggleText(button, name, isActive) {
+    return button.dataset[isActive ? name + 'Active' : name];
+  }
+
+  function setToggleAttribute(button, attribute, name, isActive) {
+    const value = toggleText(button, name, isActive);
+    if (value !== undefined) button.setAttribute(attribute, value);
+  }
+
   function setButtonLabel(button, label) {
-    if (!button) return;
+    if (!button || label === undefined) return;
     const text = button.querySelector('.btn-text');
     if (text) {
       text.textContent = label;
@@ -86,11 +105,11 @@
   // Label in Name): der sichtbare Text des Zeilen-Labels ohne Doppelpunkt.
   // Das <label> selbst zeigt auf das Zahlenfeld daneben, der Griff
   // (role="slider") bekäme sonst gar keinen Namen.
-  function sliderHandleAttributes(slider, fallback) {
+  function sliderHandleAttributes(slider) {
     const row = slider && slider.closest('.fractal-panel__control-row');
     const label = row && row.querySelector('label');
     const text = label ? label.textContent.trim().replace(/:\s*$/, '') : '';
-    return [{ 'aria-label': text || fallback }];
+    return [text ? { 'aria-label': text } : {}];
   }
 
   function getTouchDistance(touches) {
@@ -125,6 +144,7 @@
       this.renderer = new FractalRenderer({
         canvas: this.canvas,
         loadingIndicator: this.loading,
+        unsupportedText: this.loading ? this.loading.dataset.unsupportedText : '',
         workerUrl: panel.workerBase + '/' + config.worker,
         type: config.type,
         allowIterationData: false,
@@ -593,8 +613,7 @@
       this.views.forEach((view) => view.bindEvents());
       this.bindGlobal();
 
-      // Initialzustand
-      setButtonLabel(this.$('extreme-zoom'), 'Extremzoom: Aus');
+      // Initialzustand (Knopftexte im Ruhezustand stehen schon im Markup)
       this.updateJuliaParamText();
       this.views.forEach((view) => {
         view.updateHudZoom();
@@ -749,7 +768,7 @@
         step: iterations.step,
         range: { min: iterations.min, max: iterations.max },
         format: { to: (v) => Math.round(v), from: (v) => Number(v) },
-        handleAttributes: sliderHandleAttributes(this.iterSlider, 'Iterationen')
+        handleAttributes: sliderHandleAttributes(this.iterSlider)
       });
       this.iterSlider.noUiSlider.on('update', (values) => {
         this.state.maxIterations = parseInt(values[0], 10);
@@ -784,11 +803,11 @@
       };
       noUiSlider.create(this.realSlider, Object.assign({
         start: this.state.realPart,
-        handleAttributes: sliderHandleAttributes(this.realSlider, 'c (Real)')
+        handleAttributes: sliderHandleAttributes(this.realSlider)
       }, cSliderOptions));
       noUiSlider.create(this.imagSlider, Object.assign({
         start: this.state.imagPart,
-        handleAttributes: sliderHandleAttributes(this.imagSlider, 'c (Imag)')
+        handleAttributes: sliderHandleAttributes(this.imagSlider)
       }, cSliderOptions));
 
       const bindCSlider = (slider, input, prop) => {
@@ -879,8 +898,8 @@
           const isOpen = root.classList.contains('is-advanced-open');
           advancedButton.classList.toggle('is-active', isOpen);
           advancedButton.setAttribute('aria-expanded', String(isOpen));
-          setButtonLabel(advancedButton, isOpen ? 'Optionen ausblenden' : 'Erweiterte Optionen');
-          advancedButton.title = isOpen ? 'Erweiterte Optionen ausblenden' : 'Erweiterte Optionen anzeigen';
+          setButtonLabel(advancedButton, toggleText(advancedButton, 'label', isOpen));
+          setToggleAttribute(advancedButton, 'title', 'title', isOpen);
           if (!root.classList.contains('is-fullscreen')) {
             setTimeout(() => this.resizeAndRender(), 100);
           }
@@ -906,11 +925,10 @@
           this.state.useIntense = !this.state.useIntense;
           intensityButton.classList.toggle('is-active', this.state.useIntense);
           intensityButton.setAttribute('aria-pressed', String(this.state.useIntense));
-          const intensityLabel = this.state.useIntense ? 'Intensiv' : 'Subtil';
-          setButtonLabel(intensityButton, intensityLabel);
+          setButtonLabel(intensityButton, toggleText(intensityButton, 'label', this.state.useIntense));
           // Label in Name (WCAG 2.5.3): der zugängliche Name beginnt mit dem
           // sichtbaren Wort — Pflicht, weil der Text mobil ausgeblendet ist.
-          intensityButton.setAttribute('aria-label', intensityLabel + ' – Farbintensität');
+          setToggleAttribute(intensityButton, 'aria-label', 'ariaLabel', this.state.useIntense);
           this.requestRender(null, { preview: true, debounce: 200, reason: 'palette' });
         });
       }
@@ -921,7 +939,7 @@
           this.state.allowExtremeZoom = !this.state.allowExtremeZoom;
           extremeButton.classList.toggle('is-active', this.state.allowExtremeZoom);
           extremeButton.setAttribute('aria-pressed', String(this.state.allowExtremeZoom));
-          setButtonLabel(extremeButton, 'Extremzoom: ' + (this.state.allowExtremeZoom ? 'An' : 'Aus'));
+          setButtonLabel(extremeButton, toggleText(extremeButton, 'label', this.state.allowExtremeZoom));
           if (!this.state.allowExtremeZoom) {
             let clamped = false;
             this.views.forEach((view) => {
@@ -969,7 +987,7 @@
           const isFullscreen = document.fullscreenElement === root;
           if (!isFullscreen && !root.classList.contains('is-fullscreen')) return;
           root.classList.toggle('is-fullscreen', isFullscreen);
-          setButtonLabel(fullscreenButton, isFullscreen ? 'Vollbild aus' : 'Vollbild');
+          setButtonLabel(fullscreenButton, toggleText(fullscreenButton, 'label', isFullscreen));
           setTimeout(() => this.resizeAndRender(), 80);
         });
       }
@@ -977,14 +995,20 @@
       const explanationToggle = this.$('explanation-toggle');
       const explanationBox = this.$('explanation-box');
       if (explanationToggle && explanationBox) {
+        const explanationIcon = explanationToggle.querySelector('.toggle-icon');
         explanationToggle.addEventListener('click', () => {
           const isOpen = explanationBox.classList.toggle('is-visible');
           explanationToggle.classList.toggle('is-active', isOpen);
           explanationToggle.setAttribute('aria-expanded', String(isOpen));
-          // eslint-disable-next-line no-unsanitized/property -- feste Strings, keine Daten
-          explanationToggle.innerHTML = isOpen
-            ? 'Erklärung ausblenden <span class="toggle-icon" aria-hidden="true">▲</span>'
-            : 'Erklärung anzeigen <span class="toggle-icon" aria-hidden="true">▼</span>';
+          // Inhalt wie im Markup: „<Text> <span class="toggle-icon">▲|▼</span>“.
+          // Ohne Wechseltext (altes HTML aus dem Cache) bleiben Text und Pfeil
+          // zusammen stehen, sonst entstünde „anzeigen ▲“.
+          const label = toggleText(explanationToggle, 'label', isOpen);
+          if (label !== undefined) {
+            if (explanationIcon) explanationIcon.textContent = isOpen ? '▲' : '▼';
+            explanationToggle.textContent = label + ' ';
+            if (explanationIcon) explanationToggle.appendChild(explanationIcon);
+          }
         });
       }
     }

@@ -59,6 +59,9 @@
         return;
       }
       this.loadingIndicator = options.loadingIndicator || null;
+      // Hinweis, wenn der Browser keine Web Worker kann. Text aus
+      // _data/fractal_panel.yml (canvas.unsupported), fractal-panel.js reicht ihn durch.
+      this.unsupportedText = options.unsupportedText || '';
       this.workerUrl = options.workerUrl;
       this.type = options.type;
       this.allowIterationData = !!options.allowIterationData;
@@ -325,7 +328,7 @@
       } else {
         if (this.loadingIndicator) {
           this.loadingIndicator.style.display = 'block';
-          this.loadingIndicator.textContent = 'Die Darstellung ist in diesem Browser nicht möglich.';
+          this.loadingIndicator.textContent = this.unsupportedText;
         }
         this.ctx.setTransform(1, 0, 0, 1, 0, 0);
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -333,7 +336,7 @@
         this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
         this.ctx.fillStyle = '#dddddd';
         this.ctx.font = '16px sans-serif';
-        this.ctx.fillText('Die Darstellung ist in diesem Browser nicht möglich.', 20, 32);
+        this.ctx.fillText(this.unsupportedText, 20, 32);
         console.warn('fractal-renderer: Web Worker nicht verfügbar, Rendering deaktiviert');
       }
     }
