@@ -1,8 +1,8 @@
 # Style Guide auflinie
 
-Version 2026-10-05 · Stand: 5. Oktober 2026 · Gilt für: Repo `auflinie` (Jekyll, Remote-Theme Minimal Mistakes, Dart Sass über jekyll-sass-converter, Versionen in `Gemfile.lock`, `_config.yml` und `package-lock.json`)
+Version 2026-10-06 · Stand: 6. Oktober 2026 · Gilt für: Repo `auflinie` (Jekyll, Remote-Theme Minimal Mistakes, Dart Sass über jekyll-sass-converter, Versionen in `Gemfile.lock`, `_config.yml` und `package-lock.json`)
 
-Ist-Angaben wurden gegen Commit `848efe2` erhoben, am 2. 10. 2026 vollständig gegen `75c23c0` abgeglichen (jede Regel mit Status Soll oder Offen und jeder Registereintrag) und seither je Änderung nachgeführt: am 4. 10. 2026 gegen `c19da3f` für die Commits seit `1d6a37b` samt Skill-Graph-Regeln, am 5. 10. 2026 für alle Regeln mit SPA-Bezug und beim Entschlacken nach ARCH-7 (geänderte Verweise am Code geprüft, Abschnitt 19). Bei jedem neuen Ist-Stand werden die Ist-Sätze und das Register neu geprüft und dieser Satz aktualisiert.
+Ist-Angaben wurden gegen Commit `848efe2` erhoben, am 2. 10. 2026 vollständig gegen `75c23c0` abgeglichen (jede Regel mit Status Soll oder Offen und jeder Registereintrag) und seither je Änderung nachgeführt: am 4. 10. 2026 gegen `c19da3f` für die Commits seit `1d6a37b` samt Skill-Graph-Regeln, am 5. 10. 2026 für alle Regeln mit SPA-Bezug und beim Entschlacken nach ARCH-7 (geänderte Verweise am Code geprüft, Abschnitt 19), am 6. 10. 2026 für die Owner-Entscheidungen dieses Tages. Bei jedem neuen Ist-Stand werden die Ist-Sätze und das Register neu geprüft und dieser Satz aktualisiert.
 
 Dieses Dokument ist die **einzige normative Quelle** für Gestaltung, Code, Sprache, Sicherheit und Arbeitsweise im Repo. Es kodifiziert die Entscheidungen des Owners (Abschnitt 1.3) und verlinkt externe Standards. Einzelbefunde, Messwerte und der Ist-Zustand stehen im Audit-Bericht `docs/audits/2026-10-01-audit.md`, die Sicherheitsbefunde in `docs/audits/2026-10-01-security.md`. Beide Berichte sind Momentaufnahmen vom 1. 10. 2026 und nicht normativ. Was seither behoben ist, steht nur hier, nicht im Bericht.
 
@@ -24,7 +24,7 @@ Dieses Dokument ist die **einzige normative Quelle** für Gestaltung, Code, Spra
 
 Gilt für:
 
-- Quellen: `assets/_sass`, `assets/js`, `service-worker.js`, `_includes` (inklusive `_includes/logo.svg`), `_layouts`, `_pages`, `_posts`, `_drafts`, `_data`, `index.html`, `404.html`, `offline.html`
+- Quellen: `assets/_sass`, `assets/js`, `service-worker.js`, `_includes` (inklusive der Logo-Dateien `_includes/logo.svg` und `_includes/logo-roehren.svg`), `_layouts`, `_pages`, `_posts`, `_drafts`, `_data`, `index.html`, `404.html`, `offline.html`
 - Medien und Downloads: `assets/images/`, `assets/webfonts/`, `assets/downloads/`
 - Konfiguration und Werkzeuge: `_config.yml`, `package.json`, `Gemfile`, `.stylelintrc.json`, `.editorconfig`, `playwright.config.js`, `.github/workflows/`, `.devcontainer/`, `scripts/`, `tests/`
 - die Repo-Dokumentation
@@ -57,6 +57,7 @@ Durchsetzung:
 |---|---|
 | **CI** | Ein Check im Workflow prüft die Regel heute (16.1). |
 | **CI-P1** … **CI-P4** | Check geplant, Priorität nach 16.2. |
+| **Hook** | Ein lokaler Git-Hook prüft die Regel (`.githooks/commit-msg`, einschalten nach `README_DEV.md`, im Dev Container automatisch), die CI nicht (Owner-Wahl 6. 10. 2026, 16.1). |
 | **Review** | Nur per Review prüfbar (Checkliste 16.3). |
 
 ### 1.3 Owner-Entscheidungen und dieser Guide
@@ -76,7 +77,7 @@ Durchsetzung:
 ```
 
 - **GOV-4** [MUSS · Ist · Review] Wo kein Code-Kommentar möglich ist, gilt dasselbe Format in der jeweiligen Kommentarsyntax: Liquid und Markdown `{% comment %} ausnahme TYPO-1: Grund {% endcomment %}`, YAML `# ausnahme TYPO-1: Grund`, Commits als Zeile `Ausnahme: GIT-1, Grund` im Body.
-- **GOV-5** [MUSS · Ist · Review] Das zentrale Ausnahme-Register ist die Summe aller Marker. `grep -rnE '(fs|farb|bp|skala)-Ausnahme:|ausnahme [A-Z]+-[0-9]+:'` listet es vollständig (heute nur Code-Marker, `ausnahme …` in Liquid, YAML oder Commits kommt nicht vor). Bekannte Verstöße ohne Marker stehen in Abschnitt 17.
+- **GOV-5** [MUSS · Ist · Review] Das zentrale Ausnahme-Register ist die Summe aller Marker. `grep -rnE '(fs|farb|bp|skala)-Ausnahme:|ausnahme [A-Z]+-[0-9]+:'` listet es vollständig (heute nur Code-Marker, `ausnahme …` in Liquid, YAML oder Commits kommt nicht vor). Commits mit Ausnahme listet `git log --grep='^Ausnahme: GIT-'`. Bekannte Verstöße ohne Marker stehen in Abschnitt 17.
 
 ### 1.5 Änderungen am Guide
 
@@ -108,6 +109,7 @@ Durchsetzung:
 | Hover-Lift | Anheben eines Elements per `translateY` beim Hover |
 | Front-Loading | Kernaussage an den Anfang von Satz, Überschrift oder Listenpunkt |
 | Review-Blocker | Befund, der einen Merge verhindert, bis er behoben ist |
+| Trefferpolster | unsichtbare Vergrößerung der Trefferfläche eines Bedienelements auf Touch-Geräten, ohne Optik oder Layout zu ändern (Mixin `touch-target-pad`, 6.1) |
 
 ### 1.8 Leitlinie: einfach, aber anpassbar
 
@@ -122,8 +124,8 @@ Grundlage der Entscheidung (Messungen vom 4. 10. 2026, Momentaufnahme):
 
 - **ARCH-1** [MUSS · Soll · Review] **Theme zuerst.** Minimal Mistakes bleibt das Fundament. Anpassungen laufen zuerst über die Mechanismen des Themes: Konfiguration, Theme-Variablen vor dem Import (z. B. `$global-transition`), Hook-Includes (`head/custom.html`, `footer/custom.html`), `_data`. Ein Override einer Theme-Datei braucht einen Grund im Dateikopf (LIQ-1), der bei jedem Theme-Update geprüft wird. Trägt der Grund nicht mehr, kehrt die Datei zur Theme-Fassung zurück (seit 5. 10. 2026 `page__related.html`). `archive-single.html` weicht nur noch an zwei Stellen von der Theme-Fassung ab: Teaser mit `width`/`height` aus `_plugins/bildmasse.rb`, `loading="lazy"` und `decoding="async"` (IMG-3), Ebene des Kartentitels per `heading_level` (SEITE-3). Nicht genutzte Theme-Partials werden nicht eingebunden: Seit 5. 10. 2026 importiert `_theme-bridge.scss` die Partials einzeln, ohne `magnific-popup` und `search`. Die Liste wird bei jedem Theme-Update mit `_sass/minimal-mistakes.scss` abgeglichen.
 - **ARCH-2** [MUSS · Ist · Review] **Plattform vor Eigenbau.** Was der Browser selbst kann (cross-document View Transitions, `<dialog>`, `inert`, `:focus-visible`, `(hover: hover)`), wird genutzt statt nachgebaut. Die SPA-Navigation ist deshalb ausgebaut (Owner 4. 10. 2026, umgesetzt 5. 10. 2026, `docs/features/seitenwechsel.md`). Seitenwechsel laufen als normale Seitenaufrufe mit nativer View Transition. Firefox ohne cross-document View Transitions lädt die Seite normal neu, ein kurzer Moment ohne stehende Kopfzeile ist dort akzeptiert. Unter `prefers-reduced-motion` bleibt die View Transition in Chromium und Safari aktiv, aber mit Dauer null (harter Schnitt ohne Bewegung).
-- **ARCH-3** [MUSS · Ist · Review] **Bewegung nur mit Mehrwert.** Überblendet wird nur, was einen echten Nutzen hat. Global gilt `$global-transition` des Themes, eingeschränkt auf Farbe, Hintergrund, Rahmenfarbe und Deckkraft (gesetzt in `_theme-bridge.scss`, MO-1). Größe, Abstand und Position springen. Bewusst gestaltete Effekte (Drawer, CRT, Neon, Skill-Graph, Seitenwechsel) bleiben eigene, gezielte Animationen (MO-1, 6.5).
-- **ARCH-4** [MUSS · Soll · Review] **Inhalte in Daten, eine Quelle je Angabe.** Lesertexte stehen in Markdown oder `_data/*.yml`, nicht in Includes, Layouts oder JavaScript. Wiederkehrende Angaben (Kontakt, Social-Links, Menütitel) haben genau eine Quelle, aus der Footer, Sidebar, Kontaktkarten und Metadaten lesen. Kontakt und Social-Links: `author.links` in `_config.yml` (Sidebar, Footer mit `footer: true`, Kontaktkarten und Kontakt-Hinweise mit `contact: true`, JSON-LD `sameAs` über `_plugins/social-links.rb`). Startseite: `_data/home.yml`, Markup in `_includes/home/`. Fraktal-Panels: Bedientexte in `_data/fractal_panel.yml`, Erklärboxen in `_data/mandelbrot.yml` (`panel_explanations`, Markup `_includes/fractal/explanation.html`), Umschalttexte als `data-label`/`data-…-active` am Knopf, `fractal-panel.js` erzeugt keinen eigenen Text. Skill-Feature: `texts` in `_data/skill_graph.yml`, die Skripte lesen sie aus dem JSON-Datenblock. Copyright-Zeile: `powered_by` in `_data/ui-text.yml`. Menütitel: `_data/navigation.yml` (`main`, Footer-Liste `footer` erbt den Titel aus `main`). Seitentitel im Front Matter und Menütitel sind bewusst getrennt: Minimal Mistakes kennt keine Kopplung, und die Kurzform darf abweichen („Mandelbrot“ zu „Die Welt der Fraktale“). Rest: R-88.
+- **ARCH-3** [MUSS · Ist · Review] **Bewegung nur mit Mehrwert.** Überblendet wird nur, was einen echten Nutzen hat. Global gilt `$global-transition` des Themes, eingeschränkt auf Farbe, Hintergrund, Rahmenfarbe und Deckkraft (gesetzt in `_theme-bridge.scss`, MO-1). Größe, Abstand und Position springen. Bewusst gestaltete Effekte (Drawer, CRT, Neon, Skill-Graph, Seitenwechsel) bleiben eigene, gezielte Animationen (MO-1, 6.5). Die Theme-Einblendung beim Laden ist aus (`$intro-transition: none` in `_theme-bridge.scss`), Kopfzeile, Inhalt und Footer erscheinen sofort (Owner, bestätigt 6. 10. 2026, Z-1).
+- **ARCH-4** [MUSS · Soll · Review] **Inhalte in Daten, eine Quelle je Angabe.** Lesertexte stehen in Markdown oder `_data/*.yml`, nicht in Includes, Layouts oder JavaScript. Wiederkehrende Angaben (Kontakt, Social-Links, Menütitel) haben genau eine Quelle, aus der Footer, Sidebar, Kontaktkarten und Metadaten lesen. Kontakt und Social-Links: `author.links` in `_config.yml` (Sidebar, Footer mit `footer: true`, Kontaktkarten und Kontakt-Hinweise mit `contact: true`, JSON-LD `sameAs` über `_plugins/social-links.rb`). Startseite: `_data/home.yml`, Markup in `_includes/home/`. Fraktal-Panels: Bedientexte in `_data/fractal_panel.yml`, Erklärboxen in `_data/mandelbrot.yml` (`panel_explanations`, Markup `_includes/fractal/explanation.html`), Umschalttexte als `data-label`/`data-…-active` am Knopf, `fractal-panel.js` erzeugt keinen eigenen Text. Skill-Feature: `texts` in `_data/skill_graph.yml`, die Skripte lesen sie aus dem JSON-Datenblock. Copyright-Zeile: `powered_by` in `_data/ui-text.yml`. Menütitel: `_data/navigation.yml` (`main`, Footer-Liste `footer` erbt den Titel aus `main`, ein Eintrag ohne Menüpunkt wie „Datenschutz“ trägt ihn selbst). Seitentitel im Front Matter und Menütitel sind bewusst getrennt: Minimal Mistakes kennt keine Kopplung, und die Kurzform darf abweichen („Mandelbrot“ zu „Die Welt der Fraktale“). Rest: R-88.
 - **ARCH-5** [MUSS · Ist · CI] **Einfacher Pflegepfad.** Jede Inhaltsart lässt sich in höchstens fünf Schritten ändern, beschrieben in der Pflege-Anleitung (`docs/pflege.md`). Gastbeiträge kommen als Markdown nach der Vorlage `assets/downloads/post-template.txt`, der Gast steht nur mit Namen im Feld `author` (INH-5). Die CI erkennt typische Inhaltsfehler, statt sie still durchzulassen (Bilder, HTML-Kommentare, Skill-IDs, Links). Regeln, die einen reinen Inhalts-Commit rot machen, brauchen einen klaren Grund und eine verständliche Meldung. Heute in der CI: `scripts/content-check.py` (HTML-Kommentare, Skill-IDs, Mathe, Pfade ohne `relative_url`, fehlende oder leere Text-Schlüssel der Bedienung, unbekannte Felder der Erklärboxen) und html-proofer (Links, Bilder, Skripte), siehe 16.1.
 - **ARCH-6** [SOLL · Soll · Review] **Technik in Etappen, dann Stopp.** Größere technische Änderungen gehen in Etappen live, jede einzeln geprüft, mit Zeit zum Beobachten. Nach den laufenden Etappen (Stand 4. 10. 2026: Register-Abbau mit Cross-Browser-Tests, Gastbeiträge und Links, Rückwege zum Theme mit ARCH-3, Inhaltspflege robust machen, SPA-Ausbau, Pflege-Anleitung und Entschlacken dieses Guides) gilt ein Technik-Stopp: Neue Technik nur, wenn ein echtes Problem es verlangt. Der Vorrang liegt danach bei den Inhalten.
 - **ARCH-7** [SOLL · Ist · Review] **Dieser Guide bleibt schlank.** Was erledigt und durch die CI abgesichert ist, wird im Guide auf Regel und Check verkürzt. Ausführliche Herleitungen gehören in Commits oder `docs/`, nicht in Regeltexte.
@@ -182,7 +184,7 @@ Text- und Akzent-Tokens (Kontrast auf Seite · Panel · Drawer):
 | `$selection-bg` / `$selection-text` | `#ff00ff` / `#000000` | `::selection` (Aliase auf `$hover-color` / `$black`) | – | – | – | ja |
 | `$base0e` | `#ff79c6` | Syntax-Keywords | 6,03 | 7,15 | 8,01 | ja |
 
-Das Theme-Token `$text-color` (`#eaeaea`) bleibt für die Ableitungen des Themes stehen, den Fließtext setzt `body { color: $body-text-color }`. Maßgeblich ist der gerenderte Wert. Der Token-Kommentar in `_colors.scss` nennt für 75 % Cyan 5,30:1 (ungerundete Komposition), die Tabelle rechnet gerundet.
+Das Theme-Token `$text-color` ist ein Alias auf `$body-text-color` (`#e8e6e3`, Owner-Entscheidung 6. 10. 2026). Theme und eigene Stellen nutzen damit ein Fast-Weiß, auch die Theme-Ableitung `$muted-text-color` geht davon aus. Maßgeblich ist der gerenderte Wert. Der Token-Kommentar in `_colors.scss` nennt für 75 % Cyan 5,30:1 (ungerundete Komposition), die Tabelle rechnet gerundet.
 
 Flächen und Linien:
 
@@ -218,7 +220,7 @@ Regeln:
 - **FARB-7** [MUSS · Soll · Review] Fokus- und Hover-Zustand nehmen Vorder- und Hintergrund nie aus demselben Token.
 - **FARB-8** [MUSS · Soll · CI-P1] Farb**literale** in der Notation `rgb(r g b / a%)`, Hex lang und klein, keine Farbnamen außer `transparent`, `currentColor`, `inherit`. Gilt auch für JS-Strings, Inline-Styles und das Critical-CSS. Sass-Funktionen auf Tokens (`rgba($link-color, 0.6)`) dürfen Dezimal-Alpha nutzen. In `assets/_sass` und im Critical-CSS erfüllt, in `assets/_sass` per `color-guardrail.sh` geprüft (Notation in `variables/`, Farbnamen überall). In JS offen nur `skill-graph.js` (Canvas-Farben als `rgba(r, g, b, a)`). Dort rendert Prozent-Alpha im Auswahlzustand um 1/255 anders, `rgb(r g b / a)` mit Dezimal-Alpha bleibt byte-gleich. Offen ist die Owner-Entscheidung, ob berechnete Canvas-Farben wie Sass-Funktionen Dezimal-Alpha nutzen dürfen. Systemfarben (`Canvas`, `CanvasText`, `Highlight`) stehen nur im Forced-Colors-Block (A11Y-6).
 - **FARB-9** [SOLL · Ist · CI] Gleicher Wert = Alias, nie zweites Literal (`$card-heading-color: $link-color`, `$selection-bg: $hover-color`, `$base00: $console-panel-bg`). Der Guardrail meldet textgleiche Literale in `_colors.scss`. Wertgleiche in anderer Schreibweise (`#ffffff` gegen `rgb(255 255 255)`) fallen nur im Review auf.
-- **FARB-10** [SOLL · Soll · Review] MM-Variablen, die die Palette beeinflussen, werden explizit gesetzt: `$primary-color`, `$background-color`, `$text-color`. Gesetzt sind `$primary-color: $link-color` (Rollen-Token in `_colors.scss`, Abnehmerliste im Kommentar) und `$background-color: $page-bg`. Den Hover der Hamburger-Balken setzt `components/_masthead.scss` selbst auf `$hover-color-text` (KOMP-3), weil die Theme-Regel `mix(#000, $primary-color, 25 %)` die eigene Ruhe-Regel per Spezifität schlägt. Offen: `$text-color` kommt weiter aus dem Skin (R-72).
+- **FARB-10** [SOLL · Ist · Review] MM-Variablen, die die Palette beeinflussen, werden explizit gesetzt: `$primary-color`, `$background-color`, `$text-color`. Gesetzt sind `$primary-color: $link-color` (Rollen-Token in `_colors.scss`, Abnehmerliste im Kommentar), `$background-color: $page-bg` und `$text-color: $body-text-color` (Owner-Entscheidung 6. 10. 2026). Eigene Partials lesen `$body-text-color`, nicht `mm.$text-color`. Den Hover der Hamburger-Balken setzt `components/_masthead.scss` selbst auf volles Cyan `$link-color` (Owner, 6. 10. 2026, 8,29:1 auf dem Masthead), weil die Theme-Regel `mix(#000, $primary-color, 25 %)` die eigene Ruhe-Regel per Spezifität schlägt.
 
 **[Ist]** Alpha-Stufen als Primitive. Jede Stufe heißt `$<familie>-aNN` (NN = Deckkraft in Prozent) und ist aus der **deckenden** Grundfarbe abgeleitet (FARB-5). Die Stufen bilden genau die Werte ab, die bei der Migration im Einsatz waren. Eine neue Stufe kommt nur dazu, wenn keine vorhandene passt.
 
@@ -230,19 +232,19 @@ Regeln:
 | `$black-aNN` | `$black` | 10 · 20 · 25 · 30 · 35 · 40 · 45 · 50 · 55 · 60 · 70 · 75 · 78 · 94 | `$selection-text` = `$black` |
 | `$ink-aNN` | `$ink` | 35 · 45 · 55 | keine |
 
-**[Soll]** Rollen-Ebene nach W3C DTCG (Primitive → Rollen-Tokens): Komponenten nutzen Rollen statt Stufen, die Stufen schrumpfen auf eine kleine Skala. Zusammenlegen ändert Werte, ist also eine sichtbare Änderung, die der Owner nach Vorher/Nachher-Vergleich freigibt (PROZ-1). Zielbild:
+**[Soll]** Rollen-Ebene nach W3C DTCG (Primitive → Rollen-Tokens): Komponenten nutzen Rollen statt Stufen, die Stufen schrumpfen auf eine kleine Skala. Zusammenlegen ändert Werte, ist also eine sichtbare Änderung, die der Owner nach Vorher-nachher-Vergleich freigibt (PROZ-1). Zielbild:
 
 | Skala | Stufen |
 |---|---|
 | Weiß auf Dunkel | `$fg` 95 % · `$fg-muted` 80 % · `$fg-subtle` 55 % · `$line-strong` 15 % · `$surface-hover` 10 % · `$line` 8 % · `$surface-tint` 6 % |
 | Cyan | Wash 10 % · Linie 40 % (`$link-color-subtle`) · Akzent 55 % (`$border-accent`) · Text-Aktiv ab 70 % |
-| Flächen | Seite · Panel · Raised · Overlay/Drawer · Scrim · CRT-Grund (`$crt-screen-bg`) |
+| Flächen | Seite · Panel · Raised · Overlay / Drawer · Scrim · CRT-Grund (`$crt-screen-bg`) |
 
 **[Offen]** Palettenfragen: Marken-Magenta (`#ff00ff` oder `#ff00cc`), zweites Marken-Cyan `#00ffff` im Neon, Status-Farben ja oder nein (Audit B-F09). Ob das Slider-Blau `$slider-connect-blue` (`#4aa3ff`, Audit B-F23) ein Palettenton wird oder in Cyan aufgeht. Komponenten-Tokens zeigen schon nur noch auf globale Tokens.
 
 ### 3.2 Typografie
 
-Quelle `variables/_typography.scss`. Die Skala ist bewusst „cluster-treu“ zu den gewachsenen Werten. Die px-Spalte gilt bei 16 px Root-Größe. Das Critical-CSS setzt `html { font-size: 100% }`, die Browser-Einstellung der Besuchenden (Standard 16 px) gilt also, die Theme-Rampe 18/20/22 px bleibt bewusst aus (Owner-Freigabe 1. 10. 2026).
+Quelle `variables/_typography.scss`. Die Skala ist bewusst „cluster-treu“ zu den gewachsenen Werten. Die px-Spalte gilt bei 16 px Root-Größe. Das Critical-CSS setzt `html { font-size: 100% }`, die Browser-Einstellung der Besucher (Standard 16 px) gilt also, die Theme-Rampe 18/20/22 px bleibt bewusst aus (Owner-Freigabe 1. 10. 2026).
 
 | Token | rem | px | Rolle |
 |---|---|---|---|
@@ -303,7 +305,7 @@ Regeln:
 - **TYP-4** [MUSS · Soll · CI-P3] Kaskaden-Falle: Größen und Abstände auf `<p>`, `<li>`, `<dl>` innerhalb von `.page__content` brauchen Spezifität ab (0,1,1) und spätere Position. Muster: `.block p.block__text`. Kommentar mit Verweis auf die Theme-Regel. Gilt analog für Komponenten-Überschriften, die direkte Kinder von `.page__content` sind.
 - **TYP-5** [MUSS · Ist · Review] Ein entdeckter toter Wert wird auf den **gerenderten** Wert festgeschrieben. Den ursprünglich gemeinten Wert scharfzuschalten braucht eine Owner-Freigabe mit Screenshot-Vergleich.
 - **TYP-6** [MUSS · Soll · Review] Nach jeder Änderung an Typografie, Abständen oder Theme-Overrides läuft `scripts/cascade-check.py` gegen das gebaute CSS.
-- **TYP-7** [MUSS · Ist · CI] `line-height` einheitenlos. `letter-spacing` in em, nur aus der Laufweiten-Skala `$tracking-meta`, `$tracking-label`, `$tracking-label-wide` (`variables/_typography.scss`). Werte außerhalb der Skala stehen dort wertgleich als `$tracking-legacy-*` und `$fp-tracking-legacy-*`, die Angleichung ist sichtbar und braucht eine Owner-Freigabe (TYP-5). Bestand: R-21. Check: `scale-guardrail.sh` (Kategorie `tracking`, Grenze 0, auch im Argument von `mono-label()`).
+- **TYP-7** [MUSS · Ist · CI] `line-height` einheitenlos. `letter-spacing` in em und nur aus der Laufweiten-Skala `$tracking-meta` (0.03em), `$tracking-label` (0.06em), `$tracking-label-wide` (0.08em) in `variables/_typography.scss`, auch im Fraktal-Panel mit seinen px-Größen. Fließtext hat keine Laufweite. Ein neuer Wert braucht eine neue Skalenstufe mit Owner-Freigabe, kein Einzel-Token. Check: `scale-guardrail.sh` (Kategorie `tracking`, Grenze 0): Literale und jede Variable außer den drei Skalen-Tokens, in `letter-spacing` und in Argument und Default von `mono-label()`, lokale Variablen aufgelöst.
 - **TYP-8** [SOLL · Ist · CI] Gewichte numerisch, kein `bold`. `500` nur bewusst (fällt bei vielen System-Fonts auf `400` zurück, die Ubuntu-Achse deckt es ab, TYP-13).
 - **TYP-9** [SOLL · Soll · Review] Ziffern in Mono-Daten mit `font-variant-numeric: tabular-nums`.
 - **TYP-10** [SOLL · Offen · Review] Fließtextspalte höchstens 75 Zeichen. `$content-width: 46rem` sind 736 px, das ergibt bei 16 bis 18 px Sans geschätzt 80 bis 90 Zeichen. Vor einer Festlegung wird gemessen. Danach wird entweder das Token (zum Beispiel in `ch`) oder die Regel angepasst. Blocksatz nur mit `hyphens: auto`, `lang` und linksbündig bis 480 px Breite (Home-Intro, Owner-Entscheidung).
@@ -387,7 +389,7 @@ Höhen-Grenzen stehen getrennt in der Map `$breakpoints-height` und laufen nur �
 
 - **BP-1** [MUSS · Ist · CI] Bereiche sind halboffen: `up(x)` ab dem Wert, `down(x)` bis Wert minus `0.02px`, `between(x, y)` dazwischen. Eigene `@media`-Zeilen mit Breite oder Zahl gibt es nur in `abstracts/_breakpoints.scss`, eine neue Grenze kommt zuerst als `$bp-…` in die Tabelle. Das Theme-Mixin `breakpoint()` ist im eigenen Code gesperrt. Check: `scripts/bp-guardrail.sh` (SCSS samt berechneter Tokens, alle Templates samt Critical-CSS).
 - **BP-2** [MUSS · Ist · CI] JS fragt Breiten nur über `window.AuflinieUtils.mq` ab (`downMd`, `downLg`, `downXl`, `MediaQueryList` aus `site-utils.js`), mit Fallback ohne Zahl, falls `site-utils.js` fehlt. Kein Lesen der Viewport-Breite (`innerWidth`, `documentElement.clientWidth`, `screen.width` …), kein eigenes `matchMedia()` mit Breite oder mit einem Argument, das kein Literal ist. Wer die Breite für etwas anderes als eine Layout-Weiche braucht, setzt `// bp-Ausnahme: <Grund>` darüber. Ausnahme von JS-8: Die Abfragen stehen als Literal in `site-utils.js`, weil eine Media-Query kein `var()` liest. Check: `bp-guardrail.sh` (Literale gegen die Tokens, Breiten-Abfragen in anderen Skripten).
-- **BP-3** [MUSS · Ist · CI] Interaktion per Fähigkeit, Layout per Breite: Hover-Stile in `@media (hover: hover)`, Zielgrößen in `@media (pointer: coarse)`, weil Touch-Browser `:hover` nach dem Antippen festhalten. Eigene `:hover`-Regeln stehen in `@include can-hover { … }` aus `abstracts/_breakpoints.scss` (die rohe Query bleibt erlaubt). Kombinierte Selektoren wie `a:hover, a:focus` werden geteilt, der Fokus-Teil steht nie in der Weiche. Gegen jede Theme-Hover-Regel, die auf einem sichtbaren Element greift, setzt `@include no-hover { … }` (`@media (hover: none)`) unter `:hover` nur die Ruhewerte. Die Grundregel für Links im Inhalt (`base/_links.scss`) hat per `:where()` genau die Spezifität des Theme-`a:hover` und lädt vor den Komponenten, besuchte Links behalten dort `$link-color-visited`. Eine Gegenregel, die für jede Eingabeart gilt, trägt `// bp-Ausnahme: BP-3, <Grund>` direkt über der ersten Selektorzeile. Check: `scripts/bp-guardrail.sh` (Klasse 5) und der Touch-Test in `tests/visual/invariants.spec.js`. Rest im Theme: R-79.
+- **BP-3** [MUSS · Ist · CI] Interaktion per Fähigkeit, Layout per Breite: Hover-Stile in `@media (hover: hover)`, Zielgrößen in `@media (pointer: coarse)`, weil Touch-Browser `:hover` nach dem Antippen festhalten. Eigene `:hover`-Regeln stehen in `@include can-hover { … }` aus `abstracts/_breakpoints.scss` (die rohe Query bleibt erlaubt). Zielgrößen stehen in `@include coarse-pointer { … }` aus derselben Datei, das Trefferpolster liefert `touch-target-pad` (`abstracts/_mixins.scss`, 6.1). Kombinierte Selektoren wie `a:hover, a:focus` werden geteilt, der Fokus-Teil steht nie in der Weiche. Gegen jede Theme-Hover-Regel, die auf einem sichtbaren Element greift, setzt `@include no-hover { … }` (`@media (hover: none)`) unter `:hover` nur die Ruhewerte. Die Grundregel für Links im Inhalt (`base/_links.scss`) hat per `:where()` genau die Spezifität des Theme-`a:hover` und lädt vor den Komponenten, besuchte Links behalten dort `$link-color-visited`. Eine Gegenregel, die für jede Eingabeart gilt, trägt `// bp-Ausnahme: BP-3, <Grund>` direkt über der ersten Selektorzeile. Check: `scripts/bp-guardrail.sh` (Klasse 5) und der Touch-Test in `tests/visual/invariants.spec.js`. Rest im Theme: R-79.
 - **BP-4** [SOLL · Soll · Review] Neue Regeln mobile-first (`up()`). Der Bestand nutzt noch überwiegend `down()` (R-80), er wird bei Berührung umgedreht, unter Beachtung von BP-6.
 - **BP-5** [MUSS · Ist · CI] Prefix-Notation (`min-width`/`max-width`), keine Range-Syntax, solange `.stylelintrc.json` das festlegt (`media-feature-range-notation: prefix`). Grund: Range-Syntax erst ab iOS Safari 16.4.
 - **BP-6** [MUSS · Ist · Review] Gate-Paare aus CSS und JS werden nur gemeinsam im selben Commit geändert. Heute: (a) `@view-transition` in `_view-transition.scss` (seit dem Ausbau der SPA-Navigation ohne Reduced-Motion-Gate, ARCH-2) und der Klick-Handler der Drawer-Links in `greedy-navigation.js` (schließt den Drawer selbst, wenn `PageSwapEvent` fehlt). (b) Mobil-Gate für das CRT-Umschalten: `AuflinieUtils.mq.downMd` in `tv-switch.js` und `down(md)` beim Vollbild-Hero (`_hero.scss` und Critical-CSS in `_layouts/default.html`). Weitere Paare an derselben Grenze: Sticky-TOC (`toc.js` `downLg`, `_toc.scss` `down(lg)`), Zoom-Knöpfe im Fraktal-Panel (`fractal-panel.js` `downMd`, `fractal-panel/*.scss` `down(md)`).
@@ -406,7 +408,7 @@ Globale Ebenen als Tokens in `variables/_scales.scss`, aufsteigend. Werte und Re
 | `$z-float` | `999` | Back-to-Top |
 | `$z-drawer` | `999` | Drawer-Liste, wirkt im Stacking-Kontext des Mastheads |
 | `$z-masthead` | `1000` | Masthead |
-| `$z-drawer-toggle` | `1010` | Burger/X, im Masthead über der Drawer-Liste |
+| `$z-drawer-toggle` | `1010` | Burger / X, im Masthead über der Drawer-Liste |
 | `$z-sheet` | `1100` | Skill-Graph-Ebene (Scrim) |
 | `$z-sheet-panel` | `$z-sheet + 10` | Skill-Graph-Sheet |
 | `$z-offline` | `$z-toast - 1` | Offline-Hinweis |
@@ -494,10 +496,11 @@ Quelle `abstracts/_mixins.scss`, geladen mit `@use "abstracts/mixins" as *;`. Ei
 | `card-panel($accent: 2px, $radius: $radius-lg)` | jede Fläche mit Panel-Ton und Hairline | `$accent: 0` ohne Cyan-Rand. Hover pro Komponente. |
 | `section-break` | Kapitelgrenze (Sektions-H2) | Beige-Hairline oben, viel Luft |
 | `accent-header($size: $fs-heading, $rule: true)` | Sektions- und Panel-Überschriften | Markdown-H2: `accent-header($fs-heading, false)` plus `section-break` |
-| `mono-label($size: $fs-label, $tracking: $tracking-label)` | Chrome-Labels (Mono, Versalien) | Laufweite nur als Token, nie als Literal (TYP-7, CI). Altbestand mit Legacy-Token: CV-Gruppentitel (`0.07em`). **[Soll]** Aufrufe nur mit `$tracking-label` oder `$tracking-label-wide` (sichtbar, R-21) |
+| `mono-label($size: $fs-label, $tracking: $tracking-label)` | Chrome-Labels (Mono, Versalien) | Laufweite `$tracking-label` (Default) oder `$tracking-label-wide`, nur Skalen-Tokens (TYP-7, CI) |
 | `btn-role-primary` | primäre Aktion | getöntes Cyan |
 | `btn-role-outline` | sekundäre Aktion | Cyan-subtle-Rand |
 | `backdrop-blur($px)` | jeder Blur | einzige erlaubte Quelle für `backdrop-filter` |
+| `touch-target-pad` | Menü-Knopf und Buttons (`.btn`) | Trefferfläche unter `(pointer: coarse)` unsichtbar auf `$touch-target-min` (44 px), Optik und Layout gleich. Braucht ein freies `::after` und kein absolut positioniertes Element (6.1) |
 | `focus-ring($offset: 2px)` | jeder Magenta-Fokusring an `:focus-visible` | KOMP-4, `-2px` in Scroll-Containern, `-3px` in der Navigation |
 | `hover-effect($transform-value: -5px)` | Altbestand | einziger Aufruf `hover-effect(-3px)` in `_about.scss` (MO-7 erfüllt). **[Soll]** Default und das ungenutzte `$hover-transform` (`-5px`, `variables/_layout.scss`) entfernen |
 
@@ -523,7 +526,7 @@ Buttons:
 - **ICON-1** [MUSS · Ist · Review] Icons nur aus dem Font-Awesome-Subset (TYP-12) oder als Inline-SVG. Keine Icon-CDNs.
 - **ICON-2** [SOLL · Soll · Review] Icon-Größen relativ zum Text: `1em` im Fließtext, `0.85em` in Überschriften (`accent-header`), `0.75em` für das Symbol hinter externen Links (`$fs-icon-external`, LINK-3), feste px nur im Fraktal-Panel (`$fp-fs-icon`).
 - **ICON-3** [MUSS · Soll · Review] Dekorative Icons tragen `aria-hidden="true"` (A11Y-3). Ein Icon ohne Text braucht einen zugänglichen Namen am Button oder Link.
-- **ICON-4** [MUSS · Ist · Review] Das Logo kommt aus `_includes/logo.svg` (inline im Masthead). Die Neon-Wortmarke ist Marke und darf Magenta tragen (DES-3).
+- **ICON-4** [MUSS · Ist · Review] Das Logo kommt aus `_includes/logo.svg` und `_includes/logo-roehren.svg` (Magenta-Konturen, flackern, PERF-7), beide inline und deckungsgleich im Masthead. Wer das Logo tauscht, teilt es wieder so auf. Die Neon-Wortmarke ist Marke und darf Magenta tragen (DES-3).
 - **[Offen]** Mindestgröße und Schutzraum der Wortmarke, Marken-Magenta (3.1), Umgang mit `assets/images/Logo.svg` (Dateiname verletzt NAME-1, R-71).
 
 ### 4.2 Links
@@ -560,7 +563,7 @@ Anlass: Im Skill-Graphen rutschte die Seite beim Wischen über den Graphen weg (
 
 ## 5 Seitenaufbau und Inhaltsmuster
 
-- **SEITE-1** [MUSS · Ist · CI-P3] Hero → Einleitung **ohne** Überschrift → H2-Kapitel. Keine H2 „Einleitung“, „Einführung“ oder eine Wiederholung des Titels. Einleitungen dürfen länger sein, aber nicht detaillierter (7.2). Gilt auch für die Beitragsvorlage (FM-3).
+- **SEITE-1** [MUSS · Ist · CI-P3] Hero → Einleitung **ohne** Überschrift → H2-Kapitel. Keine H2 „Einleitung“, „Einführung“ oder eine Wiederholung des Titels. Einleitungen dürfen länger sein, aber nicht detaillierter (7.2). Gilt auch für die Beitragsvorlage (FM-3). Ausnahme: Pflicht- und Systemseiten (Datenschutz, 404, offline) haben keinen Hero, dort trägt `page__title` die H1.
 - **SEITE-2** [MUSS · Ist · Review] In datengetriebenen Seiten (`_data/cv_content.yml`, `_data/mandelbrot.yml`) markiert `intro: true` die Einleitung. Die Loops in `_pages/cv.md` und `_pages/mandelbrot.md` rendern sie ohne H2 und ohne TOC-Eintrag.
 - **SEITE-3** [MUSS · Soll · Review] Genau ein H1 pro Seite (Hero bzw. `page__title`, erfüllt auf allen gebauten Seiten). Keine Ebene überspringen (kein Sprung auf den gebauten Seiten, Stand 5. 10. 2026). Gleiche Komponente = gleiche Ebene. Beitragskarten (`archive-single.html`) stehen eine Ebene unter ihrer Abschnittsüberschrift, Parameter `heading_level`: H3 unter einer H2 (Startseite, Archiv, „Das könnte auch interessieren“), H2 nur direkt unter der H1 der Blog-Übersicht. Sidebar (Autor, TOC-Titel) ohne Überschriften-Elemente (erfüllt, Autorname seit 4. 10. 2026 als `<div>` im eigenen `author-profile.html`).
 - **SEITE-4** [MUSS · Soll · Review] Hero-Titel = Seitenname. Excerpt = ein bis zwei warme Sätze mit Punkt (wird Meta-Description). Caption = Statuszeile mit Zusatzinformation, **nie** Titel-Paraphrase (z. B. „Stand: 2026“, „In Echtzeit gerechnet“). Ton-Maßstab ist das Home-Intro (7.2).
@@ -578,19 +581,19 @@ Anlass: Im Skill-Graphen rutschte die Seite beim Wischen über den Graphen weg (
 
 ### 5.2 Bilder und Medien
 
-- **IMG-1** [MUSS · Soll · Review] Fotos als JPEG (progressiv) oder WebP, mit AVIF-Variante, wo der Gewinn deutlich ist. Grafiken als SVG. PNG nur für Favicons und Bildschirmfotos mit Text.
+- **IMG-1** [MUSS · Soll · Review] Fotos als JPEG (progressiv) oder WebP, mit AVIF-Variante, wo der Gewinn deutlich ist. Grafiken als SVG. PNG nur für Favicons und Bildschirmfotos mit Text. Ausnahme: Das Vorschaubild beim Teilen ist ein JPEG, weil Plattformen kein SVG lesen (SEO-3).
 - **IMG-2** [MUSS · Soll · Review] Maße: Hero-Bilder 1920 × 1080 px oder kleiner, Teaser 1200 × 675 px. Kompression so, dass das Hero-Bild das Budget in 15.1 einhält.
 - **IMG-3** [MUSS · Soll · Review] Jedes `<img>` mit `width`/`height` (HTML-3). Kachelbilder (`header.teaser`) bekommen sie beim Build aus der Datei (`_plugins/bildmasse.rb`, JPEG, PNG, WebP, GIF), Beitragsautoren tragen nur den Pfad ein. Für Bilder im Inhalt eines Beitrags und für Kachelbilder ohne lesbare Maße warnt `scripts/content-check.py --site _site` im Build-Job. Bilder unterhalb des ersten Viewports `loading="lazy"`, alle `decoding="async"`. Das LCP-Bild (Hero) nie lazy.
 - **IMG-4** [SOLL · Soll · Review] Bilder breiter als `800px` bekommen `srcset` mit mindestens zwei Breiten.
 - **IMG-5** [MUSS · Ist · Review] Hero-Overlay: `overlay_filter: 0.5` als Standard (Kontrast des Titels auf dem Foto). Abweichungen nur mit gemessenem Kontrast.
-- **IMG-6** [MUSS · Soll · Review] Alt-Texte nach 6.1 (1.1.1): beschreiben Zweck und Inhalt in einem Satz ohne „Bild von“. Formeln und Diagramme verweisen auf das DOM-Äquivalent.
+- **IMG-6** [MUSS · Soll · Review] Alt-Texte nach 6.1 (1.1.1): beschreiben Zweck und Inhalt in einem Satz ohne „Bild von“. Formeln und Diagramme verweisen auf das DOM-Äquivalent. Der Text zum Hero-Hintergrund (`background_image_alt` in `_config.yml`) bleibt, wie er ist (Owner, 6. 10. 2026). Im Hero ist das Bild Deko ohne `alt`, der Text gilt nur noch als Rückfall für das Vorschaubild (SEO-3).
 - **IMG-7** [MUSS · Soll · Review] Bildrechte: nur eigene, gemeinfreie oder lizenzierte Bilder. Lizenz und Quelle stehen in `assets/images/QUELLEN.md` (zu bauen, R-73). Metadaten nach SEC-10 entfernen.
 
 ### 5.3 SEO und Metadaten
 
 - **SEO-1** [MUSS · Ist · Review] `title` im Front Matter ist der Seitenname ohne Site-Namen. Den Zusatz mit dem Site-Namen erzeugt das Theme (`site.title`, `title_separator`). `title_separator` steht in `_config.yml` auf dem Hausstil-Strich „–“ (TYPO-2).
 - **SEO-2** [SOLL · Soll · CI-P3] Excerpt bzw. Description 70 bis 160 Zeichen. Bestand: R-67.
-- **SEO-3** [SOLL · Soll · Review] OG-Bild 1200 × 630 px (Bestand: R-67), pro Seite über `header.og_image`, sonst Site-Standard. Alt-Text (`og:image:alt`) pro Seite über `header.og_image_alt`, sonst `og_image_alt` (Site-Bild) oder `background_image_alt` (gemeinsamer Hero-Hintergrund) aus `_config.yml`. `_includes/seo.html` bindet den Text an das tatsächlich gezeigte Bild.
+- **SEO-3** [SOLL · Ist · Review] Vorschaubild beim Teilen 1200 × 630 px: `og_image` in `_config.yml` (`assets/images/og-vorschaubild.jpg`, Hero-Motiv mit Namen und Adresse, erzeugt mit `scripts/og-image.js`, Owner 6. 10. 2026) gilt auf allen Seiten, auch vor dem Hero der Seite. Eine Seite mit eigenem Motiv setzt `header.og_image` (heute `/mandelbrot/` mit `mandelbrot-preview.jpg`). Alt-Text (`og:image:alt`) pro Seite über `header.og_image_alt`, sonst `og_image_alt` (Site-Bild) aus `_config.yml`, als Rückfall ohne `og_image` `background_image_alt` (gemeinsamer Hero-Hintergrund). `_includes/seo.html` bindet den Text an das tatsächlich gezeigte Bild und gibt `og:image:width` und `og:image:height` aus der Datei aus (`_plugins/bildmasse.rb`).
 - **SEO-4** [MUSS · Ist · CI-P3] Seiten, die nicht in Suche und Sitemap gehören (Archiv-Stubs, Weiterleitungen), tragen `sitemap: false` und `noindex: true` (SEC-12). Interne Werkzeugseiten werden gar nicht erst deployt (SG-1). Heute gibt es weder Stubs noch Weiterleitungen, `404.html` und `offline.html` tragen `sitemap: false`.
 - **SEO-5** [MUSS · Ist · Review] Speculation Rules (`_includes/head/custom.html`) schließen nur `/mandelbrot/` (Fraktal-Worker und MathJax rechneten schon beim Hover) und die Drawer-Links aus (der Prerender stahl dem Drawer-Exit die CPU). Die übrigen internen Ziele werden vorgerendert (PERF-4).
 
@@ -633,7 +636,7 @@ Ziel: **WCAG 2.2 AA** als freiwillige Selbstverpflichtung. Rechtsrahmen: Das B
 | 2.4.11 | AA | `html { scroll-padding-top: var(--anchor-offset) }`. Jede fixe Leiste meldet ihre Höhe in diese Rechnung, die Sticky-TOC per Inline-`scroll-padding-top` (`toc.js`, PERF-6). |
 | 2.5.1 / 2.5.7 | A / AA | Jede Drag- oder Mehrfinger-Geste hat eine Ein-Klick-Alternative. |
 | 2.5.3 | A | Der zugängliche Name beginnt mit dem sichtbaren Text, oder es gibt kein `aria-label`. |
-| 2.5.8 | AA | Ziele mindestens 24 × 24 px, Touch-Ziele unter `(pointer: coarse)` 44 px. |
+| 2.5.8 | AA | Ziele mindestens 24 × 24 px. Unter `(pointer: coarse)` treffen Menü-Knopf und Buttons (`.btn`, auch „Folgen“) auf mindestens 44 × 44 px, per unsichtbarem Polster (Mixin `touch-target-pad`, Token `$touch-target-min`), Optik und Abstände bleiben gleich (Owner, 6. 10. 2026). Skill-Chips und Links im Fließtext folgen der 24-px-Regel. Check: `invariants.spec.js` („Touch-Ziele 44 px“). |
 | 3.1.1 / 3.1.2 | A / AA | `lang="de-DE"`. Fremdsprachige Passagen (Motto, Zitate) mit `lang`. Theme-Strings übersetzt (Skip-Links), Landmark-Namen deutsch (Rest R-51). |
 | 3.2.3 | AA | Navigation steht auf allen Seiten in derselben Reihenfolge (`_includes/masthead.html` auf jeder Seite, `_data/navigation.yml` als einzige Quelle). |
 | 4.1.2 | A | Kein `role="button"` auf `span`/`div`, kein `aria-label` auf generischen Elementen, keine interaktiven Elemente in Überschriften, Buttons nur mit Phrasing Content. Vendor-Widgets benannt (noUiSlider `handleAttributes`). |
@@ -662,7 +665,7 @@ Ziel: **WCAG 2.2 AA** als freiwillige Selbstverpflichtung. Rechtsrahmen: Das B
 | Stelle | Ist | Problem | Vorschlag |
 |---|---|---|---|
 | Nav- und TOC-Hover | seit 1. 10. `$hover-color-text` | 4,51:1, auf Cyan-Hover-Grund 3,68:1 | Owner-Ausnahme (KOMP-3) |
-| Hamburger, Back-to-Top | `$control-icon-color` (Cyan 55 %) | 3,50:1 auf `#252a34`, 3,84:1 auf `#1a1a1a` (UI) | – |
+| Hamburger, Back-to-Top | `$control-icon-color` (Cyan 55 %), Hamburger im Hover volles Cyan `$link-color` | 3,50:1 auf `#252a34`, 3,84:1 auf `#1a1a1a` (UI), Hover 8,29:1 | – |
 
 ### 6.5 Dokumentierte bewusste Ausnahmen
 
@@ -672,10 +675,10 @@ Ziel: **WCAG 2.2 AA** als freiwillige Selbstverpflichtung. Rechtsrahmen: Das B
 - **2.2.2 (Level A) ist nicht erfüllt.** Rollbalken, Scanline-Jitter, Phosphor-Flackern, Neon-Flicker und das Logo-Flackern starten automatisch und laufen endlos. Der einzige Stopp-Mechanismus ist der Power-Button (Lesemodus). Er existiert nur auf `/`, wird nicht gespeichert und stoppt Neon und Logo nicht.
 - **2.3.1 (Level A):** Die aktive Variante `antenne` liegt nach Codeanalyse unter der Schwelle. Die Varianten `dezent`, `linie-punkt`, `voll` sind ungemessen und dürfen ohne Test nach BEW-5 nicht Standard werden.
 - **Entschieden (Owner, 1. 10. 2026):** Kein separater Bewegungs-Schalter, kein gespeicherter Lesemodus auf allen Hero-Seiten, kein Anhalten nach 5 s. Die Seite ist damit formal nicht WCAG-2.2-A-konform (2.2.2). Das ist eine dokumentierte Ausnahme und wird nicht erneut als Fix vorgeschlagen. Neu bewertet wird nur, wenn sich der Charakter der Seite ändert.
-- Harte Grenze bleibt 2.3.1: Jeder neue Flacker-, Glitch- oder Blitzeffekt wird vorher nach BEW-5 gemessen.
+- Harte Grenze bleibt 2.3.1: Jeder neue Flacker-, Glitch- oder Blitzeffekt wird vorher nach BEW-5 gemessen. Der Umbau des Neon-Schriftzugs vom 6. 10. 2026 behält Flacker-Keyframes und Takte bei (keine höhere Frequenz).
 - Das Aufglimmen des Power-Buttons ist auf `no-preference` gegatet (Owner-Entscheidung): Der Kill-Switch nimmt den Hinweis-Puls unter `reduce` heraus.
 
-Weitere bewusste Ausnahmen: Fokus des Hero-Power-Buttons beige statt Magenta (Kontrast auf dem Foto), Blocksatz im Home-Intro (1.4.8 ist AAA).
+Weitere bewusste Ausnahmen: Fokus des Hero-Power-Buttons beige statt Magenta (Kontrast auf dem Foto), Blocksatz im Home-Intro (1.4.8 ist AAA), Fußnoten-Rücksprung „↩“ (`a.reversefootnote`) nur über die Farbe vom Text abgesetzt (1.4.1, axe `link-in-text-block`, Owner-Entscheidung 6. 10. 2026). Er trägt den Namen „Zurück zum Text“ (`_plugins/inhalts-a11y.rb`), sichtbar bleibt er grau ohne Unterstreichung. Die axe-Meldung steht seitenunabhängig in `KNOWN_PATTERNS` (`tests/visual/a11y.spec.js`), damit ein neuer Beitrag mit Fußnote die CI nicht rot macht. Der Kontrast der Styleguide-Probe `hover-color-text` auf Nav-Hover-Grund (Owner-Ausnahme KOMP-3, 6.4) steht als Baseline in `tests/visual/a11y-known.json`.
 
 ---
 
@@ -707,6 +710,7 @@ Alle Ton-Regeln sind Review-Regeln. Maßstab ist das Home-Intro (`index.html`), 
 | Nominalstil („unter Anwendung moderner Entwicklungspraktiken“) | Verb („entwickle ich mit …“) |
 | Verstärker (faszinierend, einzigartig, außergewöhnlich, optimal) | Sache konkret benennen |
 | Selbst-Etiketten (Autodidakt, Experte) | Handlung zeigen („eigne ich mir … an“) |
+| Gendern und neutrale Ersatzformen (Lesende, Studierende, Leser:innen, Doppelnennung) | generisches Maskulinum (Leser, Studenten), Regel in Abschnitt 8 (Owner, 6. 10. 2026) |
 | Konkrete Berufsdauer („seit 8 Jahren“) | „Seit vielen Jahren“ |
 | Technik- oder System-Metaphern in Einleitungen | menschliche Formulierung |
 | Fach-Listing als Einstieg | ein Satz mit Aussage |
@@ -736,7 +740,7 @@ Alle Ton-Regeln sind Review-Regeln. Maßstab ist das Home-Intro (`index.html`), 
 
 - **FACH-1** [MUSS · Soll · CI-P3] Mathematische und technische Aussagen sind belegbar (Bestand: R-65). Die Quelle steht als greppbarer Kommentar neben dem Text: in HTML und Markdown `{% comment %} Quelle: Autor, Titel, Jahr, URL {% endcomment %}`, in YAML `# Quelle: Autor, Titel, Jahr, URL`. HTML-Kommentare (`<!-- -->`) sind verboten (LIQ-5).
 - **FACH-2** [MUSS · Soll · Review] Beispielwerte (c-Parameter, Voreinstellungen) werden vor dem Veröffentlichen im eigenen Explorer geprüft.
-- **FACH-3** [MUSS · Soll · Review] Zitate nur mit belegter Quelle, sonst „(zugeschrieben)“ oder „Unbekannt“.
+- **FACH-3** [MUSS · Soll · Review] Zitate nur mit belegter Quelle, sonst „(sinngemäß)“ (Gedanke belegt, Wortlaut nicht, z. B. Einstein 1933), „(zugeschrieben)“ (Zuschreibung ohne Beleg) oder „Unbekannt“. Der Beleg steht als Quellenkommentar daneben (FACH-1).
 - **FACH-4** [MUSS · Soll · Review] Architekturänderungen ziehen technische Blogposts im selben Commit nach.
 
 ### 7.7 Glossar
@@ -747,11 +751,15 @@ Alle Ton-Regeln sind Review-Regeln. Maßstab ist das Home-Intro (`index.html`), 
 | Komponenten | „Interaktive Julia-Menge“, „Mandelbrot-Julia-Explorer“ (danach „Explorer“) |
 | Mengen | Mandelbrot-Menge, Julia-Menge, gefüllte Julia-Menge (≠ Julia-Menge) |
 | Inhalt | Blogbeitrag, Lebenslauf, Archiv |
+| Fußnoten | Rücksprung „↩“, zugänglicher Name „Zurück zum Text“ |
+| Rechtliches | Datenschutzerklärung (Dokument), Footer-Link und Seitentitel „Datenschutz“, kein Impressum |
 | Skills | Kapitel „Technische Fähigkeiten“, Element „Skill“ |
-| Technik | Front Matter, Dev Container, CI/CD, KI (im Fließtext) |
+| Technik | Front Matter, Dev Container, CI / CD, KI (im Fließtext) |
+| Commits | Typ, Bereich (Scope nach Conventional Commits), Betreff, Commit-Hook |
+| Bedienhinweise im Fraktal-Panel | bewusst in Kleinbuchstaben, gestaltete Ausnahme zu COPY-6 (Owner, 6. 10. 2026), etwa „ziehen: zoom-rechteck · mausrad: zoom“ (`_includes/fractal/panel.html`) |
 | Marken | LinkedIn, Spring Boot, Docker Compose, pip, scikit-learn, Vue.js |
 
-**Entschieden (Owner, 1. 10. 2026):** „Reset“ und „Preset“ sind eingedeutschte UI-Wörter und bleiben. Gleiche Aktion, gleiches Wort: Der Zurücksetzen-Button heißt sichtbar überall „Reset“ (Fraktal-Panel, Skill-Graph), Der zugängliche Name beginnt mit dem sichtbaren Wort (WCAG 2.5.3 Label in Name): „Reset – Ansicht zurücksetzen“, Tooltip „Zurücksetzen“. „Zurücksetzen“ passt nicht in die Keycap-Buttons. Der Navigationspunkt bleibt „Mandelbrot“.
+**Entschieden (Owner, 1. 10. 2026):** „Reset“ und „Preset“ sind eingedeutschte UI-Wörter und bleiben. Gleiche Aktion, gleiches Wort: Der Zurücksetzen-Button heißt sichtbar überall „Reset“ (Fraktal-Panel, Skill-Graph). Der zugängliche Name beginnt mit dem sichtbaren Wort (WCAG 2.5.3 Label in Name): „Reset – Ansicht zurücksetzen“, Tooltip „Zurücksetzen“. „Zurücksetzen“ passt nicht in die Keycap-Buttons. Der Navigationspunkt bleibt „Mandelbrot“. Der Knopf der Blog-Suche heißt „Suche leeren“ (Owner, 6. 10. 2026): Er leert das Suchfeld und setzt keine Ansicht zurück.
 
 - **GLOS-1** [MUSS · Ist · Review] Neue Begriffe werden hier ergänzt, bevor sie live gehen.
 
@@ -778,19 +786,19 @@ Je Fall genau eine Entscheidung. Gilt für alle Quellen (Markdown, HTML-Includes
 | Prozent, Einheiten | Zahl, geschütztes Leerzeichen, Einheit | 98 %, 16 px, 100 dpi | DIN 5008 |
 | Code-Werte im Fließtext | in Backticks, ohne Leerzeichen, wie im Code | `16px`, `0.06em` | eigene Regel |
 | Dezimalzeichen | Komma im Fließtext | 0,75 | Duden |
-| Dezimalzeichen Mathe/HUD | Punkt (wie Code und MathJax), dokumentierte Ausnahme | c = −0.700 + 0.270i | eigene Regel |
+| Dezimalzeichen Mathe / HUD | Punkt (wie Code und MathJax), dokumentierte Ausnahme | c = −0.700 + 0.270i | eigene Regel |
 | Minus | − (U+2212), über gemeinsamen Formatter | −0,75 | Duden |
 | Tausender | vierstellig ohne, ab fünf Stellen schmales geschütztes Leerzeichen (U+202F) | 1000, 34 500 | Duden |
 | Datum Anzeige | „4. März 2025“ über `_includes/date-de.html` | | DIN 5008 alphanumerisch |
 | Datum maschinenlesbar | ISO 8601 im `datetime`-Attribut | 2025-03-04 | ISO 8601 |
 | Uhrzeit | 14:30 Uhr, volle Stunde 14 Uhr | | DIN 5008 |
-| Schrägstrich | ohne Leerzeichen bei Einzelwörtern, mit bei Mehrwortgliedern | CI/CD, C/C++, Azure AI / OpenAI | Duden |
+| Schrägstrich | **immer mit Leerzeichen** zwischen Begriffen (Hausstil, Owner, 6. 10. 2026). Ausnahmen: Pfade, URLs, Code, Einheiten, Brüche, Datumsangaben sowie feste Fachbegriffe und Eigennamen mit Schrägstrich im Original. Im Kompositum lieber umstellen („Pipelines für CI / CD“ statt „CI / CD-Pipelines“) | C / C++, CI / CD, Azure AI / OpenAI, aber `assets/js/`, km/h, 1/2, A/B-Test | Hausstil, bewusst abweichend vom Duden (Lesbarkeit) |
 | Komposita | deutsch zusammen, fremdsprachige Mehrwortglieder durchgekoppelt | Webanwendung, GitHub-Pages-Integration | Duden |
 | Und-Zeichen | „&“ in Firmennamen und als bewusstes Stilelement in kurzen Labels (Autoren-Bio, Kapitel- und Gruppentitel, Owner, 1. 10. 2026). Im Fließtext „und“ | Procter & Gamble, Ingenieur & Entwickler, Data & Analytics | Duden, Hausstil |
 | Noten | klein | sehr gut (1,3) | |
-| Doppelformen | Duden-Empfehlung | sogenannt, potenziell, Kryptografie | Duden |
+| Doppelformen | Duden-Empfehlung | sogenannt, potenziell, sequenziell, Kryptografie, Stand-up-Paddling, nicht ganzzahlig | Duden |
 | Umlaute | immer echt, auch in JS | verfügbar, nicht verfuegbar | |
-| Gendern | keine Wortbinnenzeichen, neutrale Formulierung | Studierende, Lehrkraft | amtliches Regelwerk 2024 |
+| Gendern | **nie gendern:** generisches Maskulinum, keine Wortbinnenzeichen, keine Doppelnennung, keine neutralen Ersatzformen. Bestehende Maskulina bleiben | Leser, Autoren, Entwickler (nicht: Lesende, Nutzende, Leser:innen) | Hausstil (Owner, 6. 10. 2026) |
 
 Die Duden-Verweise zeigen auf die Sprachwissen-Seiten in Abschnitt 18. Paragrafennummern werden bewusst nicht zitiert, weil sie zwischen Duden-Auflagen und amtlichem Regelwerk abweichen.
 
@@ -988,7 +996,7 @@ Die Seite ist statisch, hat keine Nutzerkonten und keine Formulare. Die realisti
 
 ### 11.6 Browser-Speicher
 
-- **SEC-6** [MUSS · Ist · Review] localStorage und sessionStorage enthalten nur nicht identifizierende UI-Zustände. Keine IDs, keine sitzungsübergreifenden Zeitstempel, keine personenbezogenen Daten. Jeder Zugriff steht in `try/catch`, die Seite funktioniert ohne Speicher. Neue Speicherzwecke werden in der Datenschutzerklärung ergänzt, sobald es sie gibt (SEC-10a). Neue Schlüssel tragen den Präfix `auflinie:` (JS-16), weil alle Projekte des Origins denselben Speicher teilen.
+- **SEC-6** [MUSS · Ist · Review] localStorage und sessionStorage enthalten nur nicht identifizierende UI-Zustände. Keine IDs, keine sitzungsübergreifenden Zeitstempel, keine personenbezogenen Daten. Jeder Zugriff steht in `try/catch`, die Seite funktioniert ohne Speicher. Neue Speicherzwecke kommen im selben Commit in die Datenschutzerklärung (`_pages/datenschutz.md`, SEC-10a). Neue Schlüssel tragen den Präfix `auflinie:` (JS-16), weil alle Projekte des Origins denselben Speicher teilen.
 
 ### 11.7 GitHub Actions
 
@@ -1013,7 +1021,7 @@ Die Seite ist statisch, hat keine Nutzerkonten und keine Formulare. Die realisti
 ### 11.10 Personenbezogene Daten, Impressum, Datenschutz
 
 - **SEC-10** [MUSS · Ist · CI-P2] Commits tragen die noreply-Adresse von GitHub (alle seit Einführung des Guides, ältere Commits nicht). Bilder in `assets/images` sind frei von GPS-, Kamera-, Seriennummer-, Autor- und Konto-Metadaten (`exiftool`-Stichprobe 2. 10. 2026 ohne Befund). Kontaktdaten nur im Kontaktbereich von „Über mich“ und nur, was der Owner freigibt (heute GitHub). Keine Lebenslauf- oder Office-Dateien im Repo oder in `_site`. `Lebenslauf-soprasteria/` bleibt in `.gitignore` **und** in `exclude`. Projektdetails zu Arbeitgebern und Kunden nur in der Tiefe, die die jeweilige Richtlinie erlaubt (SOLL).
-- **SEC-10a** [MUSS · Offen · CI-P3] Eine Datenschutzerklärung ist von jeder Seite aus verlinkt (Footer). Neue Datenverarbeitungen (Speicher, Dienste, Hosting) werden dort im selben Commit nachgetragen. Empfohlen, weil GitHub Pages IP-Adressen protokolliert und die Haushaltsausnahme hier nicht greift. Entscheidung des Owners steht aus, die Seite existiert nicht.
+- **SEC-10a** [MUSS · Ist · Review] Die Datenschutzerklärung `_pages/datenschutz.md` (`/datenschutz/`) ist von jeder Seite aus über den Footer verlinkt (`_data/navigation.yml`, Liste `footer`, ARCH-4). Neue Datenverarbeitungen (Speicher, Dienste, Hosting, Kontaktwege) werden dort im selben Commit nachgetragen, samt Zeile „Stand“ und der Schlüsselliste im Kommentar am Seitenanfang. Owner 6. 10. 2026: kurze Seite ohne Impressum (Entscheidung vom 1. 10. bleibt), nötig, weil GitHub Pages IP-Adressen protokolliert und die Haushaltsausnahme hier nicht greift. Keine Rechtsberatung, Grundlage ist der Security-Bericht, Abschnitt 5.
 - **Entschieden (Owner, 1. 10. 2026): kein Impressum.** Begründung: Privatperson. Das Restrisiko aus § 18 Abs. 1 MStV ist benannt (keine Rechtsberatung). Neu bewertet wird erst, wenn sich der Charakter der Seite ändert (Freelance-Angebote, Werbung, Affiliate, dann auch § 5 DDG). Bis dahin wird das nicht erneut vorgeschlagen.
 
 ### 11.11 Secrets
@@ -1107,10 +1115,10 @@ Body: Warum, Ursache, Verifikation. Umbruch bei 72.
 Co-Authored-By: …
 ```
 
-- **GIT-1** [MUSS · Ist · CI-P3] Betreff beschreibt das Ergebnis, Groß- und Kleinschreibung nach deutscher Rechtschreibung, kein Schlusspunkt. Ziel höchstens 72 Zeichen, hart höchstens 100. Aufzählungen in den Body.
+- **GIT-1** [MUSS · Ist · Hook] Betreff beschreibt das Ergebnis, Groß- und Kleinschreibung nach deutscher Rechtschreibung, kein Schlusspunkt. Ziel höchstens 72 Zeichen, hart höchstens 100. Aufzählungen in den Body. Schlusspunkt und die harte Grenze prüft der Hook, über 72 Zeichen warnt er nur.
 - **GIT-2** [MUSS · Ist · Review] Body bei nicht trivialen Änderungen: Warum, Ursache, wie verifiziert.
 - **GIT-3** [MUSS · Ist · Review] `#N` nur für echte GitHub-Issues und -PRs. Interne Aufgaben als Issue anlegen oder mit `T-N` kennzeichnen.
-- **GIT-7** [MUSS · Soll · CI-P3] Typen (abschließend). Noch nicht durchgehend eingehalten (z. B. `style(scss)` für einen reinen Formatierungs-Commit, 08bae3c), Prüfung per commitlint geplant:
+- **GIT-7** [MUSS · Ist · Hook] Typen (abschließend). Der Hook liest sie aus dieser Tabelle (16.1), ihre Bedeutung prüft nur das Review (z. B. `style(scss)` für einen reinen Formatierungs-Commit, 08bae3c):
 
 | Typ | Bedeutung |
 |---|---|
@@ -1129,16 +1137,17 @@ Co-Authored-By: …
 
 `tune` entfällt (wird `style`, `perf` oder `fix`).
 
-- **GIT-8** [MUSS · Soll · CI-P3] Scopes (abschließend, Einzahl, höchstens einer):
+- **GIT-8** [MUSS · Ist · Hook] Scopes (abschließend, Einzahl, höchstens einer):
 
 | Gruppe | Scopes |
 |---|---|
 | Seiten | `home`, `about`, `cv`, `blog`, `mandelbrot` |
 | Komponenten | `hero`, `masthead`, `nav`, `tv`, `toc`, `fractal`, `skill-graph`, `sw`, `mathjax`, `seo`, `neon`, `blog-notice`, `author-follow` |
 | Querschnitt | `scss`, `js`, `jekyll`, `config`, `a11y`, `security`, `images` |
+| Fremdcode | `theme`, `vendor` |
 | Infrastruktur | `deps`, `ci`, `tests`, `scripts`, `dev`, `docs`, `lint`, `styleguide` |
 
-Betrifft ein Commit mehrere Bereiche: Scope weglassen oder Commit teilen. Keine Pseudo-Scopes (`polish`, `ui`, `design`, `mobile`, `experiment`). Historische Synonyme werden zusammengeführt: `fractals` → `fractal`, `tv-switch` → `tv`, `css` → `scss`, `post` → `blog`. Abweichung seit Einführung des Guides: Commits mit `farben`, `farbe`, `css`, `html`, `head`, `spa`, `schrift`, `theme`, `e2e`, `vendor`, `liquid`, `ruby` und `stylelint`. Ob die Liste wächst (etwa um `html`, `schrift`, `theme`) oder die Commits künftig zuordnen (`spa` → `nav`, `farben` → `scss`, `e2e` und `vendor` → `tests`, `liquid` → `jekyll`, `ruby` → `deps`, `stylelint` → `lint`), entscheidet der Owner.
+Betrifft ein Commit mehrere Bereiche: Scope weglassen oder Commit teilen. Keine Pseudo-Scopes (`polish`, `ui`, `design`, `mobile`, `experiment`). `theme` steht für Anpassungen an Minimal Mistakes und Fehler im Theme, `vendor` für selbst gehostete Bibliotheken unter `assets/vendor/` (Owner, 6. 10. 2026). Alle übrigen Bereiche der Historie sind zugeordnet, etwa `css`, `farben` und `schrift` → `scss`, `spa` und `spa-nav` → `nav`, `fractals` → `fractal`, vollständig mit Anzahl in `docs/commit-bereiche.md`. Der Hook `.githooks/commit-msg` (`scripts/commit-msg-check.py`) liest Typen und Bereiche aus den Tabellen unter GIT-7 und GIT-8, eine neue Zeile hier gilt sofort. Beide Tabellen behalten deshalb ihre Form (Typ bzw. Bereiche in Backticks). Merge-, Revert- und `fixup!`-Commits gehen durch, auch `Reapply "…"`, die Nachricht von Git beim Rückgängigmachen eines Reverts, eine Ausnahme steht als `Ausnahme: GIT-8, Grund` im Body (GOV-4).
 
 ### 14.2 Branches
 
@@ -1162,14 +1171,14 @@ Kein SemVer (eine Website hat keine öffentliche API). Ein `CHANGELOG.md` im For
 - **PERF-4** [MUSS · Ist · Review] Prerender per Speculation Rules (`moderate`) für interne Ziele außer den Ausschlüssen aus SEO-5. Einmal-Effekte warten im Prerender auf die Aktivierung (`AuflinieUtils.whenActivated`: CRT-Einschalten und Power-Hinweis in `hero-crt.js`, Blog-Hinweis in `blog-notice.js`).
 - **PERF-5** [MUSS · Ist · Review] Textschrift (TYP-13): höchstens 35 KB je Datei (WOFF2, heute 28 KB aufrecht und 30 KB kursiv), nur die aufrechte Datei per Preload, und der Schrifttausch erzeugt keinen messbaren Layoutsprung (CLS unter 0,01).
 - **PERF-6** [MUSS · Ist · Review] JS schreibt im Scroll- und Resize-Pfad keine Custom Property auf `<html>` oder `<body>`. Chromium berechnet dann jedes Element der Seite neu, auch mit `@property { inherits: false }`. Erlaubt sind normale Eigenschaften am Wurzelelement (Inline-`scroll-padding-top`: 4 Elemente), Klassen, zu denen nur wenige Regeln passen, und Custom Properties direkt am Element, das sie liest. Vorbild `toc.js` (`setStickyOffset`).
-- **PERF-7** [SOLL · Soll · Review] Endlos-Animationen animieren nur `transform` und `opacity`, die der Compositor ohne Neumalen abspielt. Animiert eine Endlos-Animation eine Paint-Eigenschaft (`background-position`, `filter`, `box-shadow`, `text-shadow`), hält sie außerhalb des Viewports an: ein `IntersectionObserver` setzt eine Klasse, CSS setzt `animation-play-state: paused`. Vorbilder `hero-crt.js` (`page__hero--crt-offscreen`) und `neon-orbit-toggle.js` (`neon-paused`). Choreografien mit JS-Timern (CRT-Boot) laufen durch. Für Endlos-Schleifen in JS gilt dasselbe: außerhalb des Viewports aus, und `requestAnimationFrame` nur so oft anfordern, wie gezeichnet wird. Vorbild ist das Canvas-Rauschen in `hero-crt.js` (10 Bilder pro Sekunde, ein Timer fordert erst kurz vor dem nächsten Bild wieder Frames an).
+- **PERF-7** [SOLL · Soll · Review] Endlos-Animationen animieren nur `transform` (auch `scale`, `rotate`, `translate`) und `opacity`, die der Compositor ohne Neumalen abspielt. Animiert eine Endlos-Animation eine Paint-Eigenschaft (`background-position`, `filter`, `box-shadow`, `text-shadow`), hält sie außerhalb des Viewports an: ein `IntersectionObserver` setzt eine Klasse, CSS setzt `animation-play-state: paused`. Vorbilder `hero-crt.js` (`page__hero--crt-offscreen`) und `neon-orbit-toggle.js` (`neon-paused`, pausiert auch bei verborgenem Tab). Vorbild für die Umstellung auf den Compositor ist der Neon-Schriftzug: Der Schein steht als `text-shadow` und `box-shadow` fest und wird einmal gemalt, nur `opacity` und `scale` pulsieren. Den Text-Schein trägt eine Kopie des Schriftzugs (`.neon-glow--layer`) mit generiertem Text. Animiert wird ein ganzes Element, kein SVG-Kind: `opacity` an Teilen eines Inline-SVGs läuft in Chromium nicht auf dem Compositor (Vorbild Logo-Flackern, eigenes `logo-roehren.svg` über `logo.svg`). Choreografien mit JS-Timern (CRT-Boot) laufen durch. Für Endlos-Schleifen in JS gilt dasselbe: außerhalb des Viewports aus, und `requestAnimationFrame` nur so oft anfordern, wie gezeichnet wird. Vorbild ist das Canvas-Rauschen in `hero-crt.js` (10 Bilder pro Sekunde, ein Timer fordert erst kurz vor dem nächsten Bild wieder Frames an).
 - **PERF-8** [SOLL · Soll · Review] Scroll-Handler messen zuerst und schreiben danach. Pro Frame wird höchstens `scrollY` gelesen, und zwar im Scroll-Event, das vor allen rAF-Callbacks läuft. Maße, die sich nur mit dem Layout ändern (`scrollHeight`, Lage eines Elements im Dokument, berechnete Stile), kommen aus einem Cache, den `AuflinieUtils.onDocumentResize` aktualisiert. Geschrieben wird `transform` oder `opacity` direkt am Element, das sich bewegt, nicht eine Custom Property an einem Vorfahren (PERF-6). Vorbilder `toc.js` (Lesefortschritt, Sticky-TOC) und `back-to-top.js` (Footer-Kopplung, schreibt nur bei geändertem Wert). Ein `IntersectionObserver` ersetzt die Lagemessung nur, wenn das Element dabei nicht übersprungen werden kann: Springt die Seite in einem Schritt über das Element hinweg, meldet er nichts.
 - **PERF-9** [MUSS · Ist · Review] Ladepfad im `<head>`: Die Meta-CSP schaltet in Chromium den Preload-Scanner ab. Was der erste Viewport braucht (Stylesheet, Textschrift, Icon-Schrift), steht deshalb als `<link rel="preload">` VOR dem blockierenden `head-early.js`, das Stylesheet selbst bleibt dahinter. Das Hero-Bild wird ohne `fetchpriority` vorgeladen (mit hoher Priorität teilte es die Bandbreite mit CSS und Schriften). `hero-crt.js` setzt das LCP-Bild als Defer-Skript direkt beim Laden (SPA-1).
 
 ### 15.2 Browser und Geräte
 
 - **BRW-1** [MUSS · Soll · Review] Zielplattform: Baseline „Widely available“ plus diese Ausnahmen mit Fallback: Cross-Document View Transitions (Chromium und Safari, Firefox lädt ohne Übergang, ARCH-2), Speculation Rules (Chromium, WebKit kennt den Skripttyp, ob Safari die Regeln nutzt, ist ungeprüft).
-- **BRW-2** [MUSS · Soll · Review] Testmatrix vor jedem größeren Merge. Die Verhaltens-Tests laufen in jeder CI zusätzlich in Firefox (mit und ohne Reduced Motion) und WebKit (16.1), das ersetzt den Gegentest im echten Browser nicht:
+- **BRW-2** [MUSS · Soll · Review] Testmatrix vor jedem größeren Merge. Die Verhaltens-Tests laufen in jeder CI zusätzlich in Firefox (mit und ohne Reduced Motion) und WebKit (16.1), das ersetzt den Gegentest im echten Browser nicht. Letzter Gegentest in Safari auf echtem Gerät: 6. 10. 2026 ohne Befund (Owner, Seitenwechsel, Menü, Inhaltsverzeichnis, Skill-Graph und Formeln):
 
 | Plattform | Warum | Pflicht |
 |---|---|---|
@@ -1192,18 +1201,19 @@ Kein SemVer (eine Website hat keine öffentliche API). Ein `CHANGELOG.md` im For
 | ESLint (`npm run lint:js`, `eslint.config.mjs`) | CI `lint` | `assets/js`, `service-worker.js` (Jekyll-Vorlage, Liquid per Prozessor ersetzt), `scripts/*.js`, `tests/`: JS-1 (Parser für `assets/js` auf ES2020), JS-2 (`no-var`, `prefer-const`, ohne Ausnahme), dazu `js/recommended` und `no-unsanitized` (SEC-1) |
 | `scripts/fs-guardrail.sh` | CI `lint` | TYP-1 |
 | `scripts/color-guardrail.sh` | CI `lint` | FARB-1, FARB-5, FARB-6, FARB-8 (SCSS), FARB-9, ungepaarte `[Block]`-Marker |
-| `scripts/scale-guardrail.sh` (Ratchet, Grenzwerte `scripts/scale-baseline.txt`) | CI `lint` | SP-1, RAD-1, Z-3, MO-1, MO-2, TYP-7: keine neuen Literale für Abstand, Radius, Schatten, z-index, Dauer, Kurve und Laufweite, auch nicht über lokale Sass-Variablen oder als Argument von `card-panel()` und `mono-label()`, kein neues `transition: all`, ungepaarte `[Block]`-Marker |
+| `scripts/scale-guardrail.sh` (Ratchet, Grenzwerte `scripts/scale-baseline.txt`) | CI `lint` | SP-1, RAD-1, Z-3, MO-1, MO-2, TYP-7: keine neuen Literale für Abstand, Radius, Schatten, z-index, Dauer und Kurve, auch nicht über lokale Sass-Variablen oder als Argument und Default von `card-panel()` und `mono-label()`. Laufweite nur aus den drei Skalen-Tokens (jede andere Variable zählt, auch ein durchgereichter Parameter eines eigenen Mixins). Kein neues `transition: all`, ungepaarte `[Block]`-Marker |
 | `scripts/bp-guardrail.sh` | CI `lint` | BP-1, BP-2, BP-3, BP-5 (Tokens samt Rechnungen, SCSS, JS, Templates samt Critical-CSS, `:hover` nur hinter `can-hover`, `no-hover` oder `@media (hover: hover)`) |
 | `scripts/security-guardrail.sh` | CI `lint` | SEC-4, SEC-5, SEC-5c, SEC-7, SEC-8 |
 | `scripts/version-sync-check.sh` | CI `lint` | DOC-7: Ruby- und Node-Feature in `.devcontainer/devcontainer.json` spiegeln `.ruby-version` und `.nvmrc`, jedes Playwright-Image und `package-lock.json` die exakte Version von `@playwright/test` |
+| `.githooks/commit-msg` mit `scripts/commit-msg-check.py` | lokal (Hook, `git config core.hooksPath .githooks`, im Dev Container automatisch), nicht in der CI | GIT-1, GIT-7, GIT-8: Typen und Bereiche aus den Tabellen dieses Guides, Zuordnung alter Bereiche aus `docs/commit-bereiche.md`, Nachprüfen per `--log 50` |
 | `scripts/scss-format.py` | CI `lint` | SCSS-19 |
-| `tests/guardrails/run.py` (Fälle in `tests/guardrails/cases/`) | CI `lint` | Negativtests: absichtliche Verstöße gegen Schriftgrößen-, Skalen-, Farb-, Breakpoint- und Security-Guardrail sowie gegen `csp-check.py` (Mini-Site `tests/guardrails/csp-site/`) und `content-check.py` (Quellen und Mini-Site `tests/guardrails/content-site/`) sowie Versionsabweichungen für `version-sync-check.sh` müssen scheitern, erlaubte Grenzfälle durchgehen |
+| `tests/guardrails/run.py` (Fälle in `tests/guardrails/cases/`) | CI `lint` | Negativtests: absichtliche Verstöße gegen Schriftgrößen-, Skalen-, Farb-, Breakpoint- und Security-Guardrail sowie gegen `csp-check.py` (Mini-Site `tests/guardrails/csp-site/`) und `content-check.py` (Quellen und Mini-Site `tests/guardrails/content-site/`) sowie Versionsabweichungen für `version-sync-check.sh` und Commit-Nachrichten für `commit-msg-check.py` müssen scheitern, erlaubte Grenzfälle durchgehen |
 | `jekyll build --strict_front_matter` | CI `build` | Front Matter |
 | `scripts/sass-deprecation-check.sh` | CI `build` | SCSS-2, SCSS-3 |
 | Gate „Styleguide nie im Deploy“ | CI `build` | SG-1 (`_site/styleguide` und `styleguide.css` fehlen im Deploy-Build) |
 | Gate „ungenutzte Theme-Skripte nicht im Deploy“ | CI `build` | SEC-8b (`main.min.js`, `vendor/`, `lunr/`, `plugins/` fehlen unter `_site/assets/js/`) |
 | Gate „Test-Gastbeitrag nie im Deploy“ | CI `build` | INH-5 (Fixture fehlt in `_site`) |
-| Playwright `npx playwright test` im Container (Review-Build `_site_review`) | CI `build`, Schritt „Style-Guide-Review“ | `tests/visual/`: SG-2, SG-3, KOMP-1, Kontrast der Textproben (FARB-2), axe-core WCAG 2.2 AA (6.1) auf allen Seiten und Beiträgen des Review-Builds (`pages.js`), auch bei 320 px mit Reflow (1.4.10), Invarianten (A11Y-2, OVL-3, OVL-4, BP-1, BP-2, BP-3, IMG-3 Kachelmaße gleich den Dateimaßen, Tab-Runde ohne unsichtbaren Fokus), Blog-Suche, externe Links (LINK-3), Gastbeiträge (INH-5), Precache-Liste in beide Richtungen samt Build-Version an JS und CSS (11.5, SEC-5e). `tests/navigation.spec.js`: SPA-1, A11Y-5, Masthead-Snapshot, ARCH-2, BEW-1a, BEW-3, SEO-5. `tests/sw.spec.js`: Offline aus dem Precache. `tests/vendor.spec.js`: SEC-8d. Engines nach BRW-2 (Projekte in `playwright.config.js`, Übersicht in `tests/README.md`, WebKit-Seitenwechsel nur mit Reduced Motion, R-87), Screenshots und Kontrast nur Chromium |
+| Playwright `npx playwright test` im Container (Review-Build `_site_review`) | CI `build`, Schritt „Style-Guide-Review“ | `tests/visual/`: SG-2, SG-3, KOMP-1, Kontrast der Textproben (FARB-2), axe-core WCAG 2.2 AA (6.1) auf allen Seiten und Beiträgen des Review-Builds (`pages.js`), auch bei 320 px mit Reflow (1.4.10), Invarianten (A11Y-2, OVL-3, OVL-4, BP-1, BP-2, BP-3, Touch-Ziele 44 px (6.1), IMG-3 Kachelmaße gleich den Dateimaßen, Tab-Runde ohne unsichtbaren Fokus, Fußnoten-Rücksprung mit Namen „Zurück zum Text“ (6.5)), Blog-Suche, externe Links (LINK-3), Gastbeiträge (INH-5), Precache-Liste in beide Richtungen samt Build-Version an JS und CSS (11.5, SEC-5e). `tests/navigation.spec.js`: SPA-1, A11Y-5, Masthead-Snapshot, ARCH-2, BEW-1a, BEW-3, SEO-5, PERF-7 (Dauer-Animationen im Neon-Schriftzug nur auf dem Compositor). `tests/sw.spec.js`: Offline aus dem Precache. `tests/vendor.spec.js`: SEC-8d. Engines nach BRW-2 (Projekte in `playwright.config.js`, Übersicht in `tests/README.md`, WebKit-Seitenwechsel nur mit Reduced Motion, weil WebKit im Container ohne GPU kaum malt, am echten Safari geprüft (BRW-2)), Screenshots und Kontrast nur Chromium |
 | `scripts/content-check.py` | CI `build`, vor dem Jekyll-Build | ARCH-5: HTML-Kommentare in `_posts`, `_drafts`, `_pages` und `_data` (LIQ-5), Skill-IDs in `_data/skill_graph.yml` gegen die Chips in `_data/cv_content.yml` (Jekyll-`slugify`, mit Vorschlag), Mathe-Backslashes in `_data` (MD-3), Pfade ab der Wurzel ohne `relative_url` in `_posts`, `_drafts`, `_pages` (LIQ-3), fehlende oder leere Text-Schlüssel der Bedienung (`_data/fractal_panel.yml`, `texts` in `_data/skill_graph.yml`, `powered_by` in `_data/ui-text.yml`) sowie unbekannte oder leere Felder der Erklärboxen (`panel_explanations` in `_data/mandelbrot.yml`, mit Vorschlag, ARCH-4). Warnung bei `target="_blank"` ohne `rel` in den Quellen (LINK-3 repariert es beim Build). Jede Meldung mit Datei, Zeile und Lösung |
 | `scripts/content-check.py --site _site` | CI `build` | IMG-3 als Warnung: `<img>` ohne `width`/`height` im Inhalt eines Beitrags und Kachelbilder (`.archive__item-teaser`) ohne Maße |
 | `scripts/csp-check.py _site` | CI `build` | SEC-3 (samt Hash der Speculation Rules gegen den gebauten Block), SEC-4, SEC-9 (`http://`-URLs im gebauten HTML, bei Hyperlinks nur Warnung), LINK-3 (`target="_blank"` nur mit `noopener noreferrer`) |
@@ -1232,7 +1242,6 @@ Kein SemVer (eine Website hat keine öffentliche API). Ein `CHANGELOG.md` im For
 | 3 | Post-Build-Grep auf `_site`: „Sie“-Formen, englische Theme-Fallbacks („Skip to“), `<!--` aus eigenen Includes, `noindex` auf internen Seiten | TON-2, LIQ-5, SEC-12 |
 | 3 | `markdownlint-cli2` für Doku (MD040, MD032, MD047), zunächst ohne `_posts` | DOC-6 |
 | 3 | `cascade-check.py` mit Element-Regeln und Inline-Blöcken als Konkurrenten, Erwartungswert-Modus | TYP-4, TYP-5 |
-| 3 | commitlint oder Regex-Hook in `.githooks/commit-msg` (`type-enum`, `scope-enum`, `subject-case` **aus**, wegen deutscher Substantive) | GIT-1, GIT-7, GIT-8 |
 | 4 | axe-core läuft schon (16.1). Offen: dieselben Routen zusätzlich mit `reducedMotion: reduce` und `forcedColors: active` | Abschnitt 6, BRW-3 |
 | 4 | Playwright-Invariante: Lesemodus (Power-Button auf `/`) stoppt die CRT-Endlos-Animationen | 6.3, 6.5 |
 | 4 | Lighthouse-Lauf per `workflow_dispatch` gegen PERF-1 und PERF-2 | 15.1 |
@@ -1253,7 +1262,7 @@ Vor jedem Push:
 - **REV-8** Speculation-Rules-Ausschlüsse oder Gate-Paar geändert? Dann Tests, Doku und Gegenstück im selben Commit (SPA-5, BP-6)
 - **REV-9** Texte anredefrei, keine Semikolons, deutsche Typografie (Abschnitt 8)
 - **REV-10** Doku und Kommentare passen zum neuen Verhalten
-- **REV-11** Commit-Format und Scope aus der Liste
+- **REV-11** Commit-Format und Scope aus der Liste (Hook eingeschaltet, 16.1)
 - **REV-12** Design-Umbau? Vorher Vorschläge gezeigt (PROZ-1)
 
 Nicht automatisierbar und deshalb immer im Review: Ton (warm, nicht nerdig), fachliche Korrektheit, ob ein `alt`-Text das Bild beschreibt, ob eine Caption eine echte Zusatzinformation ist.
@@ -1266,29 +1275,23 @@ Stand: Abgleich vom 2. 10. 2026, seither nachgeführt (Kopf). Ein Eintrag versch
 
 | ID | Regel | Stelle | Audit | Weg |
 |---|---|---|---|---|
-| R-21 | TYP-7 | Laufweiten außerhalb der Skala stehen als `$tracking-legacy-*` und `$fp-tracking-legacy-*` mit Ziel in `variables/_typography.scss`. Literale gibt es keine mehr (CI: `scale-guardrail.sh`, Kategorie `tracking`). `0.07em` tragen nur noch die beiden expliziten Aufrufe in `_cv.scss` (`$tracking-legacy-cv-group-title`). Offen nur die Angleichung an die Skala, sichtbar | B-T6 | Owner |
 | R-32 | OVL-4, A11Y-2 | Drawer: modal (Scrim, Scroll-Sperre, `inert`), aber ohne `role="dialog"` und `aria-modal`. Fokus wandert nur beim Öffnen per Tastatur hinein. Der damalige Grund, mobil färbte `:focus` die Links magenta, entfällt seit 4. 10. 2026 (KOMP-2) | B-A11Y-05 | Owner |
 | R-33 | 2.5.7 | Fraktal-Pan nur per Ziehen (rechte Maustaste, Leertaste), Zwei-Finger-Geste oder Pfeiltasten am fokussierten Canvas. Für Zeiger fehlt eine Alternative ohne Ziehen | B-A11Y-09 | Owner (sichtbare Pan-Buttons?) |
 | R-34 | SCSS-4 | Seit der `@use`-Migration erweitert das Theme-`@extend` (`.comment__date { @extend .page__meta }`) nur noch Theme-Regeln. Die eigenen `.page__meta`-Regeln gelten nicht für `.comment__date`. Kommentare sind aus, das Element kommt auf keiner Seite vor | – | Owner-Freigabe 1. 10. 2026, beim Einschalten von Kommentaren nachziehen |
 | R-35 | SP-1, SP-2 | Radien, Schatten, z-index, Dauern, Kurven und `transition: all` stehen auf 0. Übrig sind 25 em-Abstände außerhalb der markierten em-Systeme in `_pages.scss`, `_offline.scss`, `_content-accents.scss`, `_footer.scss`, `_archive.scss`, `_author.scss`, `_buttons.scss` und `_home.scss` (Liste: `python3 scripts/scale-literals.py --report`, Ratchet `spacing 25`) | B-SP-01, B-Z-01, B-MO-01, B-RAD-01, B-SH-01 | Code bei Berührung auf rem-Tokens (Größe hängt heute an der Schrift des Elements, je Stelle prüfen) |
-| R-50 | SCSS-10 | Minimal Mistakes 4.28.1 setzt `.page__content :first-child { margin-top: 0 }` (PR #5103, gemeint war nur das erste Inhaltselement neben der TOC). Die Regel trifft jedes erste Kind in der Tiefe. Gegenmittel mit Spiegelwerten in `theme-overrides/_first-child.scss`, H2-Probe in `assets/css/styleguide.scss`. Wer einen gespiegelten Wert ändert, zieht ihn dort nach | – | upstream melden, Datei entfernen, sobald das Theme die Regel auf direkte Kinder begrenzt |
+| R-50 | SCSS-10 | Minimal Mistakes 4.28.1 setzt `.page__content :first-child { margin-top: 0 }` (PR #5103, gemeint war nur das erste Inhaltselement neben der TOC). Die Regel trifft jedes erste Kind in der Tiefe. Gegenmittel mit Spiegelwerten in `theme-overrides/_first-child.scss`, H2-Probe in `assets/css/styleguide.scss`. Wer einen gespiegelten Wert ändert, zieht ihn dort nach | – | upstream melden (Owner, 6. 10. 2026: Issue eröffnen, Entwurf mit Messung liegt vor), Datei entfernen, sobald das Theme die Regel auf direkte Kinder begrenzt |
 | R-51 | 3.1.2 (6.1) | Minimal Mistakes 4.28.1 schreibt englische `aria-label` fest ins Markup. Deutsch überschrieben: `skip-links.html`, `post_pagination.html`, Masthead. Offen: `paginator-v2.html` („Pagination“), erscheint erst ab dem siebten Beitrag (`per_page: 6`) | – | Owner: beim ersten Blättern überschreiben oder upstream `ui-text`-Keys anregen |
 | R-54 | TYP-3 | `$fs-label-xs` (10,9 px) für funktionalen Text: Button-Text der Fraktal-Toolbar mobil (`fractal-panel/_toolbar.scss`), Copyright-Zeile im Footer | – | Owner (sichtbar) |
 | R-79 | BP-3 | Theme-Hover-Regeln ohne `(hover: hover)` ohne Gegenregel, weil heute ohne sichtbare Wirkung oder ohne Einsatz. Ohne Wirkung: Grau aus `.greedy-nav a:hover` am Logo und Hellcyan am Avatar-Link (SVG und Bild tragen eigene Farben), Hellcyan an den Sprunglinks (nur mit Tastaturfokus zu sehen). Ohne Einsatz: Zahlen-Pagination (`.pagination li a:hover`), Hinweis-Links (`.notice a:hover`), Links in Bildunterschriften, Tags (`.page__taxonomy-item:hover`), Such-Knopf, Überschriften-Anker, Kopierknopf in Codeblöcken, Lightbox (`.mfp-*`), Theme-Buttons ohne eigene Rolle. Die Sidebar-Gegenregel steht an `up(lg)` in px, das Theme an 64em, bei Grundschrift ≠ 16 px weichen beide Grenzen ab | – | Code (bei Einsatz eines dieser Elemente Gegenregel in `no-hover`, Touch-Test in `invariants.spec.js` um die Seite erweitern) |
 | R-80 | BP-4 | 40 `down()` gegen 9 `up()` (Stand 4. 10. 2026) | – | Code (bei Berührung umdrehen, BP-6) |
-| R-78 | KOMP-3, MO-1 | Hamburger (Owner, 4. 10. 2026): Hover-Magenta `$hover-color-text` auf den Balken wirkt zu grell. Die Umwandlung zum X verschiebt und dreht die äußeren Balken gleichzeitig (`top`/`bottom` und `transform` in 300 ms, `_masthead.scss`), auf halbem Weg entsteht ein „><“. Unverändert seit Februar 2026, Farbe seit 1. 10. 2026 | – | Owner (sichtbar, Vorschläge mit Bildern) |
 | R-83 | HTML-1, 6.1 (4.1.2) | Neon-Name auf der Startseite (`_includes/page__hero.html`, Flag `neon_name`): Der Orbit-Auslöser ist ein `<span role="button" tabindex="0">` mitten im Wort in der H1, das „ü“ ein `<span aria-label="ü">u</span>` (ein `aria-label` auf einem generischen Element lesen Screenreader meist nicht vor). Der zugängliche Name der H1 zerfällt dadurch in etwa „H Orbit starten ns Muller“ | – | Owner (Auslöser als `<button type="button">` oder außerhalb der Überschrift, „ü“ als Text, Optik vorher und nachher gleich) |
 | R-84 | SEC-8b | `.devcontainer/devcontainer.json`: Basis-Image `mcr.microsoft.com/devcontainers/python:3.11` ohne Digest, Features mit schwebendem Major-Tag (`:1`). Der Host-Token wird nicht mehr hineingereicht | N9 (Security-Bericht) | Owner (gepinnt heißt Updates von Hand) |
-| R-65 | TYPO-1, TYPO-2, COPY-2, COPY-4, FACH-1 | Entity `&copy;` in `footer.html`. „Berechne…“ ohne Leerzeichen vor der Auslassung. Note „Sehr Gut“ groß (`cv_content.yml`). Leerzustand der Blog-Suche ohne Hinweis, was hilft. Fachaussagen in `_data/mandelbrot.yml` ohne Quellenkommentar (z. B. Hausdorff-Dimension, Shishikura 1998) | – | Inhalt (Owner liest Texte gegen) |
-| R-67 | SEO-2, SEO-3, SEITE-6 | Excerpts unter 70 Zeichen: Über mich (59), Archiv (44), Blog (69). Site-Vorschaubild ist auf allen Seiten der Hero-Hintergrund `background.jpg` mit 675 × 360 px statt 1200 × 630 px (Vorschlag mit Namen im Bild liegt vor, Owner). `blog_notice` kennt kein Ablaufdatum (der Sommerpause-Hinweis ist seit 4. 10. 2026 ausgeschaltet, beim nächsten Hinweis nachrüsten) | – | Owner |
-| R-69 | DOC-7 | Der Beitrag „Erstellung dieser Website“ zeigt noch die alte `devcontainer.json` (Node `lts`) | – | Owner (Lesertext) |
+| R-65 | TYPO-1, TYPO-2, COPY-2, COPY-4, FACH-1 | Entity `&copy;` in `footer.html`. „Berechne…“ ohne Leerzeichen vor der Auslassung. Schrägstriche ohne Leerzeichen in den Bedienhinweisen (`_data/fractal_panel.yml`: „Plus/Minus“, „rechtsklick/leertaste“, `_data/mandelbrot.yml`: „hinein/heraus“, „Rechtsklick/Leertaste“) und im Entwurf `_drafts/2025-03-05-css-struktur-analyse.md` („CSS/SASS“, beim Veröffentlichen nach INH-2), „Kryptographie“ und „nicht-ganzzahlige“ in `_data/mandelbrot.yml` (Owner-Regeln vom 6. 10. 2026). Leerzustand der Blog-Suche ohne Hinweis, was hilft. Fachaussagen in `_data/mandelbrot.yml` ohne Quellenkommentar (z. B. Hausdorff-Dimension, Shishikura 1998) | – | Inhalt (Owner liest Texte gegen) |
+| R-67 | SEO-2, SEITE-6 | Excerpts unter 70 Zeichen: Über mich (59), Archiv (44), Blog (69). `blog_notice` kennt kein Ablaufdatum (der Sommerpause-Hinweis ist seit 4. 10. 2026 ausgeschaltet, beim nächsten Hinweis nachrüsten) | – | Owner |
+| R-69 | DOC-7 | Der Beitrag „Erstellung dieser Website“ nennt Ruby `3.4.11` als Zahl (Abschnitt 3.1 zweimal, Verzeichnisbaum, Auszug der `devcontainer.json`, dort auch Node `22`). `version-sync-check.sh` prüft Beiträge nicht, beim nächsten Versionssprung läuft der Text still auseinander. Der Auszug selbst ist seit 6. 10. 2026 auf dem Stand der Datei (Faktenkorrektur ohne eigene Owner-Entscheidung, Bestätigung offen) | – | Owner (Lesertext: Datei statt Nummer nennen, oder Beiträge als datierte Lesertexte aus DOC-7 ausnehmen) |
 | R-71 | NAME-1 | `assets/images/Logo.svg` (4.1) | – | Owner |
-| R-72 | FARB-10 | `$text-color` kommt weiter aus dem Dark-Skin (`#eaeaea`). `$body-text-color` ist bewusst ein anderer Ton (`#e8e6e3`, `_colors.scss`), ein Alias darauf änderte alle Theme-Stellen mit `#eaeaea` (`body`, Formulare, Notices, Masthead-Links, Social-Icons) | B-F25 | Owner (Alias auf `$body-text-color`, sichtbar, oder eigenes Token mit dem Skin-Wert, zweiter Fast-Weiß-Ton) |
 | R-73 | IMG-7 | `assets/images/QUELLEN.md` fehlt. Die Lizenz des Hintergrundbilds steht nur im README-Abschnitt „Lizenz“ | – | Owner (Quellen nennen), dann Code |
-| R-87 | PERF-7, BRW-2 | Im Playwright-Container ohne GPU malt WebKit die Startseite während des CRT-Boots mit unter einem Bild pro Sekunde, danach mit etwa 8 (dieselbe Seite ohne Hero: 60, Firefox etwa 6 bis 8, Chromium etwa 40). Die View Transition beim Seitenwechsel prüfen die Tests in WebKit deshalb nur unter Reduced Motion (Dauer null). Am echten Safari mit GPU ungeprüft | – | Owner (Gegentest Safari laut BRW-2, dann Code oder Neon- und CRT-Perf) |
 | R-88 | ARCH-4 | Bewusster Rest nach Owner-Entscheidung vom 6. 10. 2026 (Technik-Stopp, ARCH-6): Lesemodus-Knopf (`page__hero.html`, `hero-crt.js`), Update-Toast (`sw-register.js`), Offline-Hinweis (`_layouts/default.html`), „Verstanden“ (`blog-notice.html`) und Landmark-Namen in `masthead.html`, `footer.html` und `post_pagination.html` (R-51) bleiben im Code. Die statischen Vorschau-Kopien von Fraktal-Panel und Skill-Graph auf der Styleguide-Seite bleiben. Panel-Überschriften als `title` in `julia-interactive.html` und `mandelbrot-julia-explorer.html` wandern erst mit der Überarbeitung des Beitrags „Erstellung dieser Website“, der diesen Aufruf zitiert (FACH-4). Dort nennt auch der Projektbaum `_includes/fractal/` noch „Erklärtexte“ | – | Inhalt (mit der Überarbeitung des Beitrags) |
-| R-93 | PERF-7 | Logo-Flackern (`_masthead.scss`): `opacity` an einem SVG-Kind (`[stroke="#f0c"]` in `_includes/logo.svg`) läuft in Chromium nicht auf dem Compositor, dazu zwei Animationen auf derselben Eigenschaft (Grund „incompatible animations“). Im Leerlauf 60 Style-Neuberechnungen je Sekunde auf jeder Seite (gemessen 5. 10. 2026: 180 je 3 s, auch vom Hero weggescrollt). `logo-tube-flicker-a` (11,3 s) ist dabei nie sichtbar, die spätere Animation `-b` überdeckt sie. Erprobt am 5. 10. 2026: Konturen als eigenes `<svg>` in einem `<span>` mit nur `-b`, Schein am gemeinsamen Rahmen. Ergebnis 0 Neuberechnungen, in Chromium in Ruhe byte-gleich, mitten im Aussetzer bis 31/255 an Kanten, in Firefox auch in Ruhe bis 54/255 (Kantenglättung, optisch gleich) | – | Owner (Abweichung in Firefox annehmen, oder so lassen, dazu: zweite Laufzeit wirksam machen, sichtbar) |
-| R-95 | 6.1 (1.4.1) | Fußnoten-Rücksprung (`a.reversefootnote`, Theme-Regel grau ohne Unterstreichung) im Beitrag „Blogbeitrag erstellen“: axe `link-in-text-block`, der Link hebt sich im Text nur durch die Farbe ab. axe meldet das seit 5. 10. 2026 (Stacking-Kontext über `isolation`). Seitenunabhängig ausgenommen in `tests/visual/a11y.spec.js` (`KNOWN_PATTERNS`), damit ein neuer Beitrag mit Fußnoten die CI nicht rot macht. Der Kontrast der Styleguide-Probe `hover-color-text` auf Nav-Hover-Grund (Owner-Ausnahme KOMP-3, 6.4) steht als Baseline in `tests/visual/a11y-known.json` | – | Owner (sichtbar: Unterstreichung oder hellere Farbe am Rücksprung) |
 | R-96 | ARCH-2 | Übergang nach dem SPA-Ausbau in `assets/js/sw-register.js` (`wireLegacySpaHistory`): Die alte SPA-Navigation (bis `c19da3f`) legte Einträge per `pushState` im selben Dokument an. Wer per Update-Toast auf den neuen Stand wechselt und dann „Zurück“ drückt, bekam nur eine neue URL, der Inhalt blieb. Ein `popstate` mit anderem Pfad oder mit State `spa` lädt die Seite deshalb neu. Anker-Sprünge und bfcache-Rückkehr bleiben unberührt. Check: `tests/navigation.spec.js` | – | Code (Übergang, kann ab 2026-12-01 entfallen, dann Funktion und die zwei Tests entfernen) |
 
 ---
@@ -1491,3 +1494,20 @@ Eine Zeile je Änderung, Einzelheiten stehen in den Commits.
 | 2026-10-05 | R-82 erledigt: JS-12 geklärt (`passive` nur bei `touchstart`, `touchmove`, `wheel` und `mousewheel`, bei `scroll` und `resize` wirkungslos, Debounce gleichwertig zu rAF, Messungen über `onDocumentResize` ausgenommen), `fractal-panel.js` schaltet die Zoom-Knöpfe rAF-gedrosselt um. |
 | 2026-10-06 | ARCH-4, R-88 zum größten Teil erledigt: Bedientexte der Fraktal-Panels in `_data/fractal_panel.yml`, Erklärboxen in `_data/mandelbrot.yml`, Skill-Graph-Texte samt Breite-Liste in `_data/skill_graph.yml`, Copyright-Zeile über `powered_by`, Text unverändert. SEC-1 ohne Ausnahme für `fractal-panel.js`, R-65 nachgeführt, R-88 auf den Rest gekürzt und um Fundstellen ergänzt. ARCH-5: `content-check.py` prüft Text-Schlüssel der Bedienung und die Felder der Erklärboxen. |
 | 2026-10-06 | R-88 Rest nach Owner-Wahl: Lesezeit und „Zurück nach oben“ lesen die Theme-Keys aus `_data/ui-text.yml` (neu `minute_read_one` für den Singular), übrige Bedientexte bleiben als Ausnahme im Code, Panel-Überschriften mit dem Beitrag. README nennt `_data/fractal_panel.yml` unter MIT. |
+| 2026-10-06 | R-78 erledigt (Owner): Hamburger gleitet erst zusammen, dann dreht er (je halbe Dauer), Hover-Balken volles Cyan statt Magenta, Hover-Deckkraft 0,8 entfällt (FARB-10, 6.4). |
+| 2026-10-06 | R-93 erledigt (Owner): Logo-Flackern als Compositor-Schleife an eigenem `logo-roehren.svg`, Main Thread im Leerlauf ohne Neuberechnungen (PERF-7, ICON-4). |
+| 2026-10-06 | Touch-Ziele (Owner): Menü-Knopf und Buttons treffen unter `(pointer: coarse)` auf 44 px per `touch-target-pad`, Skill-Chips nach 24-px-Regel, Test in `invariants.spec.js` (6.1, BP-3, Mixin-Tabelle, 16.1). |
+| 2026-10-06 | Neon-Schriftzug auf dem Compositor (Owner, PERF-7): Schein einmal gemalt, Text-Puls über die Deckkraft einer Glow-Ebene, Punkt-Puls über `scale`, Flackern unverändert, Pause auch bei verborgenem Tab, abgeschaltete Punkt-Animationen als `none` statt mit Dauer 0, Test in `navigation.spec.js`. |
+| 2026-10-06 | R-72 erledigt (Owner): `$text-color` als Alias auf `$body-text-color` (`#e8e6e3`), FARB-10 auf Ist. |
+| 2026-10-06 | R-21 erledigt (Owner): Legacy-Laufweiten auf die Skala angeglichen und gelöscht, Leitspruch ohne Laufweite, `scale-guardrail.sh` erlaubt bei Laufweiten nur noch die drei Skalen-Tokens und liest Mixin-Defaults (TYP-7, Mixin-Tabelle, 16.1). |
+| 2026-10-06 | R-95 als dokumentierte Ausnahme in 6.5 (Owner): Fußnoten-Rücksprung mit Namen „Zurück zum Text“ über `inhalts-a11y.rb`, axe-Meldung bleibt, Glossar und 16.1 ergänzt. |
+| 2026-10-06 | R-67, Teil Vorschaubild (Owner): `og-vorschaubild.jpg` (1200 × 630, Hero-Motiv mit Namen und Adresse, `scripts/og-image.js`) auf allen Seiten vor dem Hero, `/mandelbrot/` mit `mandelbrot-preview.jpg`, `og:image:width` und `og:image:height` aus der Datei, SEO-3 auf Ist, IMG-1 mit Ausnahme. |
+| 2026-10-06 | IMG-6 (Owner): Der Alt-Text des Hero-Hintergrunds bleibt, er dient nur noch als Rückfall für das Vorschaubild. |
+| 2026-10-06 | SEC-10a auf Ist (Owner): Datenschutzerklärung `/datenschutz/` als schlichte Seite ohne Hero, Footer-Link über `_data/navigation.yml`, SEC-6, SEITE-1 und ARCH-4 nachgezogen, Glossar ergänzt. |
+| 2026-10-06 | GIT-8 (Owner): Bereiche `theme` und `vendor` neu, alte Bereiche zugeordnet in `docs/commit-bereiche.md`, Commit-Hook `.githooks/commit-msg` prüft GIT-1, GIT-7 und GIT-8 (Durchsetzung „Hook“ in 1.2, kein CI-Check), Eintrag aus 16.2 nach 16.1. |
+| 2026-10-06 | R-50 (Owner): Issue bei Minimal Mistakes eröffnen, Entwurf liegt vor, Register-Weg nachgeführt. |
+| 2026-10-06 | Z-1 (Owner, bestätigt): Die Theme-Einblendung beim Laden bleibt aus (ARCH-3). |
+| 2026-10-06 | R-87 erledigt (Owner): Gegentest in Safari auf echtem Gerät ohne Befund (BRW-2). Die Seitenwechsel prüfen die Tests in WebKit weiter nur unter Reduced Motion, Grund ist der Container ohne GPU (16.1). |
+| 2026-10-06 | TYPO-2 (Owner): nie gendern, generisches Maskulinum, Schrägstriche zwischen Begriffen immer mit Leerzeichen, Beispiele im Guide angeglichen (7.3, 7.7, 3.1, 3.2, 3.5), FACH-3 um „(sinngemäß)“ ergänzt. |
+| 2026-10-06 | Owner-Texte in den Beiträgen: Ubuntu als Textschrift, Prüfskripte ohne feste Anzahl, Vorschaubild in zwei Breiten, ein Zeitrahmen im Ausblick, generisches Maskulinum, Schrägstriche mit Leerzeichen, „sequenzielle“. R-69 gekürzt (Auszug der `devcontainer.json` auf Ist). |
+| 2026-10-06 | Owner-Texte außerhalb von `_posts/`: Lebenslauf (ROI-Satz, Noten klein, „Wissensgraphen“, „CI / CD“), Über mich (Grammatik, „Stand-up-Paddling“, Zitate „sinngemäß“ und „zugeschrieben“ mit Quellen), 404 „Blogbeiträge“, Blog-Suche „Suche leeren“, Archiv ohne „Pagination“, neue Site-Beschreibung, Fraktal-Bedienhinweise klein im Glossar, R-65 nachgeführt (Noten erledigt, der Rest der neuen Regeln steht seit R-88 in `_data/fractal_panel.yml` und `_data/mandelbrot.yml` und ist offen). |
