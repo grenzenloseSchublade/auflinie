@@ -43,9 +43,11 @@ async function open(page, p, { settle = true } = {}) {
   // berechnete Deckkraft, ein halb eingeblendeter Text gälte als zu blass.
   // Chromium ist nach 800 ms fertig, WebKit malt im Container ohne GPU
   // während des Boots unter einem Bild pro Sekunde. Endlos-Animationen
-  // zählen nicht, sie enden nie.
+  // zählen nicht, sie enden nie, ebenso wenig scroll-getriebene (Graph-Knopf
+  // auf /cv/): Sie hängen an der Scroll-Lage, nicht an der Zeit.
   await page.evaluate(() => Promise.all(document.getAnimations()
-    .filter((a) => a.effect && a.effect.getComputedTiming().endTime !== Infinity)
+    .filter((a) => a.effect && a.timeline === document.timeline
+      && a.effect.getComputedTiming().endTime !== Infinity)
     .map((a) => a.finished.catch(() => {}))));
 }
 
