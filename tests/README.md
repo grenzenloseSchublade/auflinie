@@ -40,6 +40,10 @@ Drei Gruppen, alle mit Playwright:
   - `links.spec.js`: externe Links mit `target="_blank"`, `rel="noopener noreferrer"`,
     verstecktem Hinweis „öffnet in neuem Tab“ und Symbol ohne Umbruch davor, interne
     Links unverändert (LINK-3).
+  - `typografie.spec.js`: Vor dem Schrägstrich zwischen Begriffen steht ein geschütztes
+    Leerzeichen (`_plugins/schraegstrich.rb`, TYPO-2), auf jeder Seite aus `visual/pages.js`.
+    Code, Codeblöcke und Attribute bleiben, wie getippt (Fixture im Test-Gastbeitrag), der
+    Skill-Graph misst U+00A0 so breit wie ein Leerzeichen.
   - `blog-search.spec.js`: Blog-Suche auf `/posts/` filtert nach Titel und Gastname ohne
     Groß- und Kleinschreibung, zeigt den Leerzustand, „Suche leeren“ zeigt wieder alles
     und gibt den Fokus ins Suchfeld.
