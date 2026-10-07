@@ -545,12 +545,14 @@ test.describe('Skill-Graph ohne Reduced Motion', () => {
 // einer der beiden ist bedienbar, der andere inert und aria-hidden. Ohne
 // Reduced Motion verwandelt sich der große beim Scrollen in den kleinen
 // (scroll-getriebene CSS-Animation, wo die Engine sie kann), unter Reduced
-// Motion läuft keine Animation.
+// Motion läuft keine Animation, umgeschaltet wird dann, sobald die Konsole
+// den großen zu verdecken beginnt.
 const DOCK = '[data-role="graph-dock"]';
 const BIG = '[data-role="graph-toggle"]';
 
-// Scrollt die Seite so, dass die Hülle des großen Öffners um `past` px über
-// der Unterkante der Konsole steht (negativ: darunter)
+// Scrollt die Seite so, dass die Hülle des großen Öffners mit ihrer
+// Unterkante um `past` px über der Unterkante der Konsole steht (negativ:
+// darunter)
 async function scrollOpener(page, past) {
   await page.evaluate((d) => {
     const slot = document.querySelector('[data-role="graph-toggle-slot"]');
@@ -559,11 +561,22 @@ async function scrollOpener(page, past) {
   }, past);
 }
 
+const slotHeight = (page) => page.locator('[data-role="graph-toggle-slot"]').evaluate((el) => el.offsetHeight);
+
 // Wer ist bedienbar? Je Knopf: inert, aria-hidden
 const dockState = (page) => page.evaluate(([dock, big]) => [dock, big].map((sel) => {
   const el = document.querySelector(sel);
   return { inert: el.inert, hidden: el.getAttribute('aria-hidden') === 'true' };
 }), [DOCK, BIG]);
+
+// Der jeweils bedienbare Öffner: Deckkraft und ob ihn in seiner Mitte etwas
+// anderes verdeckt (die Konsole, der ruhende Öffner fängt keine Zeiger)
+const usableOpener = (page) => page.evaluate(([dock, big]) => {
+  const el = document.querySelector(big).inert ? document.querySelector(dock) : document.querySelector(big);
+  const r = el.getBoundingClientRect();
+  const hit = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2);
+  return { role: el.dataset.role, opacity: Number(getComputedStyle(el).opacity), free: !!hit && (hit === el || el.contains(hit)) };
+}, [DOCK, BIG]);
 
 test.describe('Kleiner Graph-Knopf in der Konsole', () => {
   test.use({ contextOptions: { reducedMotion: 'reduce' } });
@@ -621,10 +634,13 @@ test.describe('Kleiner Graph-Knopf in der Konsole', () => {
   test('nie zwei bedienbare Öffner, der Fokus wandert mit', async ({ page }) => {
     await page.goto('/auflinie/cv/', { waitUntil: 'load' });
     const scope = page.locator('.cv-skills');
-    const steps = [-400, -60, -10, 10, 60, 400, 60, -10, -400];
+    // Ohne Verwandlung schaltet es um, sobald die Oberkante der Hülle die
+    // Konsole erreicht (Unterkante h px darunter)
+    const h = await slotHeight(page);
+    const steps = [-400, -h - 20, -h - 4, -h + 4, -h + 20, 60, 400, 60, -h + 4, -h - 4, -400];
     for (const d of steps) {
       await scrollOpener(page, d);
-      await expect(scope).toHaveAttribute('data-graph-dock', d > 0 ? 'small' : 'big');
+      await expect(scope).toHaveAttribute('data-graph-dock', d > -h ? 'small' : 'big');
       const [dock, big] = await dockState(page);
       // Genau einer bedienbar, der andere inert UND aria-hidden
       expect(dock.inert !== big.inert, `bei ${d} px`).toBe(true);
@@ -649,6 +665,56 @@ test.describe('Kleiner Graph-Knopf in der Konsole', () => {
     await expect.poll(() => dock.evaluate((el) => Number(getComputedStyle(el).opacity))).toBe(1);
     expect(await page.locator(BIG).evaluate((el) => getComputedStyle(el).animationName)).toBe('none');
   });
+
+  // Die Konsole hält nur die rechte untere Ecke für den Knopf frei: Kein
+  // Skill-Text läuft dadurch über, der ohne Knopf passte, und ganz nach unten
+  // gescrollt liegt kein Text unter ihm
+  for (const width of [320, 390, 1280]) {
+    test(`Konsole läuft nicht öfter über als ohne Knopf (${width} px)`, async ({ page }) => {
+      await page.setViewportSize({ width, height: 800 });
+      await page.goto('/auflinie/cv/', { waitUntil: 'load' });
+      await scrollOpener(page, 150);
+      await expect(page.locator('.cv-skills')).toHaveAttribute('data-graph-dock', 'small');
+      const res = await page.evaluate(async (dockSel) => {
+        const info = document.querySelector('[data-role="skill-context"]');
+        const dock = document.querySelector(dockSel);
+        // Layout rechnet beim Messen synchron. Nur die Observer (Platzhalter
+        // .has-overflow) laufen als Microtask, ohne auf Bilder zu warten:
+        // WebKit malt im Container unter Last kaum ein Bild pro Sekunde
+        const frame = () => new Promise((r) => setTimeout(r, 0));
+        // Vergleich: dieselbe Konsole ohne Knopf (Modifier aus, wie ohne Graph)
+        const panel = document.querySelector('[data-role="skill-console"]');
+        const over = { mit: [], ohne: [] };
+        const clash = [];
+        for (const btn of document.querySelectorAll('.cv-skill-chip__button')) {
+          btn.click();
+          await frame();
+          if (info.scrollHeight > info.clientHeight + 1) over.mit.push(btn.dataset.skill);
+          for (const top of [0, info.scrollHeight]) {
+            info.scrollTop = top;
+            await frame();
+            const d = dock.getBoundingClientRect();
+            const box = info.getBoundingClientRect();
+            const range = document.createRange();
+            range.selectNodeContents(info);
+            // Zeilen im sichtbaren Teil, die den Knopf mehr als im Durchschuss treffen
+            if ([...range.getClientRects()].some((r) => r.width > 0 && r.top >= box.top - 1 && r.bottom <= box.bottom + 1
+              && r.right > d.left && r.left < d.right && r.bottom - 3 > d.top && r.top < d.bottom)) clash.push(`${btn.dataset.skill}@${top}`);
+          }
+          info.scrollTop = 0;
+          panel.classList.remove('cv-skills__console--dock');
+          info.classList.remove('has-overflow');
+          if (info.scrollHeight > info.clientHeight + 1) over.ohne.push(btn.dataset.skill);
+          panel.classList.add('cv-skills__console--dock');
+          btn.click();
+          await frame();
+        }
+        return { over, clash };
+      }, DOCK);
+      expect(res.over.mit.filter((s) => !res.over.ohne.includes(s))).toEqual([]);
+      expect(res.clash).toEqual([]);
+    });
+  }
 
   test.describe('Touch', () => {
     test.use({ viewport: MOBIL, hasTouch: true, isMobile: true });
@@ -681,30 +747,92 @@ test.describe('Kleiner Graph-Knopf in der Konsole', () => {
 // Ohne Reduced Motion: Wo die Engine scroll-getriebene Animationen kann,
 // hängen großer und kleiner Knopf an derselben Scroll-Zeitleiste (kein
 // Scroll-Listener), sonst bleibt es bei der einfachen Blende.
-test.describe('Kleiner Graph-Knopf: Verwandlung beim Scrollen', () => {
-  test.use({ contextOptions: { reducedMotion: 'no-preference' }, viewport: { width: 1280, height: 900 } });
+const timelinesSupported = (page) => page.evaluate(() => CSS.supports('animation-timeline: view()') && CSS.supports('timeline-scope: none'));
 
-  test('Scroll-Zeitleiste oder Blende, nie beide voll sichtbar', async ({ page }) => {
-    await page.goto('/auflinie/cv/', { waitUntil: 'load' });
-    await expect(page.locator('.cv-skills')).toHaveAttribute('data-graph-dock', 'big');
-    const sda = await page.evaluate(() => CSS.supports('animation-timeline: view()') && CSS.supports('timeline-scope: none'));
-    const names = () => page.evaluate(([dock, big]) => [dock, big].map((sel) =>
-      getComputedStyle(document.querySelector(sel)).animationName), [DOCK, BIG]);
-    expect(await names()).toEqual(sda ? ['graph-dock-in', 'graph-dock-out'] : ['none', 'none']);
-    if (sda) {
-      const timelines = await page.evaluate((sel) => document.querySelector(sel).getAnimations()
-        .map((a) => a.timeline && a.timeline.constructor.name), DOCK);
-      expect(timelines).toEqual(['ViewTimeline']);
-    }
-    // Mitten im Übergang: höchstens einer voll sichtbar
-    for (const d of [-80, -40, -10, 10, 40]) {
-      await scrollOpener(page, d);
-      await page.waitForTimeout(100);
-      const op = await page.evaluate(([dock, big]) => [dock, big].map((sel) =>
-        Number(getComputedStyle(document.querySelector(sel)).opacity)), [DOCK, BIG]);
-      expect(op[0] === 1 && op[1] === 1, `bei ${d} px: ${op}`).toBe(false);
-    }
-  });
+test.describe('Kleiner Graph-Knopf: Verwandlung beim Scrollen', () => {
+  test.use({ contextOptions: { reducedMotion: 'no-preference' } });
+
+  for (const vp of [{ name: 'Desktop', size: { width: 1280, height: 900 } }, { name: 'mobil', size: MOBIL }]) {
+    test.describe(vp.name, () => {
+      test.use({ viewport: vp.size });
+
+      test('Scroll-Zeitleiste oder Blende', async ({ page }) => {
+        await page.goto('/auflinie/cv/', { waitUntil: 'load' });
+        await expect(page.locator('.cv-skills')).toHaveAttribute('data-graph-dock', 'big');
+        const sda = await timelinesSupported(page);
+        const names = () => page.evaluate(([dock, big]) => [dock, big].map((sel) =>
+          getComputedStyle(document.querySelector(sel)).animationName), [DOCK, BIG]);
+        expect(await names()).toEqual(sda
+          ? ['graph-dock-in', 'graph-dock-shrink, graph-dock-glide, graph-dock-hold, graph-dock-out']
+          : ['none', 'none']);
+        if (sda) {
+          const timelines = await page.evaluate((sel) => document.querySelector(sel).getAnimations()
+            .map((a) => a.timeline && a.timeline.constructor.name), DOCK);
+          expect(timelines).toEqual(['ViewTimeline']);
+        }
+      });
+
+      // Bedienbar ist immer der Knopf, den man sieht: Über die ganze Zone hat
+      // er mindestens 50 % Deckkraft und liegt nicht unter der Konsole (sein
+      // Fokusring bleibt sichtbar)
+      test('der bedienbare Knopf ist überall in der Zone zu sehen', async ({ page, browserName }) => {
+        // WebKit headless (Desktop) rechnet Zeitleiste und Observer nach einem
+        // Skript-Scroll erst beim nächsten echten Scrollschritt neu
+        test.skip(browserName === 'webkit' && vp.name === 'Desktop', 'WebKit headless aktualisiert Scroll-Zeitleisten nach scrollTo nicht');
+        await page.goto('/auflinie/cv/', { waitUntil: 'load' });
+        const h = await slotHeight(page);
+        const ride = await page.evaluate(() => {
+          const v = getComputedStyle(document.querySelector('.cv-skills')).getPropertyValue('--graph-dock-ride').trim();
+          return v ? parseFloat(v) * parseFloat(getComputedStyle(document.documentElement).fontSize) : 0;
+        });
+        const bad = [];
+        for (let d = -h - 40; d <= Math.max(ride, h) + 30; d += 4) {
+          await scrollOpener(page, d);
+          // Blende (ohne Zeitleiste) und Observer ausklingen lassen
+          await page.waitForTimeout(60);
+          await page.evaluate(() => Promise.all(document.getAnimations()
+            .filter((a) => a.timeline === document.timeline && a.effect && a.effect.getComputedTiming().endTime !== Infinity)
+            .map((a) => a.finished.catch(() => {}))));
+          const u = await usableOpener(page);
+          if (u.opacity < 0.5 || !u.free) bad.push(`${d}: ${u.role} ${u.opacity.toFixed(2)}${u.free ? '' : ' verdeckt'}`);
+        }
+        expect(bad).toEqual([]);
+      });
+
+      // Sprung über das Inhaltsverzeichnis: Das Ziel liegt vor dem Übergang,
+      // großer Knopf und Erklärzeile stehen voll da, der kleine ist unsichtbar
+      test('Sprung über das Inhaltsverzeichnis landet vor dem Übergang', async ({ page }) => {
+        await page.goto('/auflinie/cv/', { waitUntil: 'load' });
+        // Weiter unten, damit am Handy die mitlaufende Leiste da ist
+        await page.evaluate(() => window.scrollTo({ top: 1500, behavior: 'instant' }));
+        const link = page.locator('a[href="#technische-fähigkeiten"]:visible').first();
+        if (!(await link.count())) {
+          await expect(page.locator('#toc-sticky-mobile')).toHaveClass(/is-visible/);
+          await page.locator('#toc-sticky-toggle').click();
+        }
+        await page.locator('a[href="#technische-fähigkeiten"]:visible').first().click();
+        await expect.poll(() => page.evaluate(() => decodeURIComponent(location.hash))).toBe('#technische-fähigkeiten');
+        // Ruhe nach dem (ggf. weichen) Scrollen
+        let last = -1;
+        await expect.poll(async () => {
+          const y = await page.evaluate(() => window.scrollY);
+          const still = y === last;
+          last = y;
+          return still;
+        }, { intervals: [150] }).toBe(true);
+        const state = await page.evaluate(([dock, big]) => {
+          const q = (s) => document.querySelector(s);
+          const cs = (s) => getComputedStyle(q(s));
+          return {
+            state: q('.cv-skills').dataset.graphDock,
+            big: Number(cs(big).opacity), scale: cs(big).scale, translate: cs(big).translate,
+            lead: Number(cs('.skill-graph__lead').opacity), dock: Number(cs(dock).opacity),
+          };
+        }, [DOCK, BIG]);
+        expect(state).toEqual({ state: 'big', big: 1, scale: expect.stringMatching(/^(none|1)$/), translate: expect.stringMatching(/^(none|0px)$/), lead: 1, dock: 0 });
+      });
+    });
+  }
 });
 
 // Vorschau beim Überfahren (Maus): ein Knoten ohne Namen zeigt ihn ruhig an,

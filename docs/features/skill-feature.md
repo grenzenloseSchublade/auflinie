@@ -26,16 +26,21 @@ Die Skill-Chips auf `/cv/` sind erkundbar:
 - **Kleiner Graph-Knopf in der Konsole** (Prototyp, Owner 7. 10. 2026): Die
   Auswahl-Konsole über den Chips klebt beim Scrollen oben. Sobald der große
   Knopf darunter aus dem Bild ist, übernimmt rechts unten in der Konsole ein
-  kleiner Knopf (Symbol und „Graph“) und öffnet dasselbe Sheet. Beim Scrollen
-  verwandelt sich der große in den kleinen: Er schrumpft und gleitet nach
-  rechts unter die Konsole, der kleine blendet zugleich ein, die Erklärzeile
-  blendet kurz vor der Konsole aus (scroll-getriebene CSS-Animation, nur
-  `transform` und `opacity`, kein Scroll-Listener). Ohne Scroll-Zeitleisten
+  kleiner Knopf (Symbol und „Graph“, 24 px hoch) und öffnet dasselbe Sheet.
+  Die Konsole hält dafür nur die Ecke unter ihren vollen Zeilen frei
+  (`shape-outside`), sie läuft nicht öfter über als ohne Knopf. Beim Scrollen
+  wird derselbe Knopf klein und dockt an: Erst kurz bevor der große die
+  Konsole erreicht, steigt er in ihren unteren Rand und schrumpft auf die
+  Höhe des kleinen, gleitet dort stehend nach rechts, bis er auf dem kleinen
+  liegt, und blendet erst am Ziel in ihn über (scroll-getriebene
+  CSS-Animation, nur `scale`, `translate`, `transform` und `opacity`, kein
+  Scroll-Listener). Die Erklärzeile bleibt stehen. Ohne Scroll-Zeitleisten
   (Firefox) und bei Reduced Motion blendet der kleine nur ein (0,2 s bzw.
-  sofort). Genau einer der beiden Knöpfe ist bedienbar, der andere `inert`
-  und `aria-hidden`, ein IntersectionObserver in `skill-graph-sheet.js`
-  schaltet um. Der Fokus kehrt nach dem Schließen zu dem Knopf zurück, über
-  den geöffnet wurde.
+  sofort), sobald die Konsole den großen zu verdecken beginnt. Genau einer
+  der beiden Knöpfe ist bedienbar, der andere `inert` und `aria-hidden`, ein
+  IntersectionObserver in `skill-graph-sheet.js` schaltet in der Mitte der
+  Überblendung um (dort sind beide zu 60 % sichtbar). Der Fokus kehrt nach
+  dem Schließen zu dem Knopf zurück, über den geöffnet wurde.
 
 Die statische Chip-Liste bleibt immer die kanonische, vollständige
 Darstellung (auch für Screenreader und Druck); alles Interaktive ist

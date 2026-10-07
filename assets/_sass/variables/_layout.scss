@@ -21,10 +21,13 @@ $content-width: 46rem;
 // 94vw (_skill-graph.scss).
 $graph-sheet-width: 1100px;
 
-// Kleiner Graph-Öffner rechts in der Auswahl-Konsole über den Chips: feste
-// Breite (Symbol und ein Mono-Wort), die Konsole hält genau so viel Platz
-// frei (_cv.scss, _skill-graph.scss)
+// Kleiner Graph-Öffner rechts unten in der Auswahl-Konsole über den Chips:
+// feste Breite (Symbol und ein Mono-Wort), die Konsole hält genau so viel
+// Platz frei (_cv.scss, _skill-graph.scss). Höhe = Mindestziel nach WCAG
+// 2.5.8, damit er unter den vollen Zeilen der Konsole Platz hat (grober
+// Zeiger: 44 px Trefferfläche über touch-target-pad)
 $graph-dock-width: 4.75rem;
+$graph-dock-height: 24px;
 
 // Mobile-Drawer (Masthead): Breite der .hidden-links UND Aussparung des
 // body::before-Overlays — beide müssen synchron bleiben (_masthead.scss).

@@ -16,6 +16,12 @@ $graph-z-touch-hint: 3;
 // skala-Ausnahme: lokale Ebene (Z-2), kleiner Öffner über der Konsolen-Anzeige
 $graph-z-dock: 1;
 
+// Großer Öffner während der Verwandlung über der klebenden Konsole (deren
+// Ebene $cv-z-selection-info: 6 in _cv.scss, dieselbe Stapel-Ebene), damit
+// er sichtbar in ihre Ecke gleitet und bedienbar nie unter ihr liegt
+// skala-Ausnahme: lokale Ebene (Z-2), eins über der Konsole ($cv-z-selection-info)
+$graph-z-dock-flight: 7;
+
 // Zielgröße der Kopfleisten-Knöpfe (WCAG 2.5.8: mindestens 24 px), gleich
 // hoch wie der Schließen-Knopf, damit die Leiste eine Linie bildet
 $graph-tool-size: 32px;
@@ -172,10 +178,10 @@ $graph-tool-size: 32px;
 
 // Kleiner Öffner rechts unten in der Auswahl-Konsole über den Chips
 // (Markup cv/skills.html, Owner 7. 10. 2026): Mono-Knopf wie die
-// Ansichts-Knöpfe, mit dem Symbol des großen Öffners. Liegt im Raster der
-// Konsolen-Hülle über der Anzeige, die rechts seine Breite freihält
-// ($graph-dock-width, _cv.scss). Polster bis 44 px nur bei grobem Zeiger
-// (touch-target-pad), die Konsole wird dadurch nicht höher.
+// Ansichts-Knöpfe, mit dem Symbol des großen Öffners, aber nur 24 px hoch
+// ($graph-dock-height): So passt er unter die vollen Zeilen der Konsole, in
+// die Ecke, die sie frei hält (_cv.scss). Polster bis 44 px nur bei grobem
+// Zeiger (touch-target-pad), die Konsole wird dadurch nicht höher.
 // Sichtbar, sobald der große Öffner aus dem Bild ist: skill-graph-sheet.js
 // setzt data-graph-dock an .cv-skills (big/small) und schaltet inert und
 // aria-hidden um. Hier die einfache Blende (Firefox, Reduced Motion, ohne
@@ -188,7 +194,9 @@ $graph-tool-size: 32px;
   position: relative;
   z-index: $graph-z-dock;
   width: $graph-dock-width;
-  margin: $space-2;
+  min-height: $graph-dock-height;
+  margin: 0 $space-2 0 0;
+  padding-block: 0;
   opacity: 0;
   transition: opacity $duration-base ease, border-color $duration-base ease, color $duration-base ease;
 
@@ -205,6 +213,13 @@ $graph-tool-size: 32px;
 // unsichtbar auch dort, wo die Konsole ihn nicht verdeckt (Ende des Kapitels)
 [data-graph-dock="small"] .skill-graph__open {
   opacity: 0;
+}
+
+// Der ruhende der beiden Öffner (inert) fängt keine Zeiger ab: Während der
+// Überblendung liegt der große über dem kleinen
+.skill-graph__open[inert],
+.skill-graph__dock[inert] {
+  pointer-events: none;
 }
 
 // Info-Leiste oben im Sheet: exakt die Konsole über den Chips (Mixin
@@ -280,106 +295,115 @@ $graph-tool-size: 32px;
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Verwandlung beim Scrollen (Owner, 7. 10. 2026): Der große Öffner wird beim
-// Herausscrollen kleiner und gleitet nach rechts unter die Unterkante der
-// Konsole, der kleine Knopf dort blendet zugleich ein. Rückwärts beim
-// Zurückscrollen. Scroll-getriebene CSS-Animation (Compositor, nur transform
-// und opacity, kein Scroll-Listener). Zeitleiste: die ruhende Hülle des
-// Öffners (.skill-graph__open-slot), ihr oberer Rand zählt ab der Unterkante
-// der klebenden Konsole (--graph-dock-line, gemessen von
-// skill-graph-sheet.js). timeline-scope macht die Zeitleiste für den kleinen
-// Knopf in der Konsole sichtbar. Ohne Scroll-Zeitleisten (Firefox) und bei
-// Reduced Motion bleibt es bei der einfachen Blende oben, ebenso ohne JS
-// (dann fehlt data-graph-dock).
-// Weg: rechte Unterkante des großen auf die des kleinen (100cqi = Breite der
-// Zeile, Container .skill-graph__entry; der Öffner steht links in ihr).
+// Verwandlung beim Scrollen (Owner, 7. 10. 2026, nachgebessert nach der
+// Prüfung): Derselbe Knopf wird klein und dockt an. Erst kurz bevor der
+// große Öffner die Unterkante der klebenden Konsole erreicht, beginnt er,
+// vorher (auch nach einem Sprung über das Inhaltsverzeichnis) steht alles
+// unverändert, die Erklärzeile bleibt immer stehen.
+//   1. Anflug: Er steigt mit dem Scrollen in den unteren Rand der Konsole
+//      und schrumpft dabei genau auf die Höhe des kleinen Knopfs.
+//   2. Andocken: Dort bleibt er stehen (die Verschiebung gleicht das
+//      Scrollen aus) und gleitet waagerecht, bis seine rechte Kante auf der
+//      des kleinen liegt.
+//   3. Überblendung am Ziel: Er blendet aus, der kleine an derselben Stelle
+//      ein. In der Mitte schaltet skill-graph-sheet.js bedienbar und inert
+//      um, beide sind dort noch zu 60 % zu sehen.
+// Rückwärts beim Zurückscrollen. Scroll-getriebene CSS-Animationen
+// (Compositor, nur scale, translate, transform und opacity, kein
+// Scroll-Listener, keine Layoutänderung). Zeitleiste: die ruhende Hülle des
+// Öffners (.skill-graph__open-slot) gegen eine Linie $graph-dock-ride über
+// der Unterkante der Konsole (--graph-dock-line), timeline-scope macht sie
+// für den kleinen Knopf in der Konsole sichtbar. Die Maße misst
+// skill-graph-sheet.js: --graph-dock-s (Höhe klein durch Höhe groß),
+// --graph-dock-dx (Weg der rechten Kante), --graph-dock-gap (Abstand des
+// kleinen zur Unterkante der Konsole). Es liest $graph-dock-ride und
+// $graph-dock-fade über die Custom Properties unten, für den Umschaltpunkt.
+// Ohne Scroll-Zeitleisten (Firefox) und bei Reduced Motion bleibt es bei der
+// einfachen Blende oben, ebenso ohne JS (dann fehlt data-graph-dock).
 // ─────────────────────────────────────────────────────────────────────────────
 
-// skala-Ausnahme: [Block] Choreografie (MO-4), Strecke und Maße der Verwandlung
-$graph-dock-range: exit -6rem exit 100%;
-$graph-dock-scale: 0.5;
-$graph-dock-lead-range: exit -6.5rem exit -4.5rem;
+// skala-Ausnahme: [Block] Choreografie (MO-4), Strecken der Verwandlung
+// Anflug: Start, wenn die Oberkante des Öffners so weit unter der Konsole ist
+$graph-dock-approach: 1rem;
+
+// Scrollweg ab „Öffner ganz unter der Konsole“ bis zum Ende der Überblendung
+$graph-dock-ride: 10rem;
+
+// Überblendung am Ziel (Ende des Wegs), Umschalten in ihrer Mitte
+$graph-dock-fade: 1.25rem;
 
 @supports (animation-timeline: view()) and (timeline-scope: none) {
   @media (prefers-reduced-motion: no-preference) {
     .cv-skills[data-graph-dock] {
-      timeline-scope: --graph-dock;
+      --graph-dock-ride: #{$graph-dock-ride};
+      --graph-dock-fade: #{$graph-dock-fade};
 
-      .skill-graph__entry {
-        container-type: inline-size;
-      }
+      timeline-scope: --graph-dock;
 
       .skill-graph__open-slot {
         view-timeline: --graph-dock block;
-        view-timeline-inset: var(--graph-dock-line, 0) auto;
+        view-timeline-inset: calc(var(--graph-dock-line, 0px) - #{$graph-dock-ride}) auto;
       }
 
+      // Bereiche relativ zur Zeitleiste: exit 0% = Oberkante der Hülle an
+      // der Linie, 100% = ihre Höhe. Anflug bis „Unterkante auf Höhe des
+      // kleinen“, Andocken bis zum Ende, Überblendung im letzten Stück.
       .skill-graph__open {
-        transform-origin: 100% 100%;
-        animation: graph-dock-out linear both;
-        animation-timeline: --graph-dock;
-        animation-range: $graph-dock-range;
-      }
-
-      // Die Erklärzeile blendet aus, kurz bevor sie selbst die Konsole
-      // erreicht (eigene Zeitleiste). Auf breiten Fenstern steht sie neben
-      // dem Öffner und ist weg, bevor er über sie gleitet, schmal steht sie
-      // darunter und bleibt bis kurz vor der Konsole lesbar.
-      .skill-graph__lead {
-        view-timeline: --graph-dock-lead block;
-        view-timeline-inset: var(--graph-dock-line, 0) auto;
-        animation: graph-dock-lead linear both;
-        animation-timeline: --graph-dock-lead;
-        animation-range: $graph-dock-lead-range;
+        position: relative;
+        z-index: $graph-z-dock-flight;
+        transform-origin: 0 100%;
+        animation:
+          graph-dock-shrink linear both,
+          graph-dock-glide ease-in-out both,
+          graph-dock-hold linear both,
+          graph-dock-out linear both;
+        animation-timeline: --graph-dock, --graph-dock, --graph-dock, --graph-dock;
+        animation-range:
+          exit calc(-1 * (#{$graph-dock-ride} + #{$graph-dock-approach})) exit calc(100% - #{$graph-dock-ride} + var(--graph-dock-gap, 0px)),
+          exit calc(100% - #{$graph-dock-ride} + var(--graph-dock-gap, 0px)) exit calc(100% - #{$graph-dock-fade}),
+          exit calc(100% - #{$graph-dock-ride} + var(--graph-dock-gap, 0px)) exit 100%,
+          exit calc(100% - #{$graph-dock-fade}) exit 100%;
       }
 
       .skill-graph__dock {
-        transform-origin: 100% 100%;
         animation: graph-dock-in linear both;
         animation-timeline: --graph-dock;
-        animation-range: $graph-dock-range;
+        animation-range: exit calc(100% - #{$graph-dock-fade}) exit 100%;
       }
     }
   }
 }
 
-// Erst schrumpfen (die Erklärzeile daneben blendet derweil aus), dann
-// gleiten
-@keyframes graph-dock-out {
-  0% {
-    opacity: 1;
-    transform: translate(0, 0) scale(1);
-  }
-
-  30% {
-    opacity: 1;
-    transform: translate(0, 0) scale(0.85);
-  }
-
-  100% {
-    opacity: 0;
-    transform: translate(calc(100cqi - 100% - #{$space-2}), -#{$space-2}) scale($graph-dock-scale);
-  }
+// Anflug: auf die Höhe des kleinen Knopfs (Ecke unten links bleibt)
+@keyframes graph-dock-shrink {
+  from { scale: 1; }
+  to { scale: var(--graph-dock-s, 1); }
 }
 
-@keyframes graph-dock-lead {
+// Andocken: waagerecht bis zur rechten Kante des kleinen
+@keyframes graph-dock-glide {
+  from { translate: 0 0; }
+  to { translate: var(--graph-dock-dx, 0) 0; }
+}
+
+// Andocken: gleicht das Scrollen aus, damit er am unteren Rand der Konsole
+// stehen bleibt (transform wirkt nach scale, daher geteilt durch die Skala)
+@keyframes graph-dock-hold {
+  from { transform: translateY(0); }
+  to { transform: translateY(calc((#{$graph-dock-ride} - var(--graph-dock-gap, 0px)) / var(--graph-dock-s, 1))); }
+}
+
+// Überblendung am Ziel: in der Mitte (Umschaltpunkt) beide zu 60 % sichtbar
+@keyframes graph-dock-out {
+  0% { opacity: 1; }
+  50% { opacity: 0.6; }
   100% { opacity: 0; }
 }
 
 @keyframes graph-dock-in {
-  0% {
-    opacity: 0;
-    transform: translateY($space-2) scale(0.6);
-  }
-
-  45% {
-    opacity: 0;
-  }
-
-  100% {
-    opacity: 1;
-    transform: none;
-  }
+  0% { opacity: 0; }
+  50% { opacity: 0.6; }
+  100% { opacity: 1; }
 }
 
 // skala-Ausnahme-Ende

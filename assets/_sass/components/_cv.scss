@@ -494,11 +494,33 @@ li.cv-skill-chip--breadth {
   margin: 0 0 $space-4;
 }
 
-// Mit Graph: rechts Platz für den kleinen Öffner, immer reserviert, auch
-// solange er unsichtbar ist. Sonst bräche der Text beim Ein- und Ausblenden
-// um. Die Höhe der Konsole bleibt (Text bricht eine Zeile früher).
-.cv-skills__console--dock p.cv-skills__selection-info {
-  padding-right: calc(#{$space-3} + #{$graph-dock-width} + #{$space-2});
+// Mit Graph: Platz für den kleinen Öffner nur in der rechten unteren Ecke,
+// immer reserviert, auch solange er unsichtbar ist (sonst bräche der Text
+// beim Ein- und Ausblenden um). Ein Float über die ganze Höhe, dessen Form
+// (shape-outside) nur das untere Stück trifft: Die Konsole zeigt 2 (schmal
+// 3) volle Zeilen und darunter den Anfang der nächsten, ein Text, der diese
+// erreicht, scrollt ohnehin schon. Der Knopf ($graph-dock-height,
+// _skill-graph.scss) sitzt auf der Unterkante und reicht nur in dieses
+// Stück und in den unteren Durchschuss der letzten vollen Zeile. Die Form
+// beginnt deshalb etwas unter seiner Oberkante ($space-1 / 2), sonst träfe
+// sie die letzte volle Zeile (mit dem Skill-Namen in Mono ist die erste
+// Zeile höher als 1.5em). Volle Zeilen behalten so ihre ganze Breite, die
+// Konsole läuft nicht öfter über als ohne Knopf.
+.cv-skills__console--dock p.cv-skills__selection-info::before {
+  content: "";
+  float: right;
+  width: calc(#{$graph-dock-width} + #{$space-2});
+  height: 100%;
+  shape-outside: inset(calc(100% - #{$graph-dock-height} + #{$space-2} + #{$space-1} / 2) 0 0 0);
+}
+
+// Läuft ein Text doch über (skill-graph-sheet.js setzt .has-overflow), hält
+// ein Platzhalter am Textende die Ecke frei, damit die letzte Zeile auch
+// ganz nach unten gescrollt nicht unter dem Knopf liegt
+.cv-skills__console--dock p.cv-skills__selection-info.has-overflow::after {
+  content: "";
+  display: inline-block;
+  width: calc(#{$graph-dock-width} + #{$space-2});
 }
 
 .cv-skills.has-selection .cv-skills__selection-info {

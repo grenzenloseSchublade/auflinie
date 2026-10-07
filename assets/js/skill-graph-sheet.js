@@ -23,13 +23,18 @@
  * ist, und gibt ab, sobald dieser wieder zu sehen ist. Es ist immer genau
  * einer der beiden bedienbar, der andere ist inert und aria-hidden. Hat der
  * abgebende den Fokus, wandert er mit. Ein IntersectionObserver misst die
- * ruhende Hülle des großen Knopfs gegen die Unterkante der Konsole (kein
+ * ruhende Hülle des großen Knopfs gegen einen Umschaltpunkt (kein
  * Scroll-Listener), data-graph-dock an .cv-skills (big/small) trägt den
  * Zustand ins CSS. Die sichtbare Verwandlung beim Scrollen macht das CSS
- * allein (scroll-getriebene Animation, _skill-graph.scss), dafür steht die
- * Unterkante der Konsole als --graph-dock-line an .cv-skills. Der kleine
- * Knopf öffnet über denselben Toggle, der Fokus kehrt nach dem Schließen
- * zu dem Knopf zurück, über den geöffnet wurde.
+ * allein (scroll-getriebene Animation, _skill-graph.scss). Von hier kommen
+ * nur die Maße (Unterkante der Konsole, Skala, Weg) als Custom Properties an
+ * .cv-skills. Mit Verwandlung liegt der Umschaltpunkt in der Mitte der
+ * Überblendung am Ende des Wegs, ohne (Firefox, Reduced Motion) dort, wo die
+ * Konsole den großen Knopf zu verdecken beginnt. So ist der bedienbare
+ * Knopf immer der sichtbare. Der kleine Knopf öffnet über denselben Toggle,
+ * der Fokus kehrt nach dem Schließen zu dem Knopf zurück, über den geöffnet
+ * wurde. Läuft der Text der Konsole über, hält .has-overflow die Ecke des
+ * kleinen Knopfs am Textende frei.
  *
  * Fällt dieses Modul aus, bleibt der Graph über skill-graph.js voll funktionsfähig
  * (das Panel zeigt sich dann inline). Seiten-Modul, mountet einmal beim Laden.
@@ -131,32 +136,85 @@
       self.toggle.click();   // skill-graph.js öffnet, onHidden präsentiert
     });
 
+    // Verwandlung beim Scrollen (CSS, _skill-graph.scss) nur, wo die Engine
+    // Scroll-Zeitleisten kann und keine reduzierte Bewegung gewünscht ist.
+    // Sonst einfache Blende und Umschalten, sobald die Konsole den großen
+    // Knopf zu verdecken beginnt.
+    const motion = window.matchMedia('(prefers-reduced-motion: no-preference)');
+    const timelines = !!(window.CSS && CSS.supports &&
+      CSS.supports('animation-timeline: view()') && CSS.supports('timeline-scope: none'));
+    const rootPx = function () { return parseFloat(getComputedStyle(document.documentElement).fontSize) || 16; };
+    // Länge aus einer Custom Property des CSS (rem oder px) in px
+    function cssPx(name) {
+      const v = getComputedStyle(scope).getPropertyValue(name).trim();
+      const n = parseFloat(v);
+      if (!isFinite(n)) { return 0; }
+      return /rem$/.test(v) ? n * rootPx() : n;
+    }
+
     // Unterkante der klebenden Konsole im Viewport: ihr top (Masthead,
     // Sticky-TOC, Abstand) plus ihre Höhe. Ändert sich mit der Fenstergröße
-    // und wenn toc.js --sticky-toc-height an der Konsole umsetzt.
+    // und wenn toc.js --sticky-toc-height an der Konsole umsetzt. Dazu die
+    // Maße, mit denen das CSS den großen Knopf genau auf den kleinen führt.
     let io = null;
-    let line = -1;
+    let margin = '';
     function observe() {
-      const next = Math.round((parseFloat(getComputedStyle(box).top) || 0) + box.offsetHeight);
-      if (next === line && io) { return; }
-      line = next;
+      const line = Math.round((parseFloat(getComputedStyle(box).top) || 0) + box.offsetHeight);
+      const h = slot.offsetHeight;
+      const s = h ? dock.offsetHeight / h : 1;
+      const dockRect = dock.getBoundingClientRect();
+      const boxRect = box.getBoundingClientRect();
+      const gap = Math.round(boxRect.bottom - dockRect.bottom);
+      const dx = Math.round(dockRect.right - slot.getBoundingClientRect().left - s * self.toggle.offsetWidth);
       scope.style.setProperty('--graph-dock-line', line + 'px');
+      scope.style.setProperty('--graph-dock-s', String(Math.round(s * 1000) / 1000));
+      scope.style.setProperty('--graph-dock-dx', dx + 'px');
+      scope.style.setProperty('--graph-dock-gap', gap + 'px');
+      // Umschaltpunkt als Abstand der Unterkante der Hülle unter der Linie:
+      // mit Verwandlung in der Mitte der Überblendung am Ende des Wegs, sonst
+      // sobald ihre Oberkante die Konsole erreicht
+      const ride = cssPx('--graph-dock-ride');
+      const at = timelines && motion.matches && ride
+        ? cssPx('--graph-dock-fade') / 2 - ride
+        : h;
+      const next = (-Math.round(line + at)) + 'px 0px ' + DOCK_FAR + 'px 0px';
+      if (next === margin && io) { return; }
+      margin = next;
       if (io) { io.disconnect(); }
-      // Beobachtet wird alles ab der Unterkante der Konsole abwärts, auch
-      // weit unterhalb des Viewports (riesiger unterer Rand). Sonst meldete
-      // ein Sprung von „unter dem Viewport“ nach „über der Konsole“ nichts
+      // Beobachtet wird alles ab dem Umschaltpunkt abwärts, auch weit
+      // unterhalb des Viewports (riesiger unterer Rand). Sonst meldete ein
+      // Sprung von „unter dem Viewport“ nach „über der Konsole“ nichts
       // (Anker, Ende-Taste): Beides wäre „schneidet nicht“.
       io = new IntersectionObserver(function (entries) {
-        // Ganz über der Unterkante der Konsole (darunter verdeckt oder
-        // hinausgescrollt): Der kleine Knopf übernimmt
+        // Ganz über dem Umschaltpunkt: Der kleine Knopf übernimmt
         self.setDocked(!entries[entries.length - 1].isIntersecting);
-      }, { rootMargin: '-' + line + 'px 0px ' + DOCK_FAR + 'px 0px' });
+      }, { rootMargin: margin });
       io.observe(slot);
     }
     observe();
     window.addEventListener('resize', observe);
-    if ('ResizeObserver' in window) { new ResizeObserver(observe).observe(box); }
+    if (motion.addEventListener) { motion.addEventListener('change', observe); }
+    // Schriften laden nach: Größe der Knöpfe und der Konsole neu messen
+    if ('ResizeObserver' in window) {
+      const ro = new ResizeObserver(observe);
+      [box, dock, this.toggle].forEach(function (el) { ro.observe(el); });
+    }
     new MutationObserver(observe).observe(box, { attributes: true, attributeFilter: ['style'] });
+
+    // Läuft der Text der Konsole über, hält ein Platzhalter am Textende die
+    // Ecke des kleinen Knopfs frei (.has-overflow, _cv.scss). Gemessen ohne
+    // ihn, nur innerhalb der Konsole (feste Höhe, die Seite verschiebt sich
+    // nicht).
+    const info = box.querySelector('[data-role="skill-context"]');
+    if (info) {
+      const fit = function () {
+        info.classList.remove('has-overflow');
+        info.classList.toggle('has-overflow', info.scrollHeight > info.clientHeight + 1);
+      };
+      new MutationObserver(fit).observe(info, { childList: true, characterData: true, subtree: true });
+      window.addEventListener('resize', fit);
+      fit();
+    }
   };
 
   // Genau einer der beiden Öffner ist bedienbar und für Screenreader da
