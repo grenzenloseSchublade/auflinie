@@ -34,7 +34,7 @@ Am Ende steht, wie sich eine Änderung [vor dem Push prüfen](#prüfen-vor-dem-p
    {% comment %} Absatz noch kürzen {% endcomment %}
    ```
 
-   Formeln: `$$E = mc^2$$` mitten im Satz steht im Text, `$$…$$` als eigener Absatz steht abgesetzt. Links ganz normal mit `https://` schreiben, externe Links öffnen beim Bauen von selbst in einem neuen Tab.
+   Formeln: `$$E = mc^2$$` mitten im Satz steht im Text, `$$…$$` als eigener Absatz steht abgesetzt. Links ganz normal mit `https://` schreiben, externe Links öffnen beim Bauen von selbst in einem neuen Tab. Schrägstriche zwischen Begriffen mit normalen Leerzeichen tippen („CI / CD“), dass die Zeile nie vor dem Strich umbricht, regelt der Build.
 4. **Bilder ablegen.** Die Datei nach `assets/images/posts/` (Name klein, ohne Umlaute und Leerzeichen, zum Beispiel `wetterstation-aufbau.jpg`), im Text so einbinden:
 
    ```markdown
@@ -102,7 +102,7 @@ Alles steht in `_data/cv_content.yml`, gegliedert in Abschnitte (`- section: …
    Bei Ausbildung heißen die Felder `degree`, `institution`, `location`, `period`, `description` und `achievements`.
 3. Prüfen und pushen.
 
-Fallen: Zeiträume mit Halbgeviertstrich und normalen Leerzeichen („2020 – 2025“, „2025 – Heute“). Mehrzeiliger Text als `|-`-Block, ein harter Zeilenumbruch ist `\\` am Zeilenende. Text mit Doppelpunkt oder Anführungszeichen in doppelte Anführungszeichen setzen, innen deutsche „…“. Die Einrückung zählt: zwei Leerzeichen je Ebene, keine Tabs.
+Fallen: Zeiträume mit Halbgeviertstrich und normalen Leerzeichen („2020 – 2025“, „2025 – Heute“), Schrägstriche ebenso („CI / CD“). Mehrzeiliger Text als `|-`-Block, ein harter Zeilenumbruch ist `\\` am Zeilenende. Text mit Doppelpunkt oder Anführungszeichen in doppelte Anführungszeichen setzen, innen deutsche „…“. Die Einrückung zählt: zwei Leerzeichen je Ebene, keine Tabs.
 
 ### Skill neu
 

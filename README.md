@@ -306,7 +306,7 @@ Ablauf:
 {% endfor %}
 ```
 
-Neue Klassen nach BEM bekommen eine eigene Datei unter `assets/_sass/components/` (STYLEGUIDE SCSS-1, SCSS-5). Externe Links bekommen `target="_blank"`, `rel="noopener noreferrer"` und den Hinweis „öffnet in neuem Tab“ beim Build (`_plugins/external-links.rb`, LINK-3).
+Neue Klassen nach BEM bekommen eine eigene Datei unter `assets/_sass/components/` (STYLEGUIDE SCSS-1, SCSS-5). Externe Links bekommen `target="_blank"`, `rel="noopener noreferrer"` und den Hinweis „öffnet in neuem Tab“ beim Build (`_plugins/external-links.rb`, LINK-3). Vor einen Schrägstrich zwischen Begriffen („CI / CD“) setzt der Build ein geschütztes Leerzeichen (`_plugins/schraegstrich.rb`, TYPO-2), Code und Attribute bleiben, wie getippt.
 
 ### 3. Markdown-Datei erstellen (`_pages/projekte.md`)
 
