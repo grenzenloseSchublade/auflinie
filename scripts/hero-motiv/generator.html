@@ -1,0 +1,387 @@
+<!doctype html>
+<!--
+  Eigenes Hero-Motiv (Alternative zum Stockbild background.jpg): gestreifte
+  Sonne halb über dem Horizont, von innen leuchtend, Perspektivgitter am
+  Boden, dunkler Himmel mit Sternen. Von Grund auf per SVG gezeichnet, ohne
+  externe Bilder und ohne Maße aus background.jpg. Fester Seed, darum
+  liefert jeder Lauf dasselbe Bild.
+
+  Erzeugt werden (mit render.js, Aufruf dort):
+    assets/images/hero-eigen.jpg             1920 × 1024, unter 150 KB
+    assets/images/og-vorschaubild-eigen.jpg  1200 × 630, mit Name und Adresse
+  Umstellen der Seite auf das Motiv: docs/pflege.md, Abschnitt Hero-Motiv.
+
+  Adressen (render.js liefert das Repo unter einer erfundenen http-Adresse
+  aus, damit die Schriften laden):
+    scripts/hero-motiv/generator.html          Motiv, füllt das Fenster (cover)
+    scripts/hero-motiv/generator.html?og       Vorschaubild: Motiv, 50 % Schwarz,
+                                               Name und Adresse wie og-image.html
+    scripts/hero-motiv/generator.html?seed=7   andere Sternenverteilung
+
+  Zeichenfläche: viewBox 2400 × 1280 (1,875 : 1 wie der Hero), gerendert
+  wird verkleinert auf 1920 × 1024 (IMG-2).
+
+  Farben: nur Töne aus assets/_sass/variables/_colors.scss. Gemischte Töne
+  rechnen wie die Alpha-Stufen der Seite (Farbe mit NN % Deckkraft über
+  einem Grundton), notiert als mix(grund, farbe, NN).
+-->
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hero-Motiv</title>
+<style>
+  /* Ubuntu wie die Seite. Ubuntu Mono liegt nicht im Repo, render.js
+     liefert sie unter dieser Adresse aus einer Systemdatei aus */
+  @font-face {
+    font-family: "Ubuntu OG";
+    font-weight: 400 700;
+    src: url("../../assets/webfonts/ubuntu-latin-wght.woff2") format("woff2");
+  }
+
+  @font-face {
+    font-family: "Ubuntu Mono OG";
+    src: url("/ubuntu-mono.ttf");
+  }
+
+  html, body { margin: 0; width: 100vw; height: 100vh; overflow: hidden; background: #0a0e12; }
+  .buehne { position: relative; width: 100vw; height: 100vh; }
+  .buehne > svg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+
+  /* Vorschaubild: dieselben Werte wie scripts/og-image.html */
+  .og__abdunkler { position: absolute; inset: 0; background: rgb(0 0 0 / 50%); }
+  .og__text {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 22px;
+  }
+  .og__name {
+    margin: 0;
+    font-family: "Ubuntu OG", sans-serif; font-size: 112px; font-weight: 700; letter-spacing: 0.01em;
+    color: #fff;
+    text-shadow:
+      0 0 6px rgb(5 217 232 / 85%),
+      0 0 22px rgb(5 217 232 / 55%),
+      0 0 48px rgb(255 0 255 / 35%);
+  }
+  .og__adresse { margin: 0; font-family: "Ubuntu Mono OG", monospace; font-size: 28px; color: rgb(255 255 255 / 88%); }
+  .ohne-og .og__abdunkler, .ohne-og .og__text { display: none; }
+</style>
+</head>
+<body>
+<div class="buehne">
+  <svg id="motiv" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2400 1280" preserveAspectRatio="xMidYMid slice" aria-hidden="true"></svg>
+  <div class="og__abdunkler"></div>
+  <div class="og__text">
+    <p class="og__name">Hans Müller</p>
+    <p class="og__adresse">grenzenloseschublade.github.io/auflinie</p>
+  </div>
+</div>
+<script>
+'use strict';
+
+// ---------------------------------------------------------------------------
+// Palette (assets/_sass/variables/_colors.scss)
+// ---------------------------------------------------------------------------
+const PAL = {
+  cyan: '#05d9e8',        // $link-color
+  magenta: '#ff00ff',     // $hover-color
+  magentaText: '#ff2fd2', // $hover-color-text
+  cyanPale: '#d1f7ff',    // $cyan-pale
+  white: '#ffffff',       // $white
+  ink: '#0a0e12',         // $ink
+  drawer: '#0f0f14',      // $drawer-bg
+  page: '#252a34',        // $page-bg
+};
+
+// mix(grund, farbe, p): farbe mit p % Deckkraft über grund (wie rgba(farbe, p) auf grund)
+function mix(grund, farbe, p) {
+  const a = hex(grund), b = hex(farbe), t = p / 100;
+  return '#' + a.map((v, i) => Math.round(v * (1 - t) + b[i] * t).toString(16).padStart(2, '0')).join('');
+}
+function hex(h) { return [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16)); }
+
+// ---------------------------------------------------------------------------
+// Komposition (Einheiten der viewBox 2400 × 1280)
+// ---------------------------------------------------------------------------
+const W = 2400, H = 1280;
+const CX = W / 2;
+const HORIZONT = Math.round(H * 0.74);       // 947
+// Sonne: Radius die halbe Bildhöhe, Mitte knapp unter dem
+// Horizont. Sichtbar bleibt eine flache Kuppel gut halb so breit wie das Bild
+const SONNE = { r: Math.round(H * 0.5), y: HORIZONT + Math.round(H * 0.035) };
+const SONNE_OBEN = SONNE.y - SONNE.r;
+// Gitter: Fluchtpunkt ÜBER dem Horizont (gekippte Kamera), Linien treffen
+// den Horizont daher mit Abstand statt in einem Punkt
+const FLUCHT_Y = HORIZONT - 260;
+const RASTER_HORIZONT = 70;                  // Abstand der Längslinien am Horizont
+const STERNE = 120;
+
+const params = new URLSearchParams(location.search);
+const SEED = Number(params.get('seed') || 1987);
+
+// Mulberry32: kleiner, fester Zufallsgenerator
+function rng(seed) {
+  let a = seed >>> 0;
+  return () => {
+    a = (a + 0x6d2b79f5) >>> 0;
+    let t = a;
+    t = Math.imul(t ^ (t >>> 15), t | 1);
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+const NS = 'http://www.w3.org/2000/svg';
+function el(name, attrs, parent) {
+  const n = document.createElementNS(NS, name);
+  for (const [k, v] of Object.entries(attrs)) n.setAttribute(k, typeof v === 'number' ? +v.toFixed(2) : v);
+  if (parent) parent.appendChild(n);
+  return n;
+}
+function verlauf(defs, id, art, attrs, stops) {
+  const g = el(art, { id, ...attrs }, defs);
+  for (const [off, farbe, op] of stops) el('stop', { offset: off, 'stop-color': farbe, ...(op != null ? { 'stop-opacity': op } : {}) }, g);
+  return g;
+}
+function weich(defs, id, std, rand = '-40%') {
+  const f = el('filter', { id, x: rand, y: rand, width: `${100 - 2 * parseFloat(rand)}%`, height: `${100 - 2 * parseFloat(rand)}%` }, defs);
+  el('feGaussianBlur', { stdDeviation: std }, f);
+  return f;
+}
+
+function zeichne() {
+  const svg = document.getElementById('motiv');
+  const defs = el('defs', {}, svg);
+
+  // ---- Himmel: Tinte oben, zum Horizont ein Hauch Magenta
+  verlauf(defs, 'himmel', 'linearGradient', { x1: 0, y1: 0, x2: 0, y2: HORIZONT, gradientUnits: 'userSpaceOnUse' }, [
+    [0, PAL.ink],
+    [0.38, mix(PAL.drawer, PAL.magenta, 6)],
+    [0.72, mix(PAL.page, PAL.magenta, 11)],
+    [1, mix(PAL.page, PAL.magenta, 22)],
+  ]);
+  el('rect', { x: 0, y: 0, width: W, height: HORIZONT + 2, fill: 'url(#himmel)' }, svg);
+
+  // Seitliches Glühen am Horizont (Magenta links und rechts), leise
+  verlauf(defs, 'seitenglut', 'radialGradient', { cx: 0.5, cy: 0.5, r: 0.5 }, [
+    [0, PAL.magentaText, 0.16], [0.5, PAL.magentaText, 0.05], [1, PAL.magentaText, 0],
+  ]);
+  for (const x of [0, W]) el('ellipse', { cx: x, cy: HORIZONT, rx: 760, ry: 260, fill: 'url(#seitenglut)' }, svg);
+
+  // ---- Himmelsgitter: Fortsetzung der Längslinien, nach oben ausblendend
+  verlauf(defs, 'himmelgitter-maske-v', 'linearGradient', { x1: 0, y1: 0, x2: 0, y2: HORIZONT, gradientUnits: 'userSpaceOnUse' }, [
+    [0, PAL.white, 0], [0.35, PAL.white, 0.25], [1, PAL.white, 1],
+  ]);
+  const hm = el('mask', { id: 'himmelgitter-maske', maskUnits: 'userSpaceOnUse', x: 0, y: 0, width: W, height: HORIZONT }, defs);
+  el('rect', { width: W, height: HORIZONT, fill: 'url(#himmelgitter-maske-v)' }, hm);
+  const hg = el('g', { mask: 'url(#himmelgitter-maske)', stroke: PAL.cyan, 'stroke-opacity': 0.12, 'stroke-width': 1.6, fill: 'none' }, svg);
+  const quadrat = RASTER_HORIZONT * 2; // Himmelsquadrate: jede zweite Längslinie
+  for (let x = CX % quadrat; x <= W; x += quadrat) el('line', { x1: x, y1: 0, x2: x, y2: HORIZONT }, hg);
+  for (let y = HORIZONT - quadrat; y > 0; y -= quadrat) el('line', { x1: 0, y1: y, x2: W, y2: y }, hg);
+
+  // ---- Sterne (vor der Sonne gezeichnet, Sonne und Halo decken sie zu)
+  zeichneSterne(svg, defs);
+
+  zeichneSonne(svg, defs);
+
+  // ---- Boden
+  verlauf(defs, 'boden', 'linearGradient', { x1: 0, y1: HORIZONT, x2: 0, y2: H, gradientUnits: 'userSpaceOnUse' }, [
+    [0, mix(PAL.ink, PAL.cyan, 16)],
+    [0.18, mix(PAL.ink, PAL.cyan, 7)],
+    [0.6, PAL.ink],
+    [1, mix(PAL.drawer, PAL.magenta, 7)],
+  ]);
+  el('rect', { x: 0, y: HORIZONT, width: W, height: H - HORIZONT, fill: 'url(#boden)' }, svg);
+  // Spiegelung der Sonne auf dem Boden: heller Fleck unter dem Kern
+  verlauf(defs, 'spiegel', 'radialGradient', { cx: CX, cy: HORIZONT, r: 1, gradientUnits: 'userSpaceOnUse',
+    gradientTransform: `translate(${CX} ${HORIZONT}) scale(${SONNE.r * 1.15} 230) translate(${-CX} ${-HORIZONT})` }, [
+    [0, PAL.cyan, 0.38], [0.4, PAL.cyan, 0.13], [1, PAL.cyan, 0],
+  ]);
+  el('rect', { x: 0, y: HORIZONT, width: W, height: H - HORIZONT, fill: 'url(#spiegel)' }, svg);
+
+  zeichneGitter(svg, defs);
+
+  // ---- Horizontlinie: heller Kern, breiter Schein, an den Rändern Magenta
+  verlauf(defs, 'horizont', 'linearGradient', { x1: 0, y1: 0, x2: W, y2: 0, gradientUnits: 'userSpaceOnUse' }, [
+    [0, PAL.magentaText, 0.45], [0.2, PAL.magentaText, 0.8], [0.34, PAL.cyanPale], [0.66, PAL.cyanPale],
+    [0.8, PAL.magentaText, 0.8], [1, PAL.magentaText, 0.45],
+  ]);
+  el('filter', { id: 'horizont-schein', x: '-5%', y: '-800%', width: '110%', height: '1700%' }, defs)
+    .appendChild(el('feGaussianBlur', { stdDeviation: 9 }));
+  el('rect', { x: 0, y: HORIZONT - 6, width: W, height: 12, fill: 'url(#horizont)', filter: 'url(#horizont-schein)', opacity: 0.85 }, svg);
+  el('rect', { x: 0, y: HORIZONT - 1.6, width: W, height: 3.2, fill: 'url(#horizont)' }, svg);
+}
+
+function zeichneSonne(svg, defs) {
+  const { r } = SONNE;
+
+  // Halo hinter der Sonne: Magenta im Himmel, ein Hauch Cyan am Horizont
+  verlauf(defs, 'halo', 'radialGradient', { cx: CX, cy: SONNE.y, r: r * 1.6, gradientUnits: 'userSpaceOnUse' }, [
+    [0.55, PAL.magenta, 0.26], [0.66, PAL.magentaText, 0.12], [0.82, PAL.magentaText, 0.04], [1, PAL.magentaText, 0],
+  ]);
+  el('rect', { x: 0, y: 0, width: W, height: HORIZONT, fill: 'url(#halo)' }, svg);
+  verlauf(defs, 'halo-unten', 'radialGradient', { cx: CX, cy: HORIZONT, r: 1, gradientUnits: 'userSpaceOnUse',
+    gradientTransform: `translate(${CX} ${HORIZONT}) scale(${r * 1.45} ${r * 0.55}) translate(${-CX} ${-HORIZONT})` }, [
+    [0, PAL.cyan, 0.32], [0.5, PAL.cyan, 0.1], [1, PAL.cyan, 0],
+  ]);
+  el('rect', { x: 0, y: 0, width: W, height: HORIZONT, fill: 'url(#halo-unten)' }, svg);
+
+  // Grundfarbe der Scheibe: Magenta oben über Hot Magenta zu Cyan am Horizont
+  verlauf(defs, 'sonne', 'linearGradient', { x1: 0, y1: SONNE_OBEN, x2: 0, y2: HORIZONT, gradientUnits: 'userSpaceOnUse' }, [
+    [0, PAL.magenta],
+    [0.3, PAL.magentaText],
+    [0.62, mix(PAL.magentaText, PAL.cyan, 55)],
+    [0.88, PAL.cyan],
+    [1, mix(PAL.cyan, PAL.cyanPale, 50)],
+  ]);
+  // Innerer Glow: heller Kern am Horizont, nach oben und zum Rand weich
+  // auslaufend (elliptisch, breiter als hoch, wie Licht hinter Glas)
+  verlauf(defs, 'kern', 'radialGradient', { cx: CX, cy: HORIZONT, r: 1, gradientUnits: 'userSpaceOnUse',
+    gradientTransform: `translate(${CX} ${HORIZONT}) scale(${r * 1.05} ${r * 0.86}) translate(${-CX} ${-HORIZONT})` }, [
+    [0, PAL.white, 0.88],
+    [0.2, PAL.cyanPale, 0.62],
+    [0.48, PAL.cyanPale, 0.24],
+    [0.78, PAL.cyan, 0.06],
+    [1, PAL.cyan, 0],
+  ]);
+  // Randlicht innen: ein schmaler heller Saum direkt an der Kante, wie bei
+  // einer Leuchtröhre, die von innen strahlt
+  verlauf(defs, 'saum', 'radialGradient', { cx: CX, cy: SONNE.y, r, gradientUnits: 'userSpaceOnUse' }, [
+    [0.86, PAL.white, 0], [0.96, PAL.white, 0.1], [1, PAL.white, 0.26],
+  ]);
+
+  // Streifen: von unten nach oben werden die Lücken schmaler und die
+  // Bänder breiter, oben bleibt eine geschlossene Kappe
+  const LUECKEN = [34, 27, 21, 16, 11.5, 7.5, 4.5];
+  const BAENDER = [26, 32, 39, 47, 56, 66, 78];
+  const sm = el('mask', { id: 'sonnen-maske', maskUnits: 'userSpaceOnUse', x: 0, y: 0, width: W, height: HORIZONT }, defs);
+  el('rect', { width: W, height: HORIZONT, fill: PAL.white }, sm);
+  let y = HORIZONT;
+  for (let i = 0; i < LUECKEN.length; i++) {
+    y -= BAENDER[i];
+    el('rect', { x: 0, y: y - LUECKEN[i], width: W, height: LUECKEN[i], fill: '#000' }, sm);
+    y -= LUECKEN[i];
+  }
+  // Außenschein nur außerhalb der Scheibe, damit die Lücken dunkel bleiben
+  const am = el('mask', { id: 'ausser-sonne', maskUnits: 'userSpaceOnUse', x: 0, y: 0, width: W, height: HORIZONT }, defs);
+  el('rect', { width: W, height: HORIZONT, fill: PAL.white }, am);
+  el('circle', { cx: CX, cy: SONNE.y, r: r - 2, fill: '#000' }, am);
+
+  const clip = el('clipPath', { id: 'ueber-horizont' }, defs);
+  el('rect', { x: 0, y: 0, width: W, height: HORIZONT }, clip);
+  weich(defs, 'sonnen-schein', 46);
+  weich(defs, 'baender-schein', 9, '-10%');
+
+  const sonne = el('g', { 'clip-path': 'url(#ueber-horizont)' }, svg);
+  // Schein nach außen: die ungestreifte Scheibe, stark weichgezeichnet
+  el('circle', { cx: CX, cy: SONNE.y, r: r + 10, fill: 'url(#sonne)', opacity: 0.6, filter: 'url(#sonnen-schein)', mask: 'url(#ausser-sonne)' }, sonne);
+  // Die Bänder: Grundfarbe, innerer Glow, Saum
+  const baender = (eltern) => {
+    const g = el('g', { mask: 'url(#sonnen-maske)' }, eltern);
+    el('circle', { cx: CX, cy: SONNE.y, r, fill: 'url(#sonne)' }, g);
+    el('circle', { cx: CX, cy: SONNE.y, r, fill: 'url(#kern)' }, g);
+    el('circle', { cx: CX, cy: SONNE.y, r, fill: 'url(#saum)' }, g);
+  };
+  // Kernlicht hinter den Bändern: in den unteren Lücken scheint die Sonne
+  // von innen durch, zum Rand hin bleiben sie dunkel
+  weich(defs, 'kern-schein', 40);
+  el('ellipse', { cx: CX, cy: HORIZONT, rx: r * 0.6, ry: r * 0.32, fill: PAL.cyanPale, opacity: 0.4, filter: 'url(#kern-schein)' }, sonne);
+  // erst weichgezeichnet (das Licht blutet in die Lücken wie bei
+  // Leuchtröhren), dann scharf darüber
+  baender(el('g', { filter: 'url(#baender-schein)', opacity: 0.75 }, sonne));
+  baender(sonne);
+}
+
+function zeichneSterne(svg, defs) {
+  const zufall = rng(SEED);
+  verlauf(defs, 'stern-hof', 'radialGradient', {}, [
+    [0, PAL.cyanPale, 0.7], [0.35, PAL.cyan, 0.22], [1, PAL.cyan, 0],
+  ]);
+  const g = el('g', {}, svg);
+  // Kerne nur Weiß und blasses Cyan, kein Magenta (ruhiger Himmel)
+  const KERNE = [PAL.white, PAL.white, PAL.cyanPale];
+  let n = 0, versuche = 0;
+  while (n < STERNE && versuche < 5000) {
+    versuche++;
+    const x = zufall() * W;
+    // mehr Sterne oben
+    const y = Math.pow(zufall(), 1.35) * (HORIZONT - 30);
+    const hell = Math.pow(zufall(), 3.2);           // die meisten schwach, wenige hell
+    const farbe = KERNE[Math.floor(zufall() * KERNE.length)];
+    const funkeln = zufall();
+    // nicht auf die Sonne und ihren Halo
+    if (Math.hypot(x - CX, y - SONNE.y) < SONNE.r * 1.12) continue;
+    // zum Horizont hin dunstiger
+    const dunst = 1 - 0.55 * Math.pow(y / HORIZONT, 2);
+    const r = 1.1 + 2.4 * hell;
+    if (hell > 0.18) el('circle', { cx: x, cy: y, r: r * 5, fill: 'url(#stern-hof)', opacity: (0.3 + 0.55 * hell) * dunst }, g);
+    el('circle', { cx: x, cy: y, r, fill: farbe, opacity: (0.35 + 0.6 * Math.sqrt(hell)) * dunst }, g);
+    // die hellsten bekommen einen feinen Kreuzschimmer
+    if (hell > 0.6 && funkeln < 0.3) {
+      const l = 10 + 16 * hell;
+      const kreuz = el('g', { stroke: PAL.cyanPale, 'stroke-width': 1.4, 'stroke-linecap': 'round', opacity: 0.35 * dunst }, g);
+      el('line', { x1: x - l, y1: y, x2: x + l, y2: y }, kreuz);
+      el('line', { x1: x, y1: y - l, x2: x, y2: y + l }, kreuz);
+    }
+    n++;
+  }
+}
+
+function zeichneGitter(svg, defs) {
+  // Linienfarbe quer: Cyan in der Mitte, zu den Rändern Hot Magenta
+  verlauf(defs, 'linie', 'linearGradient', { x1: 0, y1: 0, x2: W, y2: 0, gradientUnits: 'userSpaceOnUse' }, [
+    [0, PAL.magentaText], [0.2, mix(PAL.magentaText, PAL.cyan, 45)], [0.38, PAL.cyan], [0.62, PAL.cyan],
+    [0.8, mix(PAL.magentaText, PAL.cyan, 45)], [1, PAL.magentaText],
+  ]);
+  // Tiefe: am Horizont gedämpft (Dunst), vorn kräftig
+  verlauf(defs, 'tiefe', 'linearGradient', { x1: 0, y1: HORIZONT, x2: 0, y2: H, gradientUnits: 'userSpaceOnUse' }, [
+    [0, PAL.white, 0.35], [0.25, PAL.white, 0.75], [1, PAL.white, 1],
+  ]);
+  const m = el('mask', { id: 'tiefe-maske', maskUnits: 'userSpaceOnUse', x: 0, y: HORIZONT, width: W, height: H - HORIZONT }, defs);
+  el('rect', { x: 0, y: HORIZONT, width: W, height: H - HORIZONT, fill: 'url(#tiefe)' }, m);
+  const f = el('filter', { id: 'gitter-schein', x: '-10%', y: '-10%', width: '120%', height: '120%' }, defs);
+  el('feGaussianBlur', { in: 'SourceGraphic', stdDeviation: 5, result: 'b' }, f);
+  const merge = el('feMerge', {}, f);
+  el('feMergeNode', { in: 'b' }, merge);
+  el('feMergeNode', { in: 'b' }, merge);
+  el('feMergeNode', { in: 'SourceGraphic' }, merge);
+
+  const clip = el('clipPath', { id: 'boden-form' }, defs);
+  el('rect', { x: 0, y: HORIZONT, width: W, height: H - HORIZONT }, clip);
+  const aussen = el('g', { 'clip-path': 'url(#boden-form)', mask: 'url(#tiefe-maske)' }, svg);
+  const g = el('g', { stroke: 'url(#linie)', fill: 'none', filter: 'url(#gitter-schein)' }, aussen);
+
+  // Längslinien: durch den Fluchtpunkt über dem Horizont
+  const tiefeH = HORIZONT - FLUCHT_Y;
+  const unten = H + 4;
+  const spreiz = (unten - FLUCHT_Y) / tiefeH;
+  for (let j = -60; j <= 60; j++) {
+    const xh = CX + j * RASTER_HORIZONT;
+    const xu = CX + j * RASTER_HORIZONT * spreiz;
+    if (Math.abs(xh - CX) > W) continue;
+    el('line', { x1: xh, y1: HORIZONT, x2: xu, y2: unten, 'stroke-width': 2.4 }, g);
+  }
+  // Querlinien: echte Tiefenstaffelung y = Horizont + B / (k + v),
+  // aufhören, sobald die Abstände unter 6 px fallen
+  const B = 430, V = 0.55;
+  let vorher = Infinity;
+  for (let k = 0; k < 200; k++) {
+    const yk = HORIZONT + B / (k + V);
+    if (yk > H + 4) continue;
+    if (vorher - yk < 6) break;
+    const staerke = 1.2 + 2.0 * ((yk - HORIZONT) / (H - HORIZONT));
+    el('line', { x1: 0, y1: yk, x2: W, y2: yk, 'stroke-width': staerke }, g);
+    vorher = yk;
+  }
+}
+
+if (!params.has('og')) document.documentElement.classList.add('ohne-og');
+zeichne();
+window.fertig = Promise.all([
+  document.fonts.load('700 112px "Ubuntu OG"'),
+  document.fonts.load('28px "Ubuntu Mono OG"'),
+  document.fonts.ready,
+]).then(() => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r))));
+</script>
+</body>
+</html>
