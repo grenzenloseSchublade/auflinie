@@ -10,7 +10,14 @@
              _data/skill_graph.yml via JSON-Tag unten, Hinweiszeile aus
              texts.hint dort)
     graph:   zusätzlich der Skill-Graph (cv/skill-graph.html): Öffner oben
-             im Abschnitt unter der Auswahl-Konsole, vor den Gruppen
+             im Abschnitt unter der Auswahl-Konsole, vor den Gruppen, und
+             ein kleiner Öffner rechts in der Konsole. Er übernimmt, sobald
+             der große aus dem Bild ist (skill-graph-sheet.js), bis dahin
+             ist er unsichtbar, inert und aria-hidden. Es ist immer genau
+             einer der beiden bedienbar.
+  Die Konsole klebt beim Scrollen oben (Hülle cv-skills__console). Die
+  Anzeige darin (aria-live) schreibt skill-chips.js neu, der kleine Knopf
+  steht deshalb daneben und nicht in ihr.
   Ohne Flags rendert der Block exakt wie die statische Fassung.
 
   Texte: _data/skill_graph.yml → texts (hint, breadth). texts.breadth ist der
@@ -21,7 +28,18 @@
 {% endcomment %}
 <div class="cv-skills">
   {% if page.skill_graph.enabled %}
-  <p class="cv-skills__selection-info" data-role="skill-context" data-sticky-toc-offset aria-live="polite">{{ site.data.skill_graph.texts.hint | escape }}</p>
+  {%- assign dock_texts = site.data.skill_graph.texts.graph.open_short %}
+  <div class="cv-skills__console{% if page.skill_graph.graph %} cv-skills__console--dock{% endif %}" data-role="skill-console" data-sticky-toc-offset>
+    <p class="cv-skills__selection-info" data-role="skill-context" aria-live="polite">{{ site.data.skill_graph.texts.hint | escape }}</p>
+    {%- if page.skill_graph.graph %}
+    <button type="button" class="skill-graph__tool skill-graph__dock" data-role="graph-dock"
+            aria-expanded="false" aria-controls="skill-graph-panel"
+            aria-label="{{ dock_texts.label | escape }}" title="{{ dock_texts.title | escape }}" aria-hidden="true" inert>
+      {% include cv/skill-graph-icon.html class="skill-graph__dock-icon" size="14" %}
+      <span>{{ dock_texts.text | escape }}</span>
+    </button>
+    {%- endif %}
+  </div>
   {% endif %}
   {% if page.skill_graph.graph %}
     {% include cv/skill-graph.html %}

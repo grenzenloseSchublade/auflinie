@@ -11,6 +11,10 @@
   inline auf (Progressive Enhancement), dann direkt unter dem Öffner.
   Öffner: zugänglicher Name = sichtbarer Text (Symbol aria-hidden), die
   Zeile daneben hängt als Beschreibung an (aria-describedby).
+  Die Hülle um den Öffner (graph-toggle-slot) bewegt sich nie: An ihr misst
+  skill-graph-sheet.js, ob der Öffner aus dem Bild ist, und an ihr hängt die
+  Scroll-Zeitleiste, mit der er sich in den kleinen Knopf der Auswahl-Konsole
+  verwandelt (cv/skills.html, _skill-graph.scss).
   Kopfleiste: zugängliche Namen beginnen mit dem sichtbaren Text (WCAG 2.5.3,
   STYLEGUIDE 7.7 „Reset“).
   Info-Leiste: im Ruhezustand der Hinweis und darunter ein Satz zu Punkten
@@ -24,16 +28,13 @@
 {%- assign graph_texts = skill_texts.graph %}
 <div class="skill-graph" data-skill-graph>
   <div class="skill-graph__entry">
-    <button type="button" class="skill-graph__open" data-role="graph-toggle"
-            aria-expanded="false" aria-controls="skill-graph-panel" aria-describedby="skill-graph-lead">
-      <svg class="skill-graph__open-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true" focusable="false">
-        <path d="M6.4 16.2 10.6 7.8M13.4 7.8l4.2 8.4M8.1 19h7.8"/>
-        <circle cx="12" cy="5" r="2.5"/>
-        <circle cx="5" cy="19" r="2.5"/>
-        <circle cx="19" cy="19" r="2.5"/>
-      </svg>
-      <span>{{ graph_texts.open | escape }}</span>
-    </button>
+    <div class="skill-graph__open-slot" data-role="graph-toggle-slot">
+      <button type="button" class="skill-graph__open" data-role="graph-toggle"
+              aria-expanded="false" aria-controls="skill-graph-panel" aria-describedby="skill-graph-lead">
+        {% include cv/skill-graph-icon.html class="skill-graph__open-icon" size="18" %}
+        <span>{{ graph_texts.open | escape }}</span>
+      </button>
+    </div>
     <p class="skill-graph__lead" id="skill-graph-lead">{{ graph_texts.lead | escape }}</p>
   </div>
   <div class="skill-graph__panel" id="skill-graph-panel" data-role="graph-panel" hidden>

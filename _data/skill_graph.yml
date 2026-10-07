@@ -93,6 +93,13 @@ texts:
 
   graph:
     open: "Skill-Graph öffnen" # Knopf über den Skill-Gruppen
+    # Kleiner Knopf rechts in der Auswahl-Konsole, erscheint beim Scrollen,
+    # sobald der große Knopf aus dem Bild ist. Er zeigt nur ein Wort, sein
+    # label beginnt deshalb damit.
+    open_short:
+      text: "Graph"
+      label: "Graph – Skill-Graph öffnen"
+      title: "Skill-Graph öffnen"
     lead: "Welche Fähigkeiten in welchen Projekten zusammenkommen" # Zeile neben dem Knopf
     dialog: "Skill-Graph" # Name des geöffneten Fensters für Screenreader
     close: "Graph schließen" # Name des ✕-Knopfs für Screenreader

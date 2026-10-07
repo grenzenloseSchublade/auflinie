@@ -1,0 +1,14 @@
+{% comment %}
+  Symbol des Skill-Graphen (drei Kreise mit Linien), eine Quelle für den
+  großen Öffner (cv/skill-graph.html) und den kleinen in der Auswahl-Konsole
+  (cv/skills.html). Dekorativ, der Knopf trägt den Namen (A11Y-3).
+  Parameter:
+    class – CSS-Klasse des <svg>
+    size  – Kantenlänge in px (width und height)
+{% endcomment %}
+<svg class="{{ include.class }}" xmlns="http://www.w3.org/2000/svg" width="{{ include.size }}" height="{{ include.size }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true" focusable="false">
+  <path d="M6.4 16.2 10.6 7.8M13.4 7.8l4.2 8.4M8.1 19h7.8"/>
+  <circle cx="12" cy="5" r="2.5"/>
+  <circle cx="5" cy="19" r="2.5"/>
+  <circle cx="19" cy="19" r="2.5"/>
+</svg>

@@ -18,6 +18,19 @@
  * Bis 2.10.2026 gab es davor einen Aktivieren-Schritt und einen schwebenden
  * Öffner im Kapitel. Beides ist entfallen: ein Knopf, ein Weg.
  *
+ * Kleiner Öffner in der klebenden Auswahl-Konsole ([data-role="graph-dock"],
+ * Owner 7. 10. 2026): Er übernimmt, sobald der große Knopf oben aus dem Bild
+ * ist, und gibt ab, sobald dieser wieder zu sehen ist. Es ist immer genau
+ * einer der beiden bedienbar, der andere ist inert und aria-hidden. Hat der
+ * abgebende den Fokus, wandert er mit. Ein IntersectionObserver misst die
+ * ruhende Hülle des großen Knopfs gegen die Unterkante der Konsole (kein
+ * Scroll-Listener), data-graph-dock an .cv-skills (big/small) trägt den
+ * Zustand ins CSS. Die sichtbare Verwandlung beim Scrollen macht das CSS
+ * allein (scroll-getriebene Animation, _skill-graph.scss), dafür steht die
+ * Unterkante der Konsole als --graph-dock-line an .cv-skills. Der kleine
+ * Knopf öffnet über denselben Toggle, der Fokus kehrt nach dem Schließen
+ * zu dem Knopf zurück, über den geöffnet wurde.
+ *
  * Fällt dieses Modul aus, bleibt der Graph über skill-graph.js voll funktionsfähig
  * (das Panel zeigt sich dann inline). Seiten-Modul, mountet einmal beim Laden.
  *
@@ -27,6 +40,10 @@
  */
 (function () {
   'use strict';
+
+  // Unterer Rand des Beobachtungsbereichs für den kleinen Öffner in px:
+  // „beliebig weit unten“, größer als jede Seitenhöhe
+  const DOCK_FAR = 1000000;
 
   // Bedientexte aus texts.graph. Fehlen die Daten, bleibt der Text weg.
   function graphTexts() {
@@ -88,19 +105,96 @@
     // Panel öffnet/schließt über [hidden] (skill-graph.js) — hier nur reagieren.
     this.observer = new MutationObserver(this.onHidden.bind(this));
     this.observer.observe(this.panel, { attributes: true, attributeFilter: ['hidden'] });
+
+    this.opener = null;   // Knopf, über den das Sheet zuletzt aufging
+    this.mountDock();
   }
+
+  // Kleiner Öffner in der Konsole (siehe Dateikopf). Ohne Konsole, Hülle
+  // oder IntersectionObserver bleibt er, wie im Markup, unsichtbar und inert.
+  GraphSheet.prototype.mountDock = function () {
+    const dock = document.querySelector('[data-role="graph-dock"]');
+    const box = dock && dock.closest('[data-role="skill-console"]');
+    const scope = box && box.closest('.cv-skills');
+    const slot = this.root.querySelector('[data-role="graph-toggle-slot"]');
+    if (!dock || !box || !scope || !slot || !('IntersectionObserver' in window)) { return; }
+    this.dock = dock;
+    this.dockScope = scope;
+    this.docked = null;
+    // Ausgangslage wie im Markup (großer bedienbar), bis der Observer misst
+    scope.setAttribute('data-graph-dock', 'big');
+
+    const self = this;
+    dock.addEventListener('click', function () {
+      if (!self.panel.hidden) { return; }
+      self.opener = dock;
+      self.toggle.click();   // skill-graph.js öffnet, onHidden präsentiert
+    });
+
+    // Unterkante der klebenden Konsole im Viewport: ihr top (Masthead,
+    // Sticky-TOC, Abstand) plus ihre Höhe. Ändert sich mit der Fenstergröße
+    // und wenn toc.js --sticky-toc-height an der Konsole umsetzt.
+    let io = null;
+    let line = -1;
+    function observe() {
+      const next = Math.round((parseFloat(getComputedStyle(box).top) || 0) + box.offsetHeight);
+      if (next === line && io) { return; }
+      line = next;
+      scope.style.setProperty('--graph-dock-line', line + 'px');
+      if (io) { io.disconnect(); }
+      // Beobachtet wird alles ab der Unterkante der Konsole abwärts, auch
+      // weit unterhalb des Viewports (riesiger unterer Rand). Sonst meldete
+      // ein Sprung von „unter dem Viewport“ nach „über der Konsole“ nichts
+      // (Anker, Ende-Taste): Beides wäre „schneidet nicht“.
+      io = new IntersectionObserver(function (entries) {
+        // Ganz über der Unterkante der Konsole (darunter verdeckt oder
+        // hinausgescrollt): Der kleine Knopf übernimmt
+        self.setDocked(!entries[entries.length - 1].isIntersecting);
+      }, { rootMargin: '-' + line + 'px 0px ' + DOCK_FAR + 'px 0px' });
+      io.observe(slot);
+    }
+    observe();
+    window.addEventListener('resize', observe);
+    if ('ResizeObserver' in window) { new ResizeObserver(observe).observe(box); }
+    new MutationObserver(observe).observe(box, { attributes: true, attributeFilter: ['style'] });
+  };
+
+  // Genau einer der beiden Öffner ist bedienbar und für Screenreader da
+  GraphSheet.prototype.setDocked = function (docked) {
+    if (docked === this.docked) { return; }
+    this.docked = docked;
+    const show = docked ? this.dock : this.toggle;
+    const hide = docked ? this.toggle : this.dock;
+    show.inert = false;
+    show.removeAttribute('aria-hidden');
+    // Der Fokus wandert mit, sonst fiele er beim inert-Setzen auf <body>
+    if (document.activeElement === hide) {
+      try { show.focus({ preventScroll: true }); } catch (e) { /* noop */ }
+    }
+    hide.inert = true;
+    hide.setAttribute('aria-hidden', 'true');
+    this.dockScope.setAttribute('data-graph-dock', docked ? 'small' : 'big');
+  };
 
   GraphSheet.prototype.onHidden = function () {
     const open = !this.panel.hidden;
     if (open) { this.enterModal(); } else { this.leaveModal(); }
     document.body.classList.toggle('graph-open', open);
+    if (this.dock) { this.dock.setAttribute('aria-expanded', String(open)); }
     const self = this;
     if (open) {
       requestAnimationFrame(function () { try { self.closeBtn.focus(); } catch (e) { /* noop */ } });
       this.maybeTouchHint();
     } else {
-      // Fokus zurück zum Öffner — erst jetzt, vorher lag er im inerten Bereich.
-      requestAnimationFrame(function () { try { self.toggle.focus({ preventScroll: true }); } catch (e) { /* noop */ } });
+      // Fokus zurück zum Öffner, über den das Sheet aufging — erst jetzt,
+      // vorher lag er im inerten Bereich. Ist dieser inzwischen nicht mehr
+      // bedienbar (Fenstergröße geändert), der andere.
+      const opener = this.opener || this.toggle;
+      this.opener = null;
+      requestAnimationFrame(function () {
+        const target = opener.inert && self.dock ? (opener === self.dock ? self.toggle : self.dock) : opener;
+        try { target.focus({ preventScroll: true }); } catch (e) { /* noop */ }
+      });
     }
   };
 

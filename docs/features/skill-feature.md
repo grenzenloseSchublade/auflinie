@@ -23,6 +23,19 @@ Die Skill-Chips auf `/cv/` sind erkundbar:
   Ziehen. Der Graph bewegt sich nie von selbst. Namen stehen je nach
   Maßstab, Punkte ohne Namen zeigen ihn beim Antippen, beim Hineinzoomen
   und mit der Maus als Vorschau beim Überfahren.
+- **Kleiner Graph-Knopf in der Konsole** (Prototyp, Owner 7. 10. 2026): Die
+  Auswahl-Konsole über den Chips klebt beim Scrollen oben. Sobald der große
+  Knopf darunter aus dem Bild ist, übernimmt rechts unten in der Konsole ein
+  kleiner Knopf (Symbol und „Graph“) und öffnet dasselbe Sheet. Beim Scrollen
+  verwandelt sich der große in den kleinen: Er schrumpft und gleitet nach
+  rechts unter die Konsole, der kleine blendet zugleich ein, die Erklärzeile
+  blendet kurz vor der Konsole aus (scroll-getriebene CSS-Animation, nur
+  `transform` und `opacity`, kein Scroll-Listener). Ohne Scroll-Zeitleisten
+  (Firefox) und bei Reduced Motion blendet der kleine nur ein (0,2 s bzw.
+  sofort). Genau einer der beiden Knöpfe ist bedienbar, der andere `inert`
+  und `aria-hidden`, ein IntersectionObserver in `skill-graph-sheet.js`
+  schaltet um. Der Fokus kehrt nach dem Schließen zu dem Knopf zurück, über
+  den geöffnet wurde.
 
 Die statische Chip-Liste bleibt immer die kanonische, vollständige
 Darstellung (auch für Screenreader und Druck); alles Interaktive ist
@@ -49,13 +62,14 @@ skill_graph:
 | `_data/skill_graph.yml` | **Datenquelle** (Schema v1): Projekte → Skills, unter `texts` alle Bedientexte des Features |
 | `_includes/cv/skills.html` | Chips (+ Buttons, Kontextzeile, JSON-Tag, Graph-Include oben vor den Gruppen) |
 | `_includes/cv/skill-graph.html` | Graph-Markup (Öffner mit Netz-Symbol und Erklärzeile, Kopfleiste, Info-Leiste, Canvas) |
+| `_includes/cv/skill-graph-icon.html` | Netz-Symbol, eine Quelle für großen und kleinen Öffner |
 | `assets/js/skill-graph-data.js` | Gemeinsame Helfer: Daten lesen, Skill→Projekte, `renderSelection` (Konsole und Info-Leiste) |
 | `assets/js/skill-chips.js` | Klick-Hervorhebung der Chips |
 | `assets/js/skill-graph-sim.js` | **DOM-freie** Force-Layout-Engine (reine Physik) |
 | `assets/js/skill-graph.js` | Graph: Panel/Canvas/Interaktion, Ansicht (Pan + Zoom, Startansicht), Beschriftung nach Maßstab, Info-Leiste (nur UI) |
-| `assets/js/skill-graph-sheet.js` | Präsentation als modales Sheet (Scrim, Scroll-Sperre, inert, Fokus, Touch-Hinweis) |
+| `assets/js/skill-graph-sheet.js` | Präsentation als modales Sheet (Scrim, Scroll-Sperre, inert, Fokus, Touch-Hinweis), Umschalten großer und kleiner Öffner |
 | `assets/_sass/components/_cv.scss` | Chip-Zustände (`has-selection`, `is-selected`, `is-related`) |
-| `assets/_sass/components/_skill-graph.scss` | Panel- und Sheet-Styles |
+| `assets/_sass/components/_skill-graph.scss` | Panel- und Sheet-Styles, kleiner Öffner und Verwandlung beim Scrollen |
 | `assets/_sass/abstracts/_mixins.scss` | `selection-console`: gemeinsame Optik von Konsole und Info-Leiste |
 | `_includes/scripts.html` | Flag-Gates für die Skripte |
 | `service-worker.js` | Precache-Einträge der Skripte |
