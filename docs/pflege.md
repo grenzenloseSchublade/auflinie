@@ -18,6 +18,7 @@ Ein Fehler kann nichts kaputt machen, was schon online ist: Die Website wird nac
 | Footer | `_data/navigation.yml` → `footer`, Copyright-Zeile `_data/ui-text.yml` → `powered_by` | [Footer](#footer) |
 | Datenschutzerklärung | `_pages/datenschutz.md` | [Datenschutz](#datenschutz) |
 | Bild tauschen | `assets/images/` | [Bild tauschen](#bild-tauschen) |
+| Hero-Motiv (Stockbild oder eigenes) | `_config.yml` → `background_image`, `og_image` | [Hero-Motiv wechseln](#hero-motiv-wechseln) |
 | Seitentitel, Kurzbeschreibung | Kopf der jeweiligen Datei | [Seitentitel und Excerpt](#seitentitel-und-excerpt) |
 | Hinweis über dem Blog | `_pages/posts.md` → `blog_notice` | [Blog-Hinweis](#blog-hinweis) |
 | Wartung | – | [Wartung (selten)](#wartung-selten) |
@@ -267,13 +268,32 @@ Falle: Ein neuer fremder Dienst braucht außerdem eine Änderung der Sicherheits
 2. Ablegen. Bilder eines Beitrags nach `assets/images/posts/`, alles andere nach `assets/images/`.
 3. Verweis ändern:
    - Titelbild einer Seite oder eines Beitrags: `header.overlay_image` (und `header.teaser` für die Kachel, deren Maße der Build selbst aus der Datei liest) im Kopf der Datei,
-   - Titelbild als Standard: `background_image` in `_config.yml`,
+   - Titelbild als Standard: `background_image` in `_config.yml` (siehe [Hero-Motiv wechseln](#hero-motiv-wechseln)),
    - Vorschaubild beim Teilen (1200 × 630 px): `og_image` und `og_image_alt` in `_config.yml`, für eine einzelne Seite `header.og_image` und `header.og_image_alt` im Kopf der Datei (wie auf `/mandelbrot/`). Das Standardbild mit Namen und Adresse erzeugt `scripts/og-image.js` (Aufruf im Kopf des Skripts). Es braucht keinen Eintrag in `CACHE_URLS`, keine Seite lädt es,
    - Fraktal-Kachel der Startseite: `fractal_showcase.image` in `_data/home.yml`, jede Breite unter `srcset` mit ihrer `width`, dazu `alt`, `width` und `height` der Hauptdatei.
 4. Nur für Bilder außerhalb von `assets/images/posts/`: den neuen Namen in `CACHE_URLS` in `service-worker.js` eintragen (bei der Kachel jede Breite) und den alten entfernen. Sonst meldet der Test `precache.spec.js` die fehlende Datei.
 5. Alte Datei löschen, wenn sie nirgends mehr gebraucht wird, prüfen und pushen.
 
 Falle: `assets/images/background.jpg` steht unter einer fremden Lizenz und darf nicht weitergegeben werden (README, Abschnitt „Lizenz“).
+
+## Hero-Motiv wechseln
+
+Hinter jedem Seitenkopf liegt dasselbe Motiv, die gestreifte Sonne über dem Gitterboden. Heute ist das die Stockgrafik `background.jpg`. Daneben liegt ein eigenes, selbst gezeichnetes Motiv bereit: `hero-eigen.jpg` mit dem passenden Vorschaubild `og-vorschaubild-eigen.jpg`. Es hängt an keiner fremden Lizenz und taugt als Ersatz, falls die Stocklizenz einmal endet.
+
+1. In `_config.yml` zwei Zeilen tauschen, die Vorlagen stehen als Kommentar direkt darüber:
+
+   ```yaml
+   background_image: "/assets/images/hero-eigen.jpg"
+   og_image: "/assets/images/og-vorschaubild-eigen.jpg"
+   ```
+
+2. Prüfen und pushen.
+
+Mehr ist nicht nötig. Seiten und Beiträge, deren Kopf `overlay_image` oder `teaser` mit `/assets/images/background.jpg` nennt, bekommen beim Bauen von selbst das Motiv aus `background_image` (`_plugins/hero-motiv.rb`). Vorladen, Offline-Speicher und das Beispielbild im Testbeitrag lesen ebenfalls aus `_config.yml`. Die Alt-Texte `background_image_alt` und `og_image_alt` beschreiben beide Motive richtig und bleiben, wie sie sind. Zurück geht es genauso, mit den alten Zeilen.
+
+Fallen: Neue Seiten und Beiträge nennen im Kopf weiter `/assets/images/background.jpg`, auch wenn das eigene Motiv gilt. Genau dieser Pfad steht für das gemeinsame Motiv. Wer dort `hero-eigen.jpg` direkt einträgt, legt die Seite fest, sie wechselt dann nicht mehr mit. Soll das Stockbild ganz aus dem Repo verschwinden, erst umstellen, dann `background.jpg` und `og-vorschaubild.jpg` löschen und in der README die Zeile zur Stocklizenz streichen.
+
+Das Motiv neu zeichnen (andere Farben, andere Sterne) ist ein Technik-Schritt: `scripts/hero-motiv/generator.html` ändern und mit `scripts/hero-motiv/render.js` beide Bilder neu erzeugen, der Aufruf steht im Kopf des Skripts.
 
 ## Seitentitel und Excerpt
 

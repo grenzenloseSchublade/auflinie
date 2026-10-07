@@ -88,7 +88,8 @@ async function matchOwn(request, options) {
   './assets/images/favicon-16x16.png',
   './assets/images/favicon-32x32.png',
   './assets/images/apple-touch-icon.png',
-  './assets/images/background.jpg',
+  // Gemeinsames Hero-Motiv (background_image in _config.yml)
+  '.{{ site.background_image }}',
   './assets/images/mandelbrot-preview-400.jpg',
   './assets/images/mandelbrot-preview-800.jpg',
   // Beitragsbilder: jede Datei unter assets/images/posts/ kommt von selbst

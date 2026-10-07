@@ -52,4 +52,4 @@ def hello_world():
 
 Auch Bilder lassen sich einfügen:
 
-![Beispielbild]({{ "/assets/images/background.jpg" | relative_url }}){: width="300px" height="auto"}
+![Beispielbild]({{ site.background_image | relative_url }}){: width="300px" height="auto"}

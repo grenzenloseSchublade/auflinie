@@ -10,6 +10,11 @@ repository: "grenzenloseSchublade/auflinie"
 logo: "/assets/images/Logo.svg"  # SVG für perfekte Transparenz (Alternative: Logo.png)
 
 # Bild- und Performance-Einstellungen
+# Gemeinsames Hero-Motiv aller Seiten. Heute das Stockbild. Das eigene Motiv
+# (scripts/hero-motiv) liegt als hero-eigen.jpg bereit. Zum Wechseln diese
+# Zeile und og_image unten tauschen, sonst nichts (docs/pflege.md, „Hero-Motiv
+# wechseln“). Front Matter mit background.jpg zieht _plugins/hero-motiv.rb mit.
+#   background_image: "/assets/images/hero-eigen.jpg"
 background_image: "/assets/images/background.jpg"
 # Alt-Text, wenn der Hero-Hintergrund als Vorschaubild (og:image) dient. Seit
 # og_image (unten) ein eigenes Bild ist, nur noch Rückfall (_includes/seo.html)
@@ -95,7 +100,9 @@ twitter:
 # auch die mit Hero. Eine Seite mit eigenem Bild setzt header.og_image und
 # header.og_image_alt im Front Matter (heute /mandelbrot/). Reihenfolge in
 # _includes/seo.html. Erzeugt mit scripts/og-image.js (Hero-Motiv mit Namen
-# und Adresse, Owner-Entscheidung R-67 vom 6. 10. 2026).
+# und Adresse, Owner-Entscheidung R-67 vom 6. 10. 2026). Zum eigenen Motiv
+# (background_image oben) gehört das Vorschaubild aus scripts/hero-motiv:
+#   og_image: "/assets/images/og-vorschaubild-eigen.jpg"
 og_image: "/assets/images/og-vorschaubild.jpg"
 og_image_alt: "Schriftzug Hans Müller mit der Adresse grenzenloseschublade.github.io/auflinie vor einer gestreiften Retro-Sonne über einem leuchtenden Gitterboden"
 # Theme-Schema der Site (JSON-LD auf der Startseite). social.links (sameAs)
