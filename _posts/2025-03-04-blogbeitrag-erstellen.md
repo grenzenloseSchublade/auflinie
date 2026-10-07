@@ -179,7 +179,7 @@ Markdown ist eine schlanke Auszeichnungssprache. Die wichtigsten Elemente im Üb
 ```markdown
 *Kursive Hervorhebung* für Begriffsdefinitionen
 **Fettdruck** für zentrale Konzepte
-***Kombinierte Auszeichnung*** für maximale Betonung
+***Kombinierte Auszeichnung*** für die stärkste Betonung
 ```
 
 ### Externe und interne Verlinkung

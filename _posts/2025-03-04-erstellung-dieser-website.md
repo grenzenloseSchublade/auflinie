@@ -69,9 +69,9 @@ Zuerst die Nähe zu GitHub Pages: Das Hosting ist kostenlos, auch für das CDN f
 
 Bei den Themes hat Jekyll eine große Auswahl, viele davon kostenlos und gut gemacht. Minimal Mistakes lässt sich weitgehend anpassen und ist, wie die meisten aktuellen Themes, responsiv und mobile-first gebaut. Meta-Tags, Open Graph und Twitter Cards bringt es fertig mit. Bei der Barrierefreiheit legt das Theme eine gute Grundlage, für das Ziel WCAG 2.2 AA braucht es trotzdem eigene Arbeit.
 
-Ruby ist seit Jahrzehnten etabliert, mit einer riesigen Auswahl an Bibliotheken (Gems) und einer großen Community. Die Template-Sprache Liquid stammt ursprünglich von Shopify und ist einfach zu lernen. Zusammen ergibt das eine solide technische Basis.
+Ruby ist seit Jahrzehnten etabliert, mit Bibliotheken (Gems) für die meisten Aufgaben, vom Markdown-Parser bis zur Linkprüfung, und einer großen Community. Die Template-Sprache Liquid stammt ursprünglich von Shopify und ist einfach zu lernen. Zusammen ergibt das eine solide technische Basis.
 
-Liquid ist einfach, aber mächtig genug, ohne dass es echte Programmierung braucht. Wiederverwendbare Includes halten den Code geordnet, und strukturierte Daten in YAML (etwa für Lebenslauf und Mandelbrot-Seite) erlauben mehr als klassische Blogbeiträge. So bleibt die Architektur modular.
+Liquid kennt Schleifen, Bedingungen und Filter, das reicht für Layouts und Includes, ohne dass es echte Programmierung braucht. Wiederverwendbare Includes halten den Code geordnet, und strukturierte Daten in YAML (etwa für Lebenslauf und Mandelbrot-Seite) erlauben mehr als klassische Blogbeiträge. So bleibt die Architektur modular.
 
 Die Nachteile von Jekyll fallen bei diesem Projekt kaum ins Gewicht. Jekyll ist langsamer als Hugo, und bei sehr großen Websites mit Tausenden Seiten können Builds lästig lange dauern. Diese Website hat aber nur rund ein Dutzend Seiten, der Build ist in rund einer Sekunde fertig.
 
@@ -488,13 +488,13 @@ Für die Qualitätssicherung sorgen vor allem die Prüfungen im Workflow. Das St
 
 **Hosting-Optionen im Vergleich:**
 
-Beim Hosting fiel die Wahl auf GitHub Pages. Es ist kostenlos, passt nahtlos zum Git-Workflow und bringt SSL-Zertifikate automatisch mit. Ausgeliefert wird über ein CDN, eine eigene Domain lässt sich einbinden. Dem stehen Grenzen gegenüber: keine serverseitige Verarbeitung, ein weiches Limit für den Datenverkehr und eine Zeitgrenze für Deployments. Die Plugin-Beschränkung des eingebauten Builders umgeht der eigene Build in GitHub Actions. Für statische Inhalte ohne laufende Kosten ist GitHub Pages die beste Wahl.
+Beim Hosting fiel die Wahl auf GitHub Pages. Es ist kostenlos, veröffentlicht direkt aus dem Repository (ein Push genügt) und bringt SSL-Zertifikate automatisch mit. Ausgeliefert wird über ein CDN, eine eigene Domain lässt sich einbinden. Dem stehen Grenzen gegenüber: keine serverseitige Verarbeitung, ein weiches Limit für den Datenverkehr und eine Zeitgrenze für Deployments. Die Plugin-Beschränkung des eingebauten Builders umgeht der eigene Build in GitHub Actions. Für statische Inhalte ohne laufende Kosten ist GitHub Pages die beste Wahl.
 
 Netlify als erste Alternative bietet mehr Funktionen für CI / CD, Serverless Functions, A/B-Tests, Formularverarbeitung und Vorschauen pro Branch. Erweiterte Funktionen kosten aber Geld, und die Konfiguration ist aufwendiger. Die Performance ist sehr gut, das Mehr an Funktionen braucht eine statische Seite wie diese aber nicht.
 
-Vercel als zweite Alternative ist auf React und Next.js zugeschnitten, mit Edge Functions, globalem CDN und automatischen Optimierungen. Für Jekyll passt es weniger gut und verlangt eine aufwendigere Build-Pipeline. Die Pro-Stufe kostet monatlich, die Performance ist hervorragend – für eine statische Seite ist das mehr als nötig.
+Vercel als zweite Alternative ist auf React und Next.js zugeschnitten, mit Edge Functions und automatischen Optimierungen. Für Jekyll passt es weniger gut und verlangt eine aufwendigere Build-Pipeline. Die Pro-Stufe kostet monatlich, ausgeliefert wird über ein weltweites Edge-Netz – für eine statische Seite ist das mehr als nötig.
 
-AWS S3 mit CloudFront bietet als Enterprise-Option maximale Kontrolle, skalierbare Infrastruktur, ausführliche Auswertungen und ein frei konfigurierbares CDN. Dafür ist die Einrichtung aufwendig, und je nach Datenverkehr kommen Kosten und Wartung hinzu. Für die Anforderungen dieser Seite ist das zu komplex.
+AWS S3 mit CloudFront bietet als Enterprise-Option Kontrolle über jede Einstellung von Speicher und CDN, skalierbare Infrastruktur und ausführliche Auswertungen. Dafür ist die Einrichtung aufwendig, und je nach Datenverkehr kommen Kosten und Wartung hinzu. Für die Anforderungen dieser Seite ist das zu komplex.
 
 Ein eigener Server (VPS) bietet volle Kontrolle, eine frei wählbare Konfiguration und keine Abhängigkeit von einem Hosting-Anbieter. Dafür liegen Wartung, Sicherheit und Backups komplett in eigener Hand, und je nach Anbieter fallen monatliche Kosten an. Für dieses Projekt lohnt sich das nicht.
 
@@ -695,7 +695,7 @@ Theme-Updates bleiben heikel: Neue Versionen können Inkompatibilitäten mitbrin
 **Alternative Szenarien:**
 
 **Für große Websites (>1000 Seiten):**
-- **Hugo**: Extrem schnelle Build-Zeiten (oft <1 Sekunde)
+- **Hugo**: Builds oft unter einer Sekunde
 - **11ty**: Flexiblere Template-Engines und bessere Performance
 - **Gatsby**: React-basierte Lösung mit GraphQL-Integration
 - **Empfehlung**: Hugo für reine Performance, 11ty für Flexibilität
@@ -753,7 +753,7 @@ Jekyll und Minimal Mistakes haben sich als solide Basis erwiesen. Statisch erzeu
 - **Performance**: Kurze Ladezeiten durch statische Generierung
 - **Skalierbarkeit**: Effiziente Auslieferung über ein CDN
 - **Wartbarkeit**: Strukturierte, versionierte Inhalte
-- **Flexibilität**: Umfangreiche Customization-Möglichkeiten
+- **Flexibilität**: Farben, Layouts und Komponenten lassen sich anpassen
 - **Kosteneffizienz**: Vollständig kostenloses Hosting und Deployment
 
 **Entscheidungsvalidierung und Lessons Learned:**
@@ -769,10 +769,10 @@ Die ursprüngliche Technologiewahl hat sich in den wichtigen Punkten bewährt:
 
 **Jekyll-Ökosystem:**
 - **Stabile Technologie**: Ausgereift und verlässlich
-- **Große Community**: Umfangreiche Ressourcen und Support
+- **Große Community**: Antworten auf die meisten Fragen in Doku, Foren und Stack Overflow
 - **Kontinuierliche Entwicklung**: Regelmäßige Updates und Verbesserungen
 - **Dokumentationsqualität**: Ausführliche Dokumentation
-- **Plugin-Ökosystem**: Reichhaltige Sammlung von Erweiterungen
+- **Plugin-Ökosystem**: Plugins für Sitemap, Feed, Paginierung und mehr
 
 **Minimal-Mistakes-Theme:**
 - **Solide Grundlage**: Gutes Grunddesign, auf dem die eigene Gestaltung aufbaut
@@ -842,4 +842,4 @@ Langfristig (ab drei Jahren) geht es darum, neue Static Site Generators zu bewer
 - **Content-Collaboration**: Erweiterte Tools für Team-Kollaboration
 - **Internationalization**: Mehrsprachige Unterstützung und Lokalisierung
 
-Was bleibt: Die Fraktal-Visualisierungen zeigen, dass auch anspruchsvolle Interaktion auf einer statischen Website möglich ist. Web Worker, Canvas und modernes JavaScript gehen weit über die klassische statische Seite hinaus, ohne deren Stärken aufzugeben – Geschwindigkeit, Stabilität und keine laufenden Kosten. Vielleicht helfen die Entscheidungen und Erfahrungen hier auch bei ähnlichen Projekten.
+Was bleibt: Die Fraktal-Visualisierungen zeigen, dass auch rechenintensive Interaktion in Echtzeit auf einer statischen Website möglich ist. Web Worker, Canvas und modernes JavaScript gehen weit über die klassische statische Seite hinaus, ohne deren Stärken aufzugeben – Geschwindigkeit, Stabilität und keine laufenden Kosten. Vielleicht helfen die Entscheidungen und Erfahrungen hier auch bei ähnlichen Projekten.
