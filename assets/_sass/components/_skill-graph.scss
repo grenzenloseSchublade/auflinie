@@ -541,6 +541,52 @@ body.graph-open .skill-graph__canvas-wrap {
   min-height: 0;
 }
 
+// Desktop (breites, mittiges Sheet ab md, Owner 8. 10. 2026): Info-Leiste
+// und Werkzeuge in EINER Zeile, die Leiste links mit freier Breite, die
+// Werkzeuge samt ✕ rechts daneben, oben bündig. Die Leiste steht so direkt
+// unter der Oberkante: Öffnet man über den kleinen Knopf, landet sie genau
+// auf der klebenden Konsole (skill-graph-sheet.js alignInfo), ohne dass das
+// Sheet über den Masthead reicht. Oben deshalb nur $space-2 samt Rahmen
+// (Masthead + $space-2 = Lage der klebenden Konsole). Gilt auch in flachen
+// Fenstern, dort spart die eine Zeile Höhe für den Graphen.
+@include up(md) {
+  body.graph-open .skill-graph__panel {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-rows: auto minmax(0, 1fr);
+    column-gap: $space-3;
+
+    // Leiste auf der Höhe der klebenden Konsole (Masthead + $space-2)
+    // skala-Ausnahme: $space-2 abzüglich des 1-px-Rahmens
+    padding-top: calc(#{$space-2} - 1px);
+  }
+
+  body.graph-open .skill-graph__head {
+    grid-area: 1 / 2;
+    align-self: start;
+    margin: 0;
+  }
+
+  body.graph-open :is(.skill-graph, .skill-graph-layer) p.skill-graph__info {
+    grid-area: 1 / 1;
+
+    // Bis lg bleibt neben den Werkzeugen wenig Breite (768 px: 385 px), der
+    // Ruhetext bricht dort auf vier Zeilen um: eine Zeile mehr, die
+    // Oberkante bleibt, wo sie ist. Flache Fenster: zwei Zeilen (oben).
+    @include between(md, lg) {
+      @include selection-console-lines(4);
+    }
+
+    @include down-height(short) {
+      @include selection-console-lines(2);
+    }
+  }
+
+  body.graph-open .skill-graph__canvas-wrap {
+    grid-area: 2 / 1 / 3 / 3;
+  }
+}
+
 // Touch-Hinweis (Owner: bleibt als Kasten MITTIG über dem Graphen). Vom
 // Sheet-Modul beim ersten Öffnen auf Touch-Geräten eingeblendet, blendet nach
 // ~4.5s aus. Zentriert über inset + margin: auto statt left: 50% — sonst
