@@ -190,8 +190,13 @@
 // Nur die Höhe der Auswahl-Konsole (Zeilen × 1.5em plus Innenabstand), für
 // Abwandlungen ohne die übrigen Eigenschaften neu zu setzen (z. B. flache
 // Fenster im Graph-Sheet, dort bleibt die Magenta-Hairline von .is-active).
-@mixin selection-console-lines($lines) {
-  height: calc(#{$lines} * 1.5em + 0.8rem);
+// $foot: zusätzlicher Streifen unten (Konsole mit Graph-Knopf, _cv.scss)
+@mixin selection-console-lines($lines, $foot: null) {
+  @if $foot {
+    height: calc(#{$lines} * 1.5em + 0.8rem + #{$foot});
+  } @else {
+    height: calc(#{$lines} * 1.5em + 0.8rem);
+  }
 }
 
 // Sektions-Header: ruhige weiße Überschrift mit Hairline

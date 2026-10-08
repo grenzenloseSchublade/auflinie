@@ -500,12 +500,29 @@ li.cv-skill-chip--breadth {
 // (shape-outside) nur das untere Stück trifft: Die Konsole zeigt 2 (schmal
 // 3) volle Zeilen und darunter den Anfang der nächsten, ein Text, der diese
 // erreicht, scrollt ohnehin schon. Der Knopf ($graph-dock-height,
-// _skill-graph.scss) sitzt auf der Unterkante und reicht nur in dieses
-// Stück und in den unteren Durchschuss der letzten vollen Zeile. Die Form
-// beginnt deshalb etwas unter seiner Oberkante ($space-1 / 2), sonst träfe
-// sie die letzte volle Zeile (mit dem Skill-Namen in Mono ist die erste
-// Zeile höher als 1.5em). Volle Zeilen behalten so ihre ganze Breite, die
-// Konsole läuft nicht öfter über als ohne Knopf.
+// _skill-graph.scss) steht $space-2 über der Unterkante der Konsole
+// (Owner, 8. 10. 2026). Diesen Streifen bekommt die Konsole mit Knopf
+// unten dazu, als Innenabstand: Gegenüber dem Text steht der Knopf damit
+// wie vorher auf der Unterkante des Textbereichs und reicht nur in dieses
+// Stück und in den unteren Durchschuss der letzten vollen Zeile. Ohne den
+// Streifen träfe er die letzte volle Zeile, die würde kürzer und die
+// Konsole liefe öfter über (gemessen 320 px: 10 statt 5 der 55 Skills).
+// Die Form beginnt etwas unter seiner Oberkante ($space-1 / 2), sonst
+// träfe sie die letzte volle Zeile (mit dem Skill-Namen in Mono ist die
+// erste Zeile höher als 1.5em). Volle Zeilen behalten so ihre ganze
+// Breite, die Konsole läuft nicht öfter über als ohne Knopf. Der Float
+// endet am Textbereich: Reichte er in den Streifen, zählte Firefox ihn
+// zum Inhalt, und jede Konsole liefe über.
+.cv-skills__console--dock p.cv-skills__selection-info {
+  @include selection-console-lines(3, $space-2);
+
+  padding-bottom: $space-2 + $space-2;
+
+  @include down(content) {
+    @include selection-console-lines(4, $space-2);
+  }
+}
+
 .cv-skills__console--dock p.cv-skills__selection-info::before {
   content: "";
   float: right;

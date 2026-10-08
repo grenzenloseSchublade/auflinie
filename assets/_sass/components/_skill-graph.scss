@@ -183,6 +183,8 @@ $graph-tool-size: 32px;
 // ($graph-dock-height): So passt er unter die vollen Zeilen der Konsole, in
 // die Ecke, die sie frei hält (_cv.scss). Polster bis 44 px nur bei grobem
 // Zeiger (touch-target-pad), die Konsole wird dadurch nicht höher.
+// Rechts und unten je $space-2 Abstand zum Rand der Konsole (Owner,
+// 8. 10. 2026), den Streifen unten hat die Konsole mit Knopf dazu (_cv.scss).
 // Sichtbar, sobald der große Öffner aus dem Bild ist: skill-graph-sheet.js
 // setzt data-graph-dock an .cv-skills (big/small) und schaltet inert und
 // aria-hidden um. Hier die einfache Blende (Firefox, Reduced Motion, ohne
@@ -196,7 +198,7 @@ $graph-tool-size: 32px;
   z-index: $graph-z-dock;
   width: $graph-dock-width;
   min-height: $graph-dock-height;
-  margin: 0 $space-2 0 0;
+  margin: 0 $space-2 $space-2 0;
   padding-block: 0;
   opacity: 0;
   transition: opacity $duration-base ease, border-color $duration-base ease, color $duration-base ease;
