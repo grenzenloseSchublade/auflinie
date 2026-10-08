@@ -133,6 +133,8 @@
     dock.addEventListener('click', function () {
       if (!self.panel.hidden) { return; }
       self.opener = dock;
+      // Lage der Konsole, bevor das Sheet sie verdeckt (alignInfo)
+      self.dockAt = box.getBoundingClientRect();
       self.toggle.click();   // skill-graph.js öffnet, onHidden präsentiert
     });
 
@@ -239,6 +241,8 @@
     const open = !this.panel.hidden;
     if (open) { this.enterModal(); } else { this.leaveModal(); }
     document.body.classList.toggle('graph-open', open);
+    if (open && this.opener === this.dock && this.dockAt) { this.alignInfo(this.dockAt); }
+    this.dockAt = null;
     if (this.dock) { this.dock.setAttribute('aria-expanded', String(open)); }
     const self = this;
     if (open) {
@@ -284,8 +288,48 @@
     document.documentElement.classList.add('graph-scroll-lock');
   };
 
+  // Geöffnet über den kleinen Knopf (Owner, 8. 10. 2026): Am Ende der
+  // Öffnen-Animation liegt die Info-Leiste genau auf der Konsole, die eben
+  // noch da war. Senkrecht rückt das ganze Sheet (seine Oberkante), so wird
+  // die Fläche des Graphen nur um den nötigen Weg kleiner oder sogar
+  // größer, höchstens bis an den Masthead. Mit voller Breite (mobil) dazu
+  // Ränder und Höhe der Leiste wie die Konsole. Am Desktop bleibt das
+  // Sheet bewusst breit und mittig, dort nur die Höhe. Gemessen einmal
+  // beim Öffnen, als feste Werte: Ändert sich danach die Fenstergröße,
+  // springt nichts. Flache Fenster lassen das CSS beim Grundmaß
+  // (_skill-graph.scss). Öffnen über den großen Knopf: Grundmaß.
+  GraphSheet.prototype.alignInfo = function (con) {
+    const info = this.panel.querySelector('[data-role="graph-context"]');
+    if (!info || !con.height) { return; }
+    const panel = this.panel;
+    const u = window.AuflinieUtils;
+    const wide = !(u && u.mq && u.mq.downMd && u.mq.downMd.matches);
+    if (!wide) {
+      panel.setAttribute('data-dock-fit', '');
+      panel.style.setProperty('--graph-info-h', con.height + 'px');
+    }
+    // Die Öffnen-Animation läuft schon: ihren senkrechten Versatz abziehen
+    // (Lagen innerhalb des Sheets ändert sie nicht)
+    const t = getComputedStyle(panel).transform;
+    const ty = t && t !== 'none' ? new DOMMatrixReadOnly(t).m42 : 0;
+    const pr = panel.getBoundingClientRect();
+    const ir = info.getBoundingClientRect();
+    const top = pr.top - ty;
+    const masthead = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--masthead-height')) || 0;
+    const shift = Math.min(Math.max(con.top - (ir.top - ty), masthead - top), pr.height / 3);
+    panel.style.setProperty('--graph-sheet-shift', shift + 'px');
+    if (!wide) {
+      panel.style.setProperty('--graph-info-ml', Math.max(0, con.left - ir.left) + 'px');
+      panel.style.setProperty('--graph-info-mr', Math.max(0, ir.right - con.right) + 'px');
+    }
+  };
+
   GraphSheet.prototype.leaveModal = function () {
     if (!this.layer) { return; }
+    ['--graph-sheet-shift', '--graph-info-h', '--graph-info-ml', '--graph-info-mr'].forEach(function (name) {
+      this.panel.style.removeProperty(name);
+    }, this);
+    this.panel.removeAttribute('data-dock-fit');
     if (this.releaseInert) { this.releaseInert(); }
     this.releaseInert = null;
     document.documentElement.classList.remove('graph-scroll-lock');

@@ -254,13 +254,26 @@ $graph-tool-size: 32px;
   line-height: 1.3;
 }
 
+// Geöffnet über den kleinen Knopf mit voller Breite des Sheets (mobil,
+// data-dock-fit, skill-graph-sheet.js alignInfo): Die Leiste bekommt Ränder
+// und Höhe der Konsole, die eben noch an dieser Stelle lag. Die Höhenlage
+// stellt das Sheet selbst (--graph-sheet-shift, unten).
+@include down(md) {
+  body.graph-open .skill-graph__panel[data-dock-fit] p.skill-graph__info {
+    height: var(--graph-info-h);
+    margin-inline: var(--graph-info-ml, 0) var(--graph-info-mr, 0);
+  }
+}
+
 // Flache Fenster (Telefon quer): Info-Leiste auf zwei Zeilen, dort bleibt
-// es beim Hinweis
+// es beim Hinweis, auch nach dem Öffnen über den kleinen Knopf
 @include down-height(short) {
-  body.graph-open :is(.skill-graph, .skill-graph-layer) p.skill-graph__info {
+  body.graph-open :is(.skill-graph, .skill-graph-layer) p.skill-graph__info,
+  body.graph-open .skill-graph__panel[data-dock-fit] p.skill-graph__info {
     @include selection-console-lines(2);
 
     margin-bottom: $space-2;
+    margin-inline: 0;
   }
 
   body.graph-open .skill-graph__info-note {
@@ -473,6 +486,10 @@ body.graph-open .skill-graph__canvas-wrap canvas {
 // Flache Fenster (Telefon quer, 1024×600): fast volle Höhe, nur ein Streifen
 // Scrim bleibt oben (Light Dismiss). Bis unter den Masthead wäre dort zu
 // knapp (390 − 88 − 8 = 294 px).
+// Geöffnet über den kleinen Knopf rückt die Oberkante um
+// --graph-sheet-shift (skill-graph-sheet.js alignInfo, Owner 8. 10. 2026),
+// damit die Info-Leiste genau auf der Konsole liegt: nach unten oder
+// höchstens bis an den Masthead nach oben. Flache Fenster ohne.
 body.graph-open .skill-graph__panel {
   position: fixed;
   left: 50%;
@@ -480,7 +497,7 @@ body.graph-open .skill-graph__panel {
   z-index: $z-sheet-panel;
   box-sizing: border-box;
   width: min(#{$graph-sheet-width}, 94vw);
-  height: calc(100vh - var(--masthead-height) - #{$space-2});
+  height: calc(100vh - var(--masthead-height) - #{$space-2} - var(--graph-sheet-shift, 0px));
   margin: 0;
   transform: translateX(-50%);
   border: 1px solid $console-panel-border;
@@ -495,7 +512,7 @@ body.graph-open .skill-graph__panel {
 
   // dvh folgt der sichtbaren Fläche, wenn die Browserleiste ein-/ausfährt
   @supports (height: 100dvh) {
-    height: calc(100dvh - var(--masthead-height) - #{$space-2});
+    height: calc(100dvh - var(--masthead-height) - #{$space-2} - var(--graph-sheet-shift, 0px));
   }
 
   @include down(md) {
