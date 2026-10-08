@@ -618,6 +618,38 @@ body.graph-open .skill-graph__sheet-close {
   }
 }
 
+// Schließen (Owner, 8. 10. 2026): Gegenstück zum Hereingleiten, das Sheet
+// gleitet in 0,2 s nach unten hinaus, der Scrim blendet aus. Erst danach
+// setzt skill-graph-sheet.js (close) [hidden]. Bei Reduced Motion schließt
+// es sofort, die Klasse kommt dann gar nicht. Während der Animation fängt
+// die Ebene keine Zeiger mehr ab.
+.skill-graph-layer.is-closing {
+  pointer-events: none;
+
+  .skill-graph__scrim {
+    animation: graph-scrim-out $duration-base $ease-accelerate forwards;
+  }
+
+  .skill-graph__panel {
+    animation: graph-sheet-down $duration-base $ease-accelerate forwards;
+  }
+}
+
+@keyframes graph-sheet-down {
+  from {
+    transform: translate(-50%, 0);
+  }
+
+  to {
+    transform: translate(-50%, 100%);
+  }
+}
+
+@keyframes graph-scrim-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   body.graph-open .skill-graph__panel {
     animation: none;

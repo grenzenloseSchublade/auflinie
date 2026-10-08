@@ -112,6 +112,7 @@
     this.observer.observe(this.panel, { attributes: true, attributeFilter: ['hidden'] });
 
     this.opener = null;   // Knopf, über den das Sheet zuletzt aufging
+    this.closing = false; // Schließ-Animation läuft (close)
     this.mountDock();
   }
 
@@ -326,6 +327,7 @@
 
   GraphSheet.prototype.leaveModal = function () {
     if (!this.layer) { return; }
+    this.closing = false;
     ['--graph-sheet-shift', '--graph-info-h', '--graph-info-ml', '--graph-info-mr'].forEach(function (name) {
       this.panel.style.removeProperty(name);
     }, this);
@@ -357,10 +359,36 @@
   };
 
   // Schließen delegiert an den bestehenden Toggle -> skill-graph.js räumt sauber auf.
+  // Vorher gleitet das Sheet nach unten hinaus und der Scrim blendet aus
+  // (Owner, 8. 10. 2026, .is-closing in _skill-graph.scss), erst danach
+  // [hidden], Ende des Modals und Fokus-Rückgabe (onHidden). Bei Reduced
+  // Motion sofort. Ein zweites Auslösen während der Animation (✕, Esc,
+  // Scrim) tut nichts. Bleibt animationend aus (Tab im Hintergrund,
+  // gedrosselte Engine), schließt ein Zeitlimit.
+  const CLOSE_MS = 450;
   GraphSheet.prototype.close = function () {
-    if (!this.panel.hidden) {
+    if (this.panel.hidden || this.closing) { return; }
+    const u = window.AuflinieUtils;
+    const reduce = u && u.prefersReducedMotion ? u.prefersReducedMotion() : false;
+    if (reduce || !this.layer) {
       this.toggle.click();   // Fokus-Rückgabe übernimmt onHidden
+      return;
     }
+    const self = this;
+    const panel = this.panel;
+    let timer = null;
+    function done(e) {
+      if (e && (e.target !== panel || e.animationName !== 'graph-sheet-down')) { return; }
+      panel.removeEventListener('animationend', done);
+      clearTimeout(timer);
+      if (!self.closing) { return; }
+      self.closing = false;
+      if (!panel.hidden) { self.toggle.click(); }
+    }
+    this.closing = true;
+    panel.addEventListener('animationend', done);
+    timer = setTimeout(done, CLOSE_MS);
+    this.layer.classList.add('is-closing');
   };
 
   GraphSheet.prototype.onKeydown = function (e) {

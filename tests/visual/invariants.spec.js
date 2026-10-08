@@ -540,6 +540,46 @@ test.describe('Skill-Graph ohne Reduced Motion', () => {
   }
 });
 
+// Schließen (Owner, 8. 10. 2026): Das Sheet gleitet erst nach unten hinaus,
+// danach [hidden], Ende des Modals und Fokus zurück. Ein zweites Auslösen
+// während der Animation tut nichts (sonst öffnete der Toggle gleich wieder).
+// Unter Reduced Motion sofort.
+const closeNow = (page, how) => page.evaluate((how) => {
+  if (how === 'x') document.querySelector('.skill-graph__sheet-close').click();
+  else document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+  return {
+    hidden: document.querySelector('[data-role="graph-panel"]').hidden,
+    closing: !!document.querySelector('.skill-graph-layer.is-closing'),
+  };
+}, how);
+
+test.describe('Skill-Graph-Sheet: Schließen', () => {
+  test('gleitet hinaus, erst danach zu, doppelt schließt nicht doppelt', async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: 'no-preference' });
+    const { opener, panel } = await openSheet(page);
+    expect(await closeNow(page, 'x')).toEqual({ hidden: false, closing: true });
+    // Esc und ✕ noch einmal, während es hinausgleitet
+    expect(await closeNow(page, 'esc')).toEqual({ hidden: false, closing: true });
+    expect(await closeNow(page, 'x')).toEqual({ hidden: false, closing: true });
+    await expect(panel).toBeHidden();
+    await expect(panel).not.toHaveAttribute('role', 'dialog');
+    await expect(page.locator('.skill-graph-layer')).toHaveCount(0);
+    await expect(opener).toBeFocused();
+    await expect(opener).toHaveAttribute('aria-expanded', 'false');
+    // Es bleibt zu (der Toggle lief genau einmal)
+    await page.waitForTimeout(600);
+    await expect(panel).toBeHidden();
+  });
+
+  test('Reduced Motion: sofort zu', async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    const { opener, panel } = await openSheet(page);
+    expect(await closeNow(page, 'esc')).toEqual({ hidden: true, closing: false });
+    await expect(panel).not.toHaveAttribute('role', 'dialog');
+    await expect(opener).toBeFocused();
+  });
+});
+
 // Kleiner Graph-Knopf in der klebenden Auswahl-Konsole (Owner, 7. 10. 2026):
 // Er übernimmt, sobald der große Öffner oben aus dem Bild ist. Immer genau
 // einer der beiden ist bedienbar, der andere inert und aria-hidden. Ohne
