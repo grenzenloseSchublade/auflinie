@@ -763,7 +763,7 @@ test.describe('Kleiner Graph-Knopf: Verwandlung beim Scrollen', () => {
         const names = () => page.evaluate(([dock, big]) => [dock, big].map((sel) =>
           getComputedStyle(document.querySelector(sel)).animationName), [DOCK, BIG]);
         expect(await names()).toEqual(sda
-          ? ['graph-dock-in', 'graph-dock-shrink, graph-dock-glide, graph-dock-hold, graph-dock-out']
+          ? ['graph-dock-in', 'graph-dock-still, graph-dock-path, graph-dock-out']
           : ['none', 'none']);
         if (sda) {
           const timelines = await page.evaluate((sel) => document.querySelector(sel).getAnimations()
@@ -788,12 +788,27 @@ test.describe('Kleiner Graph-Knopf: Verwandlung beim Scrollen', () => {
         const bad = [];
         for (let d = -h - 40; d <= Math.max(ride, h) + 30; d += 4) {
           await scrollOpener(page, d);
-          // Blende (ohne Zeitleiste) und Observer ausklingen lassen
-          await page.waitForTimeout(60);
-          await page.evaluate(() => Promise.all(document.getAnimations()
-            .filter((a) => a.timeline === document.timeline && a.effect && a.effect.getComputedTiming().endTime !== Infinity)
-            .map((a) => a.finished.catch(() => {}))));
-          const u = await usableOpener(page);
+          // Erst messen, wenn alles ruht: Observer hat umgeschaltet, keine
+          // Blende läuft mehr (ohne Zeitleiste), und zwei Messungen in
+          // Folge stimmen überein. Firefox meldet den Observer unter Last
+          // erst einige Bilder nach dem Scrollen.
+          let last = '';
+          let u = null;
+          await expect.poll(async () => {
+            // Zwei Bilder abwarten (Observer), höchstens 250 ms: WebKit malt
+            // im Container unter Last kaum ein Bild pro Sekunde
+            await page.evaluate(() => Promise.race([new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r))),
+              new Promise((r) => setTimeout(r, 250))]));
+            await page.evaluate(() => Promise.all(document.getAnimations()
+              .filter((a) => a.timeline === document.timeline && a.effect && a.effect.getComputedTiming().endTime !== Infinity)
+              .map((a) => a.finished.catch(() => {}))));
+            const state = await page.locator('.cv-skills').getAttribute('data-graph-dock');
+            u = await usableOpener(page);
+            const now = JSON.stringify([state, u]);
+            const still = now === last;
+            last = now;
+            return still;
+          }, { intervals: [50], message: `Ruhe bei ${d} px` }).toBe(true);
           if (u.opacity < 0.5 || !u.free) bad.push(`${d}: ${u.role} ${u.opacity.toFixed(2)}${u.free ? '' : ' verdeckt'}`);
         }
         expect(bad).toEqual([]);
@@ -825,11 +840,12 @@ test.describe('Kleiner Graph-Knopf: Verwandlung beim Scrollen', () => {
           const cs = (s) => getComputedStyle(q(s));
           return {
             state: q('.cv-skills').dataset.graphDock,
-            big: Number(cs(big).opacity), scale: cs(big).scale, translate: cs(big).translate,
+            big: Number(cs(big).opacity), scale: cs(big).scale, translate: cs(big).translate, transform: cs(big).transform,
             lead: Number(cs('.skill-graph__lead').opacity), dock: Number(cs(dock).opacity),
           };
         }, [DOCK, BIG]);
-        expect(state).toEqual({ state: 'big', big: 1, scale: expect.stringMatching(/^(none|1)$/), translate: expect.stringMatching(/^(none|0px)$/), lead: 1, dock: 0 });
+        expect(state).toEqual({ state: 'big', big: 1, scale: expect.stringMatching(/^(none|1)$/), translate: expect.stringMatching(/^(none|0px)$/),
+          transform: expect.stringMatching(/^(none|matrix\(1, 0, 0, 1, 0, 0\))$/), lead: 1, dock: 0 });
       });
     });
   }

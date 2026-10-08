@@ -3,6 +3,7 @@
 // (+ DOM-freie Engine skill-graph-sim.js), Präsentation als modales Sheet:
 // assets/js/skill-graph-sheet.js. Die Chip-Liste bleibt kanonisch.
 
+@use "sass:color";
 @use "abstracts/tokens" as *;
 @use "abstracts/mixins" as *;
 @use "abstracts/breakpoints" as *;
@@ -65,7 +66,7 @@ $graph-tool-size: 32px;
   color: $white;
   padding: $space-2 $space-4;
   cursor: pointer;
-  transition: border-color $duration-base ease, background-color $duration-base ease;
+  transition: border-color $duration-base ease, background-color $duration-base ease, opacity $duration-base ease;
 
   @media (hover: hover) {
     &:hover {
@@ -210,7 +211,9 @@ $graph-tool-size: 32px;
 }
 
 // Der große Öffner steht dann unter der Konsole oder ist hinausgescrollt,
-// unsichtbar auch dort, wo die Konsole ihn nicht verdeckt (Ende des Kapitels)
+// unsichtbar auch dort, wo die Konsole ihn nicht verdeckt (Ende des
+// Kapitels). Ohne Verwandlung mit derselben Blende wie der kleine (0,2 s,
+// bei Reduced Motion sofort über die globale Drossel)
 [data-graph-dock="small"] .skill-graph__open {
   opacity: 0;
 }
@@ -295,35 +298,39 @@ $graph-tool-size: 32px;
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Verwandlung beim Scrollen (Owner, 7. 10. 2026, nachgebessert nach der
-// Prüfung): Derselbe Knopf wird klein und dockt an. Erst kurz bevor der
-// große Öffner die Unterkante der klebenden Konsole erreicht, beginnt er,
-// vorher (auch nach einem Sprung über das Inhaltsverzeichnis) steht alles
-// unverändert, die Erklärzeile bleibt immer stehen.
-//   1. Anflug: Er steigt mit dem Scrollen in den unteren Rand der Konsole
-//      und schrumpft dabei genau auf die Höhe des kleinen Knopfs.
-//   2. Andocken: Dort bleibt er stehen (die Verschiebung gleicht das
-//      Scrollen aus) und gleitet waagerecht, bis seine rechte Kante auf der
-//      des kleinen liegt.
-//   3. Überblendung am Ziel: Er blendet aus, der kleine an derselben Stelle
+// Verwandlung beim Scrollen (Owner, 7. 10. 2026, Weg seit der Abnahme vom
+// 8. 10. 2026 schräg): Derselbe Knopf wird klein und dockt an. Erst kurz
+// bevor der große Öffner die Unterkante der klebenden Konsole erreicht,
+// beginnt er, vorher (auch nach einem Sprung über das Inhaltsverzeichnis)
+// steht alles unverändert, die Erklärzeile bleibt immer stehen.
+//   1. Weg: Er löst sich vom Scrollen und zieht auf einer geraden Linie
+//      schräg zum Platz des kleinen Knopfs, waagerecht und senkrecht mit
+//      derselben Kurve, und schrumpft dabei auf dessen Höhe. Am Ziel liegt
+//      seine rechte Kante auf der des kleinen, die Unterkanten ebenso.
+//   2. Überblendung am Ziel: Er blendet aus, der kleine an derselben Stelle
 //      ein. In der Mitte schaltet skill-graph-sheet.js bedienbar und inert
 //      um, beide sind dort noch zu 60 % zu sehen.
 // Rückwärts beim Zurückscrollen. Scroll-getriebene CSS-Animationen
-// (Compositor, nur scale, translate, transform und opacity, kein
-// Scroll-Listener, keine Layoutänderung). Zeitleiste: die ruhende Hülle des
-// Öffners (.skill-graph__open-slot) gegen eine Linie $graph-dock-ride über
-// der Unterkante der Konsole (--graph-dock-line), timeline-scope macht sie
-// für den kleinen Knopf in der Konsole sichtbar. Die Maße misst
-// skill-graph-sheet.js: --graph-dock-s (Höhe klein durch Höhe groß),
-// --graph-dock-dx (Weg der rechten Kante), --graph-dock-gap (Abstand des
-// kleinen zur Unterkante der Konsole). Es liest $graph-dock-ride und
-// $graph-dock-fade über die Custom Properties unten, für den Umschaltpunkt.
+// (Compositor, nur translate, transform und opacity, kein Scroll-Listener,
+// keine Layoutänderung). Zeitleiste: die ruhende Hülle des Öffners
+// (.skill-graph__open-slot) gegen eine Linie $graph-dock-ride über der
+// Unterkante der Konsole (--graph-dock-line), timeline-scope macht sie für
+// den kleinen Knopf in der Konsole sichtbar.
+// Zwei Anteile, beide in Pixeln des Fensters (translate wirkt vor transform,
+// also ungeschrumpft): translate gleicht über die ganze Strecke das
+// Scrollen aus (linear, der Knopf steht damit still), transform führt ihn
+// mit ease-in-out auf der Geraden zum Ziel und schrumpft ihn. Die Maße misst
+// skill-graph-sheet.js: --graph-dock-h (Höhe der Hülle), --graph-dock-s
+// (Höhe klein durch Höhe groß), --graph-dock-dx (waagerechter Weg),
+// --graph-dock-gap (Abstand des kleinen zur Unterkante der Konsole). Es liest
+// $graph-dock-ride und $graph-dock-fade über die Custom Properties unten,
+// für den Umschaltpunkt.
 // Ohne Scroll-Zeitleisten (Firefox) und bei Reduced Motion bleibt es bei der
 // einfachen Blende oben, ebenso ohne JS (dann fehlt data-graph-dock).
 // ─────────────────────────────────────────────────────────────────────────────
 
 // skala-Ausnahme: [Block] Choreografie (MO-4), Strecken der Verwandlung
-// Anflug: Start, wenn die Oberkante des Öffners so weit unter der Konsole ist
+// Start, wenn die Oberkante des Öffners so weit unter der Konsole ist
 $graph-dock-approach: 1rem;
 
 // Scrollweg ab „Öffner ganz unter der Konsole“ bis zum Ende der Überblendung
@@ -346,22 +353,32 @@ $graph-dock-fade: 1.25rem;
       }
 
       // Bereiche relativ zur Zeitleiste: exit 0% = Oberkante der Hülle an
-      // der Linie, 100% = ihre Höhe. Anflug bis „Unterkante auf Höhe des
-      // kleinen“, Andocken bis zum Ende, Überblendung im letzten Stück.
+      // der Linie, 100% = ihre Höhe. Stillstand vom Start bis zum Ende, Weg
+      // bis zum Beginn der Überblendung, diese im letzten Stück.
       .skill-graph__open {
         position: relative;
         z-index: $graph-z-dock-flight;
         transform-origin: 0 100%;
+
+        // Deckender Grund in genau dem Ton, den der halbdurchsichtige auf
+        // dem Seitengrund ergibt: Auf dem schrägen Weg zieht Text unter ihm
+        // durch (Erklärzeile, Gruppen), der soll nicht durchscheinen
+        background-color: color.mix($ink, $page-bg, 35%);
+
+        @media (hover: hover) {
+          &:hover {
+            background-color: color.mix($white, $page-bg, 8%);
+          }
+        }
+
         animation:
-          graph-dock-shrink linear both,
-          graph-dock-glide ease-in-out both,
-          graph-dock-hold linear both,
+          graph-dock-still linear both,
+          graph-dock-path ease-in-out both,
           graph-dock-out linear both;
-        animation-timeline: --graph-dock, --graph-dock, --graph-dock, --graph-dock;
+        animation-timeline: --graph-dock, --graph-dock, --graph-dock;
         animation-range:
-          exit calc(-1 * (#{$graph-dock-ride} + #{$graph-dock-approach})) exit calc(100% - #{$graph-dock-ride} + var(--graph-dock-gap, 0px)),
-          exit calc(100% - #{$graph-dock-ride} + var(--graph-dock-gap, 0px)) exit calc(100% - #{$graph-dock-fade}),
-          exit calc(100% - #{$graph-dock-ride} + var(--graph-dock-gap, 0px)) exit 100%,
+          exit calc(-1 * (#{$graph-dock-ride} + #{$graph-dock-approach})) exit 100%,
+          exit calc(-1 * (#{$graph-dock-ride} + #{$graph-dock-approach})) exit calc(100% - #{$graph-dock-fade}),
           exit calc(100% - #{$graph-dock-fade}) exit 100%;
       }
 
@@ -374,23 +391,26 @@ $graph-dock-fade: 1.25rem;
   }
 }
 
-// Anflug: auf die Höhe des kleinen Knopfs (Ecke unten links bleibt)
-@keyframes graph-dock-shrink {
-  from { scale: 1; }
-  to { scale: var(--graph-dock-s, 1); }
-}
-
-// Andocken: waagerecht bis zur rechten Kante des kleinen
-@keyframes graph-dock-glide {
+// Stillstand: gleicht das Scrollen über die ganze Strecke aus (Länge der
+// Strecke: Höhe der Hülle, $graph-dock-ride und $graph-dock-approach)
+@keyframes graph-dock-still {
   from { translate: 0 0; }
-  to { translate: var(--graph-dock-dx, 0) 0; }
+  to { translate: 0 calc(var(--graph-dock-h, 0px) + #{$graph-dock-ride} + #{$graph-dock-approach}); }
 }
 
-// Andocken: gleicht das Scrollen aus, damit er am unteren Rand der Konsole
-// stehen bleibt (transform wirkt nach scale, daher geteilt durch die Skala)
-@keyframes graph-dock-hold {
-  from { transform: translateY(0); }
-  to { transform: translateY(calc((#{$graph-dock-ride} - var(--graph-dock-gap, 0px)) / var(--graph-dock-s, 1))); }
+// Weg: von der Ecke unten links des großen zur Ecke des Ziels, schräg auf
+// einer Geraden, Schrumpfen auf die Höhe des kleinen im selben Takt
+@keyframes graph-dock-path {
+  from { transform: translate(0, 0) scale(1); }
+
+  to {
+    transform:
+      translate(
+        var(--graph-dock-dx, 0),
+        calc(-1 * (var(--graph-dock-h, 0px) + #{$graph-dock-approach} + var(--graph-dock-gap, 0px)))
+      )
+      scale(var(--graph-dock-s, 1));
+  }
 }
 
 // Überblendung am Ziel: in der Mitte (Umschaltpunkt) beide zu 60 % sichtbar

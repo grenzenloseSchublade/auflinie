@@ -27,7 +27,7 @@
  * Scroll-Listener), data-graph-dock an .cv-skills (big/small) trägt den
  * Zustand ins CSS. Die sichtbare Verwandlung beim Scrollen macht das CSS
  * allein (scroll-getriebene Animation, _skill-graph.scss). Von hier kommen
- * nur die Maße (Unterkante der Konsole, Skala, Weg) als Custom Properties an
+ * nur die Maße (Unterkante der Konsole, Höhe, Skala, Weg) als Custom Properties an
  * .cv-skills. Mit Verwandlung liegt der Umschaltpunkt in der Mitte der
  * Überblendung am Ende des Wegs, ohne (Firefox, Reduced Motion) dort, wo die
  * Konsole den großen Knopf zu verdecken beginnt. So ist der bedienbare
@@ -167,6 +167,7 @@
       const gap = Math.round(boxRect.bottom - dockRect.bottom);
       const dx = Math.round(dockRect.right - slot.getBoundingClientRect().left - s * self.toggle.offsetWidth);
       scope.style.setProperty('--graph-dock-line', line + 'px');
+      scope.style.setProperty('--graph-dock-h', h + 'px');
       scope.style.setProperty('--graph-dock-s', String(Math.round(s * 1000) / 1000));
       scope.style.setProperty('--graph-dock-dx', dx + 'px');
       scope.style.setProperty('--graph-dock-gap', gap + 'px');

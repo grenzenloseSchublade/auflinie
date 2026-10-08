@@ -30,13 +30,15 @@ Die Skill-Chips auf `/cv/` sind erkundbar:
   Die Konsole hält dafür nur die Ecke unter ihren vollen Zeilen frei
   (`shape-outside`), sie läuft nicht öfter über als ohne Knopf. Beim Scrollen
   wird derselbe Knopf klein und dockt an: Erst kurz bevor der große die
-  Konsole erreicht, steigt er in ihren unteren Rand und schrumpft auf die
-  Höhe des kleinen, gleitet dort stehend nach rechts, bis er auf dem kleinen
-  liegt, und blendet erst am Ziel in ihn über (scroll-getriebene
-  CSS-Animation, nur `scale`, `translate`, `transform` und `opacity`, kein
-  Scroll-Listener). Die Erklärzeile bleibt stehen. Ohne Scroll-Zeitleisten
-  (Firefox) und bei Reduced Motion blendet der kleine nur ein (0,2 s bzw.
-  sofort), sobald die Konsole den großen zu verdecken beginnt. Genau einer
+  Konsole erreicht, löst er sich vom Scrollen und zieht auf einer geraden
+  Linie schräg zum Platz des kleinen (Abnahme 8. 10. 2026), schrumpft dabei
+  auf dessen Höhe und blendet erst am Ziel in ihn über (scroll-getriebene
+  CSS-Animation, nur `translate`, `transform` und `opacity`, kein
+  Scroll-Listener). Unterwegs ist sein Grund deckend, Text, der unter ihm
+  durchzieht, scheint nicht durch. Die Erklärzeile bleibt stehen. Ohne
+  Scroll-Zeitleisten (Firefox) und bei Reduced Motion blenden beide Knöpfe
+  nur über (0,2 s bzw. sofort), sobald die Konsole den großen zu verdecken
+  beginnt. Genau einer
   der beiden Knöpfe ist bedienbar, der andere `inert` und `aria-hidden`, ein
   IntersectionObserver in `skill-graph-sheet.js` schaltet in der Mitte der
   Überblendung um (dort sind beide zu 60 % sichtbar). Der Fokus kehrt nach
