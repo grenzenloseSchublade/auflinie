@@ -14,32 +14,34 @@ sections:
   - section: "Fraktale Geometrie"
     icon: "question-circle"
     # Quelle (1980 bei IBM dargestellt, nicht erstmals, Brooks und Matelski zeichneten die Menge 1978): Wikipedia, „Mandelbrot set“, Abschnitt „History“, https://en.wikipedia.org/wiki/Mandelbrot_set#History
+    # Quelle (Fatou und Julia begründen die komplexe Dynamik Anfang des 20. Jahrhunderts): Wikipedia, „Mandelbrot set“, Abschnitt „History“, https://en.wikipedia.org/wiki/Mandelbrot_set#History
+    # Quelle (Julias „Mémoire sur l’itération des fonctions rationnelles“ 1918 im Journal de Mathématiques Pures et Appliquées): Wikipedia, „Gaston Julia“, https://en.wikipedia.org/wiki/Gaston_Julia
+    # Quelle (Mandelbrot prägt den Begriff „Fraktal“ 1975): Wikipedia, „Fractal“, https://en.wikipedia.org/wiki/Fractal
     content: |-
-      Die fraktale Geometrie ist ein Teilgebiet der Mathematik, welches sich mit Strukturen beschäftigt, die auf verschiedenen Skalen selbstähnlich sind.
+      Die fraktale Geometrie ist ein Teilgebiet der Mathematik, das sich mit Strukturen beschäftigt, die auf verschiedenen Skalen selbstähnlich sind.
       Solche Muster finden sich in vielen natürlichen Phänomenen, zum Beispiel in Wolken, dem Wachstum von Pflanzen oder Küstenlinien.
       Fraktale zeigen Skalierungsinvarianz und sind ein wichtiges Werkzeug in der Bildverarbeitung, Computergrafik,
       Physik sowie bei der Modellierung komplexer Systeme.\\
       Die Julia-Menge und die Mandelbrot-Menge sind zentrale Objekte in dieser Theorie.
-      Ihre Erforschung wurde maßgeblich von Gaston Maurice Julia und Pierre Fatou vorangetrieben.
-      Benoît Mandelbrot prägte ab 1979 mit grundlegenden Untersuchungen diesen Forschungszweig und
-      verhalf der Mandelbrot-Menge – die 1980 am IBM-Forschungszentrum visuell dargestellt und später nach ihm benannt wurde – zu weltweiter Bekanntheit.
+      Die Julia-Mengen gehen auf Gaston Maurice Julia und Pierre Fatou zurück, die um 1918 die Iteration komplexer Funktionen untersuchten.
+      Benoît Mandelbrot, der 1975 den Begriff „Fraktal“ prägte, untersuchte die Menge ab 1979 und
+      verhalf ihr – die 1980 am IBM-Forschungszentrum visuell dargestellt und später nach ihm benannt wurde – zu weltweiter Bekanntheit.
 
     subsections:
       - title: "Grundprinzip und Visualisierung"
         content: |-
-          Die Mandelbrot-Menge ist eine Teilmenge der komplexen Ebene, bei der jeder Punkt einer komplexen Zahl entspricht.
-          Grundlage ist die rekursive Anwendung der Transformationsvorschrift $z_{n+1}=z_n^2 + c$, wobei $c$ ein Punkt der komplexen Ebene ist.
-          Verbleiben die Iterationswerte von $z_n$ für $n\\to\\infty$ betragsmäßig unterhalb eines festen Grenzwerts (meist $2$),
-          so gehört $c$ zur Mandelbrot-Menge.
-          Dieses Stabilitätskriterium ist fundamental für die mathematische Definition wie auch für die numerische Berechnung.
-          Das Bild zeigt, was die Definition beschreibt: Schwarz sind die Punkte, deren Folge beschränkt bleibt, die Farbe zeigt, wie schnell die übrigen davonlaufen.
+          Die Mandelbrot-Menge ist eine Teilmenge der komplexen Ebene, in der jeder Punkt einer komplexen Zahl entspricht.
+          Grundlage ist die Vorschrift $z_{n+1}=z_n^2 + c$, die immer wieder auf ihr eigenes Ergebnis angewendet wird, beginnend bei $z_0 = 0$. Dabei ist $c$ ein Punkt der komplexen Ebene.
+          Bleibt der Betrag von $z_n$ für alle $n$ höchstens $2$, so gehört $c$ zur Mandelbrot-Menge.
+          Dasselbe Kriterium trägt die Definition und die Berechnung: Ein Programm rechnet, bis der Betrag 2 überschreitet oder die Höchstzahl an Iterationen erreicht ist.
+          Der Mandelbrot-Julia-Explorer weiter unten zeigt, was die Definition beschreibt: Schwarz sind die Punkte, deren Folge beschränkt bleibt, die Farbe zeigt, wie schnell die übrigen davonlaufen.
 
   - section: "Julia-Mengen"
     icon: "cube"
     anchor: "julia-section"
     content: |-
-      Die Julia-Menge steht in direkter Beziehung zur Mandelbrot-Menge und illustriert anschaulich die Vielfalt komplexer Dynamik für unterschiedliche Parameter $c$.
-      Verschiedene Julia-Mengen verdeutlichen, wie stark die Struktur des Fraktals durch die Auswahl des Parameters beeinflusst wird.
+      Die Julia-Menge steht in direkter Beziehung zur Mandelbrot-Menge und zeigt, wie vielfältig komplexe Dynamik für unterschiedliche Parameter $c$ ausfällt.
+      Verschiedene Julia-Mengen machen sichtbar, wie stark ihre Form von $c$ abhängt.
       Julia-Mengen zeigen Spiralen, baumartige Dendriten oder zerfallen zu Staub, das macht sie zum anschaulichen Einstieg in die fraktale Geometrie.
       Darüber hinaus sind Julia-Mengen ein zentrales Beispiel in der mathematischen Theorie komplexer Funktionen und Iterationsdynamik.
     include: "julia-interactive.html"
@@ -49,11 +51,10 @@ sections:
     anchor: "explorer-section"
     content: |-
       Mithilfe interaktiver Visualisierungen lässt sich der Zusammenhang zwischen Mandelbrot-Menge und Julia-Mengen direkt erforschen:
-      Die Auswahl eines Punktes $c$ in der komplexen Ebene innerhalb der Mandelbrot-Menge erzeugt die zugehörige Julia-Menge.
-      Die betrachtete Julia-Menge spiegelt dann die Stabilitätseigenschaften des gewählten Punktes wider und illustriert die Verbindung
-      zwischen lokalen und globalen Eigenschaften dynamischer Systeme.
-      Die Möglichkeit, unterschiedliche Parameter zu variieren, eröffnet zahlreiche mathematische Fragestellungen, zum Beispiel:
-      Wie verändern sich die Julia-Mengen bei kleinen Modifikationen von $c$ und wie manifestiert sich sensitive Abhängigkeit in diesem Kontext?
+      Wird ein Punkt $c$ in der komplexen Ebene ausgewählt, erscheint die zugehörige Julia-Menge.
+      Die Julia-Menge zeigt dann, wie sich die Folge für dieses $c$ verhält: Liegt $c$ in der Mandelbrot-Menge, hängt sie zusammen, liegt es außerhalb, zerfällt sie zu Staub.
+      Weil sich $c$ frei wählen lässt, stellen sich viele mathematische Fragen, zum Beispiel:
+      Wie verändern sich die Julia-Mengen, wenn sich $c$ nur ein wenig ändert, und wo zeigt sich dabei sensitive Abhängigkeit?
     include: "mandelbrot-julia-explorer.html"
 
   - section: "Mathematische Definition"
@@ -64,29 +65,29 @@ sections:
       $$\mathscr{M} = \{c \in \mathbb{C} : \limsup_{n \to \infty} \lvert z_n \rvert \leq 2\}$$
 
       Je Schritt braucht die Iteration nur eine Quadrierung und eine Addition, jeder Bildpunkt lässt sich unabhängig berechnen.
-      Sie führt direkt zu faszinierenden Visualisierungen und zu Fragestellungen über Stabilität, Chaotik und Konvergenz –
+      Sie führt direkt zu faszinierenden Visualisierungen und zu Fragen über Stabilität, Chaos und Konvergenz –
       Themen, die in der komplexen Dynamik und bei der Erforschung anderer Fraktale gleichermaßen zentral sind.
 
   - section: "Struktur und Selbstähnlichkeit"
     icon: "magic"
     content: |-
-      Die Mandelbrot-Menge zeichnet sich durch ausgeprägte Selbstähnlichkeit und hochkomplexe fraktale Strukturen aus.
+      Die Mandelbrot-Menge ist annähernd selbstähnlich und voller fraktaler Strukturen.
       Insbesondere die Randbereiche offenbaren bei jeder Vergrößerung Kopien der Gesamtmenge sowie zahlreiche weitere Muster und Details.
-      Diese theoretisch unendliche Detailtiefe wird lediglich durch die numerische Genauigkeit und die Rechenleistung moderner Computer begrenzt.
+      Wie tief sich hineinzoomen lässt, begrenzen nur die Rechengenauigkeit und die Rechenleistung.
       Auffällig sind die Mini-Mandelbrots: Teilbereiche der Gesamtstruktur, die das Original in verschiedenen Größen und Orientierungen widerspiegeln.
       Die Erforschung dieser Selbstähnlichkeit ist ein Schlüssel zur Charakterisierung fraktaler Objekte.
       Darüber hinaus bestehen enge Beziehungen zu Julia-Mengen, da jedem Punkt $c$ der komplexen Ebene eine charakteristische Julia-Menge zugeordnet ist.\\
-      Dieses Zusammenspiel ist von grundlegender Bedeutung für das Verständnis komplexer dynamischer Systeme.
+      Wer dieses Zusammenspiel versteht, versteht viel über komplexe dynamische Systeme.
 
     subsections:
       - title: "Fraktale Dimension"
         content: |-
           In der klassischen Geometrie werden Objekte durch ganzzahlige Dimensionen beschrieben.
-          Eine Linie ist 1-dimensional, eine Fläche 2-dimensional, ein Volumen 3-dimensional.
+          Eine Linie ist 1-dimensional, eine Fläche 2-dimensional, ein Körper 3-dimensional.
           Fraktale wie die Mandelbrot-Menge überschreiten diese einfache Kategorisierung, da ihre Randstruktur die Eigenschaften einer Fläche annimmt,
           ohne diese allerdings vollständig auszufüllen.\\
-          Ihr Rand hat die Hausdorff-Dimension exakt $2$ – das hat Mitsuhiro Shishikura 1998 bewiesen. Eine Grenzlinie ist damit so komplex wie eine Fläche.
-          Die fraktale Dimension quantifiziert die Skalierungsinvarianz solch komplexer Gebilde und ist ein wesentliches Werkzeug zur Charakterisierung von Fraktalen.\\
+          Der Rand der Mandelbrot-Menge hat die Hausdorff-Dimension exakt $2$ – das hat Mitsuhiro Shishikura 1998 bewiesen. Eine Grenzlinie ist damit so komplex wie eine Fläche.
+          Die fraktale Dimension misst, wie schnell die Details beim Vergrößern zunehmen, und ist ein wichtiges Werkzeug, um Fraktale zu beschreiben.\\
           Die Berechnung und theoretische Einordnung fraktaler Dimensionen ist Gegenstand aktueller mathematischer Forschung.
 
   - section: "Eigenschaften und Hauptstrukturen"
@@ -96,31 +97,31 @@ sections:
     content: |-
       - **Zusammenhang:**
         Trotz ihrer komplexen Geometrie bildet die Mandelbrot-Menge ein zusammenhängendes Objekt, wie Douady und Hubbard 1982 mathematisch gezeigt haben.
-        Eine vollständige Zerlegung in voneinander unabhängige Teilmengen ist nicht möglich.
+        Sie lässt sich nicht in zwei voneinander getrennte Teile zerlegen.
 
       - **Selbstähnlichkeit:**
         Besonders die Randbereiche enthalten eine Vielzahl von selbstähnlichen Teilstrukturen,
         darunter Kopien der Gesamtmenge und wiederkehrende Muster wie „Seepferdchen“ und „Elefantenrüssel“.
       
       - **Fraktale Dimension:**
-        Der Rand hat die Hausdorff-Dimension exakt $2$ (Shishikura 1998): Eine Linie ist so verwinkelt, dass sie die Dimension einer Fläche erreicht.
-        Mathematisch gesehen reicht die fraktale Dimension über die klassische Topologie hinaus und ist ein Gegenstand aktueller Forschungsarbeit.
+        Der Rand ist so verwinkelt, dass er die Dimension einer Fläche erreicht, wie oben unter „Fraktale Dimension“ beschrieben.
+        Die fraktale Dimension geht über den klassischen Dimensionsbegriff hinaus und ist bis heute Gegenstand der Forschung.
 
-      - **Universalität:**
-        Die Mandelbrot-Menge enthält unendlich viele sogenannte „Mini-Mandelbrots“. Das sind nahezu, aber nie exakt gleiche Kopien der Hauptstruktur,
+      - **Mini-Mandelbrots:**
+        Die Mandelbrot-Menge enthält unendlich viele Mini-Mandelbrots. Das sind nahezu, aber nie exakt gleiche Kopien der Hauptstruktur,
         die Menge ist also nur quasi-selbstähnlich.
         Dazu kommen andere wiederkehrende Muster, die immer weitere Details und mathematische Fragestellungen eröffnen.
-        Die Untersuchung von Universalität und Wiederholungen ist für die theoretische Mathematik und die Computergrafik gleichermaßen relevant.
+        Ihre Untersuchung ist für die theoretische Mathematik und die Computergrafik gleichermaßen relevant.
 
     subsections:
       - title: "Kardioide und Hauptkreis"
         content: |
           Die Mandelbrot-Menge besteht primär aus zwei charakteristischen Bereichen:
 
-          - Der zentralen Kardioide (herzförmig), deren Name auf das griechische „kardia“ für Herz zurückgeht und die eine spezielle mathematische Beziehung widerspiegelt.
+          - Der zentralen Kardioide (herzförmig), deren Name auf das griechische „kardia“ für Herz zurückgeht. Für jedes $c$ in ihrem Inneren läuft die Folge auf einen festen Wert zu.
           - Dem angrenzenden Hauptkreis links von der Kardioide, der zusammen mit der Kardioide das Gerüst des Fraktals bildet.
 
-          An den Rändern dieser Komponenten entstehen weitere Strukturen wie Miniaturkopien sowie die charakteristischen Muster („Seepferdchen“, „Elefantenrüssel“).
+          An den Rändern dieser Komponenten entstehen weitere Strukturen wie Mini-Mandelbrots sowie die charakteristischen Muster („Seepferdchen“, „Elefantenrüssel“).
           Die mathematische Analyse dieser Hauptstrukturen liefert Einblicke in die Verzweigungsstruktur und die universellen Eigenschaften von Fraktalen.
           Am Rand tauchen bei jeder Vergrößerung neue Muster auf. Ausgeschöpft ist er bis heute nicht, noch immer werden dort weitere entdeckt.
 
@@ -130,23 +131,22 @@ sections:
       Die Mandelbrot-Menge spielt in mehreren Fächern eine Rolle:
         - In der Chaostheorie ist sie ein Standardbeispiel für sensitiv abhängige Systeme.
         - In der komplexen Dynamik illustriert sie die Bandbreite dynamischen Verhaltens.
-        - Die fraktale Geometrie nutzt sie als Paradebeispiel: Viele Fraktale haben eine nicht ganzzahlige Dimension, der Rand der Mandelbrot-Menge erreicht dagegen mit der Hausdorff-Dimension $2$ den größtmöglichen Wert in der Ebene (Shishikura 1998).
-        - In der Informatik ist sie ein gängiges Beispiel für parallele Berechnung, weil jeder Bildpunkt unabhängig ist.
-        - In Kunst und Kultur fungiert sie als Symbol mathematischer Schönheit und reizt Künstler weltweit zu neuen Interpretationen.
+        - Die fraktale Geometrie nutzt sie als Paradebeispiel: Viele Fraktale haben eine nicht ganzzahlige Dimension, der Rand der Mandelbrot-Menge erreicht dagegen mit der Dimension $2$ den größtmöglichen Wert in der Ebene.
+        - In der Informatik ist sie ein Standardbeispiel für parallele Berechnung, weil jeder Bildpunkt unabhängig ist.
+        - In Kunst und Kultur gilt sie als Symbol mathematischer Schönheit und reizt Künstler weltweit zu neuen Interpretationen.
       
       Daneben macht sie Grundbegriffe wie Instabilität, Phasenübergänge und Emergenz anschaulich.
 
     subsections:
       - title: "Sensitive Abhängigkeit"
         content: |-
-          Die Mandelbrot-Menge exemplifiziert die sensitive Abhängigkeit von Anfangsbedingungen:
-          Minimale Veränderungen der Parameter $c$ können zu signifikant unterschiedlichen dynamischen Entwicklungen führen.
+          Die Mandelbrot-Menge zeigt sensitive Abhängigkeit vom Parameter:
+          Nahe ihrem Rand können kleine Veränderungen von $c$ zu ganz unterschiedlichen Entwicklungen der Folge führen.
           Zwei Punkte, die sich nur geringfügig unterscheiden, können über die Iteration in der Folge $\\{z_n\\}$ vollkommen verschiedene Verhaltensweisen entwickeln.
           Dieses Verhalten ist zentral in der Chaostheorie und verdeutlicht die Nichtlinearität komplexer Systeme.
-          Nahegelegene Punkte können divergente Laufbahnen zeigen.
           Das Studium solcher Phänomene liefert wichtige Erkenntnisse für die Stabilität von Algorithmen,
           die Simulation dynamischer Systeme und die Modellierung natürlicher Prozesse.
-          Sensitivität gegenüber Anfangsdaten ist auch in anderen Kontexten wie z. B. in der Wettervorhersage und der Kryptografie von Bedeutung.
+          Sensitive Abhängigkeit von Anfangsbedingungen spielt auch in der Wettervorhersage und der Kryptografie eine Rolle.
 
   - section: "Fazit"
     icon: "check-circle"
@@ -158,8 +158,8 @@ sections:
       Die Forschung an ihr bringt bis heute neue mathematische Erkenntnisse, und manche Grundfrage ist noch offen.
       Ein Beispiel ist die MLC-Vermutung (kurz für „Mandelbrot locally connected“).
       Dass die Menge als Ganzes zusammenhängt, ist seit 1982 bewiesen.
-      Offen ist, ob sie auch lokal zusammenhängend ist: ob sich also um jeden ihrer Punkte beliebig kleine Ausschnitte der Menge finden lassen, die für sich zusammenhängen.\\
-      Der Reiz der Menge liegt im Zusammenspiel von Theorie, Visualisierung und Anwendung in diversen Disziplinen.\\
+      Offen ist, ob sie auch lokal zusammenhängend ist: ob also jeder ihrer Punkte beliebig kleine Umgebungen hat, in denen die Menge für sich zusammenhängt.\\
+      Der Reiz der Menge liegt im Zusammenspiel von Theorie, Visualisierung und Anwendung in verschiedenen Fächern.\\
       \\
       Experimentelle und interaktive Ansätze erlauben es, immer tiefere Details und neue Strukturen zu entdecken.
       Die Mandelbrot-Menge bleibt somit ein zentrales Objekt der modernen Mathematik und bietet Anknüpfungspunkte für vielfältige Forschungsfragen.
@@ -189,13 +189,13 @@ panel_explanations:
     sections:
       - title: "Was ist die Julia-Menge?"
         text: |-
-          Die Julia-Menge ist ein **Fraktal** – ein Muster, das sich bei jeder Vergrößerung wiederholt, ähnlich wie Schneeflocken oder Küstenlinien in der Natur. Das Besondere: Egal wie tief der Zoom geht, es tauchen immer wieder ähnliche Strukturen auf – das nennt man *Selbstähnlichkeit*.
+          Die Julia-Menge ist fast immer ein **Fraktal** – ein Muster, das sich bei jeder Vergrößerung wiederholt, ähnlich wie Schneeflocken oder Küstenlinien in der Natur. Das Besondere: Egal wie tief der Zoom geht, es tauchen immer wieder ähnliche Strukturen auf – das nennt man *Selbstähnlichkeit*.
 
-      - title: "So funktioniert's"
+      - title: "So funktioniert’s"
         text: |-
-          Die Idee: Jeder Punkt auf dem Bildschirm durchläuft immer wieder dieselbe Rechenregel: `zₙ₊₁ = zₙ² + c`. Manche Punkte bleiben dabei „gefangen“ (ihr Betrag wächst nie über 2) – sie bilden die *gefüllte* Julia-Menge und werden schwarz dargestellt. Die Julia-Menge selbst ist deren Rand, also die Grenzlinie zwischen Schwarz und Farbe.
+          Die Idee: Jeder Punkt auf dem Bildschirm durchläuft immer wieder dieselbe Rechenregel `zₙ₊₁ = zₙ² + c`. Manche Punkte bleiben dabei „gefangen“ (ihr Betrag wächst nie über 2) – sie bilden die *gefüllte* Julia-Menge und werden schwarz dargestellt. Die Julia-Menge selbst ist deren Rand, also die Grenzlinie zwischen Schwarz und Farbe.
 
-          Alle anderen Punkte „entkommen“ irgendwann ins Unendliche. Die **Farbe** zeigt, wie schnell ein Punkt entkommt – das ist die sogenannte *Fluchtgeschwindigkeit*.
+          Alle anderen Punkte „entkommen“ irgendwann ins Unendliche. Die **Farbe** zeigt, wie schnell ein Punkt entkommt, gemessen an der Zahl der Schritte bis zur Flucht – das ist die sogenannte *Fluchtzeit*.
         hint: "Der Parameter `c` ist eine Konstante aus zwei Zahlen (Real- und Imaginärteil). Jeder Wert von `c` erzeugt eine eigene Julia-Menge."
 
       - title: "Parameter"
@@ -204,23 +204,23 @@ panel_explanations:
             text: |-
               Real- und Imaginärteil definieren gemeinsam `c = Re + Im·i`. Verschiedene Werte lohnen das Ausprobieren:
 
-              - **Re ∈ [−2, 0.25], Im ≈ 0** – Zusammenhängende Strukturen
-              - **Re ≈ 0, Im ≈ 0** – Nahezu kreisförmig (bei c = 0 exakt der Einheitskreis)
+              - **Re ∈ [−2, 0.25], Im ≈ 0** – zusammenhängende Strukturen
+              - **Re ≈ 0, Im ≈ 0** – nahezu kreisförmig (bei c = 0 exakt der Einheitskreis)
               - **Re = 0, Im = 1** – „Dendrit“: baumartig verzweigt, ganz ohne Innenfläche
-              - **c außerhalb der Mandelbrot-Menge** – Fragmentierte „Staub“-Strukturen
-            hint: "Nahe am Rand der Mandelbrot-Menge wirken sich schon kleine Änderungen an `c` stark auf das Bild aus."
+              - **c außerhalb der Mandelbrot-Menge** – fragmentierte „Staub“-Strukturen
+            hint: "Nahe am Rand der Mandelbrot-Menge verändern schon kleine Änderungen an `c` das Bild stark."
 
           - title: "Maximale Iterationen"
             text: |-
               Bestimmt, wie oft die Rechenregel angewendet wird, bevor ein Punkt als „gefangen“ gilt:
 
-              - **10–50** – Schnell, weniger Details
-              - **100–200** – Ausgewogen (empfohlen)
-              - **300+** – Maximale Details, langsamer
+              - **10–50** – schnell, weniger Details
+              - **100–200** – ausgewogen (empfohlen)
+              - **300+** – mehr Details, langsamer
             hint: "Tiefer Zoom braucht mehr Iterationen für scharfe Grenzen."
 
           - title: "Farbschema"
-            text: "Visualisiert die Fluchtgeschwindigkeit – wie schnell Punkte entkommen:"
+            text: "Visualisiert die Fluchtzeit – wie schnell Punkte entkommen:"
             # Die Namen der Farbschemas stehen nur in _data/fractal_panel.yml
             # (controls.color_schemes), hier erscheinen sie als Kacheln.
             color_schemes: true
@@ -253,16 +253,16 @@ panel_explanations:
     sections:
       - title: "Die Verbindung"
         text: |-
-          - **Innerhalb der Mandelbrot-Menge** – Zusammenhängende Julia-Mengen mit komplexen Strukturen
+          - **Innerhalb der Mandelbrot-Menge** – zusammenhängende Julia-Mengen mit komplexen Strukturen
           - **Am Rand** – Julia-Mengen mit den feinsten Verästelungen
-          - **Außerhalb** – Fragmentierte „Staub“-Strukturen
-        hint: "Besonders vielgestaltig sind die „Antennen“ und „Knospen“ am Rand."
+          - **Außerhalb** – fragmentierte „Staub“-Strukturen
+        hint: "Besonders vielgestaltig sind die Julia-Mengen zu Punkten auf den „Antennen“ und „Knospen“ am Rand."
 
       - title: "Navigation"
         columns:
           - title: "Desktop"
             text: |-
-              - **Linksklick (Mandelbrot)** – Wählt c-Parameter
+              - **Linksklick (Mandelbrot)** – wählt c-Parameter
               - **Mausrad** – Zoom an Position
               - **Linksklick + Ziehen** – Rechteck-Zoom
               - **Rechtsklick / Leertaste + Ziehen** – Verschieben
@@ -270,7 +270,7 @@ panel_explanations:
               - **Pfeiltasten / + / − / 0 / Enter** – Tastatursteuerung
           - title: "Touch"
             text: |-
-              - **Tippen (Mandelbrot)** – Wählt c-Parameter
+              - **Tippen (Mandelbrot)** – wählt c-Parameter
               - **Pinch** – Zoom hinein / heraus
               - **Zwei-Finger-Ziehen** – Verschieben
               - **Buttons + / −** – Zoom-Steuerung

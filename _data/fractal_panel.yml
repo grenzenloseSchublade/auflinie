@@ -23,9 +23,9 @@ buttons:
     aria_label: "Fokus – Bedienelemente ausblenden"
   reset:
     label: "Reset"
-    julia: # setzt nur den Zoom zurück
-      title: "Zoom zurücksetzen"
-      aria_label: "Reset – Zoom zurücksetzen"
+    julia: # setzt Position und Zoom zurück
+      title: "Zurücksetzen"
+      aria_label: "Reset – Ansicht zurücksetzen"
     explorer: # setzt beide Ansichten und c zurück
       title: "Zurücksetzen"
       aria_label: "Reset – Ansicht zurücksetzen"
@@ -48,7 +48,7 @@ buttons:
     aria_label: "Subtil – Farbintensität"
     aria_label_active: "Intensiv – Farbintensität"
   advanced:
-    label: "Erweiterte Optionen"
+    label: "Optionen anzeigen"
     label_active: "Optionen ausblenden"
     title: "Erweiterte Optionen anzeigen"
     title_active: "Erweiterte Optionen ausblenden"
@@ -67,8 +67,8 @@ buttons:
 controls:
   iterations: "Iterationen:"
   colors: "Farben:"
-  real: "c (Real):"
-  imag: "c (Imag):"
+  real: "Re(c):"
+  imag: "Im(c):"
   preset: "Preset:"
   # Farbschemas in der Reihenfolge der Auswahl. Nur label ändern: value ist
   # der Name der Farbpalette in assets/js/fractal-renderer.js. Die Namen
@@ -99,17 +99,17 @@ canvas:
   keyboard_help: "interaktiv. Tastatur: Pfeiltasten verschieben, Plus / Minus zoomen, 0 setzt die Ansicht zurück."
   hud_c: "c:"
   hud_zoom: "Zoom:"
-  loading: "Berechne…"
+  loading: "Berechne …"
   unsupported: "Die Darstellung ist in diesem Browser nicht möglich."
-  zoom_warning: "Extremzoom aktiv – Details können instabil sein."
+  zoom_warning: "Extremzoom aktiv – feine Details brauchen mehr Iterationen."
   gesture_hint: "Zum Verschieben zwei Finger benutzen"
 
 # Interaktive Julia-Menge
 julia:
   canvas:
     label: "Julia-Menge"
-    zoom_in: "Julia vergrößern"
-    zoom_out: "Julia verkleinern"
+    zoom_in: "Julia-Menge vergrößern"
+    zoom_out: "Julia-Menge verkleinern"
   # Voreinstellungen für c. Die Werte real und imag mit Punkt, label zeigt
   # sie gerundet mit echtem Minus (−). Neue Werte vorher im Explorer prüfen
   # (STYLEGUIDE FACH-2). value nicht ändern, „standard“ ist der Startwert.
@@ -149,24 +149,25 @@ julia:
 explorer:
   mandelbrot:
     title: "Mandelbrot-Menge"
-    info: "Ein Klick auf einen Punkt zeigt die entsprechende Julia-Menge."
+    info: "Ein Punkt zeigt bei Auswahl die zugehörige Julia-Menge."
     canvas:
       label: "Mandelbrot-Menge"
-      zoom_in: "Mandelbrot vergrößern"
-      zoom_out: "Mandelbrot verkleinern"
+      zoom_in: "Mandelbrot-Menge vergrößern"
+      zoom_out: "Mandelbrot-Menge verkleinern"
   julia:
     title: "Julia-Menge für c =" # dahinter folgt der aktuelle Wert von c
     info: "Die Julia-Menge für den gewählten Parameter c."
     canvas:
       label: "Julia-Menge zum gewählten Parameter c"
-      zoom_in: "Julia vergrößern"
-      zoom_out: "Julia verkleinern"
+      zoom_in: "Julia-Menge vergrößern"
+      zoom_out: "Julia-Menge verkleinern"
   hint: # wie bei der Julia-Menge
     mouse:
       - "klick (mandelbrot): c wählen"
       - "ziehen: zoom-rechteck"
       - "rechtsklick / leertaste: verschieben"
       - "mausrad: zoom"
+      - "doppelklick: heraus"
       - "tastatur: ←↑↓→ + − 0"
     touch:
       - "tippen (mandelbrot): c wählen"

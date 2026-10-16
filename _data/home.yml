@@ -8,15 +8,15 @@ intro: |-
 
   Wo werden der Theorie Grenzen gesetzt? Da, wo Ideen auf die Wirklichkeit treffen. Die eigene Erfahrung bestätigt die Theorie nicht nur – sie zeigt Wege, die keine Herleitung vorhergesehen hat. Hunderte Konzepte ersetzen keine einzige Erfahrung der tatsächlichen Anwendung.
 
-  Erfahrung nützt aber niemandem, solange sie bei einem selbst bleibt. Wissen sollte immer und überall frei verfügbar sein. Es wird nicht weniger, wenn man es teilt, sondern wertvoller, je mehr Menschen es erreicht. Deshalb steht hier, was ich gebaut und verstanden habe – Projekte, Experimente, Gedanken.
+  Erfahrung nützt aber niemandem, solange sie bei einem selbst bleibt. Wissen sollte immer und überall frei verfügbar sein. Es wird nicht weniger, wenn man es teilt, sondern wertvoller, je mehr Menschen es erreicht. Deshalb steht hier, was ich gebaut und verstanden habe.
 
 # Kachel zur Fraktal-Seite (_includes/home/fractal-showcase.html)
 fractal_showcase:
   title: "Die Mandelbrot-Menge, interaktiv"
-  text: "Unendliche Komplexität aus einer einfachen Formel. Der Explorer rendert Mandelbrot- und Julia-Mengen direkt im Browser – hineinzoomen, Parameter verändern und die Strukturen entdecken, die dabei sichtbar werden."
+  text: "Unendliche Komplexität aus einer einfachen Formel. Der Mandelbrot-Julia-Explorer zeichnet die Mandelbrot-Menge und die zugehörigen Julia-Mengen direkt im Browser – hineinzoomen, Parameter verändern und die Strukturen entdecken, die dabei sichtbar werden."
   button: "Fraktale erkunden"
   url: "/mandelbrot/"
-  link_label: "Zur interaktiven Fraktal-Erkundung" # Name des Bildlinks für Screenreader
+  link_label: "Fraktale interaktiv erkunden" # Name des Bildlinks für Screenreader
   image:
     src: "/assets/images/mandelbrot-preview-800.jpg"
     alt: "Ausschnitt der Mandelbrot-Menge mit spiralförmigen Ausläufern"
