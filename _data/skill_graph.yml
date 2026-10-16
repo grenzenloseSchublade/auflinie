@@ -42,7 +42,7 @@ projects:
     skills: [spring-boot, kotlin, rest, sql, microservices]
 
   - id: tts-nlp
-    label: "TTS- / NLP-Forschung"
+    label: "TTS-Forschung"
     skills: [python, tensorflow, neural-networks, nlp, remote-computing-gpu-training, hyperparameter-tuning]
 
   - id: vue-webapp
