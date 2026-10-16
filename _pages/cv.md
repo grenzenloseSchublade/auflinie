@@ -37,7 +37,7 @@ skill_graph:
     {% if section.experiences %}
       <ol class="cv-entries" aria-label="Beruflicher Werdegang, neueste zuerst">
         {% for experience in section.experiences %}
-          {% include cv/entry.html title=experience.position org=experience.company location=experience.location period=experience.period description=experience.description items=experience.responsibilities items_label="Verantwortlichkeiten:" expandable=experience.expandable %}
+          {% include cv/entry.html title=experience.position org=experience.company location=experience.location period=experience.period description=experience.description items=experience.responsibilities items_label="Aufgaben und Projekte:" expandable=experience.expandable %}
         {% endfor %}
       </ol>
     {% endif %}
@@ -45,7 +45,7 @@ skill_graph:
     {% if section.education %}
       <ol class="cv-entries" aria-label="Akademischer Werdegang, neueste zuerst">
         {% for education in section.education %}
-          {% include cv/entry.html title=education.degree org=education.institution location=education.location period=education.period description=education.description items=education.achievements items_label="Besondere Erfolge:" expandable=education.expandable %}
+          {% include cv/entry.html title=education.degree org=education.institution location=education.location period=education.period description=education.description items=education.achievements items_label="Abschlussarbeit:" expandable=education.expandable %}
         {% endfor %}
       </ol>
     {% endif %}

@@ -26,7 +26,7 @@
 version: 1
 
 # Generische Dev-Infra: als Chips sichtbar, im Graphen kantenlos.
-foundations: [git, docker, bash-linux, ci-cd, devcontainer, vs-code, pip]
+foundations: [git, docker, bash-linux, ci-cd, dev-container, vs-code, pip]
 
 projects:
   - id: doku-system
@@ -38,8 +38,8 @@ projects:
     skills: [python, tensorflow, computer-vision, opencv, ocr-tesseract, numpy-scikit-learn]
 
   - id: telematik
-    label: "Telematik-System"
-    skills: [springboot, kotlin, rest, sql, microservices]
+    label: "Telematiksystem"
+    skills: [spring-boot, kotlin, rest, sql, microservices]
 
   - id: tts-nlp
     label: "TTS- / NLP-Forschung"
@@ -47,7 +47,7 @@ projects:
 
   - id: vue-webapp
     label: "Vue-Webanwendung"
-    skills: [vue, typescript, javascript, rest, keycloak, vite, pinia, scss, responsive-design]
+    skills: [vue-js, typescript, javascript, rest, keycloak, vite, pinia, scss, responsive-design]
 
   - id: modellvergleich
     label: "Modellvergleichs-Tool"
@@ -79,7 +79,7 @@ projects:
 # =============================================================================
 texts:
   # Hinweis über den Chips und im Graph-Fenster, solange nichts gewählt ist
-  hint: "Ein Klick auf einen Skill zeigt verwandte Skills und gemeinsame Projekte."
+  hint: "Ein Skill zeigt bei Auswahl verwandte Skills und gemeinsame Projekte."
 
   # Name der Liste „Breite“ jeder Skill-Gruppe für Screenreader, dahinter
   # folgt der Name der Gruppe
@@ -88,8 +88,8 @@ texts:
   # Nach einem Klick steht dort „Skill – Text“, bei Projekten darunter die Liste
   selection:
     with_projects: "gemeinsam im Einsatz bei"
-    foundation: "Basis-Werkzeug, quer durch fast alle Projekte im Einsatz."
-    no_projects: "Teil des Werkzeugkastens, ohne feste Projektzuordnung."
+    foundation: "Basiswerkzeug, quer durch fast alle Projekte im Einsatz."
+    no_projects: "Teil des Werkzeugkastens, keinem Projekt fest zugeordnet."
 
   graph:
     open: "Skill-Graph öffnen" # Knopf über den Skill-Gruppen
@@ -106,7 +106,7 @@ texts:
     # Zweite Zeile der Info-Leiste im Graph-Fenster, solange nichts gewählt ist
     unlabeled: "Punkte ohne Namen zeigen ihn bei Auswahl oder beim Hineinzoomen."
     # Beschreibung der Grafik für Screenreader
-    canvas: "Netzdiagramm der Skills, verbunden über gemeinsame Projekte. Auswahl und gemeinsame Projekte stehen in der Leiste darüber, die vollständige Liste im Lebenslauf."
+    canvas: "Netzwerkdiagramm der Skills, verbunden über gemeinsame Projekte. Auswahl und gemeinsame Projekte stehen in der Leiste darüber, die vollständige Liste im Lebenslauf."
     # Knöpfe oben im Fenster. Die Zoom-Knöpfe zeigen nur das Zeichen − bzw. +,
     # ihr label beginnt deshalb damit.
     zoom_out:

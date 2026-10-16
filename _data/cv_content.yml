@@ -4,11 +4,11 @@
   intro: true
 
   content: |-
-        Ingenieur mit Schwerpunkt **Machine Learning**, ausgebildet in **Elektro- und Informationstechnik** an der Ruhr-Universität Bochum (M. Sc., *Eingebettete Systeme*).
+        Ich bin Ingenieur mit Schwerpunkt **Machine Learning** und habe **Elektro- und Informationstechnik** an der Ruhr-Universität Bochum studiert (M. Sc., *Eingebettete Systeme*).
         Seit vielen Jahren baue ich KI-Software, von der ersten Idee bis in den laufenden Betrieb. Am Anfang steht dabei immer die gleiche Frage: Welches Problem haben die Menschen eigentlich, für die das Ganze gedacht ist?\\
         \\
         Gearbeitet habe ich in Forschung und Industrie, in Teams jeder Größe. So ist nach und nach das **Full-Stack**-Handwerk dazugekommen, von Frontend über DevOps bis MLOps. Am wohlsten fühle ich mich aber im **Backend**.
-        Was mich fasziniert, ist der Weg – man startet mit einer Idee und einer Problembeschreibung, arbeitet sich durch komplexe Algorithmik und kommt am Ende zu einer Lösung, die Prozesse oder den Alltag spürbar vereinfacht und (teil-)automatisiert.
+        Was mich reizt, ist der Weg – man startet mit einer Idee und einer Problembeschreibung, arbeitet sich durch komplexe Algorithmen und kommt am Ende zu einer Lösung, die Prozesse ganz oder teilweise automatisiert oder den Alltag spürbar vereinfacht.
 
 
 - section: "Berufserfahrung"
@@ -20,28 +20,28 @@
       period: "2025 – Heute"
       description: |-
         Technische Beratung im Umfeld Data & Analytics mit Schwerpunkt auf generativer KI (GenAI),
-        in den Projekten als Software-Architekt und mit Lead-Verantwortung: Ziele und Problemstellungen
+        in den Projekten als Softwarearchitekt und mit Lead-Verantwortung: Ziele und Problemstellungen
         gemeinsam mit dem Kunden schärfen, die Architektur festlegen und die Systeme anschließend
         selbst konzipieren und umsetzen.
       expandable: true
       responsibilities:
-        - text: "**Lead** für zwei bis drei Use Cases – von der Aufgabenverteilung bis zur eigenen Umsetzung"
+        - text: "**Lead** für zwei bis drei Use-Cases"
           subitems:
-            - "Fachliche Verantwortung von der Konzeption bis in den produktiven Betrieb"
+            - "Fachliche Verantwortung bis in den produktiven Betrieb"
             - "Schnitt und Verteilung der Arbeitspakete im Team, dazu eigene Implementierung der Kernkomponenten"
-            - "Software-Architektur und Konzeption des Graphschemas (Datenmodell des Wissensgraphen)"
+            - "Softwarearchitektur und Konzeption des Graphschemas (Datenmodell des Wissensgraphen)"
             - "Datenverarbeitungspipeline mit LLMs und Anbindung von KI-Diensten (Azure AI / OpenAI) auf Azure"
             - "Aufbau der vernetzten Wissensbasis als **Wissensgraph** (Neo4j)"
         - text: "**Lead** für einen wiederverwendbaren Parser zur Strukturerkennung und -erhaltung – laufend, projektübergreifend"
           subitems:
-            - "Erkennt und erhält die Struktur heterogener Dokumentformate (etwa EU-Formex-XML) und wird über mehrere Use Cases hinweg eingesetzt"
+            - "Erkennt und erhält die Struktur heterogener Dokumentformate (etwa EU-Formex-XML)"
             - "Als eigenständiges Vorhaben angelegt, weil die Strukturerkennung in mehreren Projekten dasselbe Kernproblem ist"
-        - text: "Eigenständiges Projekt für eine **öffentliche Behörde** – Backend zur automatisierten Verarbeitung juristischer Inhalte im Formularwesen"
+        - text: "Eigenständiges Projekt für eine **Behörde** – Backend zur automatisierten Verarbeitung juristischer Inhalte im Formularwesen"
           subitems:
             - "Python-Pipeline, die Gesetzesdokumente strukturiert und semantisch im Wissensgraphen verknüpft"
             - "Orchestrierung der Verarbeitungsschritte mit **Dagster**"
-            - "Reproduzierbare Entwicklungsumgebung mit DevContainer"
-        - text: "Daneben weitere Aufgaben als Softwareingenieur im Projekt"
+            - "Reproduzierbare Entwicklungsumgebung mit Dev Container"
+        - text: "Daneben weitere Aufgaben als Softwareingenieur in den Projekten"
           subitems:
             - "Aufbau und Pflege der Continuous-Delivery-Strecke über mehrere Umgebungen"
 
@@ -50,50 +50,50 @@
       location: "Bochum, Deutschland"
       period: "2020 – 2025"
       description: |-
-        Konzeption und Entwicklung von Softwarelösungen auf Basis eigenentwickelter Deep-Learning-Modelle,
-        die Geschäftsprozesse der Kunden automatisieren – von der Machbarkeitsstudie bis in den produktiven Betrieb.
+        Konzeption und Entwicklung von Software auf Basis selbst entwickelter Deep-Learning-Modelle,
+        die Geschäftsprozesse der Kunden automatisiert – von der Machbarkeitsstudie bis in den produktiven Betrieb.
       expandable: true # Standard ist true
 
       # Reihenfolge: Highlights zuerst, generische/soziale Blöcke ans Ende.
       responsibilities:
       # [BACKEND] -> System zur automatisierten Dokumentationsarbeit in Gesundheitsfachberufen
-        - text: "Entwicklung eines Systems zur automatisierten Datenaufnahme und -verarbeitung in Gesundheitsfachberufen"
+        - text: "Entwicklung eines Systems zur automatisierten Datenaufnahme und -verarbeitung für Gesundheitsfachberufe"
           subitems:
             - "Anbindung einer Open-Source-Spracherkennung auf Basis eines Encoder-Decoder-Modells mit Attention-Mechanismen"
-            - "Semantische Analyse und Strukturierung mit LLMs in branchenspezifische Datenformate"
+            - "Semantische Analyse mit LLMs und Strukturierung in branchenspezifische Datenformate"
             - "Konzeption und Implementierung von **FastAPI**-Schnittstellen zur systemübergreifenden Integration"
-            - "Entwicklung und Implementierung eines Datenbanksystems zur Speicherung von Anwendungsdaten für spätere Optimierung"
+            - "Entwurf und Implementierung einer Datenbank zur Speicherung der Anwendungsdaten für spätere Optimierungen"
             - "Deployment und Erprobung im Pilotbetrieb mit dem Ziel, den Zeitaufwand für Dokumentationsarbeiten zu senken"
 
         # [BACKEND] -> KI-gestützte Belegerkennung
         - text: "Entwicklung eines KI-gestützten Systems zur automatisierten Erkennung und Verarbeitung verschiedener Belegtypen"
           subitems:
             - "Entwicklung und Optimierung der Lösung in Python mit spezialisierten **Computer-Vision**- und Deep-Learning-Algorithmen"
-            - "Robuste Verarbeitung schwieriger Vorlagen: Belege und Trainingsdaten mit Auflösungen unter 100 dpi, eingerissen oder verschmutzt"
-            - "Entwicklung von Algorithmen zur präzisen Textlokalisation und -segmentierung im Dokumentlayout mit OpenCV"
-            - "Entwicklung eigener Ansätze auf Basis von Deep Learning, die die Texterkennung (OCR) auf diesen Vorlagen deutlich verbesserten"
+            - "Robuste Verarbeitung schwieriger Vorlagen: Belege mit Auflösungen unter 100 dpi, eingerissen oder verschmutzt – auch in den Trainingsdaten"
+            - "Algorithmen zur präzisen Textlokalisation und -segmentierung im Dokumentlayout mit OpenCV"
+            - "Eigene Deep-Learning-Ansätze, die die Texterkennung (OCR) auf diesen Vorlagen deutlich verbesserten"
             - "Qualitätsverbesserung der Vorlagen mit Computer-Vision-Techniken als Grundlage der Texterkennung"
             - "KI-basierte Klassifizierung von unterschiedlichen Belegtypen mit einer Genauigkeit von 98 %"
-            - "Rotationserkennung und -korrektur mittels Deep Learning"
+            - "Rotationserkennung und -korrektur mit Deep Learning"
             - "Integration und Erprobung der Lösung mit einer Erkennungsgenauigkeit von 92 % im produktiven Betrieb"
 
       # [BACKEND / ZUSATZ] -> Normkonforme Nachbildung des IT-Systems des deutschen Gesundheitswesens
-        - text: "Entwicklung eines normkonformen Systems zur Abbildung und Integration der Telematik-Infrastruktur"
+        - text: "Entwicklung eines normkonformen Systems zur Abbildung und Integration der Telematikinfrastruktur"
           subitems:
-            - "Normkonforme Nachbildung von Teilen des IT-Systems im deutschen Gesundheitswesen"
-            - "Umsetzung als SpringBoot-Anwendung mit Fokus auf Standards"
-            - "Spezifizierung von REST-Schnittstellen zur Integration des Telematik-Systems"
+            - "Nachbildung von Teilen des IT-Systems im deutschen Gesundheitswesen"
+            - "Umsetzung als Spring-Boot-Anwendung mit Fokus auf Standards"
+            - "Spezifizierung von REST-Schnittstellen zur Integration des Telematiksystems"
             - "Integration von FHIR-Ressourcen"
-            - "Erarbeitung eigener Umsetzungen über die bestehenden Spezifikationen hinaus und Abstimmung der Vorschläge mit der **gematik**"
+            - "Eigene Umsetzungen über die bestehenden Spezifikationen hinaus, als Vorschläge mit der **gematik** abgestimmt"
             - "Integration im Produktivumfeld mit spezialisierter Hardware"
 
         # [FORSCHUNG]
-        - text: "**Deep Learning** im NLP-Kontext: Sprachsynthese"
+        - text: "**Deep Learning** für Sprachsynthese (Text-to-Speech)"
           subitems:
             # Datierung bewusst ohne Jahreszahl (ca. 2019–2021); die Architektur
             # verortet die Arbeit fachlich ohnehin selbst. Transfer Learning bestätigt (Aug. 2026).
             - "Aufbau einer betriebsfertigen Text-to-Speech-Pipeline aus **Tacotron 2** – Encoder und Decoder erzeugen aus dem Text Mel-Spektrogramme – und **WaveNet** als Vocoder für die Sprachausgabe"
-            - "Synthese deutscher Sprache, für die es zu der Zeit keine verfügbaren Modelle gab"
+            - "Synthese deutscher Sprache, für die es damals kaum frei verfügbare Modelle gab"
             - "Erhebung eigener Sprachdaten, da die öffentlich verfügbaren Datensätze für das Training nicht ausreichten"
             - "Entwicklung von Algorithmen zur Erkennung, Verifikation und Bereinigung von Qualitätsmängeln in den erhobenen Sprachaufnahmen"
             - "Nachtraining eines englischen Modells auf deutschen Daten (**Transfer Learning**), um der Knappheit deutscher Sprachdaten zu begegnen"
@@ -101,36 +101,35 @@
             - "Anpassung der Konfiguration an die eigenen Anforderungen und Bewertung der Synthesequalität"
 
         # [FRONTEND]
-        - text: "Konzeption und Implementierung einer responsiven Web-Anwendung für branchenspezifische Dokumentationsarbeiten"
+        - text: "Konzeption und Implementierung einer responsiven Webanwendung für branchenspezifische Dokumentationsarbeiten"
           subitems:
-            - "Entwicklung einer intuitiven Benutzeroberfläche zur automatisierten Erstellung von Dokumentationen"
+            - "Entwicklung einer Benutzeroberfläche zur automatisierten Erstellung von Dokumentationen"
             - "Deployment einer plattformunabhängigen Vue.js-Anwendung"
-            - "Integration der oben genannten Schnittstellen"
+            - "Anbindung an die FastAPI-Schnittstellen des Dokumentationssystems"
             - "Vollautomatisierter Ablauf mit Speech-to-Text und Überführung der Dokumentation in branchenspezifische Masken"
-            - "Nutzung von **Keycloak** für die Verwaltung und Berechtigungen von Benutzern"
+            - "Benutzerverwaltung und Berechtigungen mit **Keycloak**"
 
         # [BACKEND / FRONTEND]
         - text: "Entwicklung eines Systems zur aufgabenbezogenen Bewertung und zum visuellen Vergleich von KI-Modellen"
           subitems:
-            - "Erstellung einer grafischen Oberfläche mit Tkinter in Python"
+            - "Grafische Oberfläche mit Tkinter in Python"
             - "Konfigurierbare Auswertung und Visualisierung von Metriken zur Laufzeit"
             - "Visuelle Gegenüberstellung mehrerer Speech-to-Text-Modelle oder LLMs"
-            - "Entwicklung einer lokalen Pipeline zur adjustierbaren taskspezifischen Auswertung von LLMs"
-            - "Umsetzung mittels Hugging Face"
-            - "Pseudonymisierung personenbezogener Daten mit dem Framework **spaCy** aus Datenschutzgründen"
+            - "Entwicklung einer anpassbaren lokalen Pipeline zur aufgabenbezogenen Auswertung von LLMs"
+            - "Umsetzung mit Hugging Face"
+            - "Pseudonymisierung personenbezogener Daten mit der Bibliothek **spaCy**"
             - "Interne Ausarbeitung zur theoretischen Einschätzung von Metriken für LLMs"
 
         # [FORSCHUNG / INFRASTRUKTUR]
         - text: "Training von Deep-Learning-Modellen auf Remote-Infrastruktur"
           subitems:
-            - "Training unterschiedlicher Deep-Learning-Modelle mittels Remote Computing"
             - "Konfiguration der Hardware (GPUs) für das Training und die Optimierung von TensorFlow-Modellarchitekturen"
             - "Aufbereitung und Augmentation von Daten für das Training"
 
         # [DEV OPS]
-        - text: "Etablierung moderner Entwicklungspraktiken und Automatisierungen"
+        - text: "Einführung gemeinsamer Entwicklungsumgebungen, Tests und Automatisierung"
           subitems:
-            - "Erstellung und Verteilung von Entwicklungsumgebungen mittels DevContainer und GitHub Codespaces"
+            - "Erstellung und Verteilung von Entwicklungsumgebungen mit Dev Containern und GitHub Codespaces"
             - "Umsetzung von Test-Driven Development und Erstellung von Pipelines für CI / CD"
             - "Implementierung von Buildpipelines mit GitHub Actions für die automatische Bereitstellung von Docker-Images"
             - "Einführung von **DVC** für die übergreifende Versionierung und Verwaltung von Daten und das Tracking von Experimenten"
@@ -138,9 +137,10 @@
         # [SOZIAL]
         - text: "Agiles Projektmanagement"
           subitems:
-            - "Selbstständige kontinuierliche Kommunikation mit Verantwortlichen für die Spezifizierung von Anforderungen"
+            - "Arbeit in Sprints nach Scrum"
+            - "Eigenständige, laufende Abstimmung der Anforderungen mit den Verantwortlichen"
             - "Ausführliche Dokumentation aller Prozesse"
-            - "Kundenkommunikation zur Anpassung des Nutzungsumfangs und Nutzerbedarfs"
+            - "Abstimmung mit den Kunden, um den Nutzungsumfang an den Bedarf der Nutzer anzupassen"
             - "Fachliche Anleitung eines Werkstudenten"
 
     - position: "Innovationsingenieur"
@@ -151,21 +151,21 @@
       expandable: false
       responsibilities:
         # [FRONTEND & BACKEND]
-        - text: "Konzeption und gesamte Entwicklung einer mobilen Applikation zur Digitalisierung von Belegen im Unternehmenskontext"
+        - text: "Konzeption und Entwicklung einer mobilen App zur Digitalisierung von Belegen, komplett in eigener Hand"
           subitems:
             - "Umsetzung als plattformübergreifende App mit dem Xamarin-Framework in C#"
             - "Implementierung der Algorithmen in C / C++ mit OpenCV"
-            - "Entwicklung einer intuitiven Benutzeroberfläche für die Dokumentenverarbeitung"
-            - "Entwicklung von Computer-Vision-Algorithmen zur robusten Erkennung von Dokumenten vor verrauschten und kontrastarmen Hintergründen"
+            - "Benutzeroberfläche für die Dokumentenverarbeitung"
+            - "Computer-Vision-Algorithmen, die Dokumente auch vor verrauschten und kontrastarmen Hintergründen robust erkennen"
             - "Automatische Erkennung und Extraktion der Region of Interest (ROI), optional mit manueller Korrektur"
-            - "Automatischer Ausgleich von perspektivischen Verzerrungen mittels Homographie"
-            - "Optimierung des Kontrastes und der Bildqualität mittels Edge Detection"
+            - "Automatischer Ausgleich perspektivischer Verzerrungen mit einer Homografiematrix"
+            - "Optimierung von Kontrast und Bildqualität durch Schärfung, die den Text hervorhebt und die Kantenerkennung (Edge Detection) verbessert"
         # [FORSCHUNG]
         - text: "Entwicklung von Prototypen als Machbarkeitsstudien zur Identifizierung potenzieller Anwendungsfälle"
           subitems:
-            - "Durchführung detaillierter technischer Machbarkeitsanalysen zur Entscheidungsfindung"
-            - "Evaluierung und statistische Analysen großer Datenmengen"
-            - "Säuberung und Augmentation von Daten"
+            - "Technische Machbarkeitsanalysen als Entscheidungsgrundlage"
+            - "Statistische Auswertung großer Datenmengen"
+            - "Bereinigung und Augmentation von Daten"
 
 
 - section: "Akademische Ausbildung"
@@ -176,11 +176,10 @@
       location: "Bochum, Deutschland"
       period: "2015 – 2018"
       description: |-
-        Schwerpunkt: Eingebettete Systeme\\
+        Schwerpunkt: Eingebettete Systeme, vertieft an der Schnittstelle zu Machine Learning\\
         Abschlussnote: **sehr gut**
       achievements:
         - 'Masterarbeit: „Erkennung handgeschriebener Worte mittels CNN / BiRNN für eingebettete Systeme“ – Note: **ausgezeichnet**'
-        - "Vertiefung an der Schnittstelle von Machine Learning und eingebetteten Systemen"
 
     - degree: "B. Sc. Elektro- und Informationstechnik"
       institution: "Ruhr-Universität Bochum"
@@ -212,7 +211,7 @@
         - "Hugging Face"
         - "OpenCV"
       breadth:
-        - "NumPy / Scikit-learn"
+        - "NumPy / scikit-learn"
         - "spaCy"
         - "OCR / Tesseract"
         - "Data Engineering"
@@ -222,14 +221,14 @@
     - group: "Web & APIs"
       context: "End-to-End: Frontends, Schnittstellen und Integration in Produktivumgebungen"
       core:
-        - "Vue"
+        - "Vue.js"
         - "TypeScript"
         - "JavaScript"
         - "FastAPI"
         - "REST"
         - "SQL"
         - "Neo4j"
-        - "SpringBoot"
+        - "Spring Boot"
         - "Keycloak"
         - "Microservices"
       breadth:
@@ -243,7 +242,7 @@
         - ".NET"
         - "Xamarin"
     - group: "Cloud"
-      context: "KI-Lösungen in der Cloud entwickeln, trainieren und betreiben"
+      context: "Entwicklung und Training von KI-Modellen in der Cloud"
       core:
         - "Azure"
         - "Remote Computing / GPU-Training"
@@ -257,16 +256,16 @@
         - "CI / CD"
         - "GitHub Actions"
         - "Bash / Linux"
-        - "DevContainer"
+        - "Dev Container"
         - "Dagster"
       breadth:
-        - "Docker-Compose"
+        - "Docker Compose"
         - "GitLab CI / CD"
-        - "Shell-Scripts"
+        - "Shell-Skripte"
         - "TDD"
         - "Scrum / Kanban"
         - "VS Code"
-        - "Pip"
+        - "pip"
         - "Virtual Environment"
         - "RabbitMQ / Message Queues"
 
@@ -281,4 +280,4 @@
     - language: "Russisch"
       level: "Grundkenntnisse (A2)"
     - language: "Spanisch"
-      level: "Anfänger"
+      level: "Erste Kenntnisse"
