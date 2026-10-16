@@ -137,7 +137,6 @@
         # [SOZIAL]
         - text: "Agiles Projektmanagement"
           subitems:
-            - "Arbeit in Sprints nach Scrum"
             - "Eigenständige, laufende Abstimmung der Anforderungen mit den Verantwortlichen"
             - "Ausführliche Dokumentation aller Prozesse"
             - "Abstimmung mit den Kunden, um den Nutzungsumfang an den Bedarf der Nutzer anzupassen"

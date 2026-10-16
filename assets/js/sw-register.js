@@ -112,7 +112,7 @@
         // Update-Check den HTTP-Cache; ein neuer Build wird zuverlässig erkannt.
         navigator.serviceWorker.register(swPath, { scope: rootPath, updateViaCache: 'none' })
           .then(registration => {
-            // Toast-Lücke: wählte der Nutzer früher "Später", wartet der neue
+            // Toast-Lücke: schloss der Nutzer den Hinweis früher ("Schließen"), wartet der neue
             // Worker weiter, aber updatefound feuert nicht erneut — daher
             // beim Laden direkt prüfen
             if (registration.waiting && navigator.serviceWorker.controller) {
@@ -184,7 +184,7 @@
       if (now - last < THROTTLE) return;
       last = now;
       navigator.serviceWorker.ready.then(function (reg) {
-        // Wartet bereits ein neuer Worker (z.B. nach "Später")? -> erneut anbieten.
+        // Wartet bereits ein neuer Worker (z.B. nach "Schließen")? -> erneut anbieten.
         if (reg.waiting) { showUpdateToast(reg); }
         // Frisch prüfen: service-worker.js wird cache-umgehend geholt -> ein neuer
         // Build wird erkannt, installiert, wartet -> updatefound zeigt den Toast.
