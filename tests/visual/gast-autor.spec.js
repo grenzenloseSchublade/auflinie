@@ -23,7 +23,7 @@ test.describe('Gastbeitrag mit genanntem Autor (INH-5)', () => {
     await page.goto('/auflinie/archiv/', { waitUntil: 'load' });
     const item = page.locator('.archive__item').filter({ hasText: 'Test-Gastbeitrag' });
     await expect(item.locator('.page__meta-author')).toHaveText(`von ${NAME}`);
-    const own = page.locator('.archive__item').filter({ hasText: 'Erstellung von Blogbeiträgen' });
+    const own = page.locator('.archive__item').filter({ hasText: 'Wie ein Blogbeitrag entsteht' });
     await expect(own.locator('.page__meta-author')).toHaveCount(0);
 
     await page.goto('/auflinie/posts/blogbeitrag-erstellen/', { waitUntil: 'load' });

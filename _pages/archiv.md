@@ -1,6 +1,6 @@
 ---
 title: "Archiv"
-excerpt: "Alle Blogbeiträge chronologisch nach Jahren."
+excerpt: "Alle Blogbeiträge auf einer Seite, nach Jahren geordnet und die neuesten zuerst."
 permalink: /archiv/
 layout: single
 author_profile: false
@@ -14,7 +14,7 @@ show_date: false
 read_time: false
 ---
 
-Das Archiv sammelt alle Beiträge nach Jahren gruppiert. Die neuesten Beiträge stehen seitenweise in der Blog‑Übersicht.
+Das Archiv sammelt alle Beiträge, nach Jahren geordnet. Die neuesten Beiträge stehen seitenweise in der Blog-Übersicht.
 
 <div class="category-filter-container">
   <span class="filter-label">Jahresübersicht:</span>
@@ -25,7 +25,7 @@ Das Archiv sammelt alle Beiträge nach Jahren gruppiert. Die neuesten Beiträge 
     {% endfor %}
   </div>
   <div class="archive-nav-actions">
-    <a href="{{ '/posts/' | relative_url }}" class="btn btn--outline">Zur Blog‑Übersicht</a>
+    <a href="{{ '/posts/' | relative_url }}" class="btn btn--outline">Zur Blog-Übersicht</a>
   </div>
 </div>
 

@@ -36,7 +36,7 @@ tags:
 {% comment %}
 Vorlage für einen Blogbeitrag. Speichern als _posts/JJJJ-MM-TT-titel-des-beitrags.md,
 das Datum im Dateinamen ist das Veröffentlichungsdatum (ein date im Front Matter
-braucht es nur, um es zu überschreiben). Ein Datum in der Zukunft erscheint erst,
+braucht es nur, um es zu überschreiben). Ein Beitrag mit Datum in der Zukunft erscheint erst,
 wenn die Seite an oder nach diesem Tag neu gebaut wird. Dann die Felder oben und
 den Text unten ersetzen. Dieser Kommentar erscheint nicht auf der Seite und darf
 stehen bleiben.
@@ -44,21 +44,21 @@ stehen bleiben.
 - Der Beitrag beginnt ohne Überschrift: Der Titel steht schon im Bild oben,
   der erste Absatz ist die Einleitung.
 - Enthält der Beitrag Formeln, im Front Matter „mathjax: true“ ergänzen.
-- Anredefrei schreiben, keine Semikolons, deutsche Anführungszeichen „…“.
+- Anredefrei schreiben, nicht gendern, keine Semikolons, deutsche Anführungszeichen „…“.
 - Bilder liegen in assets/images/posts/. Im Text mit relative_url einbinden,
-  sonst fehlt der Pfad /auflinie, dahinter Breite und Höhe in Pixeln, damit die
-  Seite beim Laden nicht springt:
+  sonst fehlt der Pfad /auflinie. Dahinter Breite und Höhe in Pixeln angeben,
+  damit die Seite beim Laden nicht springt:
   ![Was das Bild zeigt]({{ "/assets/images/posts/bild.jpg" | relative_url }}){: width="1200" height="800"}
 - Links mit https://, nie http://. Externe Links öffnen beim Bauen
   automatisch in einem neuen Tab, ein Zusatz dafür ist nicht nötig.
-- Hinweise wie diesen nur in einen Liquid-Kommentar wie diesen hier, nie
-  als HTML-Kommentar mit spitzen Klammern: Der stünde öffentlich im
+- Eigene Notizen nur in einen Liquid-Kommentar wie diesen schreiben, nie
+  in einen HTML-Kommentar mit spitzen Klammern: Der stünde öffentlich im
   Quelltext der Seite.
 {% endcomment %}
 
 Hier steht, worum es in diesem Beitrag geht: das Thema kurz vorstellen und erklären, warum es lesenswert ist. Dieser erste Absatz braucht keine Überschrift, der Titel steht schon oben im Bild.
 
-**Tipp:** Ein interessanter Fakt oder eine Frage am Anfang macht neugierig.
+**Tipp:** Ein überraschender Fakt oder eine Frage am Anfang macht neugierig.
 
 ## Was dieser Beitrag vermittelt
 
@@ -102,7 +102,7 @@ Ein konkretes Beispiel oder eine Schritt-für-Schritt-Anleitung:
 
 ## Wichtige Erkenntnisse
 
-> **Zitat-Tipp:** `>` eignet sich für wichtige Aussagen oder Zitate
+> **Zitat-Tipp:** `>` eignet sich für Zitate, immer mit Quelle oder dem Zusatz „(sinngemäß)“ bzw. „(zugeschrieben)“
 
 Hier die wichtigsten Erkenntnisse zusammenfassen.
 

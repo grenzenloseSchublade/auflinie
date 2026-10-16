@@ -15,7 +15,7 @@ tags:
 header:
   overlay_image: /assets/images/background.jpg
   overlay_filter: 0.5
-  caption: "Technische Architektur und Implementierungsdetails"
+  caption: "Architektur und Umsetzung"
   teaser: /assets/images/background.jpg
 toc: true
 toc_label: "Inhalt"
@@ -51,7 +51,7 @@ In die engere Wahl kamen vier Kandidaten. Hugo, in Go geschrieben, überzeugt mi
 
 Gatsby baut auf React und GraphQL auf und hat ein großes Plugin-Ökosystem. Für statische Inhalte bringt es aber viel Overhead mit: eine aufwendigere Build-Pipeline und größere JavaScript-Bundles. Für interaktive Web-Apps ist das sinnvoll, für einen statischen Blog unnötig komplex. Die Community ist sehr aktiv, aber stark auf React ausgerichtet.
 
-Eleventy (11ty) unterstützt die meisten Template-Sprachen, ist in JavaScript geschrieben und modern aufgebaut. Das Ökosystem ist aber kleiner, es gibt weniger fertige Themes, und das Projekt ist jünger. Eleventy ist vielversprechend, wirkte zum Zeitpunkt der Entscheidung aber weniger ausgereift als Jekyll. Die Community ist kleiner, aber sehr engagiert.
+Eleventy (11ty) unterstützt viele Template-Sprachen, ist in JavaScript geschrieben und modern aufgebaut. Das Ökosystem ist aber kleiner, es gibt weniger fertige Themes, und das Projekt ist jünger. Eleventy ist vielversprechend, wirkte zum Zeitpunkt der Entscheidung aber weniger ausgereift als Jekyll. Die Community ist kleiner, aber sehr engagiert.
 
 Jekyll, in Ruby geschrieben, bot den besten Kompromiss aus Funktionsumfang, Stabilität und Einfachheit. Die ausgereifte Technik, die große Community, die Nähe zu GitHub Pages und die große Auswahl an Themes wogen schwerer als die Nachteile: langsamere Builds, Ruby als Abhängigkeit und eine weniger moderne Architektur. Jekyll gehört zu den ältesten und am weitesten verbreiteten Static Site Generators.
 
@@ -65,7 +65,7 @@ Dazu kamen Ökosystem und Community: eine große, aktive Gemeinschaft, viele Plu
 
 Den Ausschlag für Jekyll gaben technische und praktische Gründe.
 
-Zuerst die Nähe zu GitHub Pages: Das Hosting ist kostenlos, auch für das CDN fallen keine Kosten an. Jeder Push auf den Hauptzweig löst automatisch ein Deployment aus. SSL-Zertifikate stellt GitHub bereit und erneuert sie selbst, eine eigene Domain lässt sich ohne Zusatzkosten einbinden. Gebaut wird die Seite allerdings nicht vom eingebauten Pages-Builder, sondern von einem eigenen GitHub-Actions-Workflow. Nur so sind Jekyll 4 und Plugins außerhalb der Pages-Liste möglich.
+Zuerst die Nähe zu GitHub Pages: Das Hosting ist kostenlos, auch für das CDN fallen keine Kosten an. Jeder Push auf den Hauptzweig löst automatisch ein Deployment aus. TLS-Zertifikate stellt GitHub bereit und erneuert sie selbst, eine eigene Domain lässt sich ohne Zusatzkosten einbinden. Gebaut wird die Seite allerdings nicht vom eingebauten Pages-Builder, sondern von einem eigenen GitHub-Actions-Workflow. Nur so sind Jekyll 4 und Plugins außerhalb der Pages-Liste möglich.
 
 Bei den Themes hat Jekyll eine große Auswahl, viele davon kostenlos und gut gemacht. Minimal Mistakes lässt sich weitgehend anpassen und ist, wie die meisten aktuellen Themes, responsiv und mobile-first gebaut. Meta-Tags, Open Graph und Twitter Cards bringt es fertig mit. Bei der Barrierefreiheit legt das Theme eine gute Grundlage, für das Ziel WCAG 2.2 AA braucht es trotzdem eigene Arbeit.
 
@@ -89,7 +89,7 @@ Ebenso wichtig wie Jekyll war die Wahl des Themes. Nach dem Vergleich mehrerer J
 
 Minimal Mistakes bringt vieles mit, was eine Website braucht. Der Mobile-First-Ansatz sorgt für eine gute Darstellung vom Smartphone bis zum großen Monitor, Buttons und Abstände sind auf Touch-Bedienung ausgelegt. Das Theme achtet auf Barrierefreiheit und läuft in allen modernen Browsern. Dank Progressive Enhancement bleiben die Inhalte auch ohne JavaScript lesbar, mit JavaScript kommen weitere Funktionen dazu.
 
-Stark ist das Theme bei Metadaten und Suchmaschinen. Meta-Tags entstehen automatisch aus dem Front Matter, Open Graph sorgt für eine ordentliche Vorschau beim Teilen, etwa auf LinkedIn, Twitter Cards erledigen dasselbe für Twitter. Strukturierte Daten nach Schema.org (JSON-LD) helfen Suchmaschinen beim Einordnen. Sitemap und Feed kommen über die Plugins jekyll-sitemap und jekyll-feed dazu, Letzteres erzeugt einen Atom-Feed für Abonnements.
+Stark ist das Theme bei Metadaten und Suchmaschinen. Meta-Tags entstehen automatisch aus dem Front Matter, Open Graph sorgt für eine ordentliche Vorschau beim Teilen, etwa auf LinkedIn, Twitter Cards erledigen dasselbe für X (früher Twitter). Strukturierte Daten nach Schema.org (JSON-LD) helfen Suchmaschinen beim Einordnen. Sitemap und Feed kommen über die Plugins jekyll-sitemap und jekyll-feed dazu, Letzteres erzeugt einen Atom-Feed für Abonnements.
 
 Anpassen lässt sich das Theme an vielen Stellen. Es gibt mehrere fertige Farbschemata (Skins) wie Dark, Air und Aqua und verschiedene Layouts für unterschiedliche Inhalte. Die Navigation schiebt Einträge, die nicht mehr in die Leiste passen, automatisch in ein Menü, Breadcrumbs lassen sich zuschalten. Seitenleiste und Footer sind konfigurierbar.
 
@@ -101,7 +101,7 @@ Das Theme wird weiter gepflegt, wenn auch ohne festen Rhythmus. Neue Versionen a
 
 Die Community ist groß. Minimal Mistakes gehört zu den meistgenutzten Jekyll-Themes, das Repository hat Tausende Stars und Forks. Fragen und Fehlerberichte laufen über GitHub, zu vielen Problemen gibt es außerdem Antworten auf Stack Overflow.
 
-Zum Vergleich standen weitere Jekyll-Themes. Jekyll Now ist sehr einfach einzurichten, bietet aber kaum Anpassungsmöglichkeiten und wirkt optisch veraltet. Für den allerersten Einstieg ideal, für die Anforderungen dieses Projekts zu wenig.
+Zum Vergleich standen weitere Jekyll-Themes. Jekyll Now ist sehr einfach einzurichten, bietet aber kaum Anpassungsmöglichkeiten und wirkt optisch veraltet. Für den ersten Einstieg gut, für die Anforderungen dieses Projekts zu wenig.
 
 Beautiful Jekyll hat ein schönes, modernes Design und eine gute Dokumentation, aber weniger Layouts und weniger SEO-Funktionen. Für einen einfachen Blog eine gute Wahl, für die gewünschten Anpassungen nicht flexibel genug.
 
@@ -209,7 +209,7 @@ bundle exec jekyll clean
 bundle exec jekyll build --verbose
 ```
 
-Für den Arbeitsablauf gibt es ein paar feste Regeln. Neue Funktionen entstehen auf eigenen Branches, Commit-Nachrichten folgen dem Format Conventional Commits mit deutschem Betreff. Die Qualitätsprüfungen laufen nicht als Pre-commit-Hook, sondern vor jedem Push von Hand und danach automatisch in der CI.
+Für den Arbeitsablauf gibt es ein paar feste Regeln. Neue Funktionen entstehen auf eigenen Branches, Commit-Nachrichten folgen dem Format Conventional Commits mit deutschem Betreff, ein lokaler Commit-Hook prüft das. Die übrigen Qualitätsprüfungen laufen nicht als Hook, sondern vor jedem Push von Hand und danach automatisch in der CI.
 
 Linting hält den Code wartbar. Stylelint prüft die SCSS-Dateien, ESLint das JavaScript. Kleine Prüfskripte wachen zusätzlich darüber, dass Schriftgrößen, Farben, Abstände und Breakpoints aus den Tokens kommen und behobene Sicherheitsprobleme nicht zurückkehren. Markdown prüft im Editor die Erweiterung markdownlint. Die Regeln für Gestaltung, Code und Sprache stehen gesammelt im Style Guide (`STYLEGUIDE.md`).
 
@@ -256,7 +256,7 @@ auflinie/
 │   │                              #   tom-select, nouislider, gumshoe) – vormals CDN
 │   ├── webfonts/                  # Ubuntu und Font-Awesome-Subset (pyftsubset, woff2)
 │   ├── images/                    # background.jpg, mandelbrot-preview.jpg, Logo.svg
-│   └── downloads/post-template.md # Blog-Template zum Download
+│   └── downloads/post-template.txt # Quelle der Blog-Vorlage (ausgeliefert als .md)
 ├── .devcontainer/                 # Dev-Container (python:3.11 + Ruby 3.4.11 Feature)
 ├── .github/workflows/             # CI: Lint, Build, Style-Guide-Review, Deploy
 ├── scripts/                       # Prüfskripte (Guardrails, CSP-Prüfung)
@@ -318,7 +318,7 @@ kramdown:
 
 Auch für die Performance gibt es ein paar Einstellungen. Rouge übernimmt das Syntax-Highlighting, LSI (verwandte Beiträge per Textanalyse) ist abgeschaltet, und ein Excerpt-Separator legt fest, wo die Zusammenfassung endet. Sass kompiliert zu komprimiertem CSS ohne Source Maps. Das HTML wird nicht zusätzlich komprimiert.
 
-Sechs Plugins erweitern Jekyll: jekyll-paginate-v2 teilt die Blog-Übersicht in Seiten, jekyll-sitemap erzeugt die XML-Sitemap und jekyll-feed einen Atom-Feed. Das Plugin jekyll-include-cache beschleunigt den Build, indem es wiederkehrende Includes zwischenspeichert, jekyll-last-modified-at liefert Änderungsdaten, und jekyll-remote-theme lädt das Theme. Weil der Build in GitHub Actions läuft, gilt die Plugin-Liste von GitHub Pages hier nicht.
+Sechs Plugins aus Gems erweitern Jekyll: jekyll-paginate-v2 teilt die Blog-Übersicht in Seiten, jekyll-sitemap erzeugt die XML-Sitemap und jekyll-feed einen Atom-Feed. Das Plugin jekyll-include-cache beschleunigt den Build, indem es wiederkehrende Includes zwischenspeichert, jekyll-last-modified-at liefert Änderungsdaten, und jekyll-remote-theme lädt das Theme. Dazu kommen eigene kleine Plugins in `_plugins/`, etwa für externe Links, die Lesezeit, den Namen von Gastautoren und das geschützte Leerzeichen vor dem Schrägstrich. Weil der Build in GitHub Actions läuft, gilt die Plugin-Liste von GitHub Pages hier nicht.
 
 **Layout-Defaults und Standardwerte:**
 ```yaml
@@ -488,7 +488,7 @@ Für die Qualitätssicherung sorgen vor allem die Prüfungen im Workflow. Das St
 
 **Hosting-Optionen im Vergleich:**
 
-Beim Hosting fiel die Wahl auf GitHub Pages. Es ist kostenlos, veröffentlicht direkt aus dem Repository (ein Push genügt) und bringt SSL-Zertifikate automatisch mit. Ausgeliefert wird über ein CDN, eine eigene Domain lässt sich einbinden. Dem stehen Grenzen gegenüber: keine serverseitige Verarbeitung, ein weiches Limit für den Datenverkehr und eine Zeitgrenze für Deployments. Die Plugin-Beschränkung des eingebauten Builders umgeht der eigene Build in GitHub Actions. Für statische Inhalte ohne laufende Kosten ist GitHub Pages die beste Wahl.
+Beim Hosting fiel die Wahl auf GitHub Pages. Es ist kostenlos, veröffentlicht direkt aus dem Repository (ein Push genügt) und bringt TLS-Zertifikate automatisch mit. Ausgeliefert wird über ein CDN, eine eigene Domain lässt sich einbinden. Dem stehen Grenzen gegenüber: keine serverseitige Verarbeitung, ein weiches Limit für den Datenverkehr und eine Zeitgrenze für Deployments. Die Plugin-Beschränkung des eingebauten Builders umgeht der eigene Build in GitHub Actions. Für statische Inhalte ohne laufende Kosten ist GitHub Pages die beste Wahl.
 
 Netlify als erste Alternative bietet mehr Funktionen für CI / CD, Serverless Functions, A/B-Tests, Formularverarbeitung und Vorschauen pro Branch. Erweiterte Funktionen kosten aber Geld, und die Konfiguration ist aufwendiger. Die Performance ist sehr gut, das Mehr an Funktionen braucht eine statische Seite wie diese aber nicht.
 
@@ -502,7 +502,7 @@ Ein eigener Server (VPS) bietet volle Kontrolle, eine frei wählbare Konfigurati
 
 Bei Entwicklung und Pflege tauchten praktische Probleme auf. Die meisten ließen sich Schritt für Schritt lösen.
 
-Die Abhängigkeiten stehen im `Gemfile`: Jekyll 4.4 direkt statt des Gems github-pages, dazu die sechs Plugins, Webrick für den lokalen Server und html-proofer in der Testgruppe für die Linkprüfung. Die Werkzeuge für Linting und Tests verwaltet npm über die `package.json`, die Site selbst braucht kein Node.
+Die Abhängigkeiten stehen im `Gemfile`: Jekyll 4.4 direkt statt des Gems github-pages, dazu die sechs Plugins, WEBrick für den lokalen Server und html-proofer in der Testgruppe für die Linkprüfung. Die Werkzeuge für Linting und Tests verwaltet npm über die `package.json`, die Site selbst braucht kein Node.
 
 Aktualisiert wird gezielt mit `bundle update`, `bundle outdated` zeigt veraltete Gems. Die `Gemfile.lock` hält die Versionen samt Plattformen fest, damit Builds reproduzierbar bleiben. Vor bekannten Sicherheitslücken warnen die Dependabot-Alerts von GitHub, für die gepinnten GitHub Actions öffnet Dependabot einmal im Monat einen Update-PR.
 
@@ -654,7 +654,7 @@ Die Kombination aus Jekyll, Minimal Mistakes und GitHub Pages hat sich bewährt.
 
 Minimal Mistakes lieferte eine solide Grundlage, auf der sich die eigene Gestaltung gut aufbauen ließ. Die meisten gewünschten Anpassungen waren über Einstellungen und eigene Stylesheets möglich, die Darstellung funktioniert vom Smartphone bis zum Desktop. Meta-Tags und strukturierte Daten kommen automatisch.
 
-GitHub Pages bot kostenloses Hosting ohne laufende Kosten für Hosting und CDN, automatische Deployments bei jedem Push und SSL-Zertifikate, die sich selbst erneuern. Das CDN von GitHub Pages sorgt für kurze Ladezeiten – Drittanbieter-CDNs für Bibliotheken und Fonts wurden dagegen bewusst abgelöst: Vendor-Skripte, MathJax und das Font-Awesome-Subset liegen selbst gehostet im Repository. Die Website lädt damit nichts von fremden Servern, und die Content Security Policy erlaubt auch nur Quellen der eigenen Domain.
+GitHub Pages bot kostenloses Hosting ohne laufende Kosten für Hosting und CDN, automatische Deployments bei jedem Push und TLS-Zertifikate, die sich selbst erneuern. Das CDN von GitHub Pages sorgt für kurze Ladezeiten – Drittanbieter-CDNs für Bibliotheken und Fonts wurden dagegen bewusst abgelöst: Vendor-Skripte, MathJax und das Font-Awesome-Subset liegen selbst gehostet im Repository. Die Website lädt damit nichts von fremden Servern, und die Content Security Policy erlaubt auch nur Quellen der eigenen Domain.
 
 Markdown hat sich ebenfalls bewährt: Inhalte lassen sich ohne tiefes technisches Wissen schreiben, jede Änderung ist versioniert, und die Texte sind an keine Plattform gebunden. Weil sie gut lesbar und klar strukturiert sind, bleiben sie leicht zu pflegen.
 
@@ -666,12 +666,12 @@ Theme-Updates bleiben heikel: Neue Versionen können Inkompatibilitäten mitbrin
 
 **Zielgruppen:**
 
-**Ideal geeignet für:**
+**Gut geeignet für:**
 
 **Entwickler mit Grundkenntnissen:**
-- **Ruby / HTML / CSS**: Basiswissen für Customization erforderlich
-- **Git-Erfahrung**: Für effektive Versionskontrolle und Deployment
-- **Markdown-Kenntnisse**: Für Content-Erstellung und -Wartung
+- **Ruby / HTML / CSS**: Basiswissen für eigene Anpassungen erforderlich
+- **Git-Erfahrung**: Für Versionskontrolle und Deployment
+- **Markdown-Kenntnisse**: Für das Schreiben und Pflegen der Inhalte
 - **Terminal-Komfort**: Für lokale Entwicklung und Build-Prozesse
 
 **Content-Creator mit technischem Interesse:**
@@ -694,7 +694,7 @@ Theme-Updates bleiben heikel: Neue Versionen können Inkompatibilitäten mitbrin
 
 **Alternative Szenarien:**
 
-**Für große Websites (>1000 Seiten):**
+**Für große Websites (mehr als 1000 Seiten):**
 - **Hugo**: Builds oft unter einer Sekunde
 - **11ty**: Flexiblere Template-Engines und bessere Performance
 - **Gatsby**: React-basierte Lösung mit GraphQL-Integration
@@ -763,7 +763,7 @@ Die ursprüngliche Technologiewahl hat sich in den wichtigen Punkten bewährt:
 **GitHub-Pages-Integration:**
 - **Kostenloses Hosting**: Keine laufenden Kosten
 - **Automatische Deployments**: Jeder Push auf den Hauptzweig geht nach bestandenen Prüfungen online
-- **SSL-Zertifikate**: Automatische Sicherheit ohne zusätzlichen Aufwand
+- **TLS-Zertifikate**: Automatische Sicherheit ohne zusätzlichen Aufwand
 - **Globale Performance**: Auslieferung über ein CDN
 - **Custom Domain**: Einfache Integration eigener Domain-Namen
 
