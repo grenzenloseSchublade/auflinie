@@ -12,9 +12,9 @@ header:
 person_schema: true # JSON-LD Person (head/custom.html)
 ---
 
-Beruflich dreht sich bei mir vieles um Technik – am liebsten dort, wo aus einer Idee etwas Greifbares wird, wie bei den [interaktiven Fraktalen]({{ '/mandelbrot/' | relative_url }}) oder im [Blog]({{ '/posts/' | relative_url }}). In neue Themen tauche ich gern tief ein – und verliere mich auch mal darin.
+Beruflich und in eigenen Projekten dreht sich bei mir vieles um Technik – am liebsten dort, wo aus einer Idee etwas Greifbares wird, wie bei den [interaktiven Fraktalen]({{ '/mandelbrot/' | relative_url }}) oder im [Blog]({{ '/posts/' | relative_url }}). In neue Themen tauche ich gern tief ein – und verliere mich auch mal darin.
 
-Auf dieser Seite geht es aber vor allem um das, was daneben passiert: ums Draußensein und darum, in Bewegung zu bleiben, um Ernährung, Schlaf und Ruhe. Dinge, die ich einfach gerne tue.
+Auf dieser Seite geht es aber vor allem um das, was daneben passiert: ums Draußensein und darum, in Bewegung zu bleiben, um Ernährung, Schlaf und Ruhe. Dinge, die ich einfach gern tue.
 
 <div class="about-motto-wrap">
   <p class="about-motto">anima sana in corpore sano</p>
@@ -25,7 +25,7 @@ Auf dieser Seite geht es aber vor allem um das, was daneben passiert: ums Drauß
 {% comment %} Quelle: Einsteins Gedanke steht in der Herbert-Spencer-Vorlesung „On the Method of Theoretical Physics“, Oxford, 10. 6. 1933. Die kurze Fassung ist eine Paraphrase, zuerst bei Roger Sessions, New York Times, 8. 1. 1950 (Quote Investigator, „Everything Should Be Made as Simple as Possible, But Not Simpler“, 2011, https://quoteinvestigator.com/2011/05/13/einstein-simple/). Deshalb „sinngemäß“ (FACH-3). {% endcomment %}
 {% include section-epigraph.html text="Man sollte alles so einfach wie möglich machen, aber nicht einfacher." author="Albert Einstein (sinngemäß)" %}
 
-Gesundheit ist kein Projekt mit Endtermin, sondern eine tägliche Praxis aus vielen kleinen Entscheidungen: frisch kochen statt bestellen, bewusst atmen statt durchhetzen, ausreichend schlafen statt noch eine Stunde Bildschirm. Meditation und Atemtechniken helfen, den Kopf zu sortieren – nicht als Ritual um seiner selbst willen, sondern als trainierbare Fähigkeit, Aufmerksamkeit zu lenken.
+Gesundheit ist kein Projekt mit Endtermin, sondern eine tägliche Praxis aus vielen kleinen Entscheidungen: frisch kochen statt bestellen, bewusst atmen statt durchhetzen, ausreichend schlafen statt noch eine Stunde Bildschirm. Meditation und Atemtechniken helfen, den Kopf zu sortieren – nicht als Ritual um seiner selbst willen, sondern als Training für die Fähigkeit, Aufmerksamkeit zu lenken.
 
 ## Sport und Bewegung
 
@@ -33,24 +33,25 @@ Gesundheit ist kein Projekt mit Endtermin, sondern eine tägliche Praxis aus vie
 
 Am liebsten draußen: mit dem Rad unterwegs – im Alltag wie auf Reisen –, wandernd in der Natur oder auf dem Wasser beim Stand-up-Paddling, Schwimmen und Surfen. Bewegung im Freien ist die verlässlichste Art, den Kopf freizubekommen: Der Rhythmus aus Strecke, Wetter und Anstrengung holt die Aufmerksamkeit aus dem Grübeln zurück ins Hier.
 
-Nebenbei entsteht dabei, was kein Training im Studio ersetzt: echte Erlebnisse – von der Passhöhe bis zur richtigen Welle.
+Nebenbei entsteht, was kein Training im Studio ersetzt: echte Erlebnisse – von der Passhöhe bis zur richtigen Welle.
 
 ## Yoga und Calisthenics
 
 {% comment %} Quelle: keine. Sokrates hat nichts Schriftliches hinterlassen, bei Platon und Xenophon ist der Satz nicht belegt, im Netz wird er auch anderen zugeschrieben (etwa Philip Rosenthal). Inhaltlich am nächsten kommt Xenophon, Memorabilien 4,8,6, sinngemäß: Am besten leben die, die sich am meisten bemühen, möglichst gut zu werden. Deshalb „zugeschrieben“ (FACH-3). {% endcomment %}
-{% include section-epigraph.html text="Wer glaubt etwas zu sein, hat aufgehört etwas zu werden." author="Sokrates (zugeschrieben)" %}
+{% include section-epigraph.html text="Wer glaubt, etwas zu sein, hat aufgehört, etwas zu werden." author="Sokrates (zugeschrieben)" %}
 
-Yoga und Calisthenics sind die regelmäßige Basis – zwei Praxen, die sich ergänzen: Calisthenics baut Kraft mit dem eigenen Körpergewicht auf, sauber und ohne Gerätepark. Yoga bringt Beweglichkeit, Balance und die Ruhe, die harte Sätze allein nicht liefern.
+Yoga und Calisthenics sind die regelmäßige Basis – zwei Übungsformen, die sich ergänzen: Calisthenics baut Kraft mit dem eigenen Körpergewicht auf, sauber und ohne Gerätepark. Yoga bringt Beweglichkeit, Balance und die Ruhe, die harte Sätze allein nicht liefern.
 
-Beides belohnt vor allem eines: Geduld. Fortschritt kommt in kleinen Schritten über Monate, nicht über Nacht. Genau das macht die Praxis wertvoll – sie ist ein ehrlicher Spiegel: Was heute nicht geht, zeigt, woran zu arbeiten sich lohnt.
+Beides belohnt vor allem eines: Geduld. Fortschritt kommt in kleinen Schritten über Monate, nicht über Nacht. Genau das macht die Praxis wertvoll – sie ist ein ehrlicher Spiegel: Was heute nicht geht, zeigt, woran es sich zu arbeiten lohnt.
 
 ## Was Medizin leisten kann – und was nicht
 
+{% comment %} Quelle: Paracelsus, Septem Defensiones, dritte Defension, 1538. Wortlaut sprachlich modernisiert, Original: „Alle ding sind gifft / vnd nichts ohn gifft / alleine die dosis macht das ein ding kein gifft ist.“ {% endcomment %}
 {% include section-epigraph.html text="Alle Dinge sind Gift, und nichts ist ohne Gift; allein die Dosis macht, dass ein Ding kein Gift ist." author="Paracelsus" %}
 
-Die moderne Medizin ist beeindruckend, wo sie stark ist: in der Akutversorgung, der Diagnostik, der Chirurgie. Zugleich stößt sie dort an Grenzen, wo Gesundheit nicht repariert, sondern gelebt werden muss – bei chronischen Beschwerden, deren Ursachen in Ernährung, Bewegung, Stress und Schlaf liegen. Ein Rezept ist schneller ausgestellt als eine Lebensweise geändert – behandelt wird damit aber oft nur das Symptom. Und es fällt leichter, Verantwortung abzugeben, als sie dauerhaft selbst zu tragen.
+Die moderne Medizin ist stark in der Akutversorgung, der Diagnostik, der Chirurgie. Zugleich stößt sie dort an Grenzen, wo Gesundheit nicht repariert, sondern gelebt werden muss – bei chronischen Beschwerden, deren Ursachen in Ernährung, Bewegung, Stress und Schlaf liegen. Ein Rezept ist schneller ausgestellt als eine Lebensweise geändert – behandelt wird damit aber oft nur das Symptom. Und es fällt leichter, Verantwortung abzugeben, als sie dauerhaft selbst zu tragen.
 
-Daraus folgt keine Ablehnung der Schulmedizin, sondern eine Arbeitsteilung: kritisch nachfragen, Studienlage statt Schlagzeilen – und den Teil selbst übernehmen, den keine Praxis verschreiben kann: den eigenen Alltag.
+Daraus folgt keine Ablehnung der modernen Medizin, sondern eine Arbeitsteilung: kritisch nachfragen, auf die Studienlage statt auf Schlagzeilen schauen und den Teil selbst übernehmen, den keine Praxis verschreiben kann – den eigenen Alltag.
 
 ## Kontakt
 

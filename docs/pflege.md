@@ -245,7 +245,7 @@ Fallen: Der erste Eintrag mit `contact: true` steht im Kontaktsatz („am einfac
 2. Kanäle (GitHub …): in `_config.yml` bei `author.links` `footer: true` setzen oder entfernen.
 3. Prüfen und pushen.
 
-Copyright-Zeile: Das Jahr setzt der Build selbst, der Name kommt aus `name` in `_config.yml`, „Möglich durch“ aus `powered_by` in `_data/ui-text.yml`.
+Copyright-Zeile: Das Jahr setzt der Build selbst, der Name kommt aus `name` in `_config.yml`, „Gebaut mit“ aus `powered_by` in `_data/ui-text.yml`.
 
 ## Datenschutz
 

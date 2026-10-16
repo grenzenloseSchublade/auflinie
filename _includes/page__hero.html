@@ -62,7 +62,7 @@ Klasse in components/_hero.scss. {% endcomment %}
   </div>
   {% if page.header.crt_power %}
   <div class="page__hero-crt-power-wrap">
-    <button type="button" id="hero-crt-power" class="hero-crt-power" aria-pressed="true" aria-label="Lesemodus aktivieren" title="Lesemodus">
+    <button type="button" id="hero-crt-power" class="hero-crt-power is-active" aria-label="Lesemodus aktivieren" title="Lesemodus">
       {%- comment -%} Power-Glyphe: gleicher Pfad wie Heroicons „power“ (Outline, MIT) – klassisches IEC-ähnliches Ein-Symbol {%- endcomment -%}
       <svg class="hero-crt-power__svg" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false">
         <path stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round" d="M5.636 5.636a9 9 0 1012.728 0M12 3v9"/>
@@ -81,8 +81,8 @@ Klasse in components/_hero.scss. {% endcomment %}
       {% assign hero_title = page.title | default: site.title %}
       {% if page.neon_name and hero_title contains "Müller" %}
         {% unless hero_title contains "neon-umlaut" %}
-        {% assign hero_title = hero_title | replace: "Hans Müller", "<span class='neon-name'><span class='neon-glow'>H<span class='neon-orbit-trigger' role='button' tabindex='0' aria-label='Orbit starten'>a</span>ns M<span class='neon-umlaut' aria-label='ü'>u</span>ller</span></span>" %}
-        {% assign hero_title = hero_title | replace: "Hans", "<span class='neon-name'><span class='neon-glow'>H<span class='neon-orbit-trigger' role='button' tabindex='0' aria-label='Orbit starten'>a</span>ns</span></span>" %}
+        {% assign hero_title = hero_title | replace: "Hans Müller", "<span class='neon-name'><span class='neon-glow'>H<span class='neon-orbit-trigger' role='button' tabindex='0' aria-label='Neon-Animation starten'>a</span>ns M<span class='neon-umlaut' aria-label='ü'>u</span>ller</span></span>" %}
+        {% assign hero_title = hero_title | replace: "Hans", "<span class='neon-name'><span class='neon-glow'>H<span class='neon-orbit-trigger' role='button' tabindex='0' aria-label='Neon-Animation starten'>a</span>ns</span></span>" %}
         {% assign hero_title = hero_title | replace: "Müller", "<span class='neon-name'><span class='neon-glow'><span class='neon-umlaut' aria-label='ü'>u</span>ller</span></span>" %}
         {% endunless %}
       {% endif %}

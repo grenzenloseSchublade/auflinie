@@ -114,9 +114,9 @@
     const btn = document.getElementById('hero-crt-power');
     if (!btn || !overlay) return;
     const read = overlay.classList.contains('page__hero--crt-read');
-    btn.setAttribute('aria-pressed', read ? 'false' : 'true');
-    btn.setAttribute('aria-label', read ? 'Retro-Ansicht aktivieren' : 'Lesemodus aktivieren');
-    btn.setAttribute('title', read ? 'Retro-Ansicht' : 'Lesemodus');
+    btn.classList.toggle('is-active', !read);
+    btn.setAttribute('aria-label', read ? 'Retro-Effekt aktivieren' : 'Lesemodus aktivieren');
+    btn.setAttribute('title', read ? 'Retro-Effekt' : 'Lesemodus');
   }
 
   /**

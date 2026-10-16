@@ -31,9 +31,9 @@
     toast.setAttribute('aria-relevant', 'additions');
     toast.innerHTML = `
       <div class="sw-update-toast__panel">
-        <p class="sw-update-toast__headline">Neue Version verfügbar</p>
+        <p class="sw-update-toast__headline">Neue Version verfügbar.</p>
         <div class="sw-update-toast__actions">
-          <button type="button" id="sw-update-dismiss" class="sw-update-toast__ghost">Später</button>
+          <button type="button" id="sw-update-dismiss" class="sw-update-toast__ghost">Schließen</button>
           <button type="button" id="sw-update-reload" class="sw-update-toast__primary">Neu laden</button>
         </div>
       </div>

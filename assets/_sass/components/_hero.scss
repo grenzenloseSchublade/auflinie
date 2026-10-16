@@ -545,25 +545,25 @@ $hero-z-scroll-cue: 101; // Scroll-Hinweis über der Caption
         outline-offset: 3px;
       }
 
-      &[aria-pressed="true"] {
+      &.is-active {
         color: rgb(200 255 210 / 95%);
         filter: drop-shadow(0 0 7px rgb(90 200 120 / 45%));
       }
 
       @include can-hover {
-        &[aria-pressed="true"]:hover {
+        &.is-active:hover {
           color: rgb(220 255 228 / 100%);
           filter: drop-shadow(0 0 10px rgb(110 230 150 / 55%));
         }
       }
 
-      &[aria-pressed="false"] {
+      &:not(.is-active) {
         color: rgb(178 170 165 / 78%);
         filter: none;
       }
 
       @include can-hover {
-        &[aria-pressed="false"]:hover {
+        &:not(.is-active):hover {
           color: rgb(210 204 198 / 92%);
           filter: drop-shadow(0 0 4px rgb(255 255 255 / 12%));
         }
@@ -585,7 +585,7 @@ $hero-z-scroll-cue: 101; // Scroll-Hinweis über der Caption
       // Runder, weicher Phosphor-Puls (radialer Bloom) statt eckigem box-shadow-
       // Ring — liest sich als einladender Licht-Puls, nicht als Fokus-Rahmen, und
       // passt zum CRT-Look. Eigener ::after-Layer -> stört die filter-basierten
-      // aria-pressed-Zustände nicht. Anders als der CRT-Hero steht der Puls
+      // Zustände (`.is-active`) nicht. Anders als der CRT-Hero steht der Puls
       // nicht in den Ausnahmen des Kill-Switches: Unter reduced-motion läuft er
       // nicht (Owner-Entscheidung, STYLEGUIDE 6.5).
       &--hint {
@@ -805,7 +805,7 @@ $hero-z-scroll-cue: 101; // Scroll-Hinweis über der Caption
 
 // Hinweis-Puls für den CRT-Power-Button (Trigger: hero-crt.js schedulePowerHint,
 // Klasse .hero-crt-power--hint). Der radiale Bloom am ::after blendet auf und
-// wächst, dann wieder zurück. Stört die filter-basierten aria-pressed-Zustände
+// wächst, dann wieder zurück. Stört die filter-basierten Zustände (`.is-active`)
 // des Buttons nicht.
 @keyframes hero-crt-power-hint {
   0%,

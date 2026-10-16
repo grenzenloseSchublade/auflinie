@@ -37,7 +37,7 @@ Die Website liegt bei GitHub Pages, einem Dienst der GitHub, Inc. in den USA. Be
 
 GitHub protokolliert laut [eigener Dokumentation](https://docs.github.com/de/pages/getting-started-with-github-pages/about-github-pages#data-collection) die IP-Adresse jedes Besuchers zu Sicherheitszwecken und speichert sie. Wie lange, legt GitHub fest. Ich kann diese Protokolle weder einsehen noch abschalten.
 
-Zweck ist die sichere und stabile Auslieferung der Website, Rechtsgrundlage mein berechtigtes Interesse daran (Art. 6 Abs. 1 lit. f DSGVO). Ohne diese Angaben kann kein Server eine Seite ausliefern, sie sind für den Aufruf also nötig. GitHub ist nach dem EU-US Data Privacy Framework zertifiziert, für die Übermittlung in die USA gilt deshalb der Angemessenheitsbeschluss der EU-Kommission (Art. 45 DSGVO). Einzelheiten stehen in der [Datenschutzerklärung von GitHub](https://docs.github.com/de/site-policy/privacy-policies/github-general-privacy-statement).
+Zweck ist die sichere und stabile Auslieferung der Website, Rechtsgrundlage mein berechtigtes Interesse daran (Art. 6 Abs. 1 lit. f DSGVO). Ohne IP-Adresse und aufgerufene Adresse kann kein Server eine Seite ausliefern, diese beiden Angaben sind für den Aufruf also nötig. GitHub ist nach dem EU-US Data Privacy Framework zertifiziert, für die Übermittlung in die USA gilt deshalb der Angemessenheitsbeschluss der EU-Kommission (Art. 45 DSGVO). Einzelheiten stehen in der [Datenschutzerklärung von GitHub](https://docs.github.com/de/site-policy/privacy-policies/github-general-privacy-statement).
 
 ## Speicher im Browser
 
@@ -46,20 +46,20 @@ Einige Bedienzustände merkt sich die Seite im Speicher des Browsers (localStora
 Bis zum Löschen im Browser bleiben:
 
 - ob das Inhaltsverzeichnis einer Seite auf- oder zugeklappt ist
-- ob ein Hinweis über der Blog-Übersicht schon geschlossen wurde
+- ob ein Hinweis über der Blogübersicht schon geschlossen wurde
 - Einstellungen im Kontextmenü der Formeln (MathJax), aber nur, wenn dort jemand etwas umstellt
 
 Mit dem Schließen des Tabs enden:
 
 - ob die Einschaltanimation des Titelbilds und der Hinweis auf den Einschaltknopf schon liefen
 - ob der Bedienhinweis im Skill-Graphen schon erschien
-- der Übergangseffekt beim Seitenwechsel (Zielseite und Zeitpunkt, nach wenigen Sekunden verworfen) und wann der Kanalwechsel-Effekt zuletzt lief
+- Zielseite und Zeitpunkt des Übergangseffekts beim Seitenwechsel (nach wenigen Sekunden verworfen) und wann der Kanalwechsel-Effekt zuletzt lief
 
 ## Offline-Speicher
 
-Beim ersten Besuch legt die Seite im Browser einen Offline-Speicher an (Service Worker). Der Browser lädt dafür die Seiten und Dateien dieser Website im Hintergrund und bewahrt sie auf, damit sie schneller laden und auch ohne Netz erreichbar bleiben. Darin liegen nur öffentliche Dateien der Website, nichts über den Besucher. Mit jeder neuen Fassung der Website ersetzt die Seite den alten Bestand.
+Beim ersten Besuch legt die Seite mithilfe eines Service Workers einen Offline-Speicher im Browser an. Der Browser lädt dafür die Seiten und Dateien dieser Website im Hintergrund und bewahrt sie auf, damit sie schneller laden und auch ohne Netz erreichbar bleiben. Darin liegen nur öffentliche Dateien der Website, nichts über den Besucher. Mit jeder neuen Fassung der Website ersetzt die Seite den alten Bestand.
 
-Die gemerkten Bedienzustände und der Offline-Speicher dienen allein dazu, die aufgerufene Seite anzuzeigen und bedienbar zu halten (§ 25 Abs. 2 Nr. 2 TDDDG).
+Die gemerkten Bedienzustände und der Offline-Speicher dienen allein dazu, die Website anzuzeigen und bedienbar zu halten (§ 25 Abs. 2 Nr. 2 TDDDG).
 
 Entfernen lässt sich alles in den Browsereinstellungen, über die Websitedaten von grenzenloseschublade.github.io. Diese Adresse teilt sich die Website mit anderen Projekten desselben GitHub-Kontos, und Browser trennen gespeicherte Daten nach Adresse, nicht nach Projekt. Das Löschen entfernt deshalb auch deren Einträge.
 
