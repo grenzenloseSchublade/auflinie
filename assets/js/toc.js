@@ -417,12 +417,16 @@
         }
       } catch (error) { storedState = null; }
 
-      // Voll breiter TOC (mehr als 520 px) startet eingeklappt. Spiegel zur
-      // Container-Query in _toc.scss: Sie klappt ihn schon vor dem ersten
-      // Bild ein, hier wird der Zustand ohne Übergang übernommen. Sonst
-      // klappte er erst jetzt sichtbar zu und der Inhalt spränge hoch (CLS).
-      const isFullWidthToc = originalToc.getBoundingClientRect().width > 520;
-      const defaultExpanded = !isFullWidthToc;
+      // Ein TOC über dem Text startet eingeklappt, einer neben dem Text
+      // (Seitenleiste ab lg) offen (Owner, 16. 10. 2026, ohne Ausnahme für
+      // kurze Verzeichnisse). Über dem Text steht er unter lg und in breiten
+      // Layouts ohne Seitenleiste (Mandelbrot, voll breit über 520 px).
+      // Spiegel zu den Regeln in _toc.scss: Sie klappen ihn schon vor dem
+      // ersten Bild ein, hier wird der Zustand ohne Übergang übernommen.
+      // Sonst klappte er erst jetzt sichtbar zu und der Inhalt spränge hoch
+      // (CLS).
+      const isAboveText = isBelowLg() || originalToc.getBoundingClientRect().width > 520;
+      const defaultExpanded = !isAboveText;
       const startExpanded = storedState ? storedState !== 'collapsed' : defaultExpanded;
       setExpanded(startExpanded, false, true);
       originalToc.classList.add('toc--ready');

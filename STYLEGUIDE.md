@@ -1525,3 +1525,4 @@ Eine Zeile je Änderung, Einzelheiten stehen in den Commits.
 | 2026-10-07 | SEC-10a (Owner-Abnahme): Datenschutzerklärung abgenommen, Kontakt nur über GitHub ohne E-Mail (Restrisiko Art. 13 DSGVO bewusst getragen), Offline-Speicher ab dem ersten Besuch bleibt, Seite ohne Titelbild. SEC-10 nachgezogen. |
 | 2026-10-07 | R-50: Issue upstream gemeldet ([#5538](https://github.com/mmistakes/minimal-mistakes/issues/5538)), Ausgleichsdatei bleibt bis zum Fix. |
 | 2026-10-07 | R-69 (Owner): Auszug der `devcontainer.json` bestätigt, die Ruby-Zahl kommt mit der Überarbeitung des Beitrags. |
+| 2026-10-16 | TOC (Owner): Über dem Text startet er eingeklappt (unter 1024 px und in Layouts ohne Seitenleiste), neben dem Text in der Seitenleiste offen, ohne Ausnahme für kurze Verzeichnisse. Eine eigene Wahl des Lesers bleibt gespeichert. |
