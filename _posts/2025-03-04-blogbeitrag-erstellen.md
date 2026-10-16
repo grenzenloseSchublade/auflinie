@@ -250,7 +250,7 @@ Ergebnis:
 | Parameter | Datentyp | Beschreibung |
 |-----------|----------|--------------|
 | title     | String   | Beitragstitel |
-| date      | ISO-Datum | Veröffentlichungsdatum |
+| date      | ISO-Datum | Erscheinungsdatum |
 ```
 
 Ergebnis:
@@ -258,7 +258,7 @@ Ergebnis:
 | Parameter | Datentyp | Beschreibung |
 |-----------|----------|--------------|
 | title     | String   | Beitragstitel |
-| date      | ISO-Datum | Veröffentlichungsdatum |
+| date      | ISO-Datum | Erscheinungsdatum |
 
 **Erweiterte Tabellen mit Ausrichtung:**
 
