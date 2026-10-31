@@ -49,14 +49,21 @@ $hero-z-scroll-cue: 101; // Scroll-Hinweis über der Caption
     background-position: center;
     animation: fade-in $duration-slower ease-in-out;
 
-    // Einheitliche Hero-Höhe auf allen Seiten (vorher inhaltsabhängig
-    // 342-513px); Inhalt OBEN verankert statt zentriert: der H1 sitzt
-    // dadurch auf jeder Seite pixelgleich, unabhängig von Lead-Länge
-    // und Buttons (Jakobs Law / stabile Landmarken)
+    // Einheitliche Hero-Höhe auf allen Seiten; Inhalt OBEN verankert statt
+    // zentriert: der H1 sitzt dadurch auf jeder Seite pixelgleich,
+    // unabhängig von Lead-Länge und Buttons (Jakobs Law / stabile
+    // Landmarken). Die Untergrenze muss den höchsten Regelblock fassen
+    // (Startseite: Titel + Lead + Buttons, 26,2em + 1em Boden), sonst wird
+    // der Hero dort höher und die Caption rutscht mit. In em, damit sie mit
+    // padding-top und Schriftgröße mitwächst. Geprüft in invariants.spec.js
+    // („Hero gleich hoch“). Spiegel im Critical-CSS von _layouts/default.html
+    // mitändern, der steht später in der Kaskade und gewinnt.
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
-    min-height: clamp(410px, 42vh, 520px); // Untergrenze deckt Home-Block (Titel+Lead+Buttons) beim tiefen Anker
+
+    // skala-Ausnahme: Hero-em-System (SP-2), wächst mit dem Titel
+    min-height: clamp(27.5em, 42vh, 32.5em);
 
     // Mobil: Hero füllt den Viewport bis zum unteren Rand (Bild „füllt aus");
     // Inhalt ebenfalls oben verankert, mit Luft überm Titel
@@ -688,8 +695,10 @@ $hero-z-scroll-cue: 101; // Scroll-Hinweis über der Caption
 @include up(md) {
   .page__hero {
     &--overlay {
+      // Wenig Boden: Wrapper (2em) und Button-Abstand (1.5em) geben schon
+      // Luft. Mehr Boden machte Seiten mit Buttons höher als die übrigen.
       // skala-Ausnahme: Hero-em-System (SP-2), wächst mit dem Titel
-      padding-bottom: 6em;
+      padding-bottom: 1em;
 
       .page__title {
         font-size: 3.5em;

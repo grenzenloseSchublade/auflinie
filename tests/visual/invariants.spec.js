@@ -1213,3 +1213,39 @@ test.describe('Fußnoten-Rücksprung heißt „Zurück zum Text“ (6.5)', () =>
     });
   }
 });
+
+// Hero gleich hoch (_hero.scss, min-height): Auf den festen Seiten ist das
+// Titelbild gleich hoch, damit die Caption überall an derselben Stelle
+// sitzt, und auf jeder Seite mit Hero beginnt der Titel gleich weit unter
+// der Bildoberkante. Wächst ein Hero, passt sein Inhalt nicht mehr unter
+// die Untergrenze (min-height in _hero.scss): Untergrenze anheben oder
+// Inhalt kürzen. Beiträge dürfen bei langem Titel höher werden.
+const HERO_FEST = ['', 'about/', 'cv/', 'posts/', 'archiv/', 'mandelbrot/'];
+test.describe('Hero gleich hoch', () => {
+  for (const viewport of [MOBIL, { width: 1024, height: 768 }, { width: 1920, height: 1080 }]) {
+    test.describe(`${viewport.width} px`, () => {
+      test.use({ viewport });
+
+      test('Höhe und Titelposition', async ({ page }) => {
+        const hoehe = {};
+        const titel = {};
+        for (const p of PAGES) {
+          await page.goto(`/auflinie/${p}`, { waitUntil: 'load' });
+          const m = await page.evaluate(() => {
+            const hero = document.querySelector('.page__hero--overlay');
+            if (!hero) return null;
+            const r = hero.getBoundingClientRect();
+            const t = hero.querySelector('.page__title').getBoundingClientRect();
+            return { h: Math.round(r.height), t: Math.round(t.top - r.top) };
+          });
+          if (!m) continue;
+          if (HERO_FEST.includes(p)) hoehe[p || '/'] = m.h;
+          titel[p || '/'] = m.t;
+        }
+        expect(Object.keys(hoehe), 'Seiten ohne Hero?').toHaveLength(HERO_FEST.length);
+        expect(new Set(Object.values(hoehe)).size, JSON.stringify(hoehe)).toBe(1);
+        expect(new Set(Object.values(titel)).size, JSON.stringify(titel)).toBe(1);
+      });
+    });
+  }
+});
