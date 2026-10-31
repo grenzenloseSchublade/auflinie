@@ -27,8 +27,8 @@
       /* wie body .masthead in components/_masthead.scss */
       .masthead{position:fixed;top:0;left:0;right:0;height:var(--masthead-height);z-index:1000}
       /* Hero-Mindesthöhe wie components/_hero.scss, mobil = down(md) */
-      .page__hero--overlay{position:relative;display:flex;flex-direction:column;justify-content:flex-start;padding-top:8em;min-height:clamp(27.5em,42vh,32.5em);background-size:cover;background-position:center}
-      @media (max-width:767.98px){.page__hero--overlay{min-height:calc(100svh - var(--masthead-height));padding-top:18vh}}
+      .page__hero-spacer{display:none}.page__hero--overlay{position:relative;display:flex;flex-direction:column;justify-content:flex-start;padding-top:8em;min-height:clamp(27.5em,42vh,32.5em);background-size:cover;background-position:center}
+      @media (max-width:767.98px){.page__hero--overlay{min-height:calc(100svh - var(--masthead-height));padding-top:0}.page__hero-spacer{display:block;flex:1 0 1rem;max-height:18vh}}
     </style>
   </head>
 

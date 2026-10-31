@@ -1,5 +1,5 @@
 ---
-title: "Erstellung dieser Website: Von der Konzeption zur Implementierung"
+title: "Erstellung dieser Website"
 date: 2025-03-04
 last_modified_at: 2026-10-06
 author_profile: true

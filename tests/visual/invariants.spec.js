@@ -1214,15 +1214,15 @@ test.describe('Fußnoten-Rücksprung heißt „Zurück zum Text“ (6.5)', () =>
   }
 });
 
-// Hero gleich hoch (_hero.scss, min-height): Auf den festen Seiten ist das
-// Titelbild gleich hoch, damit die Caption überall an derselben Stelle
-// sitzt, und auf jeder Seite mit Hero beginnt der Titel gleich weit unter
-// der Bildoberkante. Wächst ein Hero, passt sein Inhalt nicht mehr unter
-// die Untergrenze (min-height in _hero.scss): Untergrenze anheben oder
-// Inhalt kürzen. Beiträge dürfen bei langem Titel höher werden.
+// Hero gleich hoch (_hero.scss, min-height), Desktop: Auf den festen Seiten
+// ist das Titelbild gleich hoch, damit die Caption überall an derselben
+// Stelle sitzt, und auf jeder Seite mit Hero beginnt der Titel gleich weit
+// unter der Bildoberkante. Wächst ein Hero, passt sein Inhalt nicht mehr
+// unter die Untergrenze: Untergrenze anheben oder Inhalt kürzen. Beiträge
+// dürfen bei langem Titel höher werden.
 const HERO_FEST = ['', 'about/', 'cv/', 'posts/', 'archiv/', 'mandelbrot/'];
 test.describe('Hero gleich hoch', () => {
-  for (const viewport of [MOBIL, { width: 1024, height: 768 }, { width: 1920, height: 1080 }]) {
+  for (const viewport of [{ width: 1024, height: 768 }, { width: 1920, height: 1080 }]) {
     test.describe(`${viewport.width} px`, () => {
       test.use({ viewport });
 
@@ -1245,6 +1245,43 @@ test.describe('Hero gleich hoch', () => {
         expect(Object.keys(hoehe), 'Seiten ohne Hero?').toHaveLength(HERO_FEST.length);
         expect(new Set(Object.values(hoehe)).size, JSON.stringify(hoehe)).toBe(1);
         expect(new Set(Object.values(titel)).size, JSON.stringify(titel)).toBe(1);
+      });
+    });
+  }
+});
+
+// Hero füllt den Bildschirm (_hero.scss, .page__hero-spacer), mobil: Auf
+// jeder Seite mit Hero endet das Titelbild genau am unteren Bildschirmrand,
+// die Caption unten rechts bleibt sichtbar. Fälle: iPhone 12 in Safari
+// (sichtbare Höhe), dasselbe mit 115 % Textgröße und der Anzeige-Zoom des
+// iPhones (320 px breit). Schlägt eine Seite fehl, ist ihr Titel, Excerpt
+// oder die Button-Zeile zu lang für ein Handy: kürzen.
+test.describe('Hero füllt den Bildschirm', () => {
+  for (const { name, viewport, schrift } of [
+    { name: '390 × 664', viewport: { width: 390, height: 664 }, schrift: 100 },
+    { name: '390 × 664, Text 115 %', viewport: { width: 390, height: 664 }, schrift: 115 },
+    { name: '320 × 568', viewport: { width: 320, height: 568 }, schrift: 100 },
+  ]) {
+    test.describe(name, () => {
+      test.use({ viewport });
+
+      test('Unterkante am Bildschirmrand', async ({ page }) => {
+        const zuHoch = [];
+        let geprueft = 0;
+        for (const p of PAGES) {
+          await page.goto(`/auflinie/${p}`, { waitUntil: 'load' });
+          const ueber = await page.evaluate((prozent) => {
+            document.documentElement.style.fontSize = `${prozent}%`;
+            const hero = document.querySelector('.page__hero--overlay');
+            if (!hero) return null;
+            return Math.round(hero.getBoundingClientRect().bottom - window.innerHeight);
+          }, schrift);
+          if (ueber === null) continue;
+          geprueft += 1;
+          if (ueber !== 0) zuHoch.push(`${p || '/'}: ${ueber > 0 ? '+' : ''}${ueber} px`);
+        }
+        expect(geprueft, 'Seiten ohne Hero?').toBeGreaterThanOrEqual(HERO_FEST.length);
+        expect(zuHoch, `Hero endet nicht am Bildschirmrand:\n${zuHoch.join('\n')}`).toEqual([]);
       });
     });
   }

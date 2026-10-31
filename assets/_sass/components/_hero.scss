@@ -65,8 +65,10 @@ $hero-z-scroll-cue: 101; // Scroll-Hinweis über der Caption
     // skala-Ausnahme: Hero-em-System (SP-2), wächst mit dem Titel
     min-height: clamp(27.5em, 42vh, 32.5em);
 
-    // Mobil: Hero füllt den Viewport bis zum unteren Rand (Bild „füllt aus");
-    // Inhalt ebenfalls oben verankert, mit Luft überm Titel
+    // Mobil: Hero füllt den Viewport bis zum unteren Rand (Bild „füllt aus"),
+    // die Caption sitzt unten rechts am Bildschirmrand. Inhalt oben
+    // verankert; die Luft überm Titel kommt vom .page__hero-spacer, nicht
+    // vom padding-top, damit sie bei viel Inhalt schrumpfen kann.
     @include down(md) {
       // svh statt dvh: die dynamische Viewport-Höhe wuchs beim Einklappen
       // der mobilen Adressleiste — der Hero skalierte live nach und das
@@ -75,7 +77,7 @@ $hero-z-scroll-cue: 101; // Scroll-Hinweis über der Caption
 
       // skala-Ausnahme: Hero-em-System (SP-2), wächst mit dem Titel
       margin-bottom: 1.2em;
-      padding-top: 18vh;
+      padding-top: 0;
     }
 
     // Eigenen Stacking-Kontext, damit Hintergrund / CRT / Text vorhersehbar liegen
@@ -614,8 +616,24 @@ $hero-z-scroll-cue: 101; // Scroll-Hinweis über der Caption
       // farb-Ausnahme-Ende
     }
 
+    // Abstand über dem Titel, mobil: wächst bis 18vh (Titel sitzt tief) und
+    // schrumpft bis 1rem, bevor der Hero über den Bildschirm hinauswächst.
+    // Größere Schrift, Anzeige-Zoom oder Mandelbrot (zweizeiliger Titel,
+    // zwei Buttons) schoben die Caption sonst unter den Rand. Desktop:
+    // aus, dort trägt padding-top (8em) den Abstand. Geprüft in
+    // invariants.spec.js („Hero füllt den Bildschirm“).
+    .page__hero-spacer {
+      display: none;
+
+      @include down(md) {
+        display: block;
+        flex: 1 0 1rem;
+        max-height: 18vh;
+      }
+    }
+
     // Wrapper für den Inhalt. Die Höhe des Titels im Hero ergibt sich aus
-    // dem padding-top des Overlays (8em bzw. 18vh mobil) plus 2em hier.
+    // dem padding-top des Overlays (8em) bzw. mobil dem Spacer plus 2em hier.
     // z-index: unter Preboot-/Boot-::after (z15), damit der Vorhang auch
     // über der Schrift liegt.
     .wrapper {
@@ -675,6 +693,13 @@ $hero-z-scroll-cue: 101; // Scroll-Hinweis über der Caption
 
       // skala-Ausnahme: Hero-em-System (SP-2), wächst mit dem Titel
       margin: 0.5em 0.5em 1.5em 0;
+
+      // Mobil stehen die Buttons untereinander, 1.5em Abstand riss eine
+      // große Lücke und kostete Höhe im Hero
+      @include down(md) {
+        // skala-Ausnahme: Hero-em-System (SP-2), wächst mit dem Titel
+        margin: 0 0.5em 0.75em 0;
+      }
 
       &--light-outline {
         border: 1px solid $white;
