@@ -780,15 +780,20 @@ $hero-z-scroll-cue: 101; // Scroll-Hinweis über der Caption
 }
 
 // Caption-Chip: Tagline als Mono-Chrome-Label, komplette Definition
-// (der frühere Inline-Style im Include ist entfernt) — kompakt, bricht
-// ohne aufgeblähte Grau-Fläche um
+// (der frühere Inline-Style im Include ist entfernt). Immer einzeilig:
+// Bricht Text um, behält eine fit-content-Box die volle max-width statt
+// der längsten Zeile, links bliebe leere Grau-Fläche. Die Länge begrenzt
+// scripts/content-check.py (CAPTION_MAX, SEITE-4), „…“ ist nur Notbremse.
 .page__hero--overlay .caption {
   position: absolute;
   right: 0;
   bottom: 0;
   z-index: $hero-z-caption;
   width: fit-content;
-  max-width: min(75%, 34ch);
+  max-width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
   margin: 0;
   padding: $space-1 $space-2;
   font-family: $mono-font-stack;

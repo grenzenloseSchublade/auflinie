@@ -28,7 +28,7 @@ Am Ende steht, wie sich eine Änderung [vor dem Push prüfen](#prüfen-vor-dem-p
 ## Blogbeitrag schreiben
 
 1. **Vorlage kopieren.** Den Teil zwischen `{% raw %}` und `{% endraw %}` aus `assets/downloads/post-template.txt` als neue Datei speichern (oder die Vorlage über den Beitrag „Blogbeitrag erstellen“ herunterladen). Dateiname: `_posts/JJJJ-MM-TT-kurzer-titel.md`, zum Beispiel `_posts/2026-11-02-wetterstation.md`. Das Datum im Namen ist das Veröffentlichungsdatum, der Rest wird die Adresse (`/posts/wetterstation/`).
-2. **Kopf ausfüllen.** `title`, `excerpt` (ein bis zwei Sätze, 70 bis 160 Zeichen, erscheint in der Übersicht und bei Suchmaschinen), `header.caption` (eine Zusatzinformation, keine Wiederholung des Titels) und `tags`. Enthält der Beitrag Formeln, kommt `mathjax: true` dazu.
+2. **Kopf ausfüllen.** `title`, `excerpt` (ein bis zwei Sätze, 70 bis 160 Zeichen, erscheint in der Übersicht und bei Suchmaschinen), `header.caption` (eine Zusatzinformation, keine Wiederholung des Titels, höchstens 25 Zeichen) und `tags`. Enthält der Beitrag Formeln, kommt `mathjax: true` dazu.
 3. **Text schreiben.** Der erste Absatz ist die Einleitung und hat keine Überschrift, danach gliedern `##` und `###`. Notizen nur als Liquid-Kommentar:
 
    ```liquid
@@ -298,7 +298,7 @@ Das Motiv neu zeichnen (andere Farben, andere Sterne) ist ein Technik-Schritt: `
 ## Seitentitel und Excerpt
 
 1. Den Kopf der Datei öffnen (`_pages/*.md`, `_posts/*.md`, Startseite `index.html`).
-2. `title` ist der Name auf der Seite und im Browser-Tab (ohne „– Hans Müller“, das ergänzt die Seite selbst). `excerpt` ist die Kurzbeschreibung für Übersichten und Suchmaschinen, ein bis zwei Sätze mit Punkt, 70 bis 160 Zeichen. `header.caption` ist die kleine Zeile im Titelbild.
+2. `title` ist der Name auf der Seite und im Browser-Tab (ohne „– Hans Müller“, das ergänzt die Seite selbst). `excerpt` ist die Kurzbeschreibung für Übersichten und Suchmaschinen, ein bis zwei Sätze mit Punkt, 70 bis 160 Zeichen. `header.caption` ist die kleine Zeile im Titelbild, höchstens 25 Zeichen, damit sie einzeilig bleibt.
 3. Prüfen und pushen.
 
 Falle: Auf der Startseite ist `title` HTML für den Neon-Namen, für Suchmaschinen gilt dort `seo_title`. Der Menüname bleibt davon unberührt ([Navigation](#navigation)).

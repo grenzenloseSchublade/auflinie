@@ -26,11 +26,16 @@ Quellen (ohne Argument):
      Screenreader-Namen. Bei den Erklärboxen (panel_explanations in
      _data/mandelbrot.yml) zusätzlich jedes unbekannte Feld (EXPLANATION_FIELDS),
      ein leeres Textfeld und ein Abschnitt ohne Inhalt.
+  7. FEHLER: header.caption im Front Matter länger als CAPTION_MAX Zeichen
+     in _posts und _pages (in _drafts nur WARNUNG). Die Caption bleibt
+     einzeilig, bei 320 px würde ein längerer Text mit „…“ abgeschnitten
+     (SEITE-4). Gezählt wird der sichtbare Text, Markdown-Links und ** zählen
+     nicht mit.
 
 Gebaute Seiten (--site <dir>, nach dem Jekyll-Build):
-  7. WARNUNG: <img> ohne width/height im Inhalt eines Beitrags (posts/**,
+  8. WARNUNG: <img> ohne width/height im Inhalt eines Beitrags (posts/**,
      IMG-3). Ohne Maße springt das Layout beim Laden.
-  8. WARNUNG: Kachelbild eines Beitrags (header.teaser, .archive__item-teaser
+  9. WARNUNG: Kachelbild eines Beitrags (header.teaser, .archive__item-teaser
      auf allen Seiten) ohne width/height. Die Maße liest _plugins/bildmasse.rb
      aus der Datei, ohne Treffer lässt der Build sie weg (IMG-3).
 
@@ -54,6 +59,11 @@ SOURCE_SUFFIXES = {".md", ".markdown", ".html", ".yml", ".yaml"}
 
 errors = []
 warnings = []
+
+
+CAPTION_MAX = 25
+# Mono 12,8 px plus Laufweite ≈ 8,5 px je Zeichen: 25 Zeichen ≈ 230 px samt
+# Innenabstand, das passt bei 320 px Bildschirmbreite mit Luft.
 
 
 def rel(path):
@@ -503,6 +513,36 @@ class ImgScan(HTMLParser):
             self.depth_content = None
 
 
+CAPTION_RE = re.compile(r"^\s+caption:\s*(.*?)\s*$")
+MD_LINK_RE = re.compile(r"\[([^\]]*)\]\([^)]*\)")
+
+
+def check_captions():
+    for d in ("_posts", "_pages", "_drafts"):
+        base = ROOT / d
+        if not base.is_dir():
+            continue
+        for path in sorted(base.rglob("*.md")):
+            lines = path.read_text(encoding="utf-8").splitlines()
+            if not lines or lines[0].strip() != "---":
+                continue
+            for no, line in enumerate(lines[1:], 2):
+                if line.strip() == "---":
+                    break  # Ende des Front Matter
+                m = CAPTION_RE.match(line)
+                if not m:
+                    continue
+                text = m.group(1).strip("\"'")
+                text = MD_LINK_RE.sub(r"\1", text).replace("**", "")
+                text = text.replace("%POST_COUNT%", "000")
+                if len(text) <= CAPTION_MAX:
+                    continue
+                report = warn if d == "_drafts" else error
+                report(path, no, f"Caption „{text}“ hat {len(text)} Zeichen, erlaubt sind "
+                       f"{CAPTION_MAX}. Auf schmalen Bildschirmen wird sie mit „…“ abgeschnitten.",
+                       "kürzer fassen, eine Zusatzinformation in wenigen Worten (SEITE-4).")
+
+
 def check_site(site):
     posts = site / "posts"
     for path in sorted(posts.rglob("*.html")) if posts.is_dir() else []:
@@ -535,6 +575,7 @@ def main(argv):
         check_math()
         check_text_keys()
         check_explanations()
+        check_captions()
         scope = "Quellen"
     else:
         print(__doc__)
