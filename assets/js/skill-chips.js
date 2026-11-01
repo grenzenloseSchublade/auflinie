@@ -5,8 +5,9 @@
  * Skill hebt alle über gemeinsame Projekte verbundenen Skills hervor und
  * zeigt die Projekte in der Kontextzeile; zweiter Klick oder Escape löst.
  *
- * Daten: _data/skill_graph.yml (Schema v1), als JSON-Tag
- * [data-skill-graph-data] im Markup (siehe _includes/cv/skills.html).
+ * Daten: _data/skills.yml (Schema v1), als JSON-Tag
+ * [data-skill-graph-data] im Markup (siehe _includes/cv/skills.html), Projekte
+ * und foundations dort schon auf sichtbare Skills (show: true) gefiltert.
  * Texte: die Hinweiszeile rendert Liquid aus texts.hint, die Auswahl-Anzeige
  * kommt aus texts.selection (über SkillGraphData.renderSelection).
  * Kanten Skill↔Skill entstehen hier implizit über gemeinsame Projekte.

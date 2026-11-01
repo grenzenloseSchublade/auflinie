@@ -50,8 +50,8 @@ skill_graph:
       </ol>
     {% endif %}
 
-    {% if section.skill_groups %}
-      {% include cv/skills.html skill_groups=section.skill_groups %}
+    {% if section.skills_catalog %}
+      {% include cv/skills.html %}
     {% endif %}
 
     {% if section.languages %}

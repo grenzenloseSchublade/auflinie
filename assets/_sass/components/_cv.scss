@@ -477,6 +477,13 @@ li.cv-skill-chip.is-related {
   border-top: 1px dashed $surface-tint;
 }
 
+// Gruppe ohne Kern-Chips (z. B. Frontend & Mobile): die Breite steht direkt
+// unter der Kontextzeile, ein Trenner hätte nichts zu trennen
+.cv-skill-group__context + .cv-skills__chips--breadth {
+  border-top: 0;
+  padding-top: 0;
+}
+
 li.cv-skill-chip--breadth {
   background: transparent;
   border-color: $white-a12;

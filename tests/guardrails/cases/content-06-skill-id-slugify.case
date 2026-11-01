@@ -1,8 +1,8 @@
-# IDs nach Jekylls slugify aus Chips mit Sonderzeichen („C#“ → c, „.NET“ → net, „Bash / Linux“ → bash-linux) gelten als bekannt
+# Katalog-IDs gelten unabhängig vom Anzeigenamen („C#“ → c, „.NET“ → net, „C / C++“ → c-cpp, ausgeblendet)
 guardrail: content
 expect: 0
-file: _data/skill_graph.yml
+file: _data/skills.yml
 mode: replace
 old: skills: [javascript, scss, html5-css3, responsive-design]
 ---
-skills: [javascript, scss, html5-css3, responsive-design, c, net, bash-linux]
+skills: [javascript, scss, html5-css3, responsive-design, c, net, c-cpp]

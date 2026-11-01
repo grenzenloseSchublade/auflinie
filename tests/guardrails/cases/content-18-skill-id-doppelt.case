@@ -1,0 +1,10 @@
+# Doppelte Skill-id im Katalog (zweite Zeile für denselben Skill)
+guardrail: content
+expect: 1
+grep: Skill-id „docker“ doppelt
+file: _data/skills.yml
+mode: replace
+old:   - { id: docker-compose,
+---
+- { id: docker, name: "Docker Engine", group: cloud-devops, tier: breadth, show: false }
+  - { id: docker-compose,

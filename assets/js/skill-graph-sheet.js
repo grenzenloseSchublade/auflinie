@@ -40,7 +40,7 @@
  * (das Panel zeigt sich dann inline). Seiten-Modul, mountet einmal beim Laden.
  *
  * Texte (Name des Fensters, ✕-Knopf, Touch-Hinweis): texts.graph in
- * _data/skill_graph.yml, gelesen aus dem JSON-Tag [data-skill-graph-data]
+ * _data/skills.yml, gelesen aus dem JSON-Tag [data-skill-graph-data]
  * über SkillGraphData (skill-graph-data.js, vorher geladen, ARCH-4).
  */
 (function () {

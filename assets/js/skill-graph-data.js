@@ -6,7 +6,7 @@
  * Auswahl-Anzeige (Konsole über den Chips, Info-Leiste im Graph-Sheet) und
  * braucht dafür als einziger Helfer das DOM (document.createElement).
  *
- * Texte: Bedientexte stehen in _data/skill_graph.yml unter texts und kommen
+ * Texte: Bedientexte stehen in _data/skills.yml unter texts und kommen
  * mit demselben JSON-Tag an (texts liest sie, ARCH-4). Im Skript stehen nur
  * die Trennzeichen der Anzeige („ – “ und „ · “).
  *
@@ -32,18 +32,18 @@
       try {
         data = JSON.parse(tag.textContent);
       } catch (e) {
-        console.warn(prefix + ': skill_graph-Daten nicht lesbar', e);
+        console.warn(prefix + ': Skill-Daten nicht lesbar', e);
         return null;
       }
       if (!data || data.version !== 1 || !Array.isArray(data.projects)) {
-        console.warn(prefix + ': unbekanntes skill_graph-Schema (erwartet version: 1)');
+        console.warn(prefix + ': unbekanntes Schema der Skill-Daten (erwartet version: 1)');
         return null;
       }
       return data;
     },
 
     /**
-     * Bedientexte aus den Daten (texts in _data/skill_graph.yml). Fehlt der
+     * Bedientexte aus den Daten (texts in _data/skills.yml). Fehlt der
      * Block, kommt mit Warnung ein leeres Objekt zurück, die Aufrufer lassen
      * den Text dann weg, statt eine zweite Fassung im Skript zu pflegen.
      * (data null: parse hat schon gewarnt.)
@@ -53,7 +53,7 @@
      */
     texts: function (data, prefix) {
       if (data && !data.texts) {
-        console.warn(prefix + ': texts fehlt in den skill_graph-Daten, Bedientexte bleiben leer');
+        console.warn(prefix + ': texts fehlt in den Skill-Daten, Bedientexte bleiben leer');
       }
       return (data && data.texts) || {};
     },
@@ -77,7 +77,7 @@
         }
         const ids = project.skills.filter(function (id) {
           if (knownIds && !knownIds.has(id)) {
-            console.warn(prefix + ': skill_graph.yml referenziert unbekannten Skill "' + id + '"');
+            console.warn(prefix + ': Projekt in skills.yml verweist auf unbekannten Skill "' + id + '"');
             return false;
           }
           return true;

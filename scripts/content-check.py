@@ -10,17 +10,19 @@ Quellen (ohne Argument):
      und `Inline-Code` zählen nicht.
   2. WARNUNG: target="_blank" ohne rel="noopener" in denselben Quellen. Das
      Build-Plugin _plugins/external-links.rb ergänzt rel (LINK-3).
-  3. FEHLER: Skill-ID in _data/skill_graph.yml ohne passenden Chip in
-     _data/cv_content.yml (skill_groups, core und breadth). Eine ID ist der
-     Chip-Name nach Jekylls `slugify` (Modus default). Der Graph verlöre die
-     Kante sonst still, nur die Browser-Konsole warnte.
+  3. FEHLER: Skill-Katalog _data/skills.yml. Skill-ID in foundations oder
+     einem Projekt, die nicht im Katalog steht (der Graph verlöre die Kante
+     sonst still), unbekannte Gruppe, doppelte id oder doppelter Name, id
+     nicht in kebab-case, tier nicht core / breadth, show nicht true / false.
+     WARNUNG: sichtbarer Skill ohne Projekt (außer foundations) und Projekt,
+     das nur ausgeblendete Skills hat.
   4. FEHLER: Mathe in _data/*.yml entgegen MD-3. Inline `$…$` braucht
      doppelte Backslashes, Display `$$…$$` einfache.
   5. FEHLER: Pfad ab der Wurzel ohne relative_url in _posts, _drafts, _pages
      (`](/…)`, `[x]: /…`, `src="/…"`, `href="/…"`, LIQ-3). Build und
      html-proofer finden die Datei unter _site, live fehlt /auflinie davor.
   6. FEHLER: Text-Schlüssel der Bedienung fehlt oder ist leer (TEXT_KEYS:
-     _data/fractal_panel.yml, texts in _data/skill_graph.yml, powered_by in
+     _data/fractal_panel.yml, texts in _data/skills.yml, powered_by in
      _data/ui-text.yml). Markup und Skripte lesen die Texte von dort (ARCH-4),
      ein vertippter Schlüssel gäbe still einen leeren Knopf- oder
      Screenreader-Namen. Bei den Erklärboxen (panel_explanations in
@@ -180,47 +182,106 @@ def line_of(path, needle):
     return 1
 
 
-def check_skill_ids():
-    graph_path = ROOT / "_data/skill_graph.yml"
-    cv_path = ROOT / "_data/cv_content.yml"
-    if not graph_path.exists() or not cv_path.exists():
-        return
-    graph = load_yaml(graph_path) or {}
-    cv = load_yaml(cv_path) or {}
+SKILL_TIERS = ("core", "breadth")
+SKILL_ID_RE = re.compile(r"^[a-z0-9]+(-[a-z0-9]+)*$")
 
-    chips = {}
-    def collect(node):
-        if isinstance(node, dict):
-            for group in node.get("skill_groups") or []:
-                for key in ("core", "skills", "breadth"):
-                    for skill in group.get(key) or []:
-                        name = skill.get("name") if isinstance(skill, dict) else skill
-                        if name:
-                            chips.setdefault(slugify(str(name)), str(name))
-            for value in node.values():
-                collect(value)
-        elif isinstance(node, list):
-            for value in node:
-                collect(value)
-    collect(cv)
-    if not chips:
-        return
 
-    used = [(sid, "foundations") for sid in graph.get("foundations") or []]
-    for project in graph.get("projects") or []:
-        used += [(sid, f"Projekt {project.get('id')}") for sid in project.get("skills") or []]
-    for sid, where in used:
-        sid = str(sid)
-        if sid in chips:
+def check_skills():
+    """Skill-Katalog _data/skills.yml (groups, skills, foundations, projects)."""
+    path = ROOT / "_data/skills.yml"
+    if not path.exists():
+        return
+    data = load_yaml(path) or {}
+    groups = data.get("groups") or []
+    skills = data.get("skills") or []
+
+    group_ids = set()
+    for group in groups:
+        gid = str(group.get("id") or "")
+        if not gid or not group.get("title"):
+            error(path, line_of(path, gid) if gid else 1, f"Gruppe „{gid or '?'}“ ohne id oder title.",
+                  "Jede Gruppe braucht id (kebab-case) und title, context ist eine Zeile.")
+        elif gid in group_ids:
+            error(path, line_of(path, gid), f"Gruppen-id „{gid}“ doppelt.", "Jede Gruppen-id nur einmal vergeben.")
+        group_ids.add(gid)
+
+    catalog = {}
+    names = {}
+    for skill in skills:
+        sid = str(skill.get("id") or "")
+        name = str(skill.get("name") or "")
+        at = line_of(path, sid) if sid else 1
+        if not sid or not name:
+            error(path, at, f"Skill „{sid or name or '?'}“ ohne id oder name.",
+                  "Jede Zeile braucht id, name, group, tier und show.")
             continue
-        guess = get_close_matches(sid, list(chips), n=1, cutoff=0.5)
-        hint = (f"Gemeint ist vermutlich „{chips[guess[0]]}“, ID {guess[0]}."
-                if guess else "Den Chip-Namen in _data/cv_content.yml (skill_groups) prüfen.")
-        error(graph_path, line_of(graph_path, sid),
-              f"Skill-ID „{sid}“ ({where}) passt zu keinem Chip in _data/cv_content.yml. "
+        if not SKILL_ID_RE.match(sid):
+            error(path, at, f"Skill-id „{sid}“ ist kein kebab-case.",
+                  f"Nur Kleinbuchstaben, Ziffern und einzelne Bindestriche, etwa „{slugify(sid)}“.")
+        if sid in catalog:
+            error(path, at, f"Skill-id „{sid}“ doppelt.",
+                  "Jede id nur einmal vergeben. Zwei Begriffe für einen Chip als Sammelchip "
+                  "(„Neo4j / Cypher“) in einer Zeile zusammenfassen.")
+        key = name.casefold()
+        if key in names and names[key] != sid:
+            error(path, at, f"Skill-Name „{name}“ doppelt (ids {names[key]} und {sid}).",
+                  "Jeden Namen nur einmal vergeben, sonst stehen zwei gleiche Chips auf der Seite.")
+        names.setdefault(key, sid)
+        group = str(skill.get("group") or "")
+        if group not in group_ids:
+            guess = get_close_matches(group, list(group_ids), n=1, cutoff=0.5)
+            error(path, at, f"Skill „{sid}“ nennt die unbekannte Gruppe „{group}“.",
+                  (f"Gemeint ist vermutlich „{guess[0]}“. " if guess else "")
+                  + "Erlaubt sind die ids unter groups: " + ", ".join(sorted(group_ids)) + ".")
+        if skill.get("tier") not in SKILL_TIERS:
+            error(path, at, f"Skill „{sid}“ hat tier „{skill.get('tier')}“.",
+                  "tier ist core (Kern) oder breadth (Breite).")
+        if not isinstance(skill.get("show"), bool):
+            error(path, at, f"Skill „{sid}“ hat show „{skill.get('show')}“.",
+                  "show ist true (sichtbar) oder false (nur im Katalog), ohne Anführungszeichen.")
+        catalog[sid] = skill
+    if not catalog:
+        return
+
+    def visible(sid):
+        return catalog.get(sid, {}).get("show") is True
+
+    foundations = [str(x) for x in data.get("foundations") or []]
+    used = [(sid, "foundations") for sid in foundations]
+    in_projects = set()
+    for project in data.get("projects") or []:
+        pid = project.get("id")
+        if not pid or not project.get("label"):
+            error(path, line_of(path, str(pid)) if pid else 1, f"Projekt „{pid or '?'}“ ohne id oder label.",
+                  "Jedes Projekt braucht id (kebab-case, stabil), label (öffentlich, anonym) und skills.")
+        ids = [str(x) for x in project.get("skills") or []]
+        used += [(sid, f"Projekt {pid}") for sid in ids]
+        in_projects.update(ids)
+        known = [sid for sid in ids if sid in catalog]
+        if known and not any(visible(sid) for sid in known):
+            warn(path, line_of(path, str(pid)),
+                 f"Projekt „{pid}“ hat nur ausgeblendete Skills und fehlt deshalb im Graphen.",
+                 "Einen seiner Skills mit show: true einschalten oder das Projekt entfernen.")
+
+    by_name = {slugify(str(s.get("name"))): sid for sid, s in catalog.items()}
+    for sid, where in used:
+        if sid in catalog:
+            continue
+        guess = get_close_matches(sid, list(catalog) + list(by_name), n=1, cutoff=0.5)
+        gid = by_name.get(guess[0], guess[0]) if guess else None
+        hint = (f"Gemeint ist vermutlich „{catalog[gid].get('name')}“, ID {gid}."
+                if gid else "Den Skill unter skills in _data/skills.yml anlegen.")
+        error(path, line_of(path, sid),
+              f"Skill-ID „{sid}“ ({where}) steht nicht im Katalog _data/skills.yml. "
               "Der Graph ließe sie still weg.",
-              f"{hint} Die ID ist der Chip-Name klein, jede Folge aus Leer- und "
-              "Sonderzeichen wird ein Bindestrich („Next.js“ → next-js, „OCR / Tesseract“ → ocr-tesseract).")
+              f"{hint} Die ID steht in der Katalog-Zeile unter id, nicht der Anzeigename.")
+
+    for sid, skill in catalog.items():
+        if visible(sid) and sid not in in_projects and sid not in foundations:
+            warn(path, line_of(path, sid),
+                 f"Sichtbarer Skill „{skill.get('name')}“ ({sid}) hat kein Projekt und ist kein Basiswerkzeug. "
+                 "Im Graphen fehlt er, ein Klick zeigt „keinem Projekt fest zugeordnet“.",
+                 "Die id bei einem Projekt unter skills ergänzen oder in foundations aufnehmen.")
 
 
 # Text-Schlüssel, die Markup und Skripte lesen (ARCH-4). Schreibweise: Punkte
@@ -248,7 +309,7 @@ TEXT_KEYS = {
         "explorer.{mandelbrot,julia}.canvas.{label,zoom_in,zoom_out}",
         "explorer.hint.{mouse,touch}[]",
     ],
-    "_data/skill_graph.yml": [
+    "_data/skills.yml": [
         "texts.{hint,breadth}",
         "texts.selection.{with_projects,foundation,no_projects}",
         "texts.graph.{open,lead,dialog,close,canvas,unlabeled}",
@@ -571,7 +632,7 @@ def main(argv):
         scope = f"gebaute Beiträge in {site}"
     elif len(argv) == 1:
         check_sources()
-        check_skill_ids()
+        check_skills()
         check_math()
         check_text_keys()
         check_explanations()

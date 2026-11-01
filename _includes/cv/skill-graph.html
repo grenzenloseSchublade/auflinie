@@ -3,7 +3,7 @@
   Gated über page.skill_graph.graph (siehe cv/skills.html, dort oben im
   Abschnitt VOR den Skill-Gruppen eingebunden). Die Chip-Liste darunter
   bleibt immer die kanonische, vollständige Darstellung.
-  Texte: _data/skill_graph.yml → texts (ARCH-4), hier nur Markup.
+  Texte: _data/skills.yml → texts (ARCH-4), hier nur Markup.
   Logik: assets/js/skill-graph.js (+ DOM-freie Engine skill-graph-sim.js),
   Präsentation als modales Sheet: assets/js/skill-graph-sheet.js.
   Daten: dasselbe JSON-Tag [data-skill-graph-data] wie die Chip-Hervorhebung.
@@ -24,7 +24,7 @@
   Fokus im Dialog (sonst fiele er auf <body>, Tasten +/−/0 wirkungslos).
   Parameter: keine.
 {% endcomment %}
-{%- assign skill_texts = site.data.skill_graph.texts %}
+{%- assign skill_texts = site.data.skills.texts %}
 {%- assign graph_texts = skill_texts.graph %}
 <div class="skill-graph" data-skill-graph>
   <div class="skill-graph__entry">

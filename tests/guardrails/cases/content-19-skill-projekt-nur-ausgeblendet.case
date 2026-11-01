@@ -1,0 +1,9 @@
+# Projekt nur mit ausgeblendeten Skills fehlt im Graphen: Warnung, kein Fehler
+guardrail: content
+expect: 0
+grep: Projekt „website“ hat nur ausgeblendete Skills
+file: _data/skills.yml
+mode: replace
+old: skills: [javascript, scss, html5-css3, responsive-design]
+---
+skills: [vitest, tkinter]

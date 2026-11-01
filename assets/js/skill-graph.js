@@ -10,12 +10,12 @@
  * skill-graph-sheet.js; ohne das Modul klappt das Panel inline auf.
  *
  * Daten: dasselbe JSON-Tag [data-skill-graph-data] wie die Chip-Hervorhebung
- * (_data/skill_graph.yml, Schema v1). Knoten = Skills aus den DOM-Chips
+ * (_data/skills.yml, Schema v1). Knoten = Skills aus den DOM-Chips
  * (Reihenfolge = Gruppenreihenfolge), Kanten = gemeinsame Projekte. Die
  * Info-Leiste schreibt SkillGraphData.renderSelection — derselbe Renderer
  * wie die Konsole über den Chips (skill-chips.js). Texte: Beschriftungen und
  * Ruhezustand der Info-Leiste (Hinweis, Satz zu Punkten ohne Namen) rendert
- * Liquid aus texts in _data/skill_graph.yml, die Auswahl-Anzeige kommt aus
+ * Liquid aus texts in _data/skills.yml, die Auswahl-Anzeige kommt aus
  * texts.selection (ARCH-4).
  *
  * Ansicht: Bildschirm = Layout × scale + pan. Render, Hit-Test, Rand-Pfeile
@@ -282,7 +282,7 @@
       if (!self.chipLabels.has(id)) { self.chipLabels.set(id, btn.textContent.trim()); }
       if (!connected.has(id) || indexById.has(id)) { return; }
       indexById.set(id, self.nodes.length);
-      // Kern-Skill (core) oder ergänzende Breite (breadth) aus cv_content.yml:
+      // Kern-Skill (core) oder ergänzende Breite (breadth), tier in skills.yml:
       // Kern-Labels haben beim Platzmangel Vorrang (computeLabelScales)
       self.nodes.push({ id: id, label: btn.textContent.trim(), labelW: null,
         core: !btn.closest('.cv-skill-chip--breadth'), degree: 0 });

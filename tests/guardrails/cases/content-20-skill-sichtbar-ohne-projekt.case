@@ -1,0 +1,9 @@
+# Sichtbarer Skill ohne Projekt und nicht in foundations: Warnung, kein Fehler
+guardrail: content
+expect: 0
+grep: Sichtbarer Skill „Xamarin“ \(xamarin\) hat kein Projekt
+file: _data/skills.yml
+mode: replace
+old: skills: [computer-vision, opencv, xamarin, c, net,
+---
+skills: [computer-vision, opencv, c, net,

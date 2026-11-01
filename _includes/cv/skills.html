@@ -1,14 +1,20 @@
 {% comment %}
-  Technische Fähigkeiten als Themen-Gruppen (Mockup-Review Juli 2026):
-  pro Gruppe ein Mono-Label + Kontextzeile (wofür), darunter gleichwertige
-  Chips ohne Bewertung – Hervorhebung entsteht nur noch interaktiv über
-  die Klick-Auswahl.
+  Technische Fähigkeiten als Themen-Gruppen (Mockup-Review Juli 2026,
+  Neugliederung November 2026): pro Gruppe ein Mono-Label + Kontextzeile
+  (wofür), darunter gleichwertige Chips ohne Bewertung – Hervorhebung
+  entsteht nur interaktiv über die Klick-Auswahl.
+
+  Daten: _data/skills.yml (eine Quelle). Gruppen in der Reihenfolge von
+  groups, je Gruppe die Skills mit show: true in Katalog-Reihenfolge, erst
+  tier core (Kern), dann tier breadth (Breite). Eine Gruppe ohne sichtbare
+  Skills entfällt, eine Gruppe ohne Kern zeigt nur die Breite (der Trenner
+  über der Breite entfällt dann, _cv.scss).
 
   Interaktivität (Flag page.skill_graph im Front Matter, Muster blog_notice):
-    enabled: Chips werden Buttons – Klick zeigt verwandte Skills und
-             gemeinsame Projekte (assets/js/skill-chips.js, Daten aus
-             _data/skill_graph.yml via JSON-Tag unten, Hinweiszeile aus
-             texts.hint dort)
+    enabled: Chips werden Buttons (data-skill = id aus dem Katalog) – Klick
+             zeigt verwandte Skills und gemeinsame Projekte
+             (assets/js/skill-chips.js, Daten über den JSON-Tag unten,
+             Hinweiszeile aus texts.hint)
     graph:   zusätzlich der Skill-Graph (cv/skill-graph.html): Öffner oben
              im Abschnitt unter der Auswahl-Konsole, vor den Gruppen, und
              ein kleiner Öffner rechts in der Konsole. Er übernimmt, sobald
@@ -18,19 +24,23 @@
   Die Konsole klebt beim Scrollen oben (Hülle cv-skills__console). Die
   Anzeige darin (aria-live) schreibt skill-chips.js neu, der kleine Knopf
   steht deshalb daneben und nicht in ihr.
-  Ohne Flags rendert der Block exakt wie die statische Fassung.
+  Ohne Flags rendert der Block die statische Fassung (kein JSON, kein JS).
 
-  Texte: _data/skill_graph.yml → texts (hint, breadth). texts.breadth ist der
+  JSON-Tag: version, texts sowie foundations und projects, beide auf
+  sichtbare Skills gefiltert. Ausgeblendete Skills erreichen den Browser
+  nicht, ein Projekt ohne sichtbaren Skill entfällt. Neue Projektfelder
+  müssen unten in project_json ergänzt werden.
+
+  Texte: _data/skills.yml → texts (hint, breadth). texts.breadth ist der
   Name der Breite-Liste je Gruppe und gilt auch ohne Flags.
-
-  Parameter:
-    skill_groups – Liste aus {group, context, skills} (skills: Strings)
 {% endcomment %}
+{%- assign catalog = site.data.skills %}
+{%- assign visible_skills = catalog.skills | where: "show", true %}
 <div class="cv-skills">
   {% if page.skill_graph.enabled %}
-  {%- assign dock_texts = site.data.skill_graph.texts.graph.open_short %}
+  {%- assign dock_texts = catalog.texts.graph.open_short %}
   <div class="cv-skills__console{% if page.skill_graph.graph %} cv-skills__console--dock{% endif %}" data-role="skill-console" data-sticky-toc-offset>
-    <p class="cv-skills__selection-info" data-role="skill-context" aria-live="polite">{{ site.data.skill_graph.texts.hint | escape }}</p>
+    <p class="cv-skills__selection-info" data-role="skill-context" aria-live="polite">{{ catalog.texts.hint | escape }}</p>
     {%- if page.skill_graph.graph %}
     <button type="button" class="skill-graph__tool skill-graph__dock" data-role="graph-dock"
             aria-expanded="false" aria-controls="skill-graph-panel"
@@ -44,34 +54,37 @@
   {% if page.skill_graph.graph %}
     {% include cv/skill-graph.html %}
   {% endif %}
-  {% for skill_group in include.skill_groups %}
+  {% for group in catalog.groups %}
+  {%- assign group_skills = visible_skills | where: "group", group.id %}
+  {%- if group_skills.size == 0 %}{% continue %}{% endif %}
+  {%- assign core_skills = group_skills | where: "tier", "core" %}
+  {%- assign breadth_skills = group_skills | where: "tier", "breadth" %}
   <div class="cv-skill-group">
-    <p class="cv-skill-group__title">{{ skill_group.group | escape }}</p>
-    {% if skill_group.context %}
-    <p class="cv-skill-group__context">{{ skill_group.context | escape }}</p>
+    <p class="cv-skill-group__title">{{ group.title | escape }}</p>
+    {% if group.context %}
+    <p class="cv-skill-group__context">{{ group.context | escape }}</p>
     {% endif %}
-    {% assign core_skills = skill_group.core | default: skill_group.skills %}
+    {% if core_skills.size > 0 %}
     <ul class="cv-skills__chips">
       {% for skill in core_skills %}
-      {% assign skill_name = skill.name | default: skill %}
       <li class="cv-skill-chip">
         {%- if page.skill_graph.enabled -%}
-        <button type="button" class="cv-skill-chip__button" data-skill="{{ skill_name | slugify }}" aria-pressed="false">{{ skill_name }}</button>
+        <button type="button" class="cv-skill-chip__button" data-skill="{{ skill.id | escape }}" aria-pressed="false">{{ skill.name | escape | replace: " / ", "&nbsp;/ " }}</button>
         {%- else -%}
-        {{ skill_name }}
+        {{ skill.name | escape | replace: " / ", "&nbsp;/ " }}
         {%- endif -%}
       </li>
       {% endfor %}
     </ul>
-    {% if skill_group.breadth and skill_group.breadth.size > 0 %}
-    <ul class="cv-skills__chips cv-skills__chips--breadth" aria-label="{{ site.data.skill_graph.texts.breadth | escape }} {{ skill_group.group | escape }}">
-      {% for skill in skill_group.breadth %}
-      {% assign skill_name = skill.name | default: skill %}
+    {% endif %}
+    {% if breadth_skills.size > 0 %}
+    <ul class="cv-skills__chips cv-skills__chips--breadth" aria-label="{{ catalog.texts.breadth | escape }} {{ group.title | escape }}">
+      {% for skill in breadth_skills %}
       <li class="cv-skill-chip cv-skill-chip--breadth">
         {%- if page.skill_graph.enabled -%}
-        <button type="button" class="cv-skill-chip__button" data-skill="{{ skill_name | slugify }}" aria-pressed="false">{{ skill_name }}</button>
+        <button type="button" class="cv-skill-chip__button" data-skill="{{ skill.id | escape }}" aria-pressed="false">{{ skill.name | escape | replace: " / ", "&nbsp;/ " }}</button>
         {%- else -%}
-        {{ skill_name }}
+        {{ skill.name | escape | replace: " / ", "&nbsp;/ " }}
         {%- endif -%}
       </li>
       {% endfor %}
@@ -81,6 +94,17 @@
   {% endfor %}
 
   {% if page.skill_graph.enabled or page.skill_graph.graph %}
-  <script type="application/json" data-skill-graph-data>{{ site.data.skill_graph | jsonify | replace: '</', '<\/' }}</script>
+  {%- assign visible_ids = visible_skills | map: "id" %}
+  {%- assign foundation_ids = catalog.foundations | where_exp: "sid", "visible_ids contains sid" %}
+  {%- assign project_json = "" | split: "" %}
+  {%- for project in catalog.projects %}
+    {%- assign project_ids = project.skills | where_exp: "sid", "visible_ids contains sid" %}
+    {%- if project_ids.size > 0 %}
+      {%- capture one_project %}{"id":{{ project.id | jsonify }},"label":{{ project.label | jsonify }},"skills":{{ project_ids | jsonify }}}{% endcapture %}
+      {%- assign project_json = project_json | push: one_project %}
+    {%- endif %}
+  {%- endfor %}
+  {%- capture skill_data %}{"version":{{ catalog.version | jsonify }},"foundations":{{ foundation_ids | jsonify }},"projects":[{{ project_json | join: "," }}],"texts":{{ catalog.texts | jsonify }}}{% endcapture %}
+  <script type="application/json" data-skill-graph-data>{{ skill_data | replace: '</', '<\/' }}</script>
   {% endif %}
 </div>

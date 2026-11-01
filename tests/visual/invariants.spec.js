@@ -184,7 +184,7 @@ test.describe('Sticky-TOC-Dropdown (A11Y-2)', () => {
 // data-labels und ein Knoten mit Vorschau als data-preview (skill-graph.js
 // publishView).
 // Die erwarteten Texte kommen aus dem Datenblock der Seite (texts in
-// _data/skill_graph.yml): Die Tests prüfen Verhalten, nicht den Wortlaut, eine
+// _data/skills.yml): Die Tests prüfen Verhalten, nicht den Wortlaut, eine
 // Textänderung dort braucht keinen angepassten Test.
 async function skillTexts(page) {
   return page.evaluate(() => JSON.parse(document.querySelector('script[data-skill-graph-data]').textContent).texts);
@@ -273,11 +273,12 @@ test.describe('Skill-Graph-Sheet (OVL-3, OVL-4)', () => {
   });
 
   test('Info-Leiste zeigt nach Knotenklick Skill und Projekte, Esc gestaffelt', async ({ page }) => {
-    // Chip vor dem Öffnen wählen: das Sheet hebt Python hervor, wo es liegt
+    // Chip vor dem Öffnen wählen: das Sheet hebt LLMs hervor, wo es liegt
+    // (Python ist seit November 2026 Basiswerkzeug und hat keinen Knoten)
     const { panel, canvas, texts } = await openSheet(page, () =>
-      page.locator('.cv-skill-chip__button[data-skill="python"]').click());
+      page.locator('.cv-skill-chip__button[data-skill="llms"]').click());
     const info = page.locator('[data-role="graph-context"]');
-    await expect(info.locator('.cv-skills__selection-skill')).toHaveText('Python');
+    await expect(info.locator('.cv-skills__selection-skill')).toHaveText('LLMs');
     const x = Number(await canvas.getAttribute('data-sel-x'));
     const y = Number(await canvas.getAttribute('data-sel-y'));
 
@@ -291,10 +292,10 @@ test.describe('Skill-Graph-Sheet (OVL-3, OVL-4)', () => {
     await expect(panel).toHaveAttribute('role', 'dialog');
 
     await expect(canvas).not.toHaveAttribute('data-sel-x', /./);
-    // Klick auf den Python-Knoten an seiner Bildschirmlage (die Ansicht hat
+    // Klick auf den LLMs-Knoten an seiner Bildschirmlage (die Ansicht hat
     // sich durch Esc nicht bewegt)
     await canvas.click({ position: { x, y } });
-    await expect(info.locator('.cv-skills__selection-skill')).toHaveText('Python');
+    await expect(info.locator('.cv-skills__selection-skill')).toHaveText('LLMs');
     await expect(info.locator('.cv-skills__selection-rolle')).toHaveText(' – ' + texts.selection.with_projects);
     await expect(info.locator('.cv-skills__selection-projekte')).toContainText(' · ');
     await expect(info).toHaveClass(/is-active/);
@@ -323,7 +324,7 @@ test.describe('Skill-Graph-Sheet (OVL-3, OVL-4)', () => {
         const zoom = await zoomOf(ohne.canvas);
         const outside = await ohne.canvas.getAttribute('data-outside');
         const mit = await openSheet(page, () =>
-          page.locator('.cv-skill-chip__button[data-skill="python"]').click());
+          page.locator('.cv-skill-chip__button[data-skill="llms"]').click());
         await expect(mit.canvas).toHaveAttribute('data-sel-x', /\d/);
         expect(await zoomOf(mit.canvas)).toBeCloseTo(zoom, 3);
         // Dieselbe Startansicht (Übersicht ausgegraut). data-outside taugt
@@ -344,7 +345,7 @@ test.describe('Skill-Graph-Sheet (OVL-3, OVL-4)', () => {
     await expect(reset).toHaveAttribute('aria-disabled', 'true');
     await page.keyboard.press('Escape');
     const mit = await openSheet(page, () =>
-      page.locator('.cv-skill-chip__button[data-skill="python"]').click());
+      page.locator('.cv-skill-chip__button[data-skill="llms"]').click());
     await expect(reset).not.toHaveAttribute('aria-disabled', /./);
     await reset.click();
     await expect(reset).toHaveAttribute('aria-disabled', 'true');
@@ -361,7 +362,7 @@ test.describe('Skill-Graph-Sheet (OVL-3, OVL-4)', () => {
       // textContent statt innerText: die Knöpfe stehen per CSS in Versalien
       const visible = (await btn.textContent()).replace(/\s+/g, ' ').trim();
       expect((await btn.getAttribute('aria-label')).startsWith(visible),
-        `${role}: label in _data/skill_graph.yml beginnt nicht mit dem sichtbaren „${visible}“`).toBe(true);
+        `${role}: label in _data/skills.yml beginnt nicht mit dem sichtbaren „${visible}“`).toBe(true);
     }
     const fit = await zoomOf(canvas);
     await page.getByRole('button', { name: texts.graph.zoom_in.label, exact: true }).click();
@@ -448,7 +449,7 @@ test.describe('Skill-Graph-Sheet (OVL-3, OVL-4)', () => {
   test('Größenänderung verzerrt das Layout nicht', async ({ page }) => {
     await page.setViewportSize(MOBIL);
     const { canvas, texts } = await openSheet(page, () =>
-      page.locator('.cv-skill-chip__button[data-skill="python"]').click());
+      page.locator('.cv-skill-chip__button[data-skill="llms"]').click());
     const fit = page.locator('[data-role="graph-fit"]');
     await expect(fit).toHaveAttribute('aria-disabled', 'true');
     // Fenster nur verkleinern (nicht zurück: sonst fiele die Änderung in die
@@ -647,7 +648,7 @@ test.describe('Kleiner Graph-Knopf in der Konsole', () => {
         await expect(dock).toHaveAttribute('aria-expanded', 'false');
 
         // Mit aktueller Auswahl, wie der große Knopf
-        await page.locator('.cv-skill-chip__button[data-skill="python"]').first().evaluate((el) => el.click());
+        await page.locator('.cv-skill-chip__button[data-skill="llms"]').first().evaluate((el) => el.click());
         await dock.click();
         const panel = page.locator('[data-role="graph-panel"]');
         await expect(panel).toHaveAttribute('role', 'dialog');

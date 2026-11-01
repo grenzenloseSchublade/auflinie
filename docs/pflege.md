@@ -8,7 +8,7 @@ Ein Fehler kann nichts kaputt machen, was schon online ist: Die Website wird nac
 |---|---|---|
 | Blogbeitrag | `_posts/` | [Blogbeitrag schreiben](#blogbeitrag-schreiben) |
 | Gastbeitrag | `_posts/` | [Gastbeitrag einspielen](#gastbeitrag-einspielen) |
-| Lebenslauf, Skills | `_data/cv_content.yml`, `_data/skill_graph.yml` | [Lebenslauf](#lebenslauf) |
+| Lebenslauf, Skills | `_data/cv_content.yml`, `_data/skills.yml` | [Lebenslauf](#lebenslauf) |
 | Startseite | `_data/home.yml` | [Startseite](#startseite) |
 | Über mich | `_pages/about.md` | [Über mich](#über-mich) |
 | Fraktal-Texte, Erklärungen in den Panels | `_data/mandelbrot.yml` | [Mandelbrot-Texte](#mandelbrot-texte) |
@@ -105,27 +105,40 @@ Alles steht in `_data/cv_content.yml`, gegliedert in Abschnitte (`- section: …
 
 Fallen: Zeiträume mit Halbgeviertstrich und normalen Leerzeichen („2020 – 2025“, „2025 – Heute“), Schrägstriche ebenso („CI / CD“). Mehrzeiliger Text als `|-`-Block, ein harter Zeilenumbruch ist `\\` am Zeilenende. Text mit Doppelpunkt oder Anführungszeichen in doppelte Anführungszeichen setzen, innen deutsche „…“. Die Einrückung zählt: zwei Leerzeichen je Ebene, keine Tabs.
 
-### Skill neu
+### Skill einschalten, neu anlegen, Projekt ergänzen
 
-1. In `skill_groups` bei der passenden Gruppe den Namen unter `core` (Kern) oder `breadth` (Breite) ergänzen, zum Beispiel `- "Rust"`.
-2. Ohne Skill-Graph: fertig, weiter mit Schritt 5.
-3. Mit Skill-Graph: in `_data/skill_graph.yml` die Skill-ID bei einem Projekt unter `skills` ergänzen oder ein neues Projekt anlegen:
+Alles zu den Skills steht in `_data/skills.yml`: Gruppen, je Skill eine Zeile, die Projekte des Skill-Graphen, die Basis-Werkzeuge und die Bedientexte. Der Lebenslauf (`_data/cv_content.yml`) bindet den Katalog nur ein.
+
+**Skill einschalten oder ausblenden:** In seiner Zeile `show: false` auf `true` setzen (oder umgekehrt). Mehr ist nicht nötig, Chip und Graph-Knoten erscheinen, sobald der Skill bei einem Projekt steht.
+
+**Skill neu anlegen:**
+
+1. In der passenden Gruppe eine Zeile kopieren und anpassen:
 
    ```yaml
-   - id: wetterstation        # fest, nie umbenennen
-     label: "Wetterstation"
-     skills: [python, rust]
+   - { id: rust, name: "Rust", group: daten-backend, tier: breadth, show: true }
    ```
 
-   Basis-Werkzeuge wie Git oder Docker gehören stattdessen in `foundations` und bekommen keine Projekte.
-4. **Slug-Regel:** Die Skill-ID ist der Name klein geschrieben, jede Folge aus Leer- und Sonderzeichen wird ein Bindestrich: „Next.js“ → `next-js`, „OCR / Tesseract“ → `ocr-tesseract`, „C#“ → `c`.
-5. Prüfen und pushen. Eine ID ohne passenden Skill macht den Inhalts-Check rot und schlägt den gemeinten Namen vor.
+   `id` ist fest (klein, Bindestriche, nie umbenennen), `name` der Anzeigename, `group` eine id unter `groups`, `tier` ist `core` (Kern, obere Reihe) oder `breadth` (Breite, untere Reihe). Die Reihenfolge der Zeilen ist die Reihenfolge der Chips.
+2. Weiter mit „Projekt ergänzen“, sonst warnt der Inhalts-Check, dass der sichtbare Skill kein Projekt hat.
 
-Falle: Die Tests nutzen den Skill „Python“ als Beispiel. Wer ihn umbenennt oder entfernt, bekommt einen roten Testlauf, dann den Test mit anpassen lassen.
+**Projekt ergänzen:** Unter `projects` die id bei einem Projekt unter `skills` eintragen oder ein neues Projekt anlegen:
+
+```yaml
+- id: wetterstation        # fest, nie umbenennen
+  label: "Wetterstation"   # öffentlich, ohne Kunden- oder interne Namen
+  skills: [python, rust]
+```
+
+Basis-Werkzeuge wie Git oder Docker gehören stattdessen in `foundations` und bekommen keine Projekte. Ausgeblendete Skills dürfen bei Projekten stehen, sie erscheinen erst mit `show: true`.
+
+Prüfen und pushen. Der Inhalts-Check meldet eine unbekannte id (mit Vorschlag), eine unbekannte Gruppe, doppelte ids oder Namen. Warnungen (kein roter Lauf): ein sichtbarer Skill ohne Projekt, ein Projekt nur mit ausgeblendeten Skills.
+
+Falle: Die Tests nutzen den Skill „LLMs“ (id `llms`) als Beispiel, er braucht Projekte. Wer ihn umbenennt, ausblendet, zum Basis-Werkzeug macht oder entfernt, bekommt einen roten Testlauf, dann den Test mit anpassen lassen.
 
 ### Texte rund um die Skills
 
-Der Hinweis über den Skills, die Zeile nach einem Klick, der Name der ergänzenden Kenntnisse je Gruppe für Screenreader und alle Beschriftungen im Skill-Graphen (Knöpfe, Hinweise) stehen in `_data/skill_graph.yml` ganz unten unter `texts`. Der Satz zu Punkten ohne Namen, der im Skill-Graphen unter dem Hinweis steht, heißt dort `unlabeled` (unter `graph`).
+Der Hinweis über den Skills, die Zeile nach einem Klick, der Name der ergänzenden Kenntnisse je Gruppe für Screenreader und alle Beschriftungen im Skill-Graphen (Knöpfe, Hinweise) stehen in `_data/skills.yml` ganz unten unter `texts`. Der Satz zu Punkten ohne Namen, der im Skill-Graphen unter dem Hinweis steht, heißt dort `unlabeled` (unter `graph`).
 
 1. Den Text zwischen den Anführungszeichen ändern.
 2. Prüfen und pushen. Einen vertippten oder leeren Schlüssel meldet der Inhalts-Check mit Zeile.

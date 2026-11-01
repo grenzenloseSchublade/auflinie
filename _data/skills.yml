@@ -1,0 +1,331 @@
+# =============================================================================
+# Skill-Katalog: EINE Quelle für die Skill-Chips im Lebenslauf, den
+# Skill-Graphen und die Bedientexte des Skill-Features
+# =============================================================================
+# Aufbau (Schema-Version für den Browser siehe version):
+#   groups:      Themen-Gruppen, Reihenfolge = Reihenfolge auf der Seite.
+#                id (stabil), title (Überschrift), context (eine Zeile: wofür).
+#                Eine Gruppe ohne sichtbare Skills erscheint nicht.
+#   skills:      jeder Skill eine Zeile.
+#     id:        stabiler Schlüssel in kebab-case, nie umbenennen (Projekte,
+#                foundations und die Seite verweisen darauf). Er muss nicht
+#                zum Namen passen, „C#“ hat aus Gründen der Geschichte die id c.
+#     name:      Anzeigename des Chips. Schrägstriche mit Leerzeichen („CI / CD“).
+#     group:     id einer Gruppe oben.
+#     tier:      core (Kern, obere Chip-Reihe) oder breadth (ergänzende Breite,
+#                untere Reihe mit Trenner). Keine Rangordnung, nur Zweiteilung.
+#     show:      true = sichtbar als Chip und im Graphen, false = nur im Katalog.
+#                Einschalten: show auf true setzen, fertig.
+#   foundations: Basis-Werkzeuge (generische Dev-Infra), die in fast jedem
+#                Projekt stecken. BEWUSST ohne Projektkanten, sonst werden sie
+#                zu Knoten, an denen alles hängt. Ein Klick zeigt eine eigene
+#                „Basiswerkzeug“-Meldung statt einer Projektliste.
+#   projects:    Projekte, die Skills im Graphen verbinden. id (stabil, nie
+#                umbenennen), label (öffentlich und anonym, keine Kunden- oder
+#                internen Namen), skills (Liste von Skill-ids, Basis-Werkzeuge
+#                gehören nicht hinein). Ausgeblendete Skills dürfen hier
+#                stehen, Seite und Graph zeigen nur die mit show: true.
+#                Kanten Skill↔Skill entstehen im JS über gemeinsame Projekte,
+#                hier bewusst keine Kantenlisten pflegen.
+#   texts:       Bedientexte des Skill-Features (ganz unten, STYLEGUIDE ARCH-4).
+#
+# Kommentare hinter einer Zeile sind Notizen für die Pflege und erscheinen
+# nirgends. Prüfung: python3 scripts/content-check.py (unbekannte ids und
+# Gruppen, doppelte ids und Namen, sichtbare Skills ohne Projekt).
+# Pflege-Anleitung: docs/pflege.md (Abschnitt „Skill einschalten, neu
+# anlegen, Projekt ergänzen“), Technik: docs/features/skill-feature.md.
+# =============================================================================
+version: 1
+
+groups:
+  - id: llm
+    title: "LLMs & Wissensgraphen"
+    context: "Wissen aus Dokumenten erschließen – mit Sprachmodellen, Retrieval und Wissensgraphen, samt Bewertung der Antworten"
+  - id: ml
+    title: "Machine Learning, Bild & Sprache"
+    context: "Eigene Modelle trainieren und anpassen – für Belege, Bilder und gesprochene Sprache"
+  - id: daten-backend
+    title: "Daten & Backend"
+    context: "Pipelines und Schnittstellen, die Dokumente einlesen, Daten aufbereiten und Ergebnisse bereitstellen"
+  - id: cloud-devops
+    title: "Cloud & DevOps"
+    context: "Reproduzierbare Umgebungen, automatisierte Pipelines und der Weg in den Betrieb"
+  - id: frontend
+    title: "Frontend & Mobile"
+    context: "Oberflächen für Web und Smartphone, damit die Ergebnisse bei den Menschen ankommen"
+  # Derzeit ohne sichtbare Skills und deshalb nicht auf der Seite. Erscheint,
+  # sobald hier ein Skill show: true bekommt.
+  - id: methoden
+    title: "Methoden & Zusammenarbeit"
+    context: "Vom ersten Prototyp bis zur Abstimmung mit allen Beteiligten"
+
+# Reihenfolge innerhalb einer Gruppe = Reihenfolge der Chips (Kern vor Breite).
+# Sammelchips („Neo4j / Cypher“, „Kubernetes / Helm“ …) fassen zwei Begriffe
+# zu einem Chip zusammen, die Teile stehen nicht noch einmal einzeln hier.
+skills:
+  # --- LLMs & Wissensgraphen ---
+  - { id: llms,                          name: "LLMs",                            group: llm,           tier: core,    show: true }
+  - { id: generative-ai,                 name: "Generative AI",                   group: llm,           tier: core,    show: true }
+  - { id: prompt-engineering,            name: "Prompt Engineering",              group: llm,           tier: core,    show: true }
+  - { id: rag,                           name: "RAG",                             group: llm,           tier: core,    show: true }
+  - { id: graphrag,                      name: "GraphRAG",                        group: llm,           tier: core,    show: true }
+  - { id: embeddings,                    name: "Embeddings",                      group: llm,           tier: core,    show: true }
+  - { id: hybrid-search,                 name: "Hybrid Search",                   group: llm,           tier: core,    show: true }
+  - { id: llm-evaluation,                name: "LLM-Evaluation",                  group: llm,           tier: core,    show: true }
+  - { id: llm-as-a-judge,                name: "LLM-as-a-Judge",                  group: llm,           tier: core,    show: true }
+  - { id: information-extraction,        name: "Information Extraction",          group: llm,           tier: core,    show: true }
+  - { id: knowledge-graph,               name: "Knowledge Graph",                 group: llm,           tier: core,    show: true }
+  - { id: neo4j-cypher,                  name: "Neo4j / Cypher",                  group: llm,           tier: core,    show: true }  # Sammelchip: Cypher ist die Abfragesprache von Neo4j
+  - { id: nlp,                           name: "NLP",                             group: llm,           tier: core,    show: false }  # ausgeblendet, damit die Gruppe nicht zu lang wird
+  - { id: openai-api,                    name: "OpenAI API",                      group: llm,           tier: core,    show: false }  # ausgeblendet, damit die Gruppe nicht zu lang wird
+  - { id: spacy,                         name: "spaCy",                           group: llm,           tier: breadth, show: true }
+  - { id: gpt-3,                         name: "GPT-3",                           group: llm,           tier: breadth, show: true }
+  - { id: litellm,                       name: "LiteLLM",                         group: llm,           tier: breadth, show: false }
+
+  # --- Machine Learning, Bild & Sprache ---
+  - { id: machine-learning,              name: "Machine Learning",                group: ml,            tier: core,    show: true }
+  - { id: deep-learning,                 name: "Deep Learning",                   group: ml,            tier: core,    show: true }
+  - { id: neural-networks,               name: "Neural Networks",                 group: ml,            tier: core,    show: true }
+  - { id: tensorflow,                    name: "TensorFlow",                      group: ml,            tier: core,    show: true }
+  - { id: hugging-face,                  name: "Hugging Face",                    group: ml,            tier: core,    show: true }
+  - { id: numpy,                         name: "NumPy",                           group: ml,            tier: core,    show: true }
+  - { id: computer-vision,               name: "Computer Vision",                 group: ml,            tier: core,    show: true }
+  - { id: opencv,                        name: "OpenCV",                          group: ml,            tier: core,    show: true }
+  - { id: data-science,                  name: "Data Science",                    group: ml,            tier: core,    show: false }
+  - { id: speech-to-text-whisper,        name: "Speech-to-Text / Whisper",        group: ml,            tier: breadth, show: true }  # Sammelchip
+  - { id: text-to-speech,                name: "Text-to-Speech",                  group: ml,            tier: breadth, show: true }
+  - { id: transfer-learning-fine-tuning, name: "Transfer Learning / Fine-Tuning", group: ml,            tier: breadth, show: true }  # Sammelchip
+  - { id: scikit-learn,                  name: "scikit-learn",                    group: ml,            tier: breadth, show: true }
+  - { id: ocr-tesseract,                 name: "OCR / Tesseract",                 group: ml,            tier: breadth, show: true }  # Sammelchip
+  - { id: gpu-training-cloud,            name: "GPU-Training (Cloud)",            group: ml,            tier: breadth, show: true }
+  - { id: hyperparameter-tuning,         name: "Hyperparameter Tuning",           group: ml,            tier: breadth, show: true }
+  - { id: cnn-rnn,                       name: "CNN / RNN",                       group: ml,            tier: breadth, show: false }  # Sammelchip
+  - { id: statistische-datenanalyse,     name: "Statistische Datenanalyse",       group: ml,            tier: breadth, show: false }
+  - { id: datenaugmentation,             name: "Datenaugmentation",               group: ml,            tier: breadth, show: false }
+
+  # --- Daten & Backend ---
+  - { id: python,                        name: "Python",                          group: daten-backend, tier: core,    show: true }
+  - { id: pdf-parsing,                   name: "PDF-Parsing",                     group: daten-backend, tier: core,    show: true }
+  - { id: dagster,                       name: "Dagster",                         group: daten-backend, tier: core,    show: true }
+  - { id: data-engineering,              name: "Data Engineering",                group: daten-backend, tier: core,    show: true }
+  - { id: fastapi,                       name: "FastAPI",                         group: daten-backend, tier: core,    show: true }
+  - { id: rest,                          name: "REST",                            group: daten-backend, tier: core,    show: true }
+  - { id: pydantic,                      name: "Pydantic",                        group: daten-backend, tier: core,    show: true }
+  - { id: pytest,                        name: "pytest",                          group: daten-backend, tier: core,    show: true }
+  - { id: tdd,                           name: "TDD",                             group: daten-backend, tier: core,    show: true }
+  - { id: datenaufbereitung,             name: "Datenaufbereitung",               group: daten-backend, tier: core,    show: false }
+  - { id: datenpipelines,                name: "Datenpipelines",                  group: daten-backend, tier: core,    show: false }
+  - { id: prozessautomatisierung-python, name: "Prozessautomatisierung (Python)", group: daten-backend, tier: core,    show: false }
+  - { id: regular-expressions,           name: "Regular Expressions",             group: daten-backend, tier: core,    show: false }
+  - { id: sql,                           name: "SQL",                             group: daten-backend, tier: breadth, show: true }
+  - { id: docling,                       name: "Docling",                         group: daten-backend, tier: breadth, show: true }
+  - { id: spring-boot,                   name: "Spring Boot",                     group: daten-backend, tier: breadth, show: true }
+  - { id: kotlin,                        name: "Kotlin",                          group: daten-backend, tier: breadth, show: true }
+  - { id: microservices,                 name: "Microservices",                   group: daten-backend, tier: breadth, show: true }
+  - { id: hl7-fhir,                      name: "HL7 FHIR",                        group: daten-backend, tier: breadth, show: true }
+  - { id: rabbitmq-message-queues,       name: "RabbitMQ / Message Queues",       group: daten-backend, tier: breadth, show: true }  # Sammelchip
+  - { id: sqlalchemy-sqlite,             name: "SQLAlchemy / SQLite",             group: daten-backend, tier: breadth, show: false }  # Sammelchip
+  - { id: openapi-swagger,               name: "OpenAPI / Swagger",               group: daten-backend, tier: breadth, show: false }
+  - { id: xml,                           name: "XML",                             group: daten-backend, tier: breadth, show: false }
+  - { id: c-cpp,                         name: "C / C++",                         group: daten-backend, tier: breadth, show: false }
+  - { id: java,                          name: "Java",                            group: daten-backend, tier: breadth, show: false }
+  - { id: django,                        name: "Django",                          group: daten-backend, tier: breadth, show: false }
+
+  # --- Cloud & DevOps ---
+  - { id: docker,                        name: "Docker",                          group: cloud-devops,  tier: core,    show: true }
+  - { id: docker-compose,                name: "Docker Compose",                  group: cloud-devops,  tier: core,    show: true }
+  - { id: dev-container,                 name: "Dev Container",                   group: cloud-devops,  tier: core,    show: true }
+  - { id: git,                           name: "Git",                             group: cloud-devops,  tier: core,    show: true }
+  - { id: ci-cd,                         name: "CI / CD",                         group: cloud-devops,  tier: core,    show: true }
+  - { id: github-actions,                name: "GitHub Actions",                  group: cloud-devops,  tier: core,    show: true }
+  - { id: gitlab-ci-cd,                  name: "GitLab CI / CD",                  group: cloud-devops,  tier: core,    show: true }
+  - { id: bash-linux,                    name: "Bash / Linux",                    group: cloud-devops,  tier: core,    show: true }  # Sammelchip, Shell-Skripte gehen darin auf
+  - { id: github,                        name: "GitHub",                          group: cloud-devops,  tier: core,    show: false }
+  - { id: github-codespaces,             name: "GitHub Codespaces",               group: cloud-devops,  tier: core,    show: false }
+  - { id: cloud-computing-fundamentals,  name: "Cloud Computing Fundamentals",    group: cloud-devops,  tier: core,    show: false }  # Kursname, neben Azure doppelt
+  - { id: scrum-kanban,                  name: "Scrum / Kanban",                  group: cloud-devops,  tier: breadth, show: true }  # Sammelchip, Arbeitsweise und deshalb Breite
+  - { id: azure,                         name: "Azure",                           group: cloud-devops,  tier: breadth, show: true }
+  - { id: kubernetes-helm,               name: "Kubernetes / Helm",               group: cloud-devops,  tier: breadth, show: true }  # Sammelchip
+  - { id: dvc,                           name: "DVC",                             group: cloud-devops,  tier: breadth, show: true }
+  - { id: pip,                           name: "pip",                             group: cloud-devops,  tier: breadth, show: false }  # Grundwerkzeug, sagt als Chip wenig
+  - { id: virtual-environment,           name: "Virtual Environment",             group: cloud-devops,  tier: breadth, show: false }  # Grundwerkzeug, sagt als Chip wenig
+  - { id: vs-code,                       name: "VS Code",                         group: cloud-devops,  tier: breadth, show: false }  # Grundwerkzeug, sagt als Chip wenig
+  - { id: azure-ai-foundry,              name: "Azure AI Foundry",                group: cloud-devops,  tier: breadth, show: false }
+  - { id: azure-data-lake-storage,       name: "Azure Data Lake Storage",         group: cloud-devops,  tier: breadth, show: false }
+  - { id: red-hat-enterprise-linux,      name: "Red Hat Enterprise Linux",        group: cloud-devops,  tier: breadth, show: false }
+  - { id: mlops,                         name: "MLOps",                           group: cloud-devops,  tier: breadth, show: false }
+  - { id: grafana,                       name: "Grafana",                         group: cloud-devops,  tier: breadth, show: false }
+
+  # --- Frontend & Mobile ---
+  - { id: vue-js,                        name: "Vue.js",                          group: frontend,      tier: breadth, show: true }
+  - { id: typescript,                    name: "TypeScript",                      group: frontend,      tier: breadth, show: true }
+  - { id: javascript,                    name: "JavaScript",                      group: frontend,      tier: breadth, show: true }
+  - { id: vite,                          name: "Vite",                            group: frontend,      tier: breadth, show: true }
+  - { id: pinia,                         name: "Pinia",                           group: frontend,      tier: breadth, show: true }
+  - { id: scss,                          name: "SCSS",                            group: frontend,      tier: breadth, show: true }
+  - { id: html5-css3,                    name: "HTML5 / CSS3",                    group: frontend,      tier: breadth, show: true }
+  - { id: responsive-design,             name: "Responsive Design",               group: frontend,      tier: breadth, show: true }
+  - { id: xamarin,                       name: "Xamarin",                         group: frontend,      tier: breadth, show: true }
+  - { id: c,                             name: "C#",                              group: frontend,      tier: breadth, show: true }  # id aus der alten Ableitung vom Namen, bleibt stabil
+  - { id: net,                           name: ".NET",                            group: frontend,      tier: breadth, show: true }  # id aus der alten Ableitung vom Namen, bleibt stabil
+  - { id: vitest,                        name: "Vitest",                          group: frontend,      tier: breadth, show: false }
+  - { id: tkinter,                       name: "Tkinter",                         group: frontend,      tier: breadth, show: false }
+  - { id: mobile-app-development,        name: "Mobile App Development",          group: frontend,      tier: breadth, show: false }
+
+  # --- Methoden & Zusammenarbeit ---
+  - { id: proof-of-concept,              name: "Proof of Concept",                group: methoden,      tier: core,    show: false }
+  - { id: rapid-prototyping,             name: "Rapid Prototyping",               group: methoden,      tier: core,    show: false }
+  - { id: applikationsarchitektur,       name: "Applikationsarchitektur",         group: methoden,      tier: core,    show: false }
+  - { id: anforderungsanalyse,           name: "Anforderungsanalyse",             group: methoden,      tier: core,    show: false }
+  - { id: stakeholder-communication,     name: "Stakeholder Communication",       group: methoden,      tier: core,    show: false }
+  - { id: jira-confluence,               name: "Jira / Confluence",               group: methoden,      tier: core,    show: false }
+  - { id: datenschutz,                   name: "Datenschutz",                     group: methoden,      tier: breadth, show: false }
+  - { id: regulatory-compliance,         name: "Regulatory Compliance",           group: methoden,      tier: breadth, show: false }
+  - { id: knowledge-management,          name: "Knowledge Management",            group: methoden,      tier: breadth, show: false }
+
+# Generische Dev-Infra: als Chip sichtbar (bei show: true), im Graphen ohne Kanten.
+foundations: [python, git, docker, bash-linux, ci-cd, dev-container, vs-code, pip, virtual-environment]
+
+# Reihenfolge wie im Lebenslauf, neueste zuerst. Skills je Projekt aus den
+# Projektbeschreibungen abgeleitet, ausgeblendete Skills inklusive.
+projects:
+  - id: erfahrungswissen
+    label: "Erfahrungswissen (KI-Lösung)"
+    skills: [llms, generative-ai, applikationsarchitektur, knowledge-management, anforderungsanalyse,
+             stakeholder-communication, django, rapid-prototyping]
+
+  - id: regelabgleich-finanz
+    label: "Regelabgleich Finanzbranche"
+    skills: [llms, generative-ai, information-extraction, knowledge-graph, neo4j-cypher, pdf-parsing, xml,
+             litellm, red-hat-enterprise-linux, regulatory-compliance, anforderungsanalyse,
+             stakeholder-communication, proof-of-concept]
+
+  - id: plattform-anwendungsfaelle
+    label: "Abdeckungsprüfung und EU-Recht"
+    skills: [rag, graphrag, llms, llm-as-a-judge, prompt-engineering, nlp, hybrid-search, embeddings,
+             dagster, neo4j-cypher, knowledge-graph, data-engineering, pdf-parsing, datenpipelines,
+             regular-expressions, xml, azure-data-lake-storage, regulatory-compliance, datenschutz,
+             applikationsarchitektur, anforderungsanalyse, stakeholder-communication, proof-of-concept]
+
+  - id: regelwerk-plattform
+    label: "KI-Plattform für Regelwerke"
+    skills: [llms, generative-ai, nlp, information-extraction, embeddings, dagster, neo4j-cypher,
+             knowledge-graph, data-engineering, azure, kubernetes-helm, pdf-parsing, docker-compose,
+             datenpipelines, azure-ai-foundry, applikationsarchitektur]
+
+  - id: formularwesen
+    label: "Gesetze im Formularwesen"
+    skills: [dagster, data-engineering, information-extraction, embeddings, hugging-face, docling,
+             neo4j-cypher, knowledge-graph, docker-compose, gitlab-ci-cd, kubernetes-helm, azure,
+             datenpipelines, grafana, applikationsarchitektur, datenaufbereitung]
+
+  - id: modellvergleich
+    label: "Benchmarking Sprachmodelle"
+    skills: [llm-evaluation, llms, generative-ai, nlp, speech-to-text-whisper, hugging-face, openai-api,
+             spacy, numpy, scikit-learn, dvc, data-science, tkinter, datenpipelines, applikationsarchitektur,
+             anforderungsanalyse, mlops]
+
+  - id: vue-webapp
+    label: "Weboberfläche Pflegedoku"
+    skills: [vue-js, typescript, javascript, scss, html5-css3, speech-to-text-whisper, responsive-design,
+             pinia, vite, rest, vitest, applikationsarchitektur]
+
+  - id: doku-system
+    label: "Dokumentationsassistent"
+    skills: [llms, generative-ai, information-extraction, speech-to-text-whisper, openai-api, fastapi, rest,
+             pydantic, sql, pytest, tdd, github-actions, scrum-kanban, openapi-swagger, sqlalchemy-sqlite,
+             applikationsarchitektur, anforderungsanalyse, github, github-codespaces, jira-confluence]
+
+  - id: tts-nlp
+    label: "Sprachsynthese"
+    skills: [machine-learning, deep-learning, neural-networks, tensorflow, text-to-speech,
+             transfer-learning-fine-tuning, hyperparameter-tuning, gpu-training-cloud, numpy, data-science,
+             datenaufbereitung, cloud-computing-fundamentals, proof-of-concept]
+
+  - id: telematik
+    label: "Telematik-Nachbildung"
+    skills: [spring-boot, kotlin, microservices, rest, hl7-fhir, applikationsarchitektur,
+             anforderungsanalyse, stakeholder-communication]
+
+  - id: belegerkennung
+    label: "Texterkennung Kassenrezepte"
+    skills: [machine-learning, deep-learning, neural-networks, tensorflow, computer-vision, opencv,
+             ocr-tesseract, numpy, rabbitmq-message-queues, data-science, datenaufbereitung]
+
+  - id: belege-app
+    label: "Mobile Belegerfassung"
+    skills: [computer-vision, opencv, xamarin, c, net, c-cpp, mobile-app-development]
+
+  - id: technologie-evaluierung
+    label: "Technologie-Evaluierungen"
+    skills: [gpt-3, prompt-engineering, datenaufbereitung, proof-of-concept, rapid-prototyping]
+
+  - id: website
+    label: "diese Website"
+    skills: [javascript, scss, html5-css3, responsive-design]
+
+# =============================================================================
+# Texte des Skill-Features: Hinweiszeile über den Chips, Knopf und Fenster des
+# Skill-Graphen. Nur hier pflegen, Markup (_includes/cv/skills.html,
+# _includes/cv/skill-graph.html) und Skripte (assets/js/skill-*.js) lesen sie
+# von hier. Reiner Text, kein Markdown und kein HTML.
+# „label“ ist der Name für Screenreader und beginnt mit dem sichtbaren Text,
+# „title“ der Tooltip beim Überfahren mit der Maus.
+# Der ganze Block geht mit den Projekten und foundations (beide auf sichtbare
+# Skills gefiltert) als Datenblock an den Browser, auch die Texte, die schon
+# im Markup stehen (gut 1 KB, bewusst eine Quelle).
+# Fehlt ein Schlüssel oder ist er leer, meldet das der Inhalts-Check
+# (scripts/content-check.py).
+# =============================================================================
+texts:
+  # Hinweis über den Chips und im Graph-Fenster, solange nichts gewählt ist
+  hint: "Ein Skill zeigt bei Auswahl verwandte Skills und gemeinsame Projekte."
+
+  # Name der Liste „Breite“ jeder Skill-Gruppe für Screenreader, dahinter
+  # folgt der Name der Gruppe
+  breadth: "Ergänzende Kenntnisse in"
+
+  # Nach einem Klick steht dort „Skill – Text“, bei Projekten darunter die Liste
+  selection:
+    with_projects: "gemeinsam im Einsatz bei"
+    foundation: "Basiswerkzeug, quer durch fast alle Projekte im Einsatz."
+    no_projects: "Teil des Werkzeugkastens, keinem Projekt fest zugeordnet."
+
+  graph:
+    open: "Skill-Graph öffnen" # Knopf über den Skill-Gruppen
+    # Kleiner Knopf rechts in der Auswahl-Konsole, erscheint beim Scrollen,
+    # sobald der große Knopf aus dem Bild ist. Er zeigt nur ein Wort, sein
+    # label beginnt deshalb damit.
+    open_short:
+      text: "Graph"
+      label: "Graph – Skill-Graph öffnen"
+      title: "Skill-Graph öffnen"
+    lead: "Welche Fähigkeiten in welchen Projekten zusammenkommen" # Zeile neben dem Knopf
+    dialog: "Skill-Graph" # Name des geöffneten Fensters für Screenreader
+    close: "Graph schließen" # Name des ✕-Knopfs für Screenreader
+    # Zweite Zeile der Info-Leiste im Graph-Fenster, solange nichts gewählt ist
+    unlabeled: "Punkte ohne Namen zeigen ihn bei Auswahl oder beim Hineinzoomen."
+    # Beschreibung der Grafik für Screenreader
+    canvas: "Netzwerkdiagramm der Skills, verbunden über gemeinsame Projekte. Auswahl und gemeinsame Projekte stehen in der Leiste darüber, die vollständige Liste im Lebenslauf."
+    # Knöpfe oben im Fenster. Die Zoom-Knöpfe zeigen nur das Zeichen − bzw. +,
+    # ihr label beginnt deshalb damit.
+    zoom_out:
+      label: "− Verkleinern"
+      title: "Verkleinern"
+    zoom_in:
+      label: "+ Vergrößern"
+      title: "Vergrößern"
+    # Führt zur Startansicht wie beim Öffnen, ausgegraut, solange sie steht
+    fit:
+      text: "Übersicht"
+      label: "Übersicht – zur Startansicht"
+      title: "Übersicht"
+    reset:
+      text: "Reset"
+      label: "Reset – Ansicht zurücksetzen"
+      title: "Zurücksetzen"
+    # Kurzer Hinweis beim ersten Öffnen auf Touch-Geräten, eine Zeile je Geste
+    touch_hint:
+      - "↔ Ziehen verschiebt die Ansicht"
+      - "± Zwei Finger zoomen"
+      - "● Knoten: ziehen ordnet um, tippen wählt aus"

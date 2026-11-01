@@ -66,8 +66,9 @@ skill_graph:
 
 | Datei | Rolle |
 |---|---|
-| `_data/skill_graph.yml` | **Datenquelle** (Schema v1): Projekte → Skills, unter `texts` alle Bedientexte des Features |
-| `_includes/cv/skills.html` | Chips (+ Buttons, Kontextzeile, JSON-Tag, Graph-Include oben vor den Gruppen) |
+| `_data/skills.yml` | **Einzige Datenquelle**: Skill-Katalog (Gruppen, Skills mit `tier` und `show`), `foundations`, Graph-Projekte, unter `texts` alle Bedientexte des Features |
+| `_data/cv_content.yml` | bindet den Katalog im Abschnitt „Technische Fähigkeiten“ über `skills_catalog: true` ein |
+| `_includes/cv/skills.html` | Gruppen und Chips aus dem Katalog (+ Buttons, Kontextzeile, gefilterter JSON-Tag, Graph-Include oben vor den Gruppen) |
 | `_includes/cv/skill-graph.html` | Graph-Markup (Öffner mit Netz-Symbol und Erklärzeile, Kopfleiste, Info-Leiste, Canvas) |
 | `_includes/cv/skill-graph-icon.html` | Netz-Symbol, eine Quelle für großen und kleinen Öffner |
 | `assets/js/skill-graph-data.js` | Gemeinsame Helfer: Daten lesen, Skill→Projekte, `renderSelection` (Konsole und Info-Leiste) |
@@ -75,29 +76,75 @@ skill_graph:
 | `assets/js/skill-graph-sim.js` | **DOM-freie** Force-Layout-Engine (reine Physik) |
 | `assets/js/skill-graph.js` | Graph: Panel/Canvas/Interaktion, Ansicht (Pan + Zoom, Startansicht), Beschriftung nach Maßstab, Info-Leiste (nur UI) |
 | `assets/js/skill-graph-sheet.js` | Präsentation als modales Sheet (Scrim, Scroll-Sperre, inert, Fokus, Touch-Hinweis), Umschalten großer und kleiner Öffner |
-| `assets/_sass/components/_cv.scss` | Chip-Zustände (`has-selection`, `is-selected`, `is-related`) |
+| `assets/_sass/components/_cv.scss` | Chip-Zustände (`has-selection`, `is-selected`, `is-related`), Breite ohne Trenner in Gruppen ohne Kern |
+| `scripts/content-check.py` | prüft den Katalog vor dem Build (siehe „Prüfregeln“) |
 | `assets/_sass/components/_skill-graph.scss` | Panel- und Sheet-Styles, kleiner Öffner und Verwandlung beim Scrollen |
 | `assets/_sass/abstracts/_mixins.scss` | `selection-console`: gemeinsame Optik von Konsole und Info-Leiste |
 | `_includes/scripts.html` | Flag-Gates für die Skripte |
 | `service-worker.js` | Precache-Einträge der Skripte |
 
-## Daten pflegen (`_data/skill_graph.yml`)
+## Daten pflegen (`_data/skills.yml`)
 
-Schema v1 — Pflichtfelder pro Projekt: `id` (kebab-case, stabil, nie
-umbenennen), `label` (Anzeigename für die Kontextzeile), `skills` (Liste von
-Skill-IDs).
+**Datenfluss:**
 
-- **Skill-IDs = `slugify` der Chip-Namen** aus `cv_content.yml` →
-  `skill_groups`: `"Python"` → `python`, `"CI / CD"` → `ci-cd`,
-  `"NumPy / Scikit-learn"` → `numpy-scikit-learn`.
-- **Neues Projekt:** Block anfügen, `id` vergeben, Skills listen — fertig.
-  Kanten müssen nicht gepflegt werden: Skill↔Skill-Verbindungen (und ihre
-  Gewichte) leitet das JS implizit aus gemeinsamen Projekten ab.
-- **Neuer Skill-Chip:** in `cv_content.yml` anlegen und in mindestens einem
-  Projekt referenzieren, sonst meldet der Klick „noch keine Projektzuordnung".
-- **Konsistenz:** Das JS validiert beim Laden (Version, Pflichtfelder,
-  Slug-Abgleich gegen die DOM-Chips) und schreibt `console.warn` bei
-  Abweichungen — die Browser-Konsole auf /cv/ ist der schnellste Check.
+```
+_data/skills.yml ─┬─ groups + skills (show: true) ──► cv/skills.html ──► Chips je Gruppe (Kern, dann Breite)
+                  │                                        │
+                  └─ foundations + projects + texts ──────►└─► JSON-Tag [data-skill-graph-data]
+                     (Liquid filtert auf sichtbare Skills)         ├─► skill-chips.js (Klick-Hervorhebung)
+                                                                    └─► skill-graph.js (Knoten = DOM-Chips mit Projekt)
+```
+
+Schema (Kopf der Datei):
+
+- **`groups`:** `id`, `title`, `context`. Reihenfolge = Anzeige. Eine Gruppe
+  ohne sichtbare Skills entfällt, eine ohne Kern zeigt nur die Breite.
+- **`skills`:** eine Zeile je Skill, `id` (kebab-case, stabil, nie
+  umbenennen, muss nicht zum Namen passen: „C#“ hat die id `c`), `name`,
+  `group`, `tier` (`core` | `breadth`), `show` (`true` | `false`).
+  Sammelchips („Neo4j / Cypher“) fassen zwei Begriffe in einer Zeile.
+- **`foundations`:** Basis-Werkzeuge ohne Projektkanten (Python, Git,
+  Docker …), ein Klick zeigt „Basiswerkzeug“.
+- **`projects`:** `id` (stabil), `label` (öffentlich, anonym), `skills`
+  (Liste von Katalog-ids, ausgeblendete erlaubt).
+
+**Sichtbarkeit:** Nur Skills mit `show: true` werden Chips. `skills.html`
+filtert `foundations` und die Skills jedes Projekts im JSON-Tag auf
+sichtbare ids (`where_exp`), ein Projekt ohne sichtbaren Skill entfällt
+dort. Ausgeblendete Skills erreichen den Browser also nie, das JS sieht
+keine unbekannten ids. Neue Projektfelder (`period`, `url` …) müssen in
+`skills.html` beim Aufbau von `project_json` ergänzt werden.
+
+- **Skill einschalten:** `show: true` in seiner Zeile. Chip und (falls er
+  bei einem Projekt steht) Graph-Knoten erscheinen beim nächsten Build.
+- **Neues Projekt:** Block unter `projects` anfügen, `id` vergeben, Skills
+  listen, fertig. Kanten müssen nicht gepflegt werden: Skill↔Skill-
+  Verbindungen (und ihre Gewichte) leitet das JS aus gemeinsamen Projekten ab.
+- **Neuer Skill:** Zeile in der passenden Gruppe anlegen und in mindestens
+  einem Projekt referenzieren, sonst meldet der Klick „keinem Projekt fest
+  zugeordnet“ und der Inhalts-Check warnt.
+- **Abgleich mit dem Firmenprofil:** ein lokales Skript außerhalb des Repos
+  vergleicht die Skill-Liste des Profils mit dem Katalog (fehlende,
+  überzählige, gestrichene, aber sichtbare Skills).
+
+**Prüfregeln** (`scripts/content-check.py`, CI vor dem Build):
+
+| Prüfung | Meldung |
+|---|---|
+| Skill-ID in `foundations` oder einem Projekt fehlt im Katalog (mit Vorschlag) | FEHLER |
+| Gruppe eines Skills unbekannt (mit Vorschlag), Gruppen-id doppelt | FEHLER |
+| Skill-id doppelt, Skill-Name doppelt, id nicht kebab-case | FEHLER |
+| `tier` nicht `core` / `breadth`, `show` nicht `true` / `false`, Pflichtfeld fehlt | FEHLER |
+| sichtbarer Skill ohne Projekt und nicht in `foundations` | WARNUNG |
+| Projekt nur mit ausgeblendeten Skills (fehlt im Graphen) | WARNUNG |
+
+Negativtests dazu: `tests/guardrails/cases/content-05` (unbekannte ID),
+`-06` (ids unabhängig vom Namen), `-15` (leerer Text), `-17` (Gruppe),
+`-18` (doppelte id), `-19` und `-20` (die beiden Warnungen).
+
+- **Konsistenz im Browser:** Das JS validiert beim Laden (Version,
+  Pflichtfelder, ids gegen die DOM-Chips) und schreibt `console.warn` bei
+  Abweichungen. Nach dem Filter in Liquid sollte es nichts melden.
 - **Texte** (`texts`, ARCH-4): Hinweiszeile über den Chips und in der
   Info-Leiste (`hint`), die Rolle nach einem Klick (`selection`) und alles
   im Graph-Fenster (`graph`: Öffner, Erklärzeile, Kopfleisten-Knöpfe mit
@@ -108,8 +155,9 @@ Skill-IDs).
   JSON-Tag (`SkillGraphData.texts`). Im Skript stehen nur die Trennzeichen
   „ – “ und „ · “ und die Symbole (−, +, ✕). Ein `label` beginnt mit dem
   sichtbaren Text (WCAG 2.5.3).
-- Optionale Zukunftsfelder (`period`, `url`, `type`) sind vorgesehen;
-  unbekannte Felder ignoriert das JS defensiv. Schema-Änderungen, die alte
+- Optionale Zukunftsfelder (`period`, `url`, `type`) sind vorgesehen,
+  `skills.html` reicht sie erst weiter, wenn sie dort beim Aufbau von
+  `project_json` ergänzt sind. Unbekannte Felder ignoriert das JS defensiv. Schema-Änderungen, die alte
   Leser brechen würden, erhöhen `version` (die Leser prüfen `version: 1`).
 
 ## Architektur & Erweiterung

@@ -1,0 +1,9 @@
+# Skill mit vertippter Gruppe, die Meldung schlägt die vorhandene Gruppe vor
+guardrail: content
+expect: 1
+grep: unbekannte Gruppe „frontent“.*\n.*vermutlich „frontend“
+file: _data/skills.yml
+mode: replace
+old: group: frontend,      tier: breadth, show: true }
+---
+group: frontent,      tier: breadth, show: true }
