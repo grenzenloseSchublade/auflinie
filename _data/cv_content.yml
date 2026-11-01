@@ -129,12 +129,19 @@
             - "Zwei eigene neuronale Netze (**Deep Learning**) bestimmten den Formulartyp mit 98 % Genauigkeit und die Ausrichtung des Scans"
             - "Eigene Vorverarbeitung und Textlokalisierung mit OpenCV, Texterkennung mit Tesseract, 92 % Genauigkeit auf dem auszulesenden Text"
             - "An die Produktivsysteme angebunden und im Pilotbetrieb erprobt"
+        - text: "Evaluierung neuer Technologien, etwa früher Sprachmodelle wie GPT-3 und des Lizenzmodells von Oracle Java"
+          role: "AI Engineer"
+          year: "2019 – 2023"
+          subitems:
+            - "Anwendungsfälle für **GPT-3** mit kleinen Prototypen geprüft, noch vor dem Erscheinen von ChatGPT"
+            - "Lizenzmodell von Oracle Java und Alternativen nach Kosten, Support und Betrieb bewertet"
+            - "Python-Skript für den automatisierten Abruf von Geodaten als Grundlage weiterer Analysen"
 
     - position: "Innovationsingenieur"
       company: "opta data Institut e. V."
       location: "Essen, Deutschland"
       period: "2018 – 2020"
-      description: "Computer-Vision-Algorithmen und Prototypen für die Prozessautomatisierung – von der mobilen Belegerfassung bis zur Bewertung neuer Technologien."
+      description: "Computer-Vision-Algorithmen und Prototypen für die Prozessautomatisierung, mit dem Schwerpunkt Bildverarbeitung für die mobile Belegerfassung."
       expandable: true
       responsibilities:
         - text: "Mobile Belegerfassung für die Abrechnung von Krankenfahrten"
@@ -144,23 +151,11 @@
             - "Proof of Concept als Nachweis, dass sich die Abrechnung der Transportscheine mit einer Smartphone-App digitalisieren lässt"
             - "Kern war ein eigenes Bildverarbeitungsverfahren in C / C++ mit **OpenCV**, das Belege auch vor unruhigem oder kontrastarmem Hintergrund erkannte, ausschnitt und entzerrte"
             - "Das Verfahren selbst in die plattformübergreifende App eingebunden und an ihrer Entwicklung mit Xamarin und C# mitgewirkt"
-        - text: "Evaluierung neuer Technologien, etwa früher Sprachmodelle wie GPT-3 und des Lizenzmodells von Oracle Java"
-          role: "AI Engineer"
-          year: "2019 – 2023"
-          subitems:
-            - "Anwendungsfälle für **GPT-3** mit kleinen Prototypen geprüft, noch vor dem Erscheinen von ChatGPT"
-            - "Lizenzmodell von Oracle Java und Alternativen nach Kosten, Support und Betrieb bewertet"
-            - "Python-Skript für den automatisierten Abruf von Geodaten als Grundlage weiterer Analysen"
 
 
-- section: "Ausbildung"
+- section: "Akademische Ausbildung"
   icon: "graduation-cap"
   education:
-    - degree: "iSAQB Certified Professional for Software Architecture – Foundation Level"
-      institution: "iSAQB e. V."
-      period: "2026"
-      description: "Zertifikat CPSA-F"
-
     - degree: "M. Sc. Elektro- und Informationstechnik"
       institution: "Ruhr-Universität Bochum"
       location: "Bochum, Deutschland"
@@ -178,6 +173,16 @@
       description: "Grundlagenstudium"
       achievements:
         - 'Bachelorarbeit: „Elektrische Charakterisierung einer Halbleiter-Nanostruktur“ – Note: **sehr gut**'
+
+- section: "Weiterbildung & Zertifikate"
+  icon: "certificate"
+  # Gleiches Layout wie die akademische Ausbildung, statisch (ohne
+  # Aufklappen). Felder: title, issuer, period, description.
+  certificates:
+    - title: "iSAQB Certified Professional for Software Architecture – Foundation Level"
+      issuer: "iSAQB e. V."
+      period: "2026"
+      description: "Zertifikat CPSA-F"
 
 - section: "Technische Fähigkeiten"
   icon: "laptop-code"

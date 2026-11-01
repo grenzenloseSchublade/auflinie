@@ -83,7 +83,7 @@ Alles steht in `_data/cv_content.yml`, gegliedert in Abschnitte (`- section: …
 
 ### Station neu oder ändern
 
-1. Unter `experiences:` (Beruf) oder `education:` (Ausbildung) einen bestehenden Eintrag kopieren und an der richtigen Stelle einfügen. Die Reihenfolge in der Datei ist die Reihenfolge auf der Seite.
+1. Unter `experiences:` (Beruf), `education:` (akademische Ausbildung) oder `certificates:` (Weiterbildung & Zertifikate) einen bestehenden Eintrag kopieren und an der richtigen Stelle einfügen. Die Reihenfolge in der Datei ist die Reihenfolge auf der Seite.
 2. Felder anpassen:
 
    ```yaml
@@ -100,7 +100,7 @@ Alles steht in `_data/cv_content.yml`, gegliedert in Abschnitte (`- section: …
            - "Ein Unterpunkt"
    ```
 
-   Bei Ausbildung heißen die Felder `degree`, `institution`, `location`, `period`, `description` und `achievements`.
+   Bei der akademischen Ausbildung heißen die Felder `degree`, `institution`, `location`, `period`, `description` und `achievements`, bei Weiterbildung & Zertifikaten (`certificates:`) `title`, `issuer`, `period` und `description`.
 3. Prüfen und pushen.
 
 Fallen: Zeiträume mit Halbgeviertstrich und normalen Leerzeichen („2020 – 2025“, „2025 – Heute“), Schrägstriche ebenso („CI / CD“). Mehrzeiliger Text als `|-`-Block, ein harter Zeilenumbruch ist `\\` am Zeilenende. Text mit Doppelpunkt oder Anführungszeichen in doppelte Anführungszeichen setzen, innen deutsche „…“. Die Einrückung zählt: zwei Leerzeichen je Ebene, keine Tabs.

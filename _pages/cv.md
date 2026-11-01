@@ -26,7 +26,7 @@ skill_graph:
 {% for section in site.data.cv_content %}
 <div class="cv-section">
   {% unless section.intro %}
-  <h2 id="{{ section.section | slugify }}"><i class="fas fa-{{ section.icon }}" aria-hidden="true"></i> {{ section.section }}</h2>
+  <h2 id="{{ section.section | slugify }}"><i class="fas fa-{{ section.icon }}" aria-hidden="true"></i> {{ section.section | escape }}</h2>
   {% endunless %}
 
   <div class="cv-section__content">
@@ -43,9 +43,17 @@ skill_graph:
     {% endif %}
 
     {% if section.education %}
-      <ol class="cv-entries" aria-label="Ausbildung, neueste zuerst">
+      <ol class="cv-entries" aria-label="Akademischer Werdegang, neueste zuerst">
         {% for education in section.education %}
           {% include cv/entry.html title=education.degree org=education.institution location=education.location period=education.period description=education.description items=education.achievements items_label="Abschlussarbeit:" expandable=education.expandable %}
+        {% endfor %}
+      </ol>
+    {% endif %}
+
+    {% if section.certificates %}
+      <ol class="cv-entries" aria-label="Weiterbildung und Zertifikate, neueste zuerst">
+        {% for certificate in section.certificates %}
+          {% include cv/entry.html title=certificate.title org=certificate.issuer location=certificate.location period=certificate.period description=certificate.description %}
         {% endfor %}
       </ol>
     {% endif %}
