@@ -1,8 +1,11 @@
 // =============================================================================
 // Font-Awesome-Subset (generiert) — ersetzt das 100-KB-Komplett-CSS vom CDN
 // =============================================================================
-// Nur die 47 tatsächlich genutzten Icons; Fonts sind mit pyftsubset auf
+// Nur die 48 tatsächlich genutzten Icons; Fonts sind mit pyftsubset auf
 // diese Glyphen reduziert und werden self-hosted (funktioniert auch offline).
+// Quelle des Solid-Subsets: Font Awesome Free 6.5.1 (fa-solid-900.woff2),
+// pyftsubset --unicodes=<Codepunkte unten> --flavor=woff2, zuletzt mit
+// \f0a3 (certificate) für „Weiterbildung & Zertifikate“ (November 2026).
 // Neu generieren: Icon-Klassen inventarisieren (grep fa- über _site) und die
 // Listen in der Sitzungs-Doku bzw. diesem Kommentar erweitern.
 
@@ -81,6 +84,7 @@
 .fa-briefcase::before { content: "\f0b1"; }
 .fa-calculator::before { content: "\f1ec"; }
 .fa-calendar-alt::before { content: "\f073"; }
+.fa-certificate::before { content: "\f0a3"; }
 .fa-chart-line::before { content: "\f201"; }
 .fa-check-circle::before { content: "\f058"; }
 .fa-chevron-down::before { content: "\f078"; }
