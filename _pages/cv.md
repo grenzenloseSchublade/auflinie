@@ -1,6 +1,6 @@
 ---
 title: "Lebenslauf"
-excerpt: "Von der Elektrotechnik über eingebettete Systeme zum Machine Learning."
+excerpt: "Von der Elektrotechnik über eingebettete Systeme zu KI-Systemen und ihrer Architektur."
 permalink: /cv/
 layout: single
 author_profile: true

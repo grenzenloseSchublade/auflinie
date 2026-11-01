@@ -3,7 +3,7 @@ name: Hans Müller
 # Feed-Untertitel (feed.xml) und Meta-Fallback für Seiten ohne excerpt (heute nur
 # offline.html). Die Startseite nutzt ihr eigenes excerpt, hier nichts davon doppeln.
 # Machine Learning und Fraktale getrennt nennen (STYLEGUIDE 7.3).
-description: Persönliche Website von Hans Müller, (Applied) AI Engineer. Mit Blog, Lebenslauf und einem interaktiven Explorer für Fraktale.
+description: Persönliche Website von Hans Müller, (Applied) AI Engineer und Ingenieur der Elektro- und Informationstechnik (M. Sc.). Mit Blog, Lebenslauf und einem interaktiven Explorer für Fraktale.
 url: "https://grenzenloseSchublade.github.io"
 baseurl: "/auflinie"
 repository: "grenzenloseSchublade/auflinie"
@@ -131,7 +131,8 @@ analytics:
 author:
   name: "Hans Müller"
   avatar: "/assets/images/Logo.svg"
-  bio: "(Applied) AI Engineer"
+  bio: "(Applied) AI Engineer · Ingenieur (M. Sc.)"
+  job_title: "(Applied) AI Engineer"  # nur strukturierte Daten (JSON-LD), die bio zeigt zusätzlich den Abschluss
   location: "Bochum, Deutschland"
   links:
     - label: "GitHub"

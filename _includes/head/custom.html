@@ -135,7 +135,7 @@ Critical-CSS (_layouts/default.html). Wer den Token ändert, zieht beide nach. {
   "name": {{ site.author.name | jsonify | replace: '</', '<\/' }},
   "url": {{ '/' | absolute_url | jsonify | replace: '</', '<\/' }},
   "image": {{ site.author.avatar | absolute_url | jsonify | replace: '</', '<\/' }},
-  "jobTitle": {{ site.author.bio | jsonify | replace: '</', '<\/' }},
+  "jobTitle": {{ site.author.job_title | default: site.author.bio | jsonify | replace: '</', '<\/' }},
   "address": {
     "@type": "PostalAddress",
     "addressCountry": "DE"

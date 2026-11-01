@@ -4,7 +4,7 @@
   intro: true
 
   content: |-
-        **(Applied) AI Engineer** und Ingenieur der **Elektro- und Informationstechnik** (M. Sc., Ruhr-Universität Bochum, *Eingebettete Systeme*).
+        **(Applied) AI Engineer** und **Ingenieur** der Elektro- und Informationstechnik (**M. Sc.**, Ruhr-Universität Bochum, *Eingebettete Systeme*).
         Im Mittelpunkt stehen seit vielen Jahren KI-Systeme, von der Analyse des Fachproblems über Architektur und Prototyp bis zur Integration in bestehende Abläufe. Am Anfang steht dabei immer die gleiche Frage: Welches Problem haben die Menschen eigentlich, für die das Ganze gedacht ist?\\
         \\
         Die Arbeit reicht von klassischer Bildverarbeitung und selbst trainierten Deep-Learning-Modellen für Bild und Sprache bis zu **Large Language Models** und Wissensgraphen, in Forschung und Industrie und in Teams jeder Größe. Nach und nach ist das **Full-Stack**-Handwerk dazugekommen, vom Frontend über DevOps bis MLOps. Der Schwerpunkt liegt im **Backend** und zunehmend in der **Architektur** von KI-Lösungen.
@@ -32,7 +32,7 @@
       expandable: true
       responsibilities:
         - text: "KI-Lösung zur Erfassung und Weitergabe von Erfahrungswissen in einem Unternehmen der öffentlichen Infrastruktur"
-          role: "Technischer Lead · AI Architect"
+          role: "Technical Lead · AI Architect"
           year: "2026"
           subitems:
             - "Viel Erfahrungswissen langjähriger Mitarbeiter steht in keiner Dokumentation, etwa für einen neuen Projektleiter bei der Erneuerung einer technischen Großanlage: wer wichtig ist, was zuerst kommt, welche Probleme typisch sind"
@@ -40,7 +40,7 @@
             - "Erfassung in zwei Architekturvarianten umgesetzt, die eigenständige Variante selbst entwickelt mit Python / Django"
             - "**Large Language Models** voraussichtlich für Strukturierung und Analyse des gesammelten Wissens"
         - text: "LLM-gestützter Abgleich von Bankenaufsichtsrecht und Geldwäscheregeln mit den Prozessen eines IT-Dienstleisters der Finanzbranche"
-          role: "Use-Case-Lead · Senior AI Engineer"
+          role: "Use Case Lead · Senior AI Engineer"
           year: "2026"
           subitems:
             - "Ziel ist zu ermitteln, welche Anforderungen aus den Regelwerken gelten und welchen Einfluss sie auf die bestehenden Prozesse haben"
@@ -48,7 +48,7 @@
             - "Ein eigenes Skript macht den Bezug der internen Dokumente erstmals automatisiert möglich"
             - "Installiert in einer Kundenumgebung ohne Internetzugang, Detailanalysen zu einzelnen Vorgaben sind vorgesehen"
         - text: "Anwendungsfälle auf einer KI-Plattform für Gesetze und Regelwerke, von der Abdeckungsprüfung bis zur Konsolidierung von EU-Recht"
-          role: "Use-Case-Lead · AI Architect"
+          role: "Use Case Lead · AI Architect"
           year: "2026"
           subitems:
             - "Abdeckungsprüfung, ob die Dokumentation eines Herstellers die Anforderungen einer technischen Richtlinie belegt, mit Bewertung und Belegstellen je Anforderung"
@@ -91,7 +91,7 @@
             - "Daten und Experimente mit **DVC** versioniert (selbst eingeführt), personenbezogene Testdaten pseudonymisiert"
             - "Das System war die Grundlage der Modellauswahl für den Dokumentationsassistenten"
         - text: "Responsive Weboberfläche für einen Dokumentationsassistenten in der Pflege"
-          role: "Senior Software-Ingenieur · Frontend"
+          role: "Senior Software Engineer · Frontend"
           year: "2024"
           subitems:
             - "Der Assistent war zunächst nur über seine selbst entwickelte REST-API nutzbar"
@@ -114,7 +114,7 @@
             - "**Deep Learning** mit Tacotron 2 und WaveNet, ein englisches Modell per Transfer Learning auf deutsche Daten nachtrainiert"
             - "Training auf Cloud-GPUs, auf Stabilität und Audioqualität optimiert, die Machbarkeit an ausgewählten Fachbegriffen gezeigt"
         - text: "Referenznahe Nachbildung der Telematikinfrastruktur des Gesundheitswesens für E-Rezept-Anwendungsfälle"
-          role: "Software-Ingenieur · Technischer Berater"
+          role: "Technical Consultant · Software Engineer"
           year: "2021 – 2022"
           subitems:
             - "Ziel war, neue Anwendungsfälle rund um Verordnung und E-Rezept realitätsnah zu testen, von der Ausstellung bis zur Einlösung in der Apotheke"
@@ -145,7 +145,7 @@
       expandable: true
       responsibilities:
         - text: "Mobile Belegerfassung für die Abrechnung von Krankenfahrten"
-          role: "Software-Ingenieur · Computer Vision"
+          role: "Software Engineer · Computer Vision"
           year: "2019"
           subitems:
             - "Proof of Concept als Nachweis, dass sich die Abrechnung der Transportscheine mit einer Smartphone-App digitalisieren lässt"
