@@ -132,7 +132,7 @@ Alles zu den Skills steht in `_data/skills.yml`: Gruppen, je Skill eine Zeile, d
 
 Basis-Werkzeuge wie Git oder Docker gehören stattdessen in `foundations` und bekommen keine Projekte. Ausgeblendete Skills dürfen bei Projekten stehen, sie erscheinen erst mit `show: true`.
 
-Prüfen und pushen. Der Inhalts-Check meldet eine unbekannte id (mit Vorschlag), eine unbekannte Gruppe, doppelte ids oder Namen. Warnungen (kein roter Lauf): ein sichtbarer Skill ohne Projekt, ein Projekt nur mit ausgeblendeten Skills.
+Prüfen und pushen. Der Inhalts-Check meldet eine unbekannte id (mit Vorschlag), eine unbekannte Gruppe, doppelte ids oder Namen, auch Schreibvarianten wie „Docker-Compose“ neben „Docker Compose“. Warnungen (kein roter Lauf): ein sichtbarer Skill ohne Projekt, ein Projekt nur mit ausgeblendeten Skills.
 
 Falle: Die Tests nutzen den Skill „LLMs“ (id `llms`) als Beispiel, er braucht Projekte. Wer ihn umbenennt, ausblendet, zum Basis-Werkzeug macht oder entfernt, bekommt einen roten Testlauf, dann den Test mit anpassen lassen.
 

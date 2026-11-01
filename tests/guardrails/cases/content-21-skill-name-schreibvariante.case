@@ -1,0 +1,10 @@
+# Schreibvariante eines vorhandenen Skill-Namens (nur Bindestrich statt Leerzeichen)
+guardrail: content
+expect: 1
+grep: Skill-Name „Docker Compose“ \(docker-compose\) ist eine Schreibvariante von „Docker-Compose“
+file: _data/skills.yml
+mode: replace
+old:   - { id: docker-compose,
+---
+- { id: docker-compose-2, name: "Docker-Compose", group: cloud-devops, tier: breadth, show: false }
+  - { id: docker-compose,

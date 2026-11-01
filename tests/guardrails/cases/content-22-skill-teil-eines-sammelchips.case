@@ -1,0 +1,10 @@
+# Einzel-Skill, der schon in einem Sammelchip steckt: Warnung, kein Fehler
+guardrail: content
+expect: 0
+grep: Skill „Cypher“ \(cypher\) steckt schon im Sammelchip „Neo4j / Cypher“
+file: _data/skills.yml
+mode: replace
+old:   - { id: neo4j-cypher,
+---
+- { id: cypher, name: "Cypher", group: llm, tier: breadth, show: false }
+  - { id: neo4j-cypher,

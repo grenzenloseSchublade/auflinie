@@ -243,6 +243,43 @@ def check_skills():
     if not catalog:
         return
 
+    # Fast gleiche Namen: Schreibvarianten, die sich nur in Groß- und
+    # Kleinschreibung, Leerzeichen, Bindestrichen, Schrägstrichen, Punkten oder
+    # Klammern unterscheiden („Docker Compose“ / „Docker-Compose“, „CI/CD“ /
+    # „CI / CD“), sind Fehler. Ein Teil eines Sammelchips als eigener Skill
+    # („Neo4j“ neben „Neo4j / Cypher“) und sehr ähnliche Namen sind Warnungen.
+    def squash(text):
+        return re.sub(r"[\s\-/._()+&·]", "", text.casefold())
+
+    squashed = {}
+    chip_parts = {}
+    for sid, skill in catalog.items():
+        name = str(skill.get("name"))
+        key = squash(name)
+        other = squashed.get(key)
+        if other and str(catalog[other].get("name")).casefold() != name.casefold():
+            error(path, line_of(path, sid),
+                  f"Skill-Name „{name}“ ({sid}) ist eine Schreibvariante von „{catalog[other].get('name')}“ ({other}).",
+                  "Beide Zeilen zu einer zusammenführen und überall dieselbe id verwenden.")
+        squashed.setdefault(key, sid)
+        if " / " in name:
+            for part in name.split(" / "):
+                chip_parts.setdefault(squash(part), sid)
+    for sid, skill in catalog.items():
+        name = str(skill.get("name"))
+        key = squash(name)
+        owner = chip_parts.get(key)
+        if owner and owner != sid:
+            warn(path, line_of(path, sid),
+                 f"Skill „{name}“ ({sid}) steckt schon im Sammelchip „{catalog[owner].get('name')}“ ({owner}).",
+                 "Nur eine der beiden Zeilen sichtbar lassen oder den Einzel-Skill streichen.")
+        near = get_close_matches(key, [k for k in squashed if k != key], n=1, cutoff=0.9)
+        if near and squashed[near[0]] < sid:
+            other = squashed[near[0]]
+            warn(path, line_of(path, sid),
+                 f"Skill-Namen „{name}“ ({sid}) und „{catalog[other].get('name')}“ ({other}) sind sehr ähnlich.",
+                 "Prüfen, ob dasselbe gemeint ist. Wenn ja, zu einer Zeile zusammenführen.")
+
     def visible(sid):
         return catalog.get(sid, {}).get("show") is True
 

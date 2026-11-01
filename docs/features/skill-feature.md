@@ -134,13 +134,16 @@ keine unbekannten ids. Neue Projektfelder (`period`, `url` …) müssen in
 | Skill-ID in `foundations` oder einem Projekt fehlt im Katalog (mit Vorschlag) | FEHLER |
 | Gruppe eines Skills unbekannt (mit Vorschlag), Gruppen-id doppelt | FEHLER |
 | Skill-id doppelt, Skill-Name doppelt, id nicht kebab-case | FEHLER |
+| Skill-Name ist eine Schreibvariante eines anderen (nur Groß- / Kleinschreibung, Leerzeichen, Bindestrich, Schrägstrich, Punkt oder Klammern verschieden, etwa „Docker-Compose“ neben „Docker Compose“) | FEHLER |
+| Einzel-Skill steckt schon in einem Sammelchip („Cypher“ neben „Neo4j / Cypher“), zwei Namen sehr ähnlich | WARNUNG |
 | `tier` nicht `core` / `breadth`, `show` nicht `true` / `false`, Pflichtfeld fehlt | FEHLER |
 | sichtbarer Skill ohne Projekt und nicht in `foundations` | WARNUNG |
 | Projekt nur mit ausgeblendeten Skills (fehlt im Graphen) | WARNUNG |
 
 Negativtests dazu: `tests/guardrails/cases/content-05` (unbekannte ID),
 `-06` (ids unabhängig vom Namen), `-15` (leerer Text), `-17` (Gruppe),
-`-18` (doppelte id), `-19` und `-20` (die beiden Warnungen).
+`-18` (doppelte id), `-19` und `-20` (die beiden Warnungen), `-21`
+(Schreibvariante) und `-22` (Teil eines Sammelchips).
 
 - **Konsistenz im Browser:** Das JS validiert beim Laden (Version,
   Pflichtfelder, ids gegen die DOM-Chips) und schreibt `console.warn` bei
