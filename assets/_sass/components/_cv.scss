@@ -200,6 +200,30 @@ $cv-z-selection-info: 6;
       }
     }
   }
+
+  // Projektpunkt mit Rolle und Jahr (Variante C, Owner-Mockup): eine ruhige
+  // Meta-Zeile „Rolle · Jahr“ in der Mono-Formensprache der Zeitangaben,
+  // gedämpft (kein Magenta, das bleibt Interaktion), darunter der Titel als
+  // normale Zeile. Ohne role / year in den Daten entfallen beide Spans
+  // (_includes/cv/entry.html), der Punkt sieht aus wie bisher.
+  .cv-item__meta {
+    display: block;
+    font-family: $mono-font-stack;
+    font-variant-numeric: tabular-nums;
+    font-size: $cv-item-meta-font-size;
+    letter-spacing: $tracking-meta;
+    line-height: 1.4;
+    color: $fg-subtle;
+  }
+
+  .cv-item__title {
+    display: block;
+  }
+
+  // Zweizeilige Punkte (Meta + Titel) brauchen etwas mehr Luft zum nächsten
+  .cv-entry__items > li:has(.cv-item__meta) {
+    margin-bottom: $space-2;
+  }
 }
 
 // Mobile: Rail einspaltig, Zeitraum über dem Eintrag

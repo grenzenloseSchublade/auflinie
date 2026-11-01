@@ -10,8 +10,11 @@
                   Die Ausgabe macht sie um den Strich geschützt (&nbsp;), damit
                   der Zeitraum nicht umbricht (TYPO-1, TYPO-2)
     description – Beschreibung (Markdown)
-    items       – Liste (Strings oder {text, subitems}) – Unterpunkte klappen
-                  über natives <details>/<summary>
+    items       – Liste (Strings oder {text, subitems, role, year}) – Unterpunkte
+                  klappen über natives <details>/<summary>. role und year sind
+                  optional: Ist eines gesetzt, steht darüber eine ruhige
+                  Meta-Zeile „role · year“ (Mono, gedämpft, Variante C nach
+                  Mockup-Abnahme), ohne beide bleibt der Punkt wie bisher
     items_label – Überschrift der Liste (z.B. "Verantwortlichkeiten:")
     expandable  – false ⇒ Unterpunkte immer sichtbar
 {% endcomment %}
@@ -30,10 +33,23 @@
     <p class="cv-entry__items-label">{{ include.items_label }}</p>
     <ul class="cv-entry__items">
       {% for item in include.items %}
+      {% assign item_meta = "" %}
+      {% if item.role and item.year %}
+        {% capture item_meta %}{{ item.role }}&nbsp;·&nbsp;{{ item.year | replace: " – ", "&nbsp;–&nbsp;" }}{% endcapture %}
+      {% elsif item.role %}
+        {% assign item_meta = item.role %}
+      {% elsif item.year %}
+        {% assign item_meta = item.year | replace: " – ", "&nbsp;–&nbsp;" %}
+      {% endif %}
+      {% if item_meta != "" %}
+        {% capture item_text %}<span class="cv-item__meta">{{ item_meta }}<span class="visually-hidden">: </span></span> <span class="cv-item__title">{{ item.text | markdownify | remove: '<p>' | remove: '</p>' | strip }}</span>{% endcapture %}
+      {% else %}
+        {% assign item_text = item.text | markdownify | remove: '<p>' | remove: '</p>' %}
+      {% endif %}
       <li>
         {% if item.subitems and include.expandable != false %}
         <details class="cv-details">
-          <summary class="cv-details__summary">{{ item.text | markdownify | remove: '<p>' | remove: '</p>' }}</summary>
+          <summary class="cv-details__summary">{{ item_text }}</summary>
           <ul class="cv-subitems">
             {% for subitem in item.subitems %}
             <li>{{ subitem | markdownify | remove: '<p>' | remove: '</p>' }}</li>
@@ -41,14 +57,14 @@
           </ul>
         </details>
         {% elsif item.subitems %}
-        {{ item.text | markdownify | remove: '<p>' | remove: '</p>' }}
+        {{ item_text }}
         <ul class="cv-subitems cv-subitems--static">
           {% for subitem in item.subitems %}
           <li>{{ subitem | markdownify | remove: '<p>' | remove: '</p>' }}</li>
           {% endfor %}
         </ul>
         {% elsif item.text %}
-        {{ item.text | markdownify | remove: '<p>' | remove: '</p>' }}
+        {{ item_text }}
         {% else %}
         {{ item | markdownify | remove: '<p>' | remove: '</p>' }}
         {% endif %}

@@ -117,5 +117,6 @@ $cv-group-title-font-size: 1em; // Skill-Gruppen-Titel (mono, uppercase; bewusst
 $cv-group-context-font-size: $fs-ui; // Kontextzeile unter dem Gruppen-Titel
 $cv-items-label-font-size: $fs-ui; // „Verantwortlichkeiten:" / „Besondere Erfolge:"
 $cv-items-font-size: $fs-body-sm; // Stichpunkte der CV-Einträge
+$cv-item-meta-font-size: $fs-label; // Meta-Zeile „Rolle · Jahr“ über einem Projektpunkt (Mono, gedämpft)
 $cv-subitems-font-size: $fs-ui; // Sub-Stichpunkte (aufklappbar)
 $cv-chip-font-size: 1em; // Skill-Chips (entspricht dem abgenommenen Ist-Zustand; bewusst em)
