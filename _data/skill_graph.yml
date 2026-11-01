@@ -29,37 +29,63 @@ version: 1
 foundations: [git, docker, bash-linux, ci-cd, dev-container, vs-code, pip]
 
 projects:
-  - id: doku-system
-    label: "Doku-System (Spracherkennung)"
-    skills: [python, tensorflow, neural-networks, llms, nlp, fastapi, sql, rest]
+  # Reihenfolge wie im Lebenslauf, neueste zuerst. Labels erscheinen in der
+  # Auswahl-Konsole: öffentlich und anonym, keine Kunden- oder internen Namen.
+  # Nur Chips, die es in cv_content.yml gibt. Was fehlt (Django, Kubernetes,
+  # C / C++ …), kommt erst mit der Neugruppierung der Skills dazu.
+  - id: erfahrungswissen
+    label: "Erfahrungswissen (KI-Lösung)"
+    skills: [python, llms, generative-ai]
 
-  - id: belegerkennung
-    label: "Belegerkennung"
-    skills: [python, tensorflow, computer-vision, opencv, ocr-tesseract, numpy-scikit-learn]
+  - id: regelabgleich-finanz
+    label: "Regelabgleich Finanzbranche"
+    skills: [python, llms, generative-ai, neo4j]
 
-  - id: telematik
-    label: "Telematiksystem"
-    skills: [spring-boot, kotlin, rest, sql, microservices]
+  - id: plattform-anwendungsfaelle
+    label: "Abdeckungsprüfung und EU-Recht"
+    skills: [python, llms, generative-ai, prompt-engineering, nlp, neo4j, dagster, azure]
 
-  - id: tts-nlp
-    label: "TTS-Forschung"
-    skills: [python, tensorflow, neural-networks, nlp, remote-computing-gpu-training, hyperparameter-tuning]
+  - id: regelwerk-plattform
+    label: "KI-Plattform für Regelwerke"
+    skills: [python, llms, generative-ai, nlp, neo4j, dagster, data-engineering, azure, docker-compose]
 
-  - id: vue-webapp
-    label: "Vue-Webanwendung"
-    skills: [vue-js, typescript, javascript, rest, keycloak, vite, pinia, scss, responsive-design]
+  - id: formularwesen
+    label: "Gesetze im Formularwesen"
+    skills: [python, dagster, data-engineering, neo4j, hugging-face, gitlab-ci-cd, azure]
 
   - id: modellvergleich
-    label: "Modellvergleichs-Tool"
-    skills: [python, llms, hugging-face, spacy, numpy-scikit-learn, dvc]
+    label: "Benchmarking Sprachmodelle"
+    skills: [python, llms, nlp, hugging-face, spacy, numpy-scikit-learn, dvc]
 
+  - id: vue-webapp
+    label: "Weboberfläche Pflegedoku"
+    skills: [vue-js, typescript, rest, vite, pinia, scss, html5-css3, responsive-design]
+
+  - id: doku-system
+    label: "Dokumentationsassistent"
+    skills: [python, llms, generative-ai, fastapi, rest, sql, tdd, github-actions, scrum-kanban]
+
+  - id: tts-nlp
+    label: "Sprachsynthese"
+    skills: [python, tensorflow, neural-networks, remote-computing-gpu-training, hyperparameter-tuning, cloud-computing-fundamentals]
+
+  - id: telematik
+    label: "Telematik-Nachbildung"
+    skills: [spring-boot, kotlin, rest, microservices]
+
+  - id: belegerkennung
+    label: "Texterkennung Kassenrezepte"
+    skills: [python, tensorflow, neural-networks, computer-vision, opencv, ocr-tesseract, numpy-scikit-learn, rabbitmq-message-queues]
+
+  # Das Bildverarbeitungsverfahren ist C / C++ (dafür gibt es noch keinen
+  # Chip). „c“ ist der Slug von „C#“ und steht für die App mit Xamarin / .NET.
   - id: belege-app
-    label: "Belege-App"
-    skills: [opencv, computer-vision, xamarin, c]
+    label: "Mobile Belegerfassung"
+    skills: [computer-vision, opencv, xamarin, c, net]
 
-  - id: genai-beratung
-    label: "GenAI-Beratung"
-    skills: [python, llms, generative-ai, prompt-engineering, neo4j, azure, dagster, rest]
+  - id: technologie-evaluierung
+    label: "Technologie-Evaluierungen"
+    skills: [gpt-3, prompt-engineering, python]
 
   - id: website
     label: "diese Website"

@@ -43,7 +43,7 @@ skill_graph:
     {% endif %}
 
     {% if section.education %}
-      <ol class="cv-entries" aria-label="Akademischer Werdegang, neueste zuerst">
+      <ol class="cv-entries" aria-label="Ausbildung, neueste zuerst">
         {% for education in section.education %}
           {% include cv/entry.html title=education.degree org=education.institution location=education.location period=education.period description=education.description items=education.achievements items_label="Abschlussarbeit:" expandable=education.expandable %}
         {% endfor %}
