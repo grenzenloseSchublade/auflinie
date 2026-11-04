@@ -33,7 +33,7 @@ Gesundheit entsteht im Alltag, aus vielen kleinen Entscheidungen: frisch kochen,
 
 Am liebsten bin ich draußen unterwegs, mit dem Rad im Alltag und auf Reisen, wandernd in der Natur oder auf dem Wasser beim Stand-up-Paddling, Schwimmen und Surfen. Dort bekomme ich den Kopf am verlässlichsten frei. Der Rhythmus aus Strecke, Wetter und Anstrengung holt die Aufmerksamkeit aus dem Grübeln zurück ins Hier.
 
-Nebenbei entstehen echte Erlebnisse, die kein Studio ersetzen kann, von der Passhöhe bis zur richtigen Welle.
+Dabei sammle ich Erlebnisse, die kein Fitnessstudio bieten kann: oben auf dem Pass anzukommen oder endlich die eine Welle zu erwischen.
 
 ## Yoga und Calisthenics
 
@@ -42,16 +42,16 @@ Nebenbei entstehen echte Erlebnisse, die kein Studio ersetzen kann, von der Pass
 
 Yoga und Calisthenics sind meine regelmäßige Basis, und die beiden ergänzen sich gut. Calisthenics baut Kraft mit dem eigenen Körpergewicht auf, sauber und ohne Gerätepark. Yoga bringt Beweglichkeit, Balance und eine Ruhe, die Krafttraining allein nicht liefert.
 
-Beides braucht Geduld, Fortschritt kommt in kleinen Schritten über Monate. Gerade das macht die Praxis für mich wertvoll. Was heute noch nicht geht, zeigt ehrlich, woran es sich zu arbeiten lohnt.
+Beides braucht Geduld, Fortschritt kommt in kleinen Schritten über Monate. Gerade das macht die Praxis für mich wertvoll. Was heute noch nicht klappt, ist mein nächstes Ziel.
 
 ## Was Medizin leisten kann und was nicht
 
 {% comment %} Quelle: Paracelsus, Septem Defensiones, dritte Defension, 1538. Wortlaut sprachlich modernisiert, Original: „Alle ding sind gifft / vnd nichts ohn gifft / alleine die dosis macht das ein ding kein gifft ist.“ {% endcomment %}
 {% include section-epigraph.html text="Alle Dinge sind Gift, und nichts ist ohne Gift; allein die Dosis macht, dass ein Ding kein Gift ist." author="Paracelsus" %}
 
-Die moderne Medizin leistet viel, vor allem in der Akutversorgung, der Diagnostik und der Chirurgie. Bei vielen chronischen Beschwerden spielen aber auch Ernährung, Bewegung, Stress und Schlaf eine große Rolle, und diesen Teil kann keine Praxis verschreiben.
+Die moderne Medizin kann viel, vor allem wenn es akut wird. Bei vielen chronischen Beschwerden spielen aber auch Ernährung, Bewegung, Stress und Schlaf eine große Rolle, und dafür gibt es kein Rezept.
 
-Für mich heißt das, beides ernst zu nehmen. Ich frage gern nach, schaue lieber auf die Studienlage als auf Schlagzeilen und kümmere mich selbst um das, was im eigenen Alltag liegt.
+Ich nehme deshalb beides ernst, den ärztlichen Rat und meinen eigenen Teil. Dabei verlasse ich mich lieber auf Studien als auf Schlagzeilen.
 
 ## Kontakt
 
