@@ -1,0 +1,9 @@
+# Projekt im Lebenslauf ohne role: alle Projekte haben dieselbe Struktur
+guardrail: content
+expect: 1
+grep: ohne Feld\(er\) role
+file: _data/cv_content.yml
+mode: replace
+old:           role: "Software Engineer · Computer Vision"
+---
+role: ""

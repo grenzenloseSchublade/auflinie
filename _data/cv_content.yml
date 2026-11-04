@@ -24,11 +24,7 @@
       company: "Sopra Steria SE"
       location: "Hamburg, Deutschland"
       period: "2025 – Heute"
-      description: |-
-        Technische Beratung zu generativer KI als AI Engineer und, wo es um die Architektur
-        der Lösung geht, als AI Architect. Dazu gehört, Ziele gemeinsam mit dem Kunden zu
-        schärfen, Lösungen zu entwerfen und selbst umzusetzen, aktuell vor allem für Gesetze
-        und Regelwerke, aus denen prüfbare Daten werden.
+      description: "Technische Beratung zu generativer KI im Umfeld Data & Analytics, als AI Engineer und AI Architect, teils mit Lead-Verantwortung – von der Problemklärung mit dem Kunden über die Architektur bis zur eigenen Umsetzung."
       expandable: true
       responsibilities:
         - text: "KI-Lösung zur Erfassung und Weitergabe von Erfahrungswissen in einem Unternehmen der öffentlichen Infrastruktur"
@@ -76,10 +72,7 @@
       company: "opta data Innovation Lab GmbH"
       location: "Bochum, Deutschland"
       period: "2020 – 2025"
-      description: |-
-        Konzeption und Entwicklung von KI-Software für Prozesse im Gesundheitswesen, von selbst
-        trainierten Deep-Learning-Modellen für Bild und Sprache bis zu LLM-Anwendungen, von der
-        Machbarkeitsstudie bis zum Pilotbetrieb.
+      description: "Konzeption und Entwicklung von KI-Software für Prozesse im Gesundheitswesen, zuerst mit selbst trainierten Deep-Learning-Modellen, später mit Large Language Models – von der Machbarkeitsstudie bis zum Pilotbetrieb."
       expandable: true # Standard ist true
       responsibilities:
         - text: "Benchmarking-System für Sprachmodelle und Spracherkennung in der Pflegedokumentation"
@@ -141,7 +134,7 @@
       company: "opta data Institut e. V."
       location: "Essen, Deutschland"
       period: "2018 – 2020"
-      description: "Computer-Vision-Algorithmen und Prototypen für die Prozessautomatisierung, mit dem Schwerpunkt Bildverarbeitung für die mobile Belegerfassung."
+      description: "Entwicklung von Bildverarbeitungsverfahren und Prototypen für die Prozessautomatisierung im Gesundheitswesen – von der Idee bis zum Proof of Concept."
       expandable: true
       responsibilities:
         - text: "Mobile Belegerfassung für die Abrechnung von Krankenfahrten"
@@ -164,7 +157,7 @@
         Schwerpunkt: Eingebettete Systeme, vertieft an der Schnittstelle zu Machine Learning\\
         Abschlussnote: **sehr gut**
       achievements:
-        - 'Masterarbeit: „Erkennung handgeschriebener Worte mittels CNN / BiRNN für eingebettete Systeme“ – Note: **ausgezeichnet**'
+        - "Masterarbeit: „Erkennung handgeschriebener Worte mittels CNN / BiRNN für eingebettete Systeme“ – Note: **ausgezeichnet**"
 
     - degree: "B. Sc. Elektro- und Informationstechnik"
       institution: "Ruhr-Universität Bochum"
@@ -172,7 +165,7 @@
       period: "2012 – 2015"
       description: "Grundlagenstudium"
       achievements:
-        - 'Bachelorarbeit: „Elektrische Charakterisierung einer Halbleiter-Nanostruktur“ – Note: **sehr gut**'
+        - "Bachelorarbeit: „Elektrische Charakterisierung einer Halbleiter-Nanostruktur“ – Note: **sehr gut**"
 
 - section: "Weiterbildung & Zertifikate"
   icon: "certificate"

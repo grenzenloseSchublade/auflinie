@@ -103,7 +103,7 @@ Alles steht in `_data/cv_content.yml`, gegliedert in Abschnitte (`- section: …
    Bei der akademischen Ausbildung heißen die Felder `degree`, `institution`, `location`, `period`, `description` und `achievements`, bei Weiterbildung & Zertifikaten (`certificates:`) `title`, `issuer`, `period` und `description`.
 3. Prüfen und pushen.
 
-Fallen: Zeiträume mit Halbgeviertstrich und normalen Leerzeichen („2020 – 2025“, „2025 – Heute“), Schrägstriche ebenso („CI / CD“). Mehrzeiliger Text als `|-`-Block, ein harter Zeilenumbruch ist `\\` am Zeilenende. Text mit Doppelpunkt oder Anführungszeichen in doppelte Anführungszeichen setzen, innen deutsche „…“. Die Einrückung zählt: zwei Leerzeichen je Ebene, keine Tabs.
+Fallen: Zeiträume mit Halbgeviertstrich und normalen Leerzeichen („2020 – 2025“, „2025 – Heute“), Schrägstriche ebenso („CI / CD“). Mehrzeiliger Text als `|-`-Block, ein harter Zeilenumbruch ist `\\` am Zeilenende. Text mit Doppelpunkt oder Anführungszeichen in doppelte Anführungszeichen setzen, innen deutsche „…“. Einheitliche Struktur, die der Inhalts-Check prüft: einzeilige Texte immer in doppelten Anführungszeichen (nie einfache), jede Station hat `position`, `company`, `location`, `period`, `description`, `expandable` und `responsibilities`, jedes Projekt darin `text`, `role`, `year` und `subitems`. Die Einrückung zählt: zwei Leerzeichen je Ebene, keine Tabs.
 
 ### Skill einschalten, neu anlegen, Projekt ergänzen
 

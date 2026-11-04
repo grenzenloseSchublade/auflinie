@@ -1,0 +1,9 @@
+# Text in einfachen Anführungszeichen im Lebenslauf
+guardrail: content
+expect: 1
+grep: Text in einfachen Anführungszeichen
+file: _data/cv_content.yml
+mode: replace
+old:       location: "Essen, Deutschland"
+---
+location: 'Essen, Deutschland'
