@@ -1,6 +1,5 @@
 // Zentrale CSS Custom Properties (CSS-Variablen)
 // Diese Datei enthält alle :root CSS-Variablen für das gesamte Projekt
-// Konsolidiert aus _masthead.scss und _neon-orbit.scss
 @use "abstracts/breakpoints" as *;
 
 :root {
@@ -16,77 +15,38 @@
   --anchor-offset: calc(var(--masthead-height) + 20px);
 
   // ============================================
-  // Neon Umlaut Grundeffekte
+  // Neon-Name: Ü-Punkte (components/_neon-base.scss, _neon-orbit.scss)
   // ============================================
-  // base-flicker und jitter schalten nur im Orbit, im Ruhezustand stehen
-  // beide fest auf none (_neon-base.scss, PERF-7)
-  --neon-base-flicker-on: 0;
-  --neon-flicker-on: 1;
-  --neon-jitter-on: 0;
-  --neon-layered-glow-on: 1;
+  // Flacker-Schalter der ruhenden Punkte: neon-dot-flicker = an, none = aus
+  --neon-flicker: neon-dot-flicker;
 
-  // Umlaut-Punkt Dimensionen (extrahierte Magic Numbers)
+  // Ruhelage der Punkte, vom Owner kalibriert. Die Bahnen in
+  // assets/js/neon-orbit-toggle.js starten und enden genau hier: Beide
+  // Punkte stehen am Anker center-x und sind um die start-offsets versetzt.
+  // pad: seitlicher Innenabstand des „ü“-Containers (.neon-umlaut), die
+  // Punkte stehen in seinem Fluss ganz vorn und rechnen ihn heraus
+  --neon-umlaut-pad: 0.02em;
   --neon-umlaut-dot-size: 0.18em;
   --neon-umlaut-dot-offset-top: -0.04em;
+  --neon-orbit-center-x: 0.23em;
+  --neon-orbit-start-offset-before: -0.12em;
+  --neon-orbit-start-offset-after: 0.12em;
 
-  // Umlaut-Punkt Farben
+  // Farben in Ruhe und bei 2 Klicks: weißer Kern, Magenta-Schein
   --neon-umlaut-dot-color: #ffffff;
   --neon-umlaut-dot-glow-strong: rgb(255 0 204 / 100%);
   --neon-umlaut-dot-glow-mid: rgb(255 0 204 / 85%);
   --neon-umlaut-dot-glow-soft: rgb(255 0 204 / 60%);
 
-  // Umlaut-Punkt Farben (before/after Pseudo-Elemente)
-  --neon-umlaut-dot-color-before: var(--neon-umlaut-dot-color, #ffffff);
-  --neon-umlaut-dot-color-after: var(--neon-umlaut-dot-color, #ffffff);
-  --neon-umlaut-dot-glow-strong-before: var(--neon-umlaut-dot-glow-strong, rgb(255 0 204 / 100%));
-  --neon-umlaut-dot-glow-mid-before: var(--neon-umlaut-dot-glow-mid, rgb(255 0 204 / 85%));
-  --neon-umlaut-dot-glow-soft-before: var(--neon-umlaut-dot-glow-soft, rgb(255 0 204 / 60%));
-  --neon-umlaut-dot-glow-strong-after: var(--neon-umlaut-dot-glow-strong, rgb(255 0 204 / 100%));
-  --neon-umlaut-dot-glow-mid-after: var(--neon-umlaut-dot-glow-mid, rgb(255 0 204 / 85%));
-  --neon-umlaut-dot-glow-soft-after: var(--neon-umlaut-dot-glow-soft, rgb(255 0 204 / 60%));
-
-  // Umlaut Akzentfarben
-  --neon-umlaut-accent-before: #00ffff;
-  --neon-umlaut-accent-after: #ff00cc;
-  --neon-umlaut-accent-glow-before: rgb(0 255 255 / 85%);
-  --neon-umlaut-accent-glow-mid-before: rgb(0 255 255 / 70%);
-  --neon-umlaut-accent-glow-soft-before: rgb(0 255 255 / 50%);
-  --neon-umlaut-accent-glow-after: rgb(255 0 204 / 85%);
-  --neon-umlaut-accent-glow-mid-after: rgb(255 0 204 / 70%);
-  --neon-umlaut-accent-glow-soft-after: rgb(255 0 204 / 50%);
-
-  // ============================================
-  // Neon Orbit Animation
-  // ============================================
-  --neon-orbit-color-mode: default;
-  --neon-orbit-start-angle-before: 360deg; // Spiral-Endposition (0° + 1 Umdrehung)
-  --neon-orbit-start-angle-after: 540deg;  // Spiral-Endposition (180° + 1 Umdrehung)
-  --neon-orbit-period: 6.8s;
-  --neon-orbit-finish-duration: 3.2s;
-  --neon-orbit-pop-duration: 0.5s;
-  --neon-orbit-center-x: 0.23em;
-
-  // Orbit-Mittelpunkt Verschiebung (translateY):
-  // - Punkt bei top: -0.04em, Radius: 0.4em, Punkt-Radius: 0.09em
-  // - Positiv = nach unten (zur Mitte "u"), Negativ = nach oben (über "u")
-  // 2-Click: +0.29em (Mitte "u" = 0.04 + 0.25)
-  // 3-Click: -0.5em (unterster Punkt bei -0.04 + (-0.5) + 0.49 = -0.05 → über "u")
-  --neon-orbit-center-y: 0.29em; // Default: Mitte des "u" (2-Click)
-  --neon-orbit-origin-y: 0.5em; // Transform-origin Y (genutzt in _neon-base.scss)
-  --neon-orbit-start-offset-before: -0.12em;
-  --neon-orbit-start-offset-after: 0.12em;
-  --neon-orbit-radius-em: 0.4;
-  --neon-orbit-radius: calc(var(--neon-orbit-radius-em, 0.4) * 1em);
-
-  // Ramp-Duration: Zeit für die Spiral-Start-Animation (kürzer = schneller)
-  --neon-orbit-ramp-duration: 3.25s;
-  --neon-orbit-return-duration: 1.0s;
-  --neon-orbit-start-delay: 1.6s;
-  --neon-orbit-scatter-duration: 3s; // Dauer der Scatter-Animation (Punkte fliegen wild)
-  --neon-orbit-explosion-scale: 50; // Größe der Explosion (ca. 1/4 des Bildschirms)
-
-  // Orbit Radius Transition
-  transition: --neon-orbit-radius-em var(--neon-orbit-return-duration, 1.0s) ease-in-out;
+  // Farben bei 3 Klicks („Atom“): Punkt 1 cyan, Punkt 2 magenta
+  --neon-umlaut-accent-1: #00ffff;
+  --neon-umlaut-accent-glow-1: rgb(0 255 255 / 85%);
+  --neon-umlaut-accent-glow-mid-1: rgb(0 255 255 / 70%);
+  --neon-umlaut-accent-glow-soft-1: rgb(0 255 255 / 50%);
+  --neon-umlaut-accent-2: #ff00cc;
+  --neon-umlaut-accent-glow-2: rgb(255 0 204 / 85%);
+  --neon-umlaut-accent-glow-mid-2: rgb(255 0 204 / 70%);
+  --neon-umlaut-accent-glow-soft-2: rgb(255 0 204 / 50%);
 }
 
 // Desktop: Größere Header-Höhe (moderne Standards: 72-88px)
@@ -94,11 +54,4 @@
   :root {
     --masthead-height: 88px;
   }
-}
-
-// CSS @property für animierbare Custom Properties
-@property --neon-orbit-radius-em {
-  syntax: "<number>";
-  inherits: true;
-  initial-value: 0.4;
 }

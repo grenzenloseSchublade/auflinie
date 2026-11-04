@@ -1,539 +1,106 @@
-// Orbit-Animationen für die Neon-Umlaut-Punkte (ausgelagert)
-// CSS Custom Properties sind zentral in _variables/_css-properties.scss definiert
-// Die vierte Stelle der Animationslisten ist im Orbit none: Der Punkt-Puls
-// (neon-layered-glow, scale) würde um den Bahnmittelpunkt skalieren und den
-// Bahnradius mitatmen lassen. Index und Dauerlisten bleiben gleich lang.
+// =============================================================================
+// Neon-Name: Zustände während einer Bahn (Klicks auf das „a“)
+// =============================================================================
+// Die Bewegung selbst rechnet assets/js/neon-orbit-toggle.js und schreibt je
+// Bild nur transform und opacity an die Punkte (PERF-7). Hier stehen die
+// Klassen, die das Skript an .neon-name setzt:
+// - orbit-running: eine Bahn oder ihr Ende läuft
+// - orbit-accent: 3 Klicks („Atom“), Punkt 1 cyan, Punkt 2 magenta
+// - orbit-flash: Explosionsende, beide Punkte weiß
+// und an einzelne Punkte:
+// - neon-dot--back: Punkt hinten auf der Bahn, zieht hinter den Buchstaben
+// Ruhelage und Variablen: components/_neon-base.scss und
+// variables/_css-properties.scss.
 
 @use "abstracts/tokens" as *;
 
-// skala-Ausnahme: [Block] Neon-Orbit-Choreografie (MO-4). Phasen und Verzögerungen
-// sind gekoppelt (Custom Properties in variables/_css-properties.scss).
+// farb-Ausnahme: [Block] Neon-Effekt (Owner-Stilelement). Blitzweiß und die
+// Glühstufen sind Effektdaten, kein Palettenton.
 
-// Spiral-Start: Punkte starten von ihrer ECHTEN Position und spiralen zum Orbit
-// --neon-orbit-center-y verschiebt den Orbit vertikal (höher = Punkte weiter oben)
-@keyframes neon-orbit-ramp-before {
-  // ECHTE Spirale: 0% steht in DERSELBEN Polar-Struktur wie 100%
-  // (translateY · rotate · translateX · rotate), damit der Browser Winkel UND
-  // Radius interpoliert (statt Matrix-LERP = gerader Slide). Startwinkel -180°
-  // liegt exakt auf der realen Punktposition: rotate(-180°)·translateX(|offset|)
-  // ergibt −offset (= translateX(offset) statisch), translateY 0. Von dort 1,5
-  // Umdrehungen nach außen (Radius 0.10em → 0.7em) bis 360° auf den Orbit.
-  // Die zwei rotate() sind an beiden Enden exakt negativ zueinander -> der Punkt
-  // bleibt aufrecht, nur die Position spiralt.
-  0% {
-    transform: translateY(0)
-      rotate(-180deg)
-      translateX(calc(-1 * var(--neon-orbit-start-offset-before, -0.10em)))
-      rotate(180deg);
+// skala-Ausnahme: [Block] Neon-Choreografie (MO-4). Blitzgröße in em,
+// wächst mit dem Titel.
+
+// Eigene Ebene für den Schriftzug: Ein Punkt mit z-index −1 liegt dann über
+// dem Hero, aber unter den Buchstaben. Nur während einer Bahn, die Ruhelage
+// malt wie zuvor. Das Flackern ruht, das Skript führt die Deckkraft
+.neon-name.orbit-running {
+  isolation: isolate;
+
+  .neon-dot {
+    animation: none;
+    will-change: transform, opacity;
   }
 
-  100% {
-    // Ende: Auf Orbit bei 360° (nahtloser Übergang in den Spin), vertikal verschoben
-    transform: translateY(var(--neon-orbit-center-y, 0.29em))
-      rotate(360deg) translateX(var(--neon-orbit-radius, 0.7em)) rotate(-360deg);
+  .neon-dot--back {
+    z-index: -1;
   }
 }
 
-@keyframes neon-orbit-ramp-after {
-  // ECHTE Spirale (Prinzip wie RampBefore). Startwinkel 0° = reale Position
-  // (translateX(offset) rechts), translateY 0. Von dort 1,5 Umdrehungen nach
-  // außen (Radius 0.14em → 0.7em) bis 540° (180° versetzt zum before-Punkt),
-  // nahtlos in den Spin. rotate() an beiden Enden exakt negativ zueinander.
-  0% {
-    transform: translateY(0)
-      rotate(0deg)
-      translateX(var(--neon-orbit-start-offset-after, 0.14em))
-      rotate(0deg);
+// Atom: die Akzentfarben je Punkt
+.neon-name.orbit-accent {
+  .neon-dot--left {
+    --neon-dot-core: var(--neon-umlaut-accent-1, #00ffff);
+    --neon-dot-glow-strong: var(--neon-umlaut-accent-glow-1, rgb(0 255 255 / 85%));
+    --neon-dot-glow-mid: var(--neon-umlaut-accent-glow-mid-1, rgb(0 255 255 / 70%));
+    --neon-dot-glow-soft: var(--neon-umlaut-accent-glow-soft-1, rgb(0 255 255 / 50%));
   }
 
-  100% {
-    // Ende: Auf Orbit bei 540° (nahtloser Übergang in den Spin), vertikal verschoben
-    transform: translateY(var(--neon-orbit-center-y, 0.29em))
-      rotate(540deg) translateX(var(--neon-orbit-radius, 0.7em)) rotate(-540deg);
+  .neon-dot--right {
+    --neon-dot-core: var(--neon-umlaut-accent-2, #ff00cc);
+    --neon-dot-glow-strong: var(--neon-umlaut-accent-glow-2, rgb(255 0 204 / 85%));
+    --neon-dot-glow-mid: var(--neon-umlaut-accent-glow-mid-2, rgb(255 0 204 / 70%));
+    --neon-dot-glow-soft: var(--neon-umlaut-accent-glow-soft-2, rgb(255 0 204 / 50%));
   }
 }
 
-// Spin: Kontinuierliche Rotation, startet nahtlos wo Ramp endet
-@keyframes neon-orbit-spin-before {
-  from {
-    // Startet bei 360° (wo Ramp endet)
-    transform: translateY(var(--neon-orbit-center-y, 0.29em))
-      rotate(360deg) translateX(var(--neon-orbit-radius, 0.7em)) rotate(-360deg);
-  }
-
-  to {
-    // +360° = 1 volle Umdrehung pro Period
-    transform: translateY(var(--neon-orbit-center-y, 0.29em))
-      rotate(720deg) translateX(var(--neon-orbit-radius, 0.7em)) rotate(-720deg);
-  }
+// Kurz vor dem Treffen werden beide Punkte weiß
+.neon-name.orbit-flash .neon-dot {
+  --neon-dot-core: #{$white};
+  --neon-dot-glow-strong: rgb(255 255 255 / 95%);
+  --neon-dot-glow-mid: rgb(255 255 255 / 80%);
+  --neon-dot-glow-soft: rgb(255 255 255 / 60%);
 }
 
-@keyframes neon-orbit-spin-after {
-  from {
-    // Startet bei 540° (wo Ramp endet, 180° versetzt zu before)
-    transform: translateY(var(--neon-orbit-center-y, 0.29em))
-      rotate(540deg) translateX(var(--neon-orbit-radius, 0.7em)) rotate(-540deg);
-  }
-
-  to {
-    // +360° = 1 volle Umdrehung pro Period
-    transform: translateY(var(--neon-orbit-center-y, 0.29em))
-      rotate(900deg) translateX(var(--neon-orbit-radius, 0.7em)) rotate(-900deg);
-  }
+// Der Blitz: ein einmal gemaltes radiales Glühen in der Bahnmitte. Das
+// Skript legt es beim ersten Explosionsende an und animiert es per Web
+// Animations nur über transform und opacity, einmal auf und ab (WCAG 2.3.1:
+// ein Blitz, keine Serie). Wie die Punkte ein Inline-Block ohne Vorschub
+// und ohne Zeilenhöhe (negative Ränder) am Anfang des Containers, damit
+// innerText und Zeilenhöhe unberührt bleiben. Die Mitte liegt am Anker der
+// Punkte, das Skript verschiebt sie per --neon-flash-x und --neon-flash-y in
+// die Bahnmitte
+.neon-flash {
+  position: relative;
+  top: calc(var(--neon-umlaut-dot-offset-top, -0.04em) + var(--neon-umlaut-dot-size, 0.18em) / 2 + var(--neon-flash-y, 0em));
+  left: calc(var(--neon-orbit-center-x, 0.23em) - var(--neon-umlaut-pad, 0.02em) + var(--neon-umlaut-dot-size, 0.18em) / 2 + var(--neon-flash-x, 0em));
+  z-index: 1;
+  display: inline-block;
+  vertical-align: top;
+  width: 12em;
+  height: 12em;
+  margin-right: -12em;
+  margin-bottom: -12em;
+  border-radius: $radius-pill;
+  background: radial-gradient(circle closest-side,
+    rgb(255 255 255 / 100%) 0%,
+    rgb(255 255 255 / 100%) 12%,
+    rgb(255 255 255 / 85%) 22%,
+    rgb(255 255 255 / 50%) 36%,
+    rgb(255 255 255 / 22%) 54%,
+    rgb(255 255 255 / 7%) 76%,
+    rgb(255 255 255 / 0%) 100%);
+  opacity: 0;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
 }
 
-@keyframes neon-orbit-finish-before {
-  0% {
-    // Startposition auf Orbit
-    transform: translateY(var(--neon-orbit-center-y, 0))
-      rotate(var(--neon-orbit-start-angle-before, 180deg))
-      translateX(var(--neon-orbit-radius, 0.12em))
-      rotate(calc(-1 * var(--neon-orbit-start-angle-before, 180deg)));
-    opacity: 1;
-  }
-
-  60% {
-    // Punkte kreiseln weiter (+720deg) und nähern sich dem Mittelpunkt
-    transform: translateY(var(--neon-orbit-center-y, 0))
-      rotate(calc(var(--neon-orbit-start-angle-before, 180deg) + 720deg))
-      translateX(calc(var(--neon-orbit-radius, 0.12em) * 0.35))
-      rotate(calc(-1 * (var(--neon-orbit-start-angle-before, 180deg) + 720deg)));
-    opacity: 1;
-  }
-
-  75% {
-    // Punkte treffen sich im Mittelpunkt - Rotation fixiert bei +1080deg
-    transform: translateY(var(--neon-orbit-center-y, 0))
-      rotate(calc(var(--neon-orbit-start-angle-before, 180deg) + 1080deg))
-      translateX(0)
-      rotate(calc(-1 * (var(--neon-orbit-start-angle-before, 180deg) + 1080deg)));
-    opacity: 1;
-    background: $white;
-    box-shadow: 0 0 40px $white,
-      0 0 100px $white-a95,
-      0 0 200px $fg-muted;
-  }
-
-  85% {
-    // Explosion am Mittelpunkt - scale vom Zentrum dank transform-origin: center
-    transform: translateY(var(--neon-orbit-center-y, 0))
-      rotate(calc(var(--neon-orbit-start-angle-before, 180deg) + 1080deg))
-      translateX(0)
-      rotate(calc(-1 * (var(--neon-orbit-start-angle-before, 180deg) + 1080deg)))
-      scale(var(--neon-orbit-explosion-scale, 50));
-    opacity: 1;
-    background: $white;
-    box-shadow:
-      0 0 80px $white,
-      0 0 180px $white-a95,
-      0 0 350px $white-a85,
-      0 0 500px $white-a60,
-      0 0 25vw $white-a40;
-  }
-
-  100% {
-    // Zurück zu normal am Mittelpunkt
-    transform: translateY(var(--neon-orbit-center-y, 0))
-      rotate(calc(var(--neon-orbit-start-angle-before, 180deg) + 1080deg))
-      translateX(0)
-      rotate(calc(-1 * (var(--neon-orbit-start-angle-before, 180deg) + 1080deg)))
-      scale(1);
-    opacity: 1;
-    background: $white;
-    box-shadow: 0 0 30px $white,
-      0 0 80px $white-a90,
-      0 0 150px $white-a70;
-  }
+// Am Handy ragt der Blitz über den Bildschirmrand. clip schneidet ihn an
+// der Hero-Fläche ab: kein waagerechter Bildlauf, kein Scroll-Container,
+// senkrecht bleibt alles sichtbar
+.page__hero--overlay:has(.neon-flash) {
+  overflow-x: clip;
 }
 
-@keyframes neon-orbit-finish-after {
-  0% {
-    // Startposition auf Orbit
-    transform: translateY(var(--neon-orbit-center-y, 0))
-      rotate(var(--neon-orbit-start-angle-after, 0deg))
-      translateX(var(--neon-orbit-radius, 0.12em))
-      rotate(calc(-1 * var(--neon-orbit-start-angle-after, 0deg)));
-    opacity: 1;
-  }
-
-  60% {
-    // Punkte kreiseln weiter (+720deg) und nähern sich dem Mittelpunkt
-    transform: translateY(var(--neon-orbit-center-y, 0))
-      rotate(calc(var(--neon-orbit-start-angle-after, 0deg) + 720deg))
-      translateX(calc(var(--neon-orbit-radius, 0.12em) * 0.35))
-      rotate(calc(-1 * (var(--neon-orbit-start-angle-after, 0deg) + 720deg)));
-    opacity: 1;
-  }
-
-  75% {
-    // Punkte treffen sich im Mittelpunkt - Rotation fixiert bei +1080deg
-    transform: translateY(var(--neon-orbit-center-y, 0))
-      rotate(calc(var(--neon-orbit-start-angle-after, 0deg) + 1080deg))
-      translateX(0)
-      rotate(calc(-1 * (var(--neon-orbit-start-angle-after, 0deg) + 1080deg)));
-    opacity: 1;
-    background: $white;
-    box-shadow: 0 0 40px $white,
-      0 0 100px $white-a95,
-      0 0 200px $fg-muted;
-  }
-
-  85% {
-    // Explosion am Mittelpunkt - scale vom Zentrum dank transform-origin: center
-    transform: translateY(var(--neon-orbit-center-y, 0))
-      rotate(calc(var(--neon-orbit-start-angle-after, 0deg) + 1080deg))
-      translateX(0)
-      rotate(calc(-1 * (var(--neon-orbit-start-angle-after, 0deg) + 1080deg)))
-      scale(var(--neon-orbit-explosion-scale, 50));
-    opacity: 1;
-    background: $white;
-    box-shadow:
-      0 0 80px $white,
-      0 0 180px $white-a95,
-      0 0 350px $white-a85,
-      0 0 500px $white-a60,
-      0 0 25vw $white-a40;
-  }
-
-  100% {
-    // Zurück zu normal am Mittelpunkt
-    transform: translateY(var(--neon-orbit-center-y, 0))
-      rotate(calc(var(--neon-orbit-start-angle-after, 0deg) + 1080deg))
-      translateX(0)
-      rotate(calc(-1 * (var(--neon-orbit-start-angle-after, 0deg) + 1080deg)))
-      scale(1);
-    opacity: 1;
-    background: $white;
-    box-shadow: 0 0 30px $white,
-      0 0 80px $white-a90,
-      0 0 150px $white-a70;
-  }
-}
-
-@keyframes neon-orbit-pop-out-before {
-  0% {
-    opacity: 1;
-    box-shadow: 0 0 12px $white,
-      0 0 36px $white-a95,
-      0 0 90px $fg-muted;
-  }
-
-  100% {
-    opacity: 0;
-    box-shadow: 0 0 0 $white-a00;
-  }
-}
-
-@keyframes neon-orbit-pop-out-after {
-  0% {
-    opacity: 1;
-    box-shadow: 0 0 12px $white,
-      0 0 36px $white-a95,
-      0 0 90px $fg-muted;
-  }
-
-  100% {
-    opacity: 0;
-    box-shadow: 0 0 0 $white-a00;
-  }
-}
-
-@keyframes neon-orbit-pop-in-before {
-  0% {
-    transform: translateX(var(--neon-orbit-start-offset-before, -0.10em)) scale(0.6);
-    opacity: 0;
-  }
-
-  100% {
-    transform: translateX(var(--neon-orbit-start-offset-before, -0.10em)) scale(1);
-    opacity: 1;
-  }
-}
-
-@keyframes neon-orbit-pop-in-after {
-  0% {
-    transform: translateX(var(--neon-orbit-start-offset-after, 0.14em)) scale(0.6);
-    opacity: 0;
-  }
-
-  100% {
-    transform: translateX(var(--neon-orbit-start-offset-after, 0.14em)) scale(1);
-    opacity: 1;
-  }
-}
-
-// ============================================
-// Scatter Animation - Punkte fliegen wild über den Bildschirm
-// ============================================
-
-@keyframes neon-orbit-scatter-before {
-  0% {
-    transform: translateY(var(--neon-orbit-center-y, 0.29em))
-      rotate(var(--neon-orbit-start-angle-before, 180deg))
-      translateX(var(--neon-orbit-radius, 0.7em))
-      rotate(calc(-1 * var(--neon-orbit-start-angle-before, 180deg)));
-    opacity: 1;
-  }
-
-  15% {
-    transform: translate(
-      var(--neon-scatter-x1-before, 30vw),
-      var(--neon-scatter-y1-before, -20vh)
-    ) scale(1.5) rotate(180deg);
-    opacity: 1;
-  }
-
-  35% {
-    transform: translate(
-      var(--neon-scatter-x2-before, -40vw),
-      var(--neon-scatter-y2-before, 30vh)
-    ) scale(0.8) rotate(540deg);
-    opacity: 1;
-  }
-
-  55% {
-    transform: translate(
-      var(--neon-scatter-x3-before, 50vw),
-      var(--neon-scatter-y3-before, -40vh)
-    ) scale(1.2) rotate(900deg);
-    opacity: 1;
-  }
-
-  75% {
-    transform: translate(
-      var(--neon-scatter-x4-before, -20vw),
-      var(--neon-scatter-y4-before, 15vh)
-    ) scale(1) rotate(1260deg);
-    opacity: 1;
-  }
-
-  100% {
-    transform: translateX(var(--neon-orbit-start-offset-before, -0.10em))
-      scale(1) rotate(1440deg);
-    opacity: 1;
-  }
-}
-
-@keyframes neon-orbit-scatter-after {
-  0% {
-    transform: translateY(var(--neon-orbit-center-y, 0.29em))
-      rotate(var(--neon-orbit-start-angle-after, 0deg))
-      translateX(var(--neon-orbit-radius, 0.7em))
-      rotate(calc(-1 * var(--neon-orbit-start-angle-after, 0deg)));
-    opacity: 1;
-  }
-
-  15% {
-    transform: translate(
-      var(--neon-scatter-x1-after, -35vw),
-      var(--neon-scatter-y1-after, 25vh)
-    ) scale(1.3) rotate(-180deg);
-    opacity: 1;
-  }
-
-  35% {
-    transform: translate(
-      var(--neon-scatter-x2-after, 45vw),
-      var(--neon-scatter-y2-after, -35vh)
-    ) scale(0.9) rotate(-540deg);
-    opacity: 1;
-  }
-
-  55% {
-    transform: translate(
-      var(--neon-scatter-x3-after, -30vw),
-      var(--neon-scatter-y3-after, 45vh)
-    ) scale(1.4) rotate(-900deg);
-    opacity: 1;
-  }
-
-  75% {
-    transform: translate(
-      var(--neon-scatter-x4-after, 25vw),
-      var(--neon-scatter-y4-after, -10vh)
-    ) scale(1.1) rotate(-1260deg);
-    opacity: 1;
-  }
-
-  100% {
-    transform: translateX(var(--neon-orbit-start-offset-after, 0.14em))
-      scale(1) rotate(-1440deg);
-    opacity: 1;
-  }
-}
-
-.neon-name.orbit-running .neon-umlaut::before {
-  animation-name: neon-umlaut-flicker-a, neon-flicker-irregular, neon-jitter, none,
-    neon-orbit-ramp-before, neon-orbit-spin-before;
-  animation-duration: calc(var(--neon-base-flicker-on, 1) * 3.1s),
-    calc(var(--neon-flicker-on, 0) * 3.4s),
-    calc(var(--neon-jitter-on, 0) * 1.6s),
-    calc(var(--neon-layered-glow-on, 0) * 2.8s),
-    var(--neon-orbit-ramp-duration, 6.8s),
-    var(--neon-orbit-period, 6.8s);
-  animation-timing-function: linear,
-    steps(1, end),
-    ease-in-out,
-    ease-in-out,
-    linear,
-    linear;
-  animation-iteration-count: infinite, infinite, infinite, infinite, 1, infinite;
-  animation-fill-mode: none, none, none, none, forwards, none;
-  animation-delay: 0.2s, 0s, 0s, 0s,
-    var(--neon-orbit-start-delay, 0.6s),
-    calc(var(--neon-orbit-start-delay, 0.6s) + var(--neon-orbit-ramp-duration, 6.8s));
-}
-
-.neon-name.orbit-running .neon-umlaut::after {
-  animation-name: neon-umlaut-flicker-b, neon-flicker-irregular, neon-jitter, none,
-    neon-orbit-ramp-after, neon-orbit-spin-after;
-  animation-duration: calc(var(--neon-base-flicker-on, 1) * 3.1s),
-    calc(var(--neon-flicker-on, 0) * 3.4s),
-    calc(var(--neon-jitter-on, 0) * 1.6s),
-    calc(var(--neon-layered-glow-on, 0) * 2.8s),
-    var(--neon-orbit-ramp-duration, 6.8s),
-    var(--neon-orbit-period, 6.8s);
-  animation-timing-function: linear,
-    steps(1, end),
-    ease-in-out,
-    ease-in-out,
-    linear,
-    linear;
-  animation-iteration-count: infinite, infinite, infinite, infinite, 1, infinite;
-  animation-fill-mode: none, none, none, none, forwards, none;
-  animation-delay: 0.95s, 0s, 0s, 0s,
-    var(--neon-orbit-start-delay, 0.6s),
-    calc(var(--neon-orbit-start-delay, 0.6s) + var(--neon-orbit-ramp-duration, 6.8s));
-}
-
-// transform-origin für zentrierte Explosion (keine Verschiebung bei scale)
-// Sicher, weil bei 75% translateX=0 ist - kein visueller Sprung
-.neon-name.orbit-finish .neon-umlaut::before,
-.neon-name.orbit-finish .neon-umlaut::after {
-  transform-origin: center center;
-}
-
-.neon-name.orbit-finish .neon-umlaut::before {
-  animation-name: neon-umlaut-flicker-a, neon-flicker-irregular, neon-jitter, none,
-    neon-orbit-finish-before, neon-orbit-pop-out-before;
-  animation-duration: calc(var(--neon-base-flicker-on, 1) * 3.1s),
-    calc(var(--neon-flicker-on, 0) * 3.4s),
-    calc(var(--neon-jitter-on, 0) * 1.6s),
-    calc(var(--neon-layered-glow-on, 0) * 2.8s),
-    var(--neon-orbit-finish-duration, 3.4s),
-    var(--neon-orbit-pop-duration, 0.4s);
-  animation-timing-function: linear,
-    steps(1, end),
-    ease-in-out,
-    ease-in-out,
-    ease-in,
-    ease-out;
-  animation-iteration-count: infinite, infinite, infinite, infinite, 1, 1;
-  animation-fill-mode: none, none, none, none, forwards, forwards;
-  animation-delay: 0.2s, 0s, 0s, 0s, 0s,
-    calc(var(--neon-orbit-finish-duration, 3.2s) - var(--neon-orbit-pop-duration, 0.5s));
-}
-
-.neon-name.orbit-finish .neon-umlaut::after {
-  animation-name: neon-umlaut-flicker-b, neon-flicker-irregular, neon-jitter, none,
-    neon-orbit-finish-after, neon-orbit-pop-out-after;
-  animation-duration: calc(var(--neon-base-flicker-on, 1) * 3.1s),
-    calc(var(--neon-flicker-on, 0) * 3.4s),
-    calc(var(--neon-jitter-on, 0) * 1.6s),
-    calc(var(--neon-layered-glow-on, 0) * 2.8s),
-    var(--neon-orbit-finish-duration, 3.4s),
-    var(--neon-orbit-pop-duration, 0.4s);
-  animation-timing-function: linear,
-    steps(1, end),
-    ease-in-out,
-    ease-in-out,
-    ease-in,
-    ease-out;
-  animation-iteration-count: infinite, infinite, infinite, infinite, 1, 1;
-  animation-fill-mode: none, none, none, none, forwards, forwards;
-  animation-delay: 0.95s, 0s, 0s, 0s, 0s,
-    calc(var(--neon-orbit-finish-duration, 3.2s) - var(--neon-orbit-pop-duration, 0.5s));
-}
-
-.neon-name.orbit-popin .neon-umlaut::before {
-  animation-name: neon-umlaut-flicker-a, neon-flicker-irregular, neon-jitter, none,
-    neon-orbit-pop-in-before;
-  animation-duration: calc(var(--neon-base-flicker-on, 1) * 3.1s),
-    calc(var(--neon-flicker-on, 0) * 3.4s),
-    calc(var(--neon-jitter-on, 0) * 1.6s),
-    calc(var(--neon-layered-glow-on, 0) * 2.8s),
-    var(--neon-orbit-pop-duration, 0.4s);
-  animation-timing-function: linear,
-    steps(1, end),
-    ease-in-out,
-    ease-in-out,
-    ease-out;
-  animation-iteration-count: infinite, infinite, infinite, infinite, 1;
-  animation-fill-mode: none, none, none, none, forwards;
-  animation-delay: 0.2s, 0s, 0s, 0s, 0s;
-}
-
-.neon-name.orbit-popin .neon-umlaut::after {
-  animation-name: neon-umlaut-flicker-b, neon-flicker-irregular, neon-jitter, none,
-    neon-orbit-pop-in-after;
-  animation-duration: calc(var(--neon-base-flicker-on, 1) * 3.1s),
-    calc(var(--neon-flicker-on, 0) * 3.4s),
-    calc(var(--neon-jitter-on, 0) * 1.6s),
-    calc(var(--neon-layered-glow-on, 0) * 2.8s),
-    var(--neon-orbit-pop-duration, 0.4s);
-  animation-timing-function: linear,
-    steps(1, end),
-    ease-in-out,
-    ease-in-out,
-    ease-out;
-  animation-iteration-count: infinite, infinite, infinite, infinite, 1;
-  animation-fill-mode: none, none, none, none, forwards;
-  animation-delay: 0.95s, 0s, 0s, 0s, 0s;
-}
-
-.neon-name:not(.orbit-popin) .neon-umlaut::before,
-.neon-name:not(.orbit-popin) .neon-umlaut::after {
-  opacity: var(--neon-orbit-opacity, 1);
-}
-
-// ============================================
-// Scatter Animation State - Punkte fliegen wild und kehren zurück
-// ============================================
-
-.neon-name.orbit-scatter .neon-umlaut::before {
-  animation-name: neon-umlaut-flicker-a, neon-flicker-irregular, neon-jitter, none,
-    neon-orbit-scatter-before;
-  animation-duration: calc(var(--neon-base-flicker-on, 1) * 3.1s),
-    calc(var(--neon-flicker-on, 0) * 3.4s),
-    calc(var(--neon-jitter-on, 0) * 1.6s),
-    calc(var(--neon-layered-glow-on, 0) * 2.8s),
-    var(--neon-orbit-scatter-duration, 3s);
-  animation-timing-function: linear,
-    steps(1, end),
-    ease-in-out,
-    ease-in-out,
-    cubic-bezier(0.25, 0.1, 0.25, 1);
-  animation-iteration-count: infinite, infinite, infinite, infinite, 1;
-  animation-fill-mode: none, none, none, none, forwards;
-  animation-delay: 0.2s, 0s, 0s, 0s, 0s;
-}
-
-.neon-name.orbit-scatter .neon-umlaut::after {
-  animation-name: neon-umlaut-flicker-b, neon-flicker-irregular, neon-jitter, none,
-    neon-orbit-scatter-after;
-  animation-duration: calc(var(--neon-base-flicker-on, 1) * 3.1s),
-    calc(var(--neon-flicker-on, 0) * 3.4s),
-    calc(var(--neon-jitter-on, 0) * 1.6s),
-    calc(var(--neon-layered-glow-on, 0) * 2.8s),
-    var(--neon-orbit-scatter-duration, 3s);
-  animation-timing-function: linear,
-    steps(1, end),
-    ease-in-out,
-    ease-in-out,
-    cubic-bezier(0.25, 0.1, 0.25, 1);
-  animation-iteration-count: infinite, infinite, infinite, infinite, 1;
-  animation-fill-mode: none, none, none, none, forwards;
-  animation-delay: 0.95s, 0s, 0s, 0s, 0s;  // Kein Delay für Scatter - beide Punkte starten gleichzeitig
-}
+// farb-Ausnahme-Ende
 
 // skala-Ausnahme-Ende

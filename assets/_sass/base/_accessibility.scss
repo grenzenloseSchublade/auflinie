@@ -34,13 +34,14 @@ html {
 /* stylelint-disable declaration-no-important -- globaler Reduced-Motion-Kill-Switch */
 @media (prefers-reduced-motion: reduce) {
   // Deaktiviere Animationen global, ABER mit Ausnahme der Neon-Punkte im
-  // Namen: Flicker/Puls laufen BEWUSST permanent — auch bei
-  // reduced-motion (Designentscheidung, Juli 2026 vom Nutzer bestätigt);
-  // nur die Orbit-Choreografie ist zusätzlich nutzerinitiiert
+  // Namen (.neon-dot): Das seltene Flackern läuft BEWUSST permanent, auch
+  // bei reduced-motion (Designentscheidung, Juli 2026 vom Nutzer bestätigt);
+  // die Bahnen sind nutzerinitiiert und laufen per JS, die Drossel greift
+  // dort ohnehin nicht
   // CRT-Hero (Roll, Tube-Preboot/Boot, Scanlines …): von der Drossel ausnehmen — Abschaltung nur per Lesemodus (Power), s. _hero.scss
-  *:not(.neon-umlaut, .neon-name, .neon-orbit-trigger, .page__hero-crt-roll, .page__hero-crt-layer, .page__hero-grain, .page__hero-crt-noise, .page__hero--overlay),
-  *:not(.neon-umlaut, .neon-name, .neon-orbit-trigger, .page__hero-crt-roll, .page__hero-crt-layer)::before,
-  *:not(.neon-umlaut, .neon-name, .neon-orbit-trigger, .page__hero-crt-layer, .page__hero--overlay, .page__hero-crt-media)::after {
+  *:not(.neon-dot, .page__hero-crt-roll, .page__hero-crt-layer, .page__hero-grain, .page__hero-crt-noise, .page__hero--overlay),
+  *:not(.page__hero-crt-roll, .page__hero-crt-layer)::before,
+  *:not(.page__hero-crt-layer, .page__hero--overlay, .page__hero-crt-media)::after {
     // skala-Ausnahme: [Block] Kill-Switch, 0.01ms statt 0 hält animationend und transitionend am Leben
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
@@ -157,15 +158,16 @@ textarea:focus-visible {
   }
 
   // Neon-Name: Im Kontrastmodus zeigt das echte „ü“ aus dem DOM sich
-  // selbst. Das generierte „u“ und die Punkt-Flächen (nur Hintergrund und
-  // Schatten) entfallen, sonst stünden zwei Paar Punkte übereinander.
+  // selbst. Das generierte „u“, die Punkt-Elemente und der Blitz (nur
+  // Hintergrund und Schatten) entfallen, sonst stünden zwei Paar Punkte
+  // übereinander.
   :root .neon-umlaut__ue {
     color: CanvasText;
   }
 
   :root .neon-umlaut__u,
-  :root .neon-umlaut::before,
-  :root .neon-umlaut::after {
+  :root .neon-dot,
+  :root .neon-flash {
     display: none;
   }
 }

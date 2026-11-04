@@ -100,10 +100,10 @@ test.describe('Seiten-Module beim vollen Laden', () => {
     // Echtes ü im DOM, das sichtbare „u“ ist generierter Inhalt ohne Text
     expect((await page.locator('#page-title').textContent()).trim()).toBe('Hans Müller');
     expect((await page.locator('#page-title').innerText()).trim()).toBe('Hans Müller');
-    // PERF-7: Dauer-Animationen im Schriftzug ändern nur opacity und scale.
-    // Abgeschaltete Einträge stehen als none in der Liste: Ein Eintrag mit
-    // Dauer 0 hält in Chromium die übrigen Animationen desselben Elements
-    // vom Compositor fern, deshalb darf es keinen geben
+    // PERF-7: Dauer-Animationen im Schriftzug ändern nur opacity, scale oder
+    // transform (heute nur das seltene Flackern der Ü-Punkte, opacity). Ein
+    // Eintrag mit Dauer 0 hält in Chromium die übrigen Animationen desselben
+    // Elements vom Compositor fern, deshalb darf es keinen geben
     const { props, ruhend } = await page.evaluate(() => {
       const name = document.querySelector('.neon-name');
       const seen = new Set();
@@ -120,6 +120,50 @@ test.describe('Seiten-Module beim vollen Laden', () => {
     expect(ruhend).toEqual([]);
     expect(props.length).toBeGreaterThan(0);
     expect(props.every((p) => ['opacity', 'scale', 'transform'].includes(p))).toBe(true);
+  });
+
+  test('Startseite: Ü-Punkte laufen per Klicks auf die Bahn und kehren genau in die Ruhelage zurück', async ({ page }) => {
+    // Gefälschte Uhr: Klickfenster, requestAnimationFrame und performance.now
+    // laufen nur per runFor, der Ablauf ist damit fest
+    await page.clock.install();
+    await page.goto(`${BASE}/`);
+    await page.clock.pauseAt(await page.evaluate(() => Date.now() + 1000));
+    const lage = () => page.evaluate(() => [...document.querySelectorAll('.neon-umlaut .neon-dot')].map((d) => {
+      const b = d.getBoundingClientRect();
+      return [Math.round(b.x * 10) / 10, Math.round(b.y * 10) / 10, Math.round(b.width * 10) / 10, d.getAttribute('style')];
+    }));
+    const klicks = (n) => page.evaluate((k) => { for (let i = 0; i < k; i++) document.querySelector('.neon-orbit-trigger').click(); }, n);
+    const name = page.locator('.neon-name').first();
+    const ruhe = await lage();
+    expect(ruhe).toHaveLength(2);
+    expect(ruhe.every((r) => r[3] === null)).toBe(true);
+
+    await klicks(2);
+    await page.clock.runFor(3000);
+    await expect(name).toHaveClass(/orbit-running/);
+    expect(await lage()).not.toEqual(ruhe);
+    // Andere Klickzahl während der Bahn zählt nicht
+    await klicks(3);
+    await page.clock.runFor(1000);
+    await expect(name).not.toHaveClass(/orbit-accent/);
+    // Gleiche Klickzahl beendet, danach exakt die Ruhelage aus CSS. Das
+    // Ende wartet, bis der Einlauf (je Start gewürfelt, höchstens gut 8 s)
+    // abgeschlossen ist
+    await klicks(2);
+    await page.clock.runFor(9000);
+    await expect(name).not.toHaveClass(/orbit-running/);
+    expect(await lage()).toEqual(ruhe);
+    expect((await page.locator('#page-title').textContent()).trim()).toBe('Hans Müller');
+
+    // Dreifachklick: eigene Bahn, Ende mit Blitz, danach wieder die Ruhelage
+    await klicks(3);
+    await page.clock.runFor(3000);
+    await expect(name).toHaveClass(/orbit-accent/);
+    expect(await lage()).not.toEqual(ruhe);
+    await klicks(3);
+    await page.clock.runFor(14000);
+    await expect(name).not.toHaveClass(/orbit-running/);
+    expect(await lage()).toEqual(ruhe);
   });
 });
 

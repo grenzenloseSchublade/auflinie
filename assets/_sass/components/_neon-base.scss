@@ -1,142 +1,54 @@
 // =============================================================================
-/* stylelint-disable keyframe-block-no-duplicate-selectors -- Flicker-Keyframes mit historisch doppelten Steps; letzter Step gewinnt, Werte bewusst unangetastet */
-// Neon-Effekte Basis-Styles und Keyframes
+// Neon-Name: Ruhezustand der leuchtenden Ü-Punkte
 // =============================================================================
-// Diese Datei enthält die grundlegenden Neon-Animationen und Styles für
-// die leuchtenden Umlaut-Punkte im Namen auf der Startseite.
+// Die beiden Punkte über dem „u“ im Startseiten-Titel. Der Schriftzug selbst
+// trägt keinen eigenen Schein: Er erbt Schrift, Farbe und Schatten des
+// Hero-Titels wie jeder andere Seitentitel (Owner, 4. 11. 2026).
 // Struktur:
-// 1. Keyframes für Flicker-Effekte
-// 2. Basis-Styles für .neon-name, .neon-umlaut und .neon-orbit-trigger
-// Der Schriftzug selbst trägt keinen eigenen Schein: Er erbt Schrift,
-// Farbe und Schatten des Hero-Titels wie jeder andere Seitentitel (Owner,
-// 4. 11. 2026). Nur die beiden Punkte über dem „u“ leuchten.
-// Perf (PERF-7): Die Dauer-Animationen ändern nur opacity und scale, die der
-// Compositor ohne Neumalen abspielt. Der Leuchtschein der Punkte
-// (box-shadow) steht fest und wird einmal gemalt.
+// 1. Keyframes: seltenes Flackern der Punkte
+// 2. .neon-name, .neon-umlaut, .neon-orbit-trigger
+// 3. .neon-dot: Lage, Größe, Farbe und Schein der ruhenden Punkte
+// Die Bahnen (Klicks auf das „a“) bewegt assets/js/neon-orbit-toggle.js, ihre
+// Zustandsklassen stehen in components/_neon-orbit.scss.
+// Perf (PERF-7): Im Ruhezustand ändert sich nur opacity, die der Compositor
+// ohne Neumalen abspielt. Der Schein (box-shadow) steht fest.
 // Abhängigkeiten:
 // - variables/_css-properties.scss (CSS Custom Properties)
-// - variables/_colors.scss (Farbvariablen)
 
-// farb-Ausnahme: [Block] Neon-Effekt (Owner-Stilelement). Die Glow-Leitern des
-// Neon-Magentas #ff00cc und die Flacker-Stufen sind Effektdaten, kein
-// Palettenton: ein Token je Keyframe-Stufe würde nur verschleiern. Welcher
-// Magenta-Ton die Marke ist, entscheidet der Owner (Audit B-F09/B-F26).
-
-// =============================================================================
-// KEYFRAMES: Umlaut Punkt-Flicker
-// =============================================================================
+// farb-Ausnahme: [Block] Neon-Effekt (Owner-Stilelement). Die Glow-Leiter des
+// Neon-Magentas ist Effektdatum, kein Palettenton. Welcher Magenta-Ton die
+// Marke ist, entscheidet der Owner (Audit B-F09/B-F26).
 
 @use "abstracts/tokens" as *;
 @use "abstracts/mixins" as *;
 
-// skala-Ausnahme: [Block] Neon-Choreografie (MO-4, Owner-Stilelement). Flacker-
-// Takte und Glow-Leitern sind Effektdaten, keine UI-Skala.
+// skala-Ausnahme: [Block] Neon-Choreografie (MO-4, Owner-Stilelement).
+// Flacker-Takte und Glow-Leiter sind Effektdaten, keine UI-Skala.
 
-/// Flicker-Animation A für den ersten Umlaut-Punkt (::before)
-/// Erzeugt unregelmäßiges Flackern (nur Deckkraft, der Schein geht mit)
-@keyframes neon-umlaut-flicker-a {
-  0%, 2.5%, 5%, 7.5%, 10% {
+// =============================================================================
+// KEYFRAMES: seltenes Doppelflackern
+// =============================================================================
+
+/// Ein Zyklus von 23 s mit zwei kurzen Doppel-Einbrüchen auf 35 % Deckkraft,
+/// bei 3,0 s und bei 14,0 s (Abstände 11 und 12 s). Der rechte Punkt läuft
+/// 5,5 s versetzt: Seine Einbrüche liegen immer mindestens 5,5 s neben
+/// denen des linken, nie im Gleichtakt. Ein Doppel dauert 0,2 s, also
+/// höchstens zwei Einbrüche je Sekunde (Grenze drei, WCAG 2.3.1). Getrennte,
+/// teilerfremde Zyklen je Punkt träfen früher oder später aufeinander,
+/// darum ein gemeinsamer Zyklus mit festem Versatz.
+/// steps(1, end): Jeder Wert hält bis zum nächsten Schritt, harte Kanten
+/// wie bei einer Röhre
+@keyframes neon-dot-flicker {
+  0%, 13.304%, 13.913%, 61.174%, 61.739%, 100% {
     opacity: 1;
   }
 
-  1.25%, 3.75%, 6.25%, 8.75% {
-    opacity: 0.02;
+  13.043%, 13.696% {
+    opacity: 0.35;
   }
 
-  10%, 26.7% {
-    opacity: 1;
-  }
-
-  26.7%, 28.8%, 31% {
-    opacity: 1;
-  }
-
-  27.8%, 30% {
-    opacity: 0.02;
-  }
-
-  31%, 100% {
-    opacity: 1;
-  }
-}
-
-/// Flicker-Animation B für den zweiten Umlaut-Punkt (::after)
-/// Leicht versetztes Timing für natürlicheren Effekt
-@keyframes neon-umlaut-flicker-b {
-  0%, 5% {
-    opacity: 1;
-  }
-
-  2.5% {
-    opacity: 0.02;
-  }
-
-  5%, 21.7% {
-    opacity: 1;
-  }
-
-  21.7%, 24.2%, 26.7%, 28% {
-    opacity: 1;
-  }
-
-  22.9%, 25.4%, 27.2% {
-    opacity: 0.02;
-  }
-
-  28%, 100% {
-    opacity: 1;
-  }
-}
-
-/// Unregelmäßiges Flackern für zusätzliche Variation
-@keyframes neon-flicker-irregular {
-  0%, 18%, 22%, 25%, 53%, 57%, 100% {
-    opacity: 1;
-  }
-
-  20%, 24%, 55% {
-    opacity: 0.15;
-  }
-}
-
-/// Leichtes Zittern/Jitter für realistischen Neon-Röhren-Effekt
-@keyframes neon-jitter {
-  0%, 100% {
-    transform: translate(0, 0);
-    filter: blur(0);
-  }
-
-  20% {
-    transform: translate(0.01em, -0.01em);
-    filter: blur(0.2px);
-  }
-
-  40% {
-    transform: translate(-0.01em, 0.01em);
-    filter: blur(0.35px);
-  }
-
-  60% {
-    transform: translate(0.012em, 0);
-    filter: blur(0.2px);
-  }
-
-  80% {
-    transform: translate(-0.012em, -0.01em);
-    filter: blur(0.3px);
-  }
-}
-
-/// Glow-Puls für die Punkte: Der Schein steht als box-shadow fest (Mittelwert
-/// der früheren Leiter 14/26/36 px bis 16/30/44 px), der Punkt atmet per
-/// scale um ±5 %. Gleicher Takt (2,8 s), kein Neumalen
-@keyframes neon-layered-glow {
-  0%, 100% {
-    scale: 0.95;
-  }
-
-  50% {
-    scale: 1.05;
+  60.87%, 61.522% {
+    opacity: 0.35;
   }
 }
 
@@ -144,12 +56,11 @@
 // NEON UTILITIES: Basis-Klassen
 // =============================================================================
 
-/// Container für den Umlaut mit den leuchtenden Punkten
-/// Wird auf das <span class="neon-umlaut">ü</span> angewendet
+/// Container für das „ü“ samt Punkten
 .neon-umlaut {
   position: relative;
   display: inline-block;
-  padding-inline: 0.02em;
+  padding-inline: var(--neon-umlaut-pad, 0.02em);
   line-height: 1;
   overflow: visible;
 }
@@ -157,11 +68,11 @@
 /// Im DOM steht ein echtes „ü“ (Suchmaschinen, Screenreader, textContent
 /// „Hans Müller“). Es bleibt unsichtbar im Fluss und gibt Breite und
 /// Grundlinie vor. Sichtbar ist ein „u“ als generierter Inhalt, die Punkte
-/// darüber zeichnen ::before und ::after von .neon-umlaut.
+/// darüber sind zwei eigene Elemente (.neon-dot, aria-hidden, ohne Text).
 /// Das „u“ hängt an einem leeren Geschwister-Span (nicht am ü), damit es
 /// Farbe und Schatten des Titels erbt statt transparent. Breite 0 und davor
-/// im Fluss: Es liegt deckungsgleich auf dem ü, bleibt nicht positioniert
-/// und damit unter den Punkten (Malreihenfolge wie beim früheren Text-„u“)
+/// im Fluss: Es liegt deckungsgleich auf dem ü und bleibt nicht positioniert,
+/// damit unter den Punkten
 .neon-umlaut__u {
   display: inline-block;
   width: 0;
@@ -205,98 +116,63 @@
   border-radius: $radius-sm;
 }
 
-/// Die leuchtenden Punkte über dem "ü"
-/// Verwendet CSS Custom Properties aus _css-properties.scss
-.neon-umlaut::before,
-.neon-umlaut::after {
-  content: "";
-  position: absolute;
+// =============================================================================
+// PUNKTE: Ruhelage
+// =============================================================================
+
+/// Beide Punkte stehen am selben Anker (--neon-orbit-center-x), translateX
+/// rückt sie auseinander. Lage, Größe und Abstand sind vom Owner kalibriert,
+/// die Bahnen in neon-orbit-toggle.js starten und enden genau hier. Farbe
+/// und Schein über die --neon-dot-*-Variablen, die Zustände in
+/// _neon-orbit.scss setzen nur diese um.
+/// Die Punkte sind relativ positionierte Inline-Blöcke ohne Vorschub (der
+/// negative Rand hebt die Breite auf) am Anfang des Containers, oben an der
+/// Zeile ausgerichtet. Absolut positioniert wären sie Blöcke, dann setzte
+/// innerText der H1 Zeilenumbrüche („Hans Mü⏎ller“). left und top versetzen
+/// sie vom Zeilenanfang genau dorthin, wo früher ::before und ::after standen
+.neon-dot {
+  --neon-dot-core: var(--neon-umlaut-dot-color, #ffffff);
+  --neon-dot-glow-strong: var(--neon-umlaut-dot-glow-strong, rgb(255 0 204 / 100%));
+  --neon-dot-glow-mid: var(--neon-umlaut-dot-glow-mid, rgb(255 0 204 / 85%));
+  --neon-dot-glow-soft: var(--neon-umlaut-dot-glow-soft, rgb(255 0 204 / 60%));
+
+  position: relative;
   top: var(--neon-umlaut-dot-offset-top, -0.04em);
+  left: calc(var(--neon-orbit-center-x, 0.23em) - var(--neon-umlaut-pad, 0.02em));
+  display: inline-block;
+  vertical-align: top;
   width: var(--neon-umlaut-dot-size, 0.18em);
   height: var(--neon-umlaut-dot-size, 0.18em);
+  margin-right: calc(-1 * var(--neon-umlaut-dot-size, 0.18em));
   border-radius: $radius-pill;
-  background: var(--neon-umlaut-dot-color, #ffffff);
-  opacity: 1;
-
-  // Geteilte Glow-Definition über die -current-Indirektion: ::before/::after
-  // setzen nur noch ihre -current-Variablen (statt je einen eigenen,
-  // strukturgleichen box-shadow-Block zu wiederholen). Steht fest und wird
-  // einmal gemalt: Puls und Flackern ändern nur scale und opacity
-  box-shadow: 0 0 6px var(--neon-umlaut-dot-glow-strong-current, var(--neon-umlaut-dot-glow-strong, rgb(255 0 204 / 100%))),
-    0 0 15px var(--neon-umlaut-dot-glow-mid-current, var(--neon-umlaut-dot-glow-mid, rgb(255 0 204 / 85%))),
-    0 0 28px var(--neon-umlaut-dot-glow-soft-current, var(--neon-umlaut-dot-glow-soft, rgb(255 0 204 / 60%))),
+  background: var(--neon-dot-core);
+  box-shadow: 0 0 6px var(--neon-dot-glow-strong),
+    0 0 15px var(--neon-dot-glow-mid),
+    0 0 28px var(--neon-dot-glow-soft),
     0 0 40px rgb(255 0 255 / 40%);
+  pointer-events: none;
 
-  // Orbit-Mittelpunkt: X = horizontale Mitte, Y = dynamisch
-  transform-origin: var(--neon-orbit-center-x, 0.18em) var(--neon-orbit-origin-y, 0.45em);
-
-  // Grund-Flackern (Platz 1) und Zittern (Platz 3) sind aus und stehen als
-  // none in der Liste, nicht mit Dauer 0: Ein Eintrag mit Dauer 0 oder mit
-  // filter hält in Chromium auch die übrigen Punkt-Animationen vom Compositor
-  // fern (PERF-7). Die Schalter --neon-base-flicker-on und --neon-jitter-on
-  // wirken nur noch im Orbit. Einschalten heißt hier: Namen eintragen
-  // (neon-umlaut-flicker-a/-b, neon-jitter, das Zittern malt bei jedem Bild)
-  animation-name: none, neon-flicker-irregular, none, neon-layered-glow;
-  animation-duration: calc(var(--neon-base-flicker-on, 1) * 12s),
-    calc(var(--neon-flicker-on, 0) * 3.4s),
-    calc(var(--neon-jitter-on, 0) * 1.6s),
-    calc(var(--neon-layered-glow-on, 0) * 2.8s);
-  animation-timing-function: linear,
-    steps(1, end),
-    ease-in-out,
-    ease-in-out;
-  animation-iteration-count: infinite, infinite, infinite, infinite;
-  animation-fill-mode: none, none, none, none;
-  animation-play-state: running, running, running, running;
+  // Schalter --neon-flicker in _css-properties.scss (none = kein Flackern)
+  animation: var(--neon-flicker, neon-dot-flicker) 23s steps(1, end) infinite;
 }
 
 /// Erster Punkt (links)
-.neon-umlaut::before {
-  left: var(--neon-orbit-center-x, 0.18em);
-  transform: translateX(var(--neon-orbit-start-offset-before, -0.10em));
-  background: var(--neon-umlaut-dot-color-before, var(--neon-umlaut-dot-color, #ffffff));
-
-  --neon-umlaut-dot-glow-strong-current: var(--neon-umlaut-dot-glow-strong-before, var(--neon-umlaut-dot-glow-strong, rgb(255 0 204 / 100%)));
-  --neon-umlaut-dot-glow-mid-current: var(--neon-umlaut-dot-glow-mid-before, var(--neon-umlaut-dot-glow-mid, rgb(255 0 204 / 85%)));
-  --neon-umlaut-dot-glow-soft-current: var(--neon-umlaut-dot-glow-soft-before, var(--neon-umlaut-dot-glow-soft, rgb(255 0 204 / 60%)));
-
-  animation-delay: 0.2s, 0s, 0s, 0s;
+.neon-dot--left {
+  transform: translateX(var(--neon-orbit-start-offset-before, -0.12em));
 }
 
-/// Zweiter Punkt (rechts)
-.neon-umlaut::after {
-  left: var(--neon-orbit-center-x, 0.18em);
-  transform: translateX(var(--neon-orbit-start-offset-after, 0.14em));
-  background: var(--neon-umlaut-dot-color-after, var(--neon-umlaut-dot-color, #ffffff));
-
-  --neon-umlaut-dot-glow-strong-current: var(--neon-umlaut-dot-glow-strong-after, var(--neon-umlaut-dot-glow-strong, rgb(255 0 204 / 100%)));
-  --neon-umlaut-dot-glow-mid-current: var(--neon-umlaut-dot-glow-mid-after, var(--neon-umlaut-dot-glow-mid, rgb(255 0 204 / 85%)));
-  --neon-umlaut-dot-glow-soft-current: var(--neon-umlaut-dot-glow-soft-after, var(--neon-umlaut-dot-glow-soft, rgb(255 0 204 / 60%)));
-
-  animation-delay: 0.95s, 0s, 0s, 0s;
-
+/// Zweiter Punkt (rechts), Flackern 5,5 s versetzt
+.neon-dot--right {
+  transform: translateX(var(--neon-orbit-start-offset-after, 0.12em));
+  animation-delay: 5.5s;
 }
 
-/// Ruhezustand: Der Punkt atmet um seine eigene Mitte. Im Orbit gilt wieder
-/// der Bahnmittelpunkt aus der Grundregel, dort ruht der Puls (none in den
-/// Listen von _neon-orbit.scss)
-.neon-name:not(.orbit-running, .orbit-finish, .orbit-popin, .orbit-scatter) {
-  .neon-umlaut::before,
-  .neon-umlaut::after {
-    transform-origin: center;
-  }
-}
-
-/// Perf: außerhalb des Viewports und bei verborgenem Tab pausieren die
-/// Dauer-Animationen (Klasse setzt assets/js/neon-orbit-toggle.js per
-/// IntersectionObserver und visibilitychange); laufende Choreografien sind
-/// ausgenommen — deren JS-Timer liefen sonst weiter, während die
-/// CSS-Animation steht
-.neon-name.neon-paused:not(.orbit-running, .orbit-finish, .orbit-popin, .orbit-scatter) {
-  .neon-umlaut::before,
-  .neon-umlaut::after {
-    animation-play-state: paused;
-  }
+/// Perf: außerhalb des Viewports und bei verborgenem Tab pausiert das
+/// Flackern (Klasse setzt assets/js/neon-orbit-toggle.js per
+/// IntersectionObserver und visibilitychange, das Skript hält dann auch
+/// eine laufende Bahn an)
+.neon-name.neon-paused .neon-dot {
+  animation-play-state: paused;
 }
 
 // farb-Ausnahme-Ende
