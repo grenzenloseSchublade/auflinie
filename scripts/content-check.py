@@ -321,6 +321,37 @@ def check_skills():
                  "Die id bei einem Projekt unter skills ergänzen oder in foundations aufnehmen.")
 
 
+# Einheitliche Struktur im Lebenslauf (_data/cv_content.yml): jede Station und jedes
+# Projekt hat dieselben Felder, einzeilige Texte stehen in doppelten Anführungszeichen,
+# mehrzeilige als |-Block (siehe docs/pflege.md, Abschnitt Lebenslauf).
+CV_STATION_KEYS = ["position", "company", "location", "period", "description", "expandable", "responsibilities"]
+CV_PROJECT_KEYS = ["text", "role", "year", "subitems"]
+
+
+def check_cv_structure():
+    path = ROOT / "_data/cv_content.yml"
+    if not path.exists():
+        return
+    for no, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
+        if re.match(r"\s*(-\s+|[A-Za-z_]+:\s+)'", line):
+            error(path, no, "Text in einfachen Anführungszeichen.",
+                  "Einzeilige Texte stehen in doppelten Anführungszeichen, innen deutsche „…“.")
+    data = load_yaml(path) or []
+    for section in data:
+        for station in section.get("experiences") or []:
+            where = station.get("company") or station.get("position") or "?"
+            missing = [k for k in CV_STATION_KEYS if k not in station]
+            if missing:
+                error(path, line_of(path, str(where)), f"Station „{where}“ ohne Feld(er) {', '.join(missing)}.",
+                      "Jede Station hat " + ", ".join(CV_STATION_KEYS) + ".")
+            for project in station.get("responsibilities") or []:
+                text = str(project.get("text") or "?") if isinstance(project, dict) else str(project)
+                missing = [k for k in CV_PROJECT_KEYS if not isinstance(project, dict) or not project.get(k)]
+                if missing:
+                    error(path, line_of(path, text[:40]), f"Projekt „{text[:60]}“ ohne Feld(er) {', '.join(missing)}.",
+                          "Jedes Projekt hat text, role, year und mindestens einen Unterpunkt unter subitems.")
+
+
 # Text-Schlüssel, die Markup und Skripte lesen (ARCH-4). Schreibweise: Punkte
 # trennen die Ebenen, {a,b} steht für mehrere Schlüssel, name[] für eine
 # nicht leere Liste (der Rest des Pfads gilt dann für jeden Eintrag).
@@ -670,6 +701,7 @@ def main(argv):
     elif len(argv) == 1:
         check_sources()
         check_skills()
+        check_cv_structure()
         check_math()
         check_text_keys()
         check_explanations()

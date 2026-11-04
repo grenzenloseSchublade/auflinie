@@ -157,7 +157,7 @@
         Schwerpunkt: Eingebettete Systeme, vertieft an der Schnittstelle zu Machine Learning\\
         Abschlussnote: **sehr gut**
       achievements:
-        - 'Masterarbeit: „Erkennung handgeschriebener Worte mittels CNN / BiRNN für eingebettete Systeme“ – Note: **ausgezeichnet**'
+        - "Masterarbeit: „Erkennung handgeschriebener Worte mittels CNN / BiRNN für eingebettete Systeme“ – Note: **ausgezeichnet**"
 
     - degree: "B. Sc. Elektro- und Informationstechnik"
       institution: "Ruhr-Universität Bochum"
@@ -165,7 +165,7 @@
       period: "2012 – 2015"
       description: "Grundlagenstudium"
       achievements:
-        - 'Bachelorarbeit: „Elektrische Charakterisierung einer Halbleiter-Nanostruktur“ – Note: **sehr gut**'
+        - "Bachelorarbeit: „Elektrische Charakterisierung einer Halbleiter-Nanostruktur“ – Note: **sehr gut**"
 
 - section: "Weiterbildung & Zertifikate"
   icon: "certificate"
