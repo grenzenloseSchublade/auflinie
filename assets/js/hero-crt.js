@@ -226,7 +226,6 @@
       const read = overlay.classList.contains('page__hero--crt-read');
 
       function applyLesemodus() {
-        overlay.classList.remove('page__hero--crt-over-text');
         overlay.classList.add('page__hero--crt-read');
         stopHeroCanvasNoise(overlay);
         syncHeroCrtPowerButton(overlay);
@@ -234,7 +233,6 @@
 
       function applyRetro() {
         overlay.classList.remove('page__hero--crt-read');
-        overlay.classList.add('page__hero--crt-over-text');
         startHeroCanvasNoise(overlay);
         syncHeroCrtPowerButton(overlay);
       }
@@ -284,8 +282,7 @@
           stopHeroCanvasNoise(overlay);
           return;
         }
-        if (overlay.classList.contains('page__hero--crt-over-text') &&
-            !overlay.classList.contains('page__hero--crt-read') &&
+        if (!overlay.classList.contains('page__hero--crt-read') &&
             overlay.classList.contains('loaded')) {
           startHeroCanvasNoise(overlay);
         }
