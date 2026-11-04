@@ -139,7 +139,7 @@ skills:
   - { id: ci-cd,                         name: "CI / CD",                         group: cloud-devops,  tier: core,    show: true }
   - { id: github-actions,                name: "GitHub Actions",                  group: cloud-devops,  tier: core,    show: true }
   - { id: gitlab-ci-cd,                  name: "GitLab CI / CD",                  group: cloud-devops,  tier: core,    show: true }
-  - { id: bash-linux,                    name: "Bash / Linux",                    group: cloud-devops,  tier: core,    show: true }  # Sammelchip, Shell-Skripte gehen darin auf
+  - { id: bash-linux,                    name: "Linux / Bash",                    group: cloud-devops,  tier: core,    show: true }  # Sammelchip, Shell-Skripte gehen darin auf
   - { id: github,                        name: "GitHub",                          group: cloud-devops,  tier: core,    show: false }
   - { id: github-codespaces,             name: "GitHub Codespaces",               group: cloud-devops,  tier: core,    show: false }
   - { id: cloud-computing-fundamentals,  name: "Cloud Computing Fundamentals",    group: cloud-devops,  tier: core,    show: false }  # Kursname, neben Azure doppelt
@@ -152,7 +152,7 @@ skills:
   - { id: vs-code,                       name: "VS Code",                         group: cloud-devops,  tier: breadth, show: false }  # Grundwerkzeug, sagt als Chip wenig
   - { id: azure-ai-foundry,              name: "Azure AI Foundry",                group: cloud-devops,  tier: breadth, show: false }
   - { id: azure-data-lake-storage,       name: "Azure Data Lake Storage",         group: cloud-devops,  tier: breadth, show: false }
-  - { id: red-hat-enterprise-linux,      name: "Red Hat Enterprise Linux",        group: cloud-devops,  tier: breadth, show: false }
+  - { id: red-hat-enterprise-linux,      name: "Red Hat Enterprise Linux",        group: cloud-devops,  tier: breadth, show: true }
   - { id: mlops,                         name: "MLOps",                           group: cloud-devops,  tier: breadth, show: false }
   - { id: grafana,                       name: "Grafana",                         group: cloud-devops,  tier: breadth, show: false }
 
