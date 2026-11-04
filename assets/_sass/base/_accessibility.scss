@@ -156,10 +156,16 @@ textarea:focus-visible {
     outline-offset: 2px;
   }
 
-  // Die Umlaut-Punkte im Neon-Namen sind Flächen mit Hintergrundfarbe. Der
-  // Kontrastmodus setzt sie auf die Grundfarbe, aus „Müller“ würde „Muller“.
+  // Neon-Name: Im Kontrastmodus zeigt das echte „ü“ aus dem DOM sich
+  // selbst. Das generierte „u“ und die Punkt-Flächen (nur Hintergrund und
+  // Schatten) entfallen, sonst stünden zwei Paar Punkte übereinander.
+  :root .neon-umlaut__ue {
+    color: CanvasText;
+  }
+
+  :root .neon-umlaut__u,
   :root .neon-umlaut::before,
   :root .neon-umlaut::after {
-    background: CanvasText;
+    display: none;
   }
 }

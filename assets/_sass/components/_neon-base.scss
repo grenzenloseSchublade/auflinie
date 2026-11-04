@@ -154,6 +154,36 @@
   overflow: visible;
 }
 
+/// Im DOM steht ein echtes „ü“ (Suchmaschinen, Screenreader, textContent
+/// „Hans Müller“). Es bleibt unsichtbar im Fluss und gibt Breite und
+/// Grundlinie vor. Sichtbar ist ein „u“ als generierter Inhalt, die Punkte
+/// darüber zeichnen ::before und ::after von .neon-umlaut.
+/// Das „u“ hängt an einem leeren Geschwister-Span (nicht am ü), damit es
+/// Farbe und Schatten des Titels erbt statt transparent. Breite 0 und davor
+/// im Fluss: Es liegt deckungsgleich auf dem ü, bleibt nicht positioniert
+/// und damit unter den Punkten (Malreihenfolge wie beim früheren Text-„u“)
+.neon-umlaut__u {
+  display: inline-block;
+  width: 0;
+
+  &::after {
+    content: "u";
+  }
+}
+
+// Leerer Alternativtext, wo unterstützt (aria-hidden am Span gilt ohnehin)
+@supports (content: "u" / "") {
+  .neon-umlaut__u::after {
+    content: "u" / "";
+  }
+}
+
+/// Das echte ü: Glyphe samt eigenen Punkten und Schatten unsichtbar
+.neon-umlaut__ue {
+  color: transparent;
+  text-shadow: none;
+}
+
 /// Wrapper für das gesamte Neon-Element (verhindert Textauswahl)
 .neon-name {
   user-select: none;

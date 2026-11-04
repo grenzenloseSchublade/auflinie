@@ -89,7 +89,7 @@ test.describe('Seiten-Module beim vollen Laden', () => {
   test('Startseite: Name wie jeder Hero-Titel, Neon-Dauer-Animationen nur auf dem Compositor', async ({ page }) => {
     await page.goto(`${BASE}/`);
     // Nur die Umlaut-Punkte leuchten: keine Glow-Ebene, der Schriftzug erbt
-    // den Schatten des Hero-Titels, die H1 trägt keinen doppelten Text
+    // den Schatten des Hero-Titels
     await expect(page.locator('.neon-glow, .neon-glow--layer')).toHaveCount(0);
     const schatten = await page.evaluate(() => {
       const h1 = document.querySelector('#page-title');
@@ -97,7 +97,9 @@ test.describe('Seiten-Module beim vollen Laden', () => {
       return [getComputedStyle(h1).textShadow, getComputedStyle(name).textShadow];
     });
     expect(schatten[1]).toBe(schatten[0]);
-    expect((await page.locator('#page-title').textContent()).trim()).toBe('Hans Muller');
+    // Echtes ü im DOM, das sichtbare „u“ ist generierter Inhalt ohne Text
+    expect((await page.locator('#page-title').textContent()).trim()).toBe('Hans Müller');
+    expect((await page.locator('#page-title').innerText()).trim()).toBe('Hans Müller');
     // PERF-7: Dauer-Animationen im Schriftzug ändern nur opacity und scale.
     // Abgeschaltete Einträge stehen als none in der Liste: Ein Eintrag mit
     // Dauer 0 hält in Chromium die übrigen Animationen desselben Elements
