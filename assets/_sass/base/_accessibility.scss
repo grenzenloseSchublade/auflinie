@@ -33,14 +33,14 @@ html {
 // gesamten Baum überstimmen — ohne !important prinzipiell unmöglich.
 /* stylelint-disable declaration-no-important -- globaler Reduced-Motion-Kill-Switch */
 @media (prefers-reduced-motion: reduce) {
-  // Deaktiviere Animationen global, ABER mit Ausnahme des Neon-Schriftzugs:
-  // Basis-Glow/-Flicker/-Puls laufen BEWUSST permanent — auch bei
+  // Deaktiviere Animationen global, ABER mit Ausnahme der Neon-Punkte im
+  // Namen: Flicker/Puls laufen BEWUSST permanent — auch bei
   // reduced-motion (Designentscheidung, Juli 2026 vom Nutzer bestätigt);
   // nur die Orbit-Choreografie ist zusätzlich nutzerinitiiert
   // CRT-Hero (Roll, Tube-Preboot/Boot, Scanlines …): von der Drossel ausnehmen — Abschaltung nur per Lesemodus (Power), s. _hero.scss
-  *:not(.neon-umlaut, .neon-glow, .neon-name, .neon-orbit-trigger, .page__hero-crt-roll, .page__hero-crt-layer, .page__hero-grain, .page__hero-crt-noise, .page__hero--overlay),
-  *:not(.neon-umlaut, .neon-glow, .neon-name, .neon-orbit-trigger, .page__hero-crt-roll, .page__hero-crt-layer)::before,
-  *:not(.neon-umlaut, .neon-glow, .neon-name, .neon-orbit-trigger, .page__hero-crt-layer, .page__hero--overlay, .page__hero-crt-media)::after {
+  *:not(.neon-umlaut, .neon-name, .neon-orbit-trigger, .page__hero-crt-roll, .page__hero-crt-layer, .page__hero-grain, .page__hero-crt-noise, .page__hero--overlay),
+  *:not(.neon-umlaut, .neon-name, .neon-orbit-trigger, .page__hero-crt-roll, .page__hero-crt-layer)::before,
+  *:not(.neon-umlaut, .neon-name, .neon-orbit-trigger, .page__hero-crt-layer, .page__hero--overlay, .page__hero-crt-media)::after {
     // skala-Ausnahme: [Block] Kill-Switch, 0.01ms statt 0 hält animationend und transitionend am Leben
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;

@@ -86,13 +86,17 @@ test.describe('Seiten-Module beim vollen Laden', () => {
     await expect(neon).toHaveClass(/neon-paused/);
   });
 
-  test('Startseite: Neon-Dauer-Animationen nur auf dem Compositor, Glow-Ebene ohne Text', async ({ page }) => {
+  test('Startseite: Name wie jeder Hero-Titel, Neon-Dauer-Animationen nur auf dem Compositor', async ({ page }) => {
     await page.goto(`${BASE}/`);
-    const layer = page.locator('.neon-name .neon-glow--layer');
-    await expect(layer).toHaveCount(1);
-    await expect(layer).toHaveAttribute('aria-hidden', 'true');
-    // Die Kopie trägt weder Rolle noch Tab-Stopp, die H1 keinen doppelten Text
-    await expect(layer.locator('[role], [tabindex], [aria-label]')).toHaveCount(0);
+    // Nur die Umlaut-Punkte leuchten: keine Glow-Ebene, der Schriftzug erbt
+    // den Schatten des Hero-Titels, die H1 trägt keinen doppelten Text
+    await expect(page.locator('.neon-glow, .neon-glow--layer')).toHaveCount(0);
+    const schatten = await page.evaluate(() => {
+      const h1 = document.querySelector('#page-title');
+      const name = h1.querySelector('.neon-name');
+      return [getComputedStyle(h1).textShadow, getComputedStyle(name).textShadow];
+    });
+    expect(schatten[1]).toBe(schatten[0]);
     expect((await page.locator('#page-title').textContent()).trim()).toBe('Hans Muller');
     // PERF-7: Dauer-Animationen im Schriftzug ändern nur opacity und scale.
     // Abgeschaltete Einträge stehen als none in der Liste: Ein Eintrag mit

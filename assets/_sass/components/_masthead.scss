@@ -176,9 +176,9 @@ $masthead-z-drawer-link: 10;
   }
 }
 
-// Neon-Utilities (.neon-umlaut, .neon-name, .neon-glow, etc.) sind in _neon-base.scss definiert
+// Neon-Utilities (.neon-umlaut, .neon-name, .neon-orbit-trigger) sind in _neon-base.scss definiert
 
-// WICHTIG: Der Neon-Schriftzug bleibt IMMER aktiv — Basis-Glow/-Puls laufen
+// WICHTIG: Die Neon-Punkte im Namen bleiben IMMER aktiv — Flicker/Puls laufen
 // bewusst auch bei prefers-reduced-motion (Designentscheidung, Juli 2026);
 // die Orbit-Choreografie ist zusätzlich nutzerinitiiert.
 

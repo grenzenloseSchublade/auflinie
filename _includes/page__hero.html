@@ -85,9 +85,9 @@ Klasse in components/_hero.scss. {% endcomment %}
       {% assign hero_title = page.title | default: site.title %}
       {% if page.neon_name and hero_title contains "Müller" %}
         {% unless hero_title contains "neon-umlaut" %}
-        {% assign hero_title = hero_title | replace: "Hans Müller", "<span class='neon-name'><span class='neon-glow'>H<span class='neon-orbit-trigger' role='button' tabindex='0' aria-label='Neon-Animation starten'>a</span>ns M<span class='neon-umlaut' aria-label='ü'>u</span>ller</span></span>" %}
-        {% assign hero_title = hero_title | replace: "Hans", "<span class='neon-name'><span class='neon-glow'>H<span class='neon-orbit-trigger' role='button' tabindex='0' aria-label='Neon-Animation starten'>a</span>ns</span></span>" %}
-        {% assign hero_title = hero_title | replace: "Müller", "<span class='neon-name'><span class='neon-glow'><span class='neon-umlaut' aria-label='ü'>u</span>ller</span></span>" %}
+        {% assign hero_title = hero_title | replace: "Hans Müller", "<span class='neon-name'>H<span class='neon-orbit-trigger' role='button' tabindex='0' aria-label='Neon-Animation starten'>a</span>ns M<span class='neon-umlaut' aria-label='ü'>u</span>ller</span>" %}
+        {% assign hero_title = hero_title | replace: "Hans", "<span class='neon-name'>H<span class='neon-orbit-trigger' role='button' tabindex='0' aria-label='Neon-Animation starten'>a</span>ns</span>" %}
+        {% assign hero_title = hero_title | replace: "Müller", "<span class='neon-name'><span class='neon-umlaut' aria-label='ü'>u</span>ller</span>" %}
         {% endunless %}
       {% endif %}
       {{ hero_title | markdownify | remove: "<p>" | remove: "</p>" }}

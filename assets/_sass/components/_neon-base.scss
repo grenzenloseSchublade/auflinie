@@ -2,17 +2,17 @@
 /* stylelint-disable keyframe-block-no-duplicate-selectors -- Flicker-Keyframes mit historisch doppelten Steps; letzter Step gewinnt, Werte bewusst unangetastet */
 // Neon-Effekte Basis-Styles und Keyframes
 // =============================================================================
-// Diese Datei enthält alle grundlegenden Neon-Animationen und Styles,
-// die für den Umlaut-Effekt und andere Neon-Elemente verwendet werden.
+// Diese Datei enthält die grundlegenden Neon-Animationen und Styles für
+// die leuchtenden Umlaut-Punkte im Namen auf der Startseite.
 // Struktur:
 // 1. Keyframes für Flicker-Effekte
-// 2. Keyframes für Text-Effekte
-// 3. Basis-Styles für .neon-umlaut und .neon-glow
+// 2. Basis-Styles für .neon-name, .neon-umlaut und .neon-orbit-trigger
+// Der Schriftzug selbst trägt keinen eigenen Schein: Er erbt Schrift,
+// Farbe und Schatten des Hero-Titels wie jeder andere Seitentitel (Owner,
+// 4. 11. 2026). Nur die beiden Punkte über dem „u“ leuchten.
 // Perf (PERF-7): Die Dauer-Animationen ändern nur opacity und scale, die der
-// Compositor ohne Neumalen abspielt. Der Leuchtschein (text-shadow,
-// box-shadow) steht fest und wird einmal gemalt. Den Text-Schein trägt eine
-// Kopie des Schriftzugs (.neon-glow--layer, gebaut von
-// assets/js/neon-orbit-toggle.js), deren Deckkraft atmet.
+// Compositor ohne Neumalen abspielt. Der Leuchtschein der Punkte
+// (box-shadow) steht fest und wird einmal gemalt.
 // Abhängigkeiten:
 // - variables/_css-properties.scss (CSS Custom Properties)
 // - variables/_colors.scss (Farbvariablen)
@@ -141,36 +141,6 @@
 }
 
 // =============================================================================
-// KEYFRAMES: Text Neon-Effekte
-// =============================================================================
-
-// Beide Text-Animationen laufen auf der Glow-Ebene (.neon-glow--layer). Ihr
-// text-shadow ist der hellste Stand des früheren Pulses (5 px 55 %, 12 px
-// 32 %), die Deckkraft bildet die alten Stufen nach (0.76 ≈ 42 % zu 55 %).
-
-/// Mehrschichtiger Text-Glow (früher 40/22 % bis 52/30 %)
-@keyframes neon-text-layered-glow {
-  0%, 100% {
-    opacity: 0.73;
-  }
-
-  50% {
-    opacity: 0.95;
-  }
-}
-
-/// Text-Puls (früher 42/24 % bis 55/32 %)
-@keyframes neon-text-pulse {
-  0%, 100% {
-    opacity: 0.76;
-  }
-
-  50% {
-    opacity: 1;
-  }
-}
-
-// =============================================================================
 // NEON UTILITIES: Basis-Klassen
 // =============================================================================
 
@@ -291,70 +261,11 @@
 /// Dauer-Animationen (Klasse setzt assets/js/neon-orbit-toggle.js per
 /// IntersectionObserver und visibilitychange); laufende Choreografien sind
 /// ausgenommen — deren JS-Timer liefen sonst weiter, während die
-/// CSS-Animation steht. .neon-glow trifft auch die Glow-Ebene
+/// CSS-Animation steht
 .neon-name.neon-paused:not(.orbit-running, .orbit-finish, .orbit-popin, .orbit-scatter) {
   .neon-umlaut::before,
-  .neon-umlaut::after,
-  .neon-glow {
-    animation-play-state: paused;
-  }
-}
-
-/// Text mit Neon-Glow-Effekt
-/// @example
-///   <span class="neon-glow">Kraftstoff</span>
-/// inline-block: Die Glow-Ebene liegt mit inset: 0 genau auf derselben
-/// Zeilenbox, ihre Glyphen decken sich mit dem Text
-.neon-glow {
-  position: relative;
-  display: inline-block;
-  isolation: isolate;
-  color: inherit;
-
-  // Kalibrierter Dauerglow: sanfter schmaler Schein statt Strahlen. Ohne JS
-  // bleibt er stehen, mit JS trägt ihn die Glow-Ebene
-  text-shadow: 0 0 4px rgb(255 0 255 / 45%),
-    0 0 10px rgb(255 0 255 / 25%);
-}
-
-.neon-name.neon-layered .neon-glow:not(.neon-glow--layer) {
-  text-shadow: none;
-}
-
-/// Glow-Ebene: Kopie des Schriftzugs hinter dem Text, Glyphen als generierter
-/// Inhalt (data-neon-text, keine doppelten Textknoten in der H1). Der Schein
-/// wird einmal gemalt, nur die Deckkraft atmet
-.neon-glow--layer {
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  color: transparent;
-  pointer-events: none;
-  text-shadow: 0 0 5px rgb(255 0 255 / 55%),
-    0 0 12px rgb(255 0 255 / 32%);
-  animation-name: neon-text-layered-glow, neon-text-pulse;
-
-  // Langsames „Röhren-Atmen" statt doppeltem Puls
-  animation-duration: calc(var(--neon-text-layered-on, 0) * 7s),
-    calc(var(--neon-text-pulse-on, 0) * 9s);
-  animation-timing-function: ease-in-out, ease-in-out;
-  animation-iteration-count: infinite, infinite;
-
-  [data-neon-text]::before {
-    content: attr(data-neon-text);
-  }
-
-  // Die Punkte zeichnet nur das Original
-  .neon-umlaut::before,
   .neon-umlaut::after {
-    content: none;
-  }
-}
-
-// Kontrastmodus: Schatten entfallen, die Ebene trüge nur doppelten Text
-@media (forced-colors: active) {
-  .neon-glow--layer {
-    display: none;
+    animation-play-state: paused;
   }
 }
 
