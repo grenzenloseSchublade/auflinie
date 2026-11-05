@@ -4,11 +4,11 @@
 
 # Einleitung direkt unter dem Hero, ohne Überschrift (SEITE-1)
 intro: |-
-  Theorie hat ihren eigenen Reiz – man kann sich in ihr verlieren, und manchmal ist das genau richtig: In Philosophie und Utopie ist der Gedanke selbst das Werk, und Grundlagenforschung macht Umsetzung überhaupt erst möglich. Für die Forschung gibt es keinen schöneren Moment als den, in dem die Anwendung genau so funktioniert wie erdacht – oder ein aufwendiger Versuch exakt das misst, was die Theorie vorhergesagt hat.
+  Theorie hat ihren eigenen Reiz. Man kann sich in ihr verlieren, und manchmal ist das genau richtig: In der Philosophie ist der Gedanke selbst das Werk, und ohne Grundlagenforschung gäbe es nichts, was sich anwenden ließe. Am schönsten ist der Moment, in dem etwas genau so funktioniert, wie es erdacht war.
 
-  Wo werden der Theorie Grenzen gesetzt? Da, wo Ideen auf die Wirklichkeit treffen. Die eigene Erfahrung bestätigt die Theorie nicht nur – sie zeigt Wege, die keine Herleitung vorhergesehen hat. Hunderte Konzepte ersetzen keine einzige Erfahrung der tatsächlichen Anwendung.
+  Spannend wird es dort, wo Ideen auf die Wirklichkeit treffen. Die Praxis bestätigt die Theorie nicht nur – sie zeigt oft Wege, die keine Herleitung vorhergesehen hat. Als Ingenieur arbeite ich seit vielen Jahren genau an dieser Stelle, aktuell an KI, die Wissen aus Dokumenten erschließt.
 
-  Erfahrung nützt aber niemandem, solange sie bei einem selbst bleibt. Wissen sollte immer und überall frei verfügbar sein. Es wird nicht weniger, wenn man es teilt, sondern wertvoller, je mehr Menschen es erreicht. Deshalb steht hier, was ich gebaut und verstanden habe.
+  Erfahrung nützt aber wenig, solange sie bei einem selbst bleibt. Wissen wird nicht weniger, wenn man es teilt, sondern wertvoller, je mehr Menschen es erreicht. Deshalb steht hier, was ich gebaut und verstanden habe.
 
 # Kachel zur Fraktal-Seite (_includes/home/fractal-showcase.html)
 fractal_showcase:
