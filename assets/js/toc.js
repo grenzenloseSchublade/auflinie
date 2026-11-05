@@ -42,17 +42,31 @@
   const SLIDE_IN_MS = 200;
   let gumshoeInstance = null;
 
-  // Höhe der sichtbaren Sticky-TOC in den Sprungmarken-Versatz geben (WCAG
-  // 2.4.11). Spiegel zu variables/_css-properties.scss: --anchor-offset ist
-  // der Versatz ohne Leiste. An <html> landet nur scroll-padding-top (inline,
-  // nicht vererbt), keine Custom Property: eine Custom Property auf <html>
-  // berechnet bei jedem Umschalten alle Elemente der Seite neu (PERF-6).
-  // Elemente mit data-sticky-toc-offset (CV-Auswahl-Konsole) bekommen die
-  // Höhe als --sticky-toc-height direkt, das trifft nur ihren Teilbaum.
-  function setStickyOffset(targets, height) {
+  // Höhe der Sticky-TOC in den Sprungmarken-Versatz geben (WCAG 2.4.11).
+  // Spiegel zu variables/_css-properties.scss: --anchor-offset ist der
+  // Versatz ohne Leiste. Unter $bp-lg zählt die Leiste immer mit, auch
+  // solange sie verborgen ist: Jedes Sprungziel aus dem TOC ist eine
+  // Überschrift, nach dem Sprung ist sie aktiv und die Leiste fährt ein.
+  // Hinge der Versatz an der Sichtbarkeit, landete ein Sprung von oben (TOC
+  // im Bild, Leiste noch weg) mit der Überschrift unter der Leiste. Gleiche
+  // Linie wie getGumshoeOffset, deshalb ist die Überschrift nach dem Sprung
+  // genau die aktive. An <html> landet nur scroll-padding-top (inline, nicht
+  // vererbt), keine Custom Property: eine Custom Property auf <html>
+  // berechnet alle Elemente der Seite neu (PERF-6). Geschrieben wird nur bei
+  // einer neuen Höhe (Layout-Wechsel), nicht beim Ein- und Ausblenden.
+  let lastAnchorHeight = 0;
+  function setAnchorOffset(height) {
+    if (height === lastAnchorHeight) { return; }
+    lastAnchorHeight = height;
     const root = document.documentElement.style;
     if (height > 0) { root.setProperty('scroll-padding-top', 'calc(var(--anchor-offset) + ' + height + 'px)'); }
     else { root.removeProperty('scroll-padding-top'); }
+  }
+
+  // Elemente mit data-sticky-toc-offset (CV-Auswahl-Konsole) rücken nur unter
+  // die sichtbare Leiste. Sie bekommen die Höhe als --sticky-toc-height
+  // direkt, das trifft nur ihren Teilbaum.
+  function setStickyOffset(targets, height) {
     targets.forEach(function (el) { el.style.setProperty('--sticky-toc-height', height + 'px'); });
   }
 
@@ -255,6 +269,8 @@
       // ab. Der Aktuell-Text bricht nie um (nowrap), die Höhe hängt also nur
       // an Breite und Schrift. Desktop (display: none): 0.
       stickyBarHeight = stickyToc.offsetHeight - (stickyDropdown ? stickyDropdown.clientHeight : 0);
+      setAnchorOffset(isBelowLg() ? stickyBarHeight : 0);
+      if (stickyVisible) { setStickyOffset(offsetTargets, stickyBarHeight); }
     });
 
     updateStickyVisibility();

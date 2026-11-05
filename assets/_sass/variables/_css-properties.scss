@@ -7,8 +7,9 @@
   // Layout
   // ============================================
   --masthead-height: 74px; // Mobile default (moderne Standards: 56-64px)
-  // Sprungmarken-Versatz ohne Sticky-TOC. Ist die Sticky-TOC sichtbar, addiert
-  // toc.js ihre Höhe inline am scroll-padding-top von <html>. Bewusst keine
+  // Sprungmarken-Versatz ohne Sticky-TOC. Auf Seiten mit Sticky-TOC addiert
+  // toc.js unter $bp-lg ihre Höhe inline am scroll-padding-top von <html>
+  // (immer, nicht erst bei sichtbarer Leiste). Bewusst keine
   // Custom Property auf <html> aus JS (PERF-6): jede Änderung dort berechnet
   // alle Elemente der Seite neu (langer Beitrag rund 2300, 130 bis 165 ms je
   // Umschalten bei vierfach gedrosselter CPU), scroll-padding-top nur <html>

@@ -235,6 +235,40 @@ test.describe('Sticky-TOC-Leiste: aktiver Abschnitt', () => {
       return a ? document.getElementById('toc-sticky-current').textContent === a.textContent.trim() : 'kein aktiver Link';
     })).toBe(true);
   });
+
+  // Sprung aus dem Original-TOC (Leiste noch verborgen) und Deep Link beim
+  // Laden: Die Überschrift landet unter der Leiste, nicht dahinter, und ist
+  // die aktive. Früher zählte die Leiste erst mit, wenn sie schon stand.
+  test('Sprung von oben landet unter der Leiste', async ({ page }) => {
+    // Weiches Scrollen (auch beim Laden mit Hash): prüfen, bis der Sprung steht
+    const pruefe = (id) => expect(async () => {
+      const lage = await page.evaluate((hid) => ({
+        heading: document.getElementById(hid).getBoundingClientRect().top,
+        bar: document.getElementById('toc-sticky-mobile').getBoundingClientRect().bottom,
+        sichtbar: document.getElementById('toc-sticky-mobile').classList.contains('is-visible'),
+        aktiv: decodeURIComponent(document.querySelector('#toc-original .toc__menu a[aria-current="true"]')?.hash || ''),
+      }), id);
+      expect(lage.sichtbar).toBe(true);
+      expect(lage.aktiv).toBe('#' + id);
+      expect(lage.heading).toBeGreaterThanOrEqual(lage.bar);
+    }).toPass({ timeout: 5000 });
+
+    await page.goto('/auflinie/cv/', { waitUntil: 'load' });
+    const toggle = page.locator('#toc-original .toc-toggle');
+    if (await toggle.count() && (await toggle.getAttribute('aria-expanded')) === 'false') {
+      await toggle.click();
+      // Aufklappen abwarten, sonst wächst das TOC noch während des Sprungs
+      await expect.poll(() => page.evaluate(() => getComputedStyle(document.querySelector('.toc__menu-wrapper')).maxHeight)).toBe('none');
+    }
+    const link = page.locator('#toc-original .toc__menu a').nth(1);
+    const id = decodeURIComponent((await link.getAttribute('href')).slice(1));
+    await link.click();
+    await pruefe(id);
+
+    await page.goto('about:blank');
+    await page.goto('/auflinie/cv/#' + id, { waitUntil: 'load' });
+    await pruefe(id);
+  });
 });
 
 // Skill-Graph: ein Knopf „Skill-Graph öffnen“ oben im Abschnitt öffnet das

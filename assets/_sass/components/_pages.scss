@@ -7,8 +7,9 @@
 // (WCAG 2.4.11, STYLEGUIDE 6.1): EIN scroll-padding am Viewport statt
 // scroll-margin pro Zieltyp. Wirkt auf jedes Scroll-into-View — Hash-Sprung,
 // scrollIntoView() und Tastaturfokus unter dem fixen Masthead.
-// --anchor-offset = Masthead + 20px Luft. Bei sichtbarer Sticky-TOC setzt
-// toc.js inline calc(var(--anchor-offset) + Höhe der Leiste) (PERF-6). Die früheren
+// --anchor-offset = Masthead + 20px Luft. Auf Seiten mit Sticky-TOC setzt
+// toc.js unter $bp-lg inline calc(var(--anchor-offset) + Höhe der Leiste),
+// auch solange sie noch verborgen ist (PERF-6). Die früheren
 // scroll-margin-top-Regeln (Überschriften, .fractal-panel, :target,
 // .section-anchor) sind deshalb raus — beides addiert sich sonst.
 html {
