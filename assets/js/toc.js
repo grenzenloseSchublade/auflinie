@@ -36,6 +36,10 @@
   // Spiegel zu variables/_css-properties.scss: --masthead-height (Grundwert
   // in :root). Greift nur, wenn das Token fehlt.
   const MASTHEAD_HEIGHT_FALLBACK_PX = 74;
+  // Spiegel zu components/_toc.scss: .toc-sticky-mobile__current
+  // (is-sliding-out $duration-fast, is-sliding-in $duration-base)
+  const SLIDE_OUT_MS = 150;
+  const SLIDE_IN_MS = 200;
   let gumshoeInstance = null;
 
   // Höhe der sichtbaren Sticky-TOC in den Sprungmarken-Versatz geben (WCAG
@@ -76,7 +80,10 @@
     // jeder Größenänderung von Dokument oder Viewport (onDocumentResize)
     let scrollMax = 0;              // scrollHeight - innerHeight
     let tocBottomDoc = 0;           // Unterkante des Original-TOC in Dokumentkoordinaten
+    let stickyBarHeight = 0;        // Höhe der Leiste ohne aufgeklapptes Dropdown
     let lastProgress = '';
+    // Aktiver Link laut Gumshoe-Ereignissen, null über der ersten Überschrift
+    let activeLink = null;
 
     const getMastheadHeight = function () {
       if (cachedMastheadHeight === null) {
@@ -87,6 +94,9 @@
     };
 
     // ── Visibility: Sticky-TOC nur mobil + gescrollt + Original-TOC aus dem Bild
+    // + eine Überschrift aktiv. Ohne die letzte Bedingung stand die Leiste
+    // schon, sobald das TOC unter dem Masthead lag, und zeigte die erste
+    // Überschrift, obwohl sie noch weit unten im Bild war (/cv/: rund 800 px).
     // Die Lage des Original-TOC kommt aus dem Cache (tocBottomDoc), pro Frame
     // wird nur scrollY gelesen. Unter $bp-lg steht das TOC im Fluss, seine
     // Dokumentlage ändert sich also nur mit dem Layout. Ein
@@ -99,16 +109,18 @@
       const scrollY = typeof knownScrollY === 'number' ? knownScrollY : window.scrollY;
       const tocBelowMasthead = tocBottomDoc - scrollY < getMastheadHeight();
       const hasScrolled = scrollY > 50;
-      if (tocBelowMasthead && hasScrolled) { showStickyToc(); } else { hideStickyToc(); }
+      if (activeLink && tocBelowMasthead && hasScrolled) { showStickyToc(); } else { hideStickyToc(); }
     }
 
+    // Ein- und Ausblenden ändert den Versatz von Gumshoe nicht (siehe
+    // getGumshoeOffset), deshalb hier kein detect() mehr: Es mäße direkt
+    // nach dem Klassenwechsel und erzwänge ein Layout (PERF-8).
     function showStickyToc() {
       if (!stickyVisible) {
         stickyVisible = true;
         stickyToc.classList.add('is-visible');
         stickyToc.setAttribute('aria-hidden', 'false');
-        setStickyOffset(offsetTargets, stickyToc.offsetHeight);
-        reinitGumshoe();
+        setStickyOffset(offsetTargets, stickyBarHeight);
       }
     }
 
@@ -119,15 +131,20 @@
         stickyToc.setAttribute('aria-hidden', 'true');
         closeDropdown();
         setStickyOffset(offsetTargets, 0);
-        reinitGumshoe();
       }
     }
 
     // ── Gumshoe (ScrollSpy) ────────────────────────────────────────────────
+    // Unter $bp-lg rechnet die Linie immer mit der Leiste, auch solange sie
+    // verborgen ist. Hinge der Versatz an stickyVisible, entschiede die
+    // Leiste über ihr eigenes Erscheinen: Erst die Leiste machte die erste
+    // Überschrift aktiv (größerer Versatz), ohne Leiste fiele sie wieder raus,
+    // an der Schwelle flackerte es. So gilt eine Überschrift überall gleich
+    // als erreicht, wenn sie unter die (künftige) Leiste rutscht, und die
+    // Leiste fährt genau dann ein. Desktop: nur der Masthead, wie bisher.
     function getGumshoeOffset() {
-      const mastheadH = getMastheadHeight();
-      const stickyH = (isBelowLg() && stickyVisible) ? stickyToc.offsetHeight : 0;
-      return mastheadH + stickyH + 20;
+      const stickyH = isBelowLg() ? stickyBarHeight : 0;
+      return getMastheadHeight() + stickyH + 20;
     }
 
     function initGumshoe() {
@@ -139,6 +156,24 @@
       const tocMenu = originalToc.querySelector('.toc__menu');
       if (!tocMenu) { return; }
 
+      // Vor dem Anlegen binden: Der Konstruktor ruft detect() sofort auf,
+      // so kommt auch der Startzustand (Neuladen mitten im Text, Hash-Sprung)
+      // als Ereignis an
+      document.addEventListener('gumshoeActivate', function (event) {
+        const link = event.detail.link;
+        if (!link) { return; }
+        link.setAttribute('aria-current', 'true');
+        activeLink = link;
+        queueHeadingSync();
+      });
+
+      document.addEventListener('gumshoeDeactivate', function (event) {
+        const link = event.detail.link;
+        if (link) { link.removeAttribute('aria-current'); }
+        if (link === activeLink) { activeLink = null; }
+        queueHeadingSync();
+      });
+
       gumshoeInstance = new Gumshoe('#toc-original .toc__menu a', {
         navClass: 'active',
         contentClass: 'active',
@@ -149,17 +184,26 @@
         events: true
       });
       bindScroll();   // eigener Scroll-Listener hinter den von Gumshoe (Schreiben nach Messen)
+    }
 
-      document.addEventListener('gumshoeActivate', function (event) {
-        const link = event.detail.link;
-        if (link && isBelowLg()) { updateCurrentHeading(link.textContent.trim()); }
-        if (link) { link.setAttribute('aria-current', 'true'); }
-        syncDropdownActive(link);
-      });
-
-      document.addEventListener('gumshoeDeactivate', function (event) {
-        const link = event.detail.link;
-        if (link) { link.removeAttribute('aria-current'); }
+    // Gumshoe meldet einen Abschnittswechsel als Deactivate und direkt danach
+    // Activate, beides synchron in einem detect(). Ausgewertet wird erst im
+    // Microtask danach, also mit dem Endzustand: Zwischen den beiden
+    // Ereignissen wird der Text nie leer, und ein Deactivate ohne Activate
+    // (über die erste Überschrift zurück, etwa per Back-to-Top) setzt Text
+    // und Markierung im Dropdown zurück. Der Microtask läuft nach Gumshoes
+    // Messung im selben Frame und schreibt nur (PERF-8). Die Sichtbarkeit
+    // zieht hier mit, weil detect() auch ohne Scrollen läuft (Start,
+    // Resize); scrollY ist nach der Messung ohne Layout-Kosten lesbar.
+    let headingSyncQueued = false;
+    function queueHeadingSync() {
+      if (headingSyncQueued) { return; }
+      headingSyncQueued = true;
+      window.queueMicrotask(function () {
+        headingSyncQueued = false;
+        syncDropdownActive(activeLink);
+        updateCurrentHeading(activeLink ? activeLink.textContent.trim() : '');
+        updateStickyVisibility();
       });
     }
 
@@ -207,6 +251,10 @@
     utils().onDocumentResize(function () {
       scrollMax = document.documentElement.scrollHeight - window.innerHeight;
       tocBottomDoc = originalToc.getBoundingClientRect().bottom + window.scrollY;
+      // offsetHeight zählt ein offenes Dropdown mit, dessen Inhaltshöhe geht
+      // ab. Der Aktuell-Text bricht nie um (nowrap), die Höhe hängt also nur
+      // an Breite und Schrift. Desktop (display: none): 0.
+      stickyBarHeight = stickyToc.offsetHeight - (stickyDropdown ? stickyDropdown.clientHeight : 0);
     });
 
     updateStickyVisibility();
@@ -303,52 +351,49 @@
     }
 
     // ── Aktuelle Überschrift im Sticky-Header (mit Slide-Animation) ─────────
-    let lastActiveText = '';
+    // wantedText ist immer der neueste Stand ('' = nichts aktiv). Kommt ein
+    // Wechsel, während die Animation läuft, wird er nicht verworfen (früher
+    // blieb die Leiste dann auf einem alten Abschnitt stehen, etwa beim
+    // weichen Scrollen per Back-to-Top): Der Tausch in der Mitte nimmt den
+    // neuesten Text, ein noch späterer Wechsel landet am Ende ohne zweite
+    // Animation. Schnelle Folgen ergeben so höchstens eine Animation statt
+    // einer Warteschlange. Ohne Animation: verborgene Leiste (sie fährt mit
+    // dem richtigen Text ein), leerer Text, reduzierte Bewegung (BEW-1a).
+    let wantedText = '';
     let isAnimating = false;
 
     function updateCurrentHeading(newText) {
-      if (!stickyCurrent || !newText) { return; }
-      const displayText = newText;
-      if (lastActiveText !== newText && !isAnimating) {
-        lastActiveText = newText;
-        isAnimating = true;
-        stickyCurrent.classList.add('is-sliding-out');
-        window.setTimeout(function () {
-          stickyCurrent.textContent = displayText;
-          stickyCurrent.classList.remove('is-sliding-out');
-          stickyCurrent.classList.add('is-sliding-in');
-          window.setTimeout(function () {
-            stickyCurrent.classList.remove('is-sliding-in');
-            isAnimating = false;
-          }, 200);
-        }, 150);
+      if (!stickyCurrent || newText === wantedText) { return; }
+      wantedText = newText;
+      if (isAnimating) { return; }
+      if (!stickyVisible || !newText || utils().prefersReducedMotion()) {
+        stickyCurrent.textContent = newText;
+        return;
       }
+      isAnimating = true;
+      stickyCurrent.classList.add('is-sliding-out');
+      window.setTimeout(function () {
+        stickyCurrent.textContent = wantedText;
+        stickyCurrent.classList.remove('is-sliding-out');
+        stickyCurrent.classList.add('is-sliding-in');
+        window.setTimeout(function () {
+          stickyCurrent.classList.remove('is-sliding-in');
+          isAnimating = false;
+          if (stickyCurrent.textContent !== wantedText) { stickyCurrent.textContent = wantedText; }
+        }, SLIDE_IN_MS);
+      }, SLIDE_OUT_MS);
     }
 
     const dropdownLinks = stickyDropdown ? Array.prototype.slice.call(stickyDropdown.querySelectorAll('a')) : [];
 
-    function syncDropdownActive(activeLink) {
-      if (!activeLink || dropdownLinks.length === 0) { return; }
-      const activeText = activeLink.textContent.trim();
-      dropdownLinks.forEach(function (link) {
-        const li = link.parentElement;
-        if (link.textContent.trim() === activeText) { li.classList.add('active'); }
-        else { li.classList.remove('active'); }
+    // Ohne aktiven Link (über der ersten Überschrift) ist nichts markiert
+    function syncDropdownActive(link) {
+      if (dropdownLinks.length === 0) { return; }
+      const activeText = link ? link.textContent.trim() : null;
+      dropdownLinks.forEach(function (a) {
+        a.parentElement.classList.toggle('active', a.textContent.trim() === activeText);
       });
     }
-
-    // Initiale Überschrift (nach Gumshoe-Init)
-    window.requestAnimationFrame(function () {
-      window.setTimeout(function () {
-        const activeLi = originalToc.querySelector('.toc__menu li.active');
-        if (activeLi) {
-          const link = activeLi.querySelector(':scope > a');
-          if (link) { updateCurrentHeading(link.textContent.trim()); return; }
-        }
-        const firstLink = originalToc.querySelector('.toc__menu a');
-        if (firstLink && !lastActiveText) { updateCurrentHeading(firstLink.textContent.trim()); }
-      }, 150);
-    });
 
     // ── Resize ──────────────────────────────────────────────────────────────
     let resizeTimeout;

@@ -1,7 +1,7 @@
 // Automatisches Style-Guide-Review, Teil 4: Bedien-Invarianten aus
 // STYLEGUIDE.md 6.2 und 4.4 (A11Y-2, OVL-3, OVL-4, WCAG 2.4.3/2.4.7).
 // Prüft Verhalten, nicht Aussehen: Fokusführung, aria-expanded, inert,
-// Escape und Light Dismiss an Drawer und Skill-Graph-Sheet, Autor- und TOC-Dropdown, Info-Leiste,
+// Escape und Light Dismiss an Drawer und Skill-Graph-Sheet, Autor- und TOC-Dropdown, mitlaufende TOC-Leiste, Info-Leiste,
 // Übersicht, Zoom und Beschriftung im Skill-Graphen, dass kein
 // unsichtbares Element den Tastaturfokus bekommt, die Breakpoint-Grenzen
 // 767/768 und 1023/1024 (STYLEGUIDE 3.4), dass Touch nach dem Antippen
@@ -125,18 +125,31 @@ test.describe('Autor-Folgen-Dropdown (A11Y-2)', () => {
   });
 });
 
+// Lage der ersten Überschrift aus dem Original-TOC (Dokumentkoordinaten)
+// und Unterkante des TOC, für die Sticky-Leiste unten
+function tocLage(page) {
+  return page.evaluate(() => {
+    const link = document.querySelector('#toc-original .toc__menu a');
+    const h = document.getElementById(decodeURIComponent(link.hash.slice(1)));
+    return {
+      first: h.getBoundingClientRect().top + window.scrollY,
+      firstText: link.textContent.trim(),
+      tocBottom: document.getElementById('toc-original').getBoundingClientRect().bottom + window.scrollY,
+    };
+  });
+}
+
+const scrollToY = (page, y) => page.evaluate((top) => window.scrollTo({ top, behavior: 'instant' }), y);
+
 // TOC-Dropdown der Sticky-Leiste (toc.js): erscheint unter 1024 px, sobald
-// das Original-TOC aus dem Bild gescrollt ist. Gleiche Fokus-Logik wie der
-// Drawer.
+// das Original-TOC aus dem Bild gescrollt und die erste Überschrift
+// erreicht ist. Gleiche Fokus-Logik wie der Drawer.
 test.describe('Sticky-TOC-Dropdown (A11Y-2)', () => {
   test.use({ viewport: MOBIL });
 
   async function stickyToggle(page) {
     await page.goto('/auflinie/cv/', { waitUntil: 'load' });
-    await page.evaluate(() => {
-      const toc = document.getElementById('toc-original');
-      window.scrollTo(0, toc.getBoundingClientRect().bottom + window.scrollY + 400);
-    });
+    await scrollToY(page, (await tocLage(page)).first + 200);
     await expect(page.locator('#toc-sticky-mobile')).toHaveClass(/is-visible/);
     return page.locator('#toc-sticky-toggle');
   }
@@ -171,6 +184,56 @@ test.describe('Sticky-TOC-Dropdown (A11Y-2)', () => {
     await toggle.click();
     await expect(toggle).toHaveAttribute('aria-expanded', 'true');
     await expect(toggle).toBeFocused();
+  });
+});
+
+// Sticky-Leiste folgt dem aktiven Abschnitt (toc.js): kein Vorab-Text vor
+// der ersten Überschrift, kein hängender alter Abschnitt nach schnellem
+// Scrollen (Slide-Animation verwarf früher Wechsel), Rücksetzen über der
+// ersten Überschrift (Back-to-Top)
+test.describe('Sticky-TOC-Leiste: aktiver Abschnitt', () => {
+  test.use({ viewport: MOBIL });
+
+  test('erscheint erst ab der ersten Überschrift und endet immer auf dem aktiven Abschnitt', async ({ page }) => {
+    await page.goto('/auflinie/cv/', { waitUntil: 'load' });
+    const bar = page.locator('#toc-sticky-mobile');
+    const current = page.locator('#toc-sticky-current');
+    const lage = await tocLage(page);
+
+    // TOC aus dem Bild, erste Überschrift noch 300 px unter der Oberkante
+    expect(lage.first - 300).toBeGreaterThan(lage.tocBottom);
+    await scrollToY(page, lage.first - 300);
+    await page.waitForTimeout(200);
+    await expect(bar).not.toHaveClass(/is-visible/);
+    await expect(current).toHaveText('');
+
+    await scrollToY(page, lage.first - 40);
+    await expect(bar).toHaveClass(/is-visible/);
+    await expect(current).toHaveText(lage.firstText);
+
+    // Back-to-Top (weich): über der ersten Überschrift nichts mehr aktiv
+    await scrollToY(page, (await page.evaluate(() => document.documentElement.scrollHeight)) / 2);
+    await page.locator('.back-to-top').click();
+    await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(0);
+    await expect(bar).not.toHaveClass(/is-visible/);
+    await expect(current).toHaveText('');
+    await expect(page.locator('#toc-sticky-dropdown li.active')).toHaveCount(0);
+
+    // Schnell aufwärts per Mausrad: nach dem Stillstand steht der aktive Abschnitt da
+    await scrollToY(page, (await page.evaluate(() => document.documentElement.scrollHeight)) * 0.7);
+    await page.mouse.move(200, 500);
+    for (let i = 0; i < 8; i++) await page.mouse.wheel(0, -350);
+    let last = -1;
+    await expect.poll(async () => {
+      const y = await page.evaluate(() => window.scrollY);
+      const still = y === last;
+      last = y;
+      return still;
+    }, { intervals: [100] }).toBe(true);
+    await expect.poll(() => page.evaluate(() => {
+      const a = document.querySelector('#toc-original .toc__menu a[aria-current="true"]');
+      return a ? document.getElementById('toc-sticky-current').textContent === a.textContent.trim() : 'kein aktiver Link';
+    })).toBe(true);
   });
 });
 
@@ -859,8 +922,8 @@ test.describe('Kleiner Graph-Knopf: Verwandlung beim Scrollen', () => {
       // großer Knopf und Erklärzeile stehen voll da, der kleine ist unsichtbar
       test('Sprung über das Inhaltsverzeichnis landet vor dem Übergang', async ({ page }) => {
         await page.goto('/auflinie/cv/', { waitUntil: 'load' });
-        // Weiter unten, damit am Handy die mitlaufende Leiste da ist
-        await page.evaluate(() => window.scrollTo({ top: 1500, behavior: 'instant' }));
+        // Hinter die erste Überschrift, damit am Handy die mitlaufende Leiste da ist
+        await scrollToY(page, (await tocLage(page)).first + 200);
         const link = page.locator('a[href="#technische-fähigkeiten"]:visible').first();
         if (!(await link.count())) {
           await expect(page.locator('#toc-sticky-mobile')).toHaveClass(/is-visible/);

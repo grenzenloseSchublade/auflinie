@@ -5,7 +5,8 @@
   Die Ausklapp-Funktionalität wird aktiviert, wenn in der Front Matter toc_collapse: true gesetzt ist.
   Alle anderen TOC-Parameter (toc_label, toc_icon, toc_sticky) funktionieren weiterhin wie gewohnt.
 
-  NEU: Mobile Sticky TOC Header - erscheint unter dem Masthead wenn das Original-TOC aus dem Viewport scrollt.
+  NEU: Mobile Sticky TOC Header - erscheint unter dem Masthead, sobald das Original-TOC aus dem Viewport
+  gescrollt und die erste Überschrift erreicht ist.
   ScrollSpy: Verwendet Gumshoe (standalone Library) für performantes Tracking.
 
   Das Verhalten (Sticky-Mobile, ScrollSpy-Anbindung, Dropdown, Collapse) liegt in
@@ -22,7 +23,7 @@
 <div id="toc-sticky-mobile" class="toc-sticky-mobile" aria-hidden="true">
   <button id="toc-sticky-toggle" class="toc-sticky-mobile__toggle" type="button" aria-expanded="false" aria-controls="toc-sticky-dropdown">
     <span class="toc-sticky-mobile__label">{{ toc_label }}</span>
-    <span id="toc-sticky-current" class="toc-sticky-mobile__current">–</span>
+    <span id="toc-sticky-current" class="toc-sticky-mobile__current"></span>
     <span class="toc-sticky-mobile__arrow" aria-hidden="true">▼</span>
     <span class="toc-sticky-mobile__progress" aria-hidden="true"></span>
   </button>
